@@ -67,6 +67,7 @@ export default function Selection<U extends StudyInterface | KeywordInterface>()
             bodyData={studiesData}
             filteredColumns={checkedValues}
             tableType={"selection"}
+            selectedStatus={selectedValue}
           />
           <StudySelectionArea />
         </Box>

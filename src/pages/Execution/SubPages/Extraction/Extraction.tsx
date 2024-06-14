@@ -20,12 +20,12 @@ export default function Extraction() {
     selectionStatus: "Status/Selection",
     extractionStatus: "Status/Extraction",
     readingPriority: "Reading Priority"
-}
+  }
 
   const { value: checkedValues, handleChange: handleCheckboxChange } = useInputState<string[]>([]);
   const { value: selectedValue, handleChange: handleSelectChange } = useInputState<string | null>(null);
 
-  if(!studiesData) return <>Studies data nor found</>
+  if (!studiesData) return <>Studies data nor found</>
 
   return (
     <FlexLayout defaultOpen={1} navigationType="Accordion">
@@ -58,7 +58,13 @@ export default function Extraction() {
       </Box>
 
       <Box marginLeft={"3em"} marginRight={"3em"} w={"78vw"}>
-        <DynamicTable headerData={headerData} bodyData={studiesData} filteredColumns={checkedValues} tableType={"extraction"} />
+        <DynamicTable 
+          headerData={headerData} 
+          bodyData={studiesData} 
+          filteredColumns={checkedValues} 
+          tableType={"extraction"} 
+          selectedStatus={selectedValue}
+          />
       </Box>
     </FlexLayout>
   );
