@@ -1,9 +1,9 @@
-import { Box, Button, Input } from "@chakra-ui/react";
+import { Box, Button, FormControl, Input } from "@chakra-ui/react";
 import useInputState from "../../../../hooks/useInputState";
 import Header from "../../../../components/ui/Header/Header";
 import FlexLayout from "../../../../components/ui/Flex/Flex";
 import ComboBox from "../../../../components/Inputs/ComboBox";
-import InputText from "../../../../components/Inputs/InputText";
+//import InputText from "../../../../components/Inputs/InputText";
 import SelectInput from "../../../../components/Inputs/SelectInput";
 import StudySelectionArea from "./subcomponents/StudySelectionArea";
 import DynamicTable from "../../../../components/Tables/DynamicTable";
@@ -14,6 +14,20 @@ import { StudyInterface } from "../../../../../public/interfaces/IStudy";
 import { TableHeadersInterface } from "../../../../../public/interfaces/ITableHeaders";
 import { KeywordInterface } from "../../../../../public/interfaces/KeywordInterface";
 import { useState } from "react";
+import SearchButton from "../../../../components/Buttons/SearchButton";
+
+
+export const conteinerSearch = {
+  display: "flex",
+  maxW: "60vw",
+};
+
+export const inputconteinerSearch = {
+  display: "flex",
+  flexDir: "row",
+  gap: ".3rem",
+  w: "100%",
+};
 
 export default function Selection<U extends StudyInterface | KeywordInterface>() {
   const studiesData: U[] | undefined = useFetchTableData("/data/NewStudyData.json");
@@ -25,7 +39,8 @@ export default function Selection<U extends StudyInterface | KeywordInterface>()
     extractionStatus: "Status/Extraction",
     readingPriority: "Reading Priority"
 }
-  const { value: selectedValue, handleChange: handleSelectChange } = useInputState<string | null>(null);
+  //const { value: selectedValue, handleChange: handleSelectChange } = useInputState<string | null>(null);
+  const [selectedValue, setSelectedValue] = useState<string | null>("")
   const { value: checkedValues, handleChange: handleCheckboxChange } = useInputState<string[]>([]);
 
   const [searchTitle, setSearchTitle] = useState<string>("")
@@ -34,12 +49,25 @@ export default function Selection<U extends StudyInterface | KeywordInterface>()
   const searchDataTitle = (name:string, dataBody:U[] | undefined) =>{
     setSearchTitle(name);
     const localSearch = dataBody.filter(check => check.title.toLowerCase().includes(name.toLowerCase()))
-    console.log(dataBody.filter(check => check.title.toLowerCase().includes(name.toLowerCase())))
-    console.log("aaaaaaaaaaaa")
-    console.log(localSearch)
     if(localSearch){
       setStudiesDataFiltered(localSearch)
     }    
+  }
+
+  const selectionDataFIlter = (name:string, dataBody: U[] | undefined)=>{
+    if(name===""){
+      setStudiesDataFiltered(studiesData)
+      setSelectedValue(name)
+    }
+    else{
+      const localSelection = dataBody.filter(check => check.selectionStatus === name.toUpperCase())
+      setSelectedValue(name)
+      console.log(localSelection)
+      if(localSelection){
+        setStudiesDataFiltered(localSelection)
+    }
+    }
+    
   }
 
   if(!studiesData) return <>Studies data nor found</>
@@ -51,11 +79,23 @@ export default function Selection<U extends StudyInterface | KeywordInterface>()
 
         <Box sx={conteiner}>
           <Box sx={inputconteiner}>
-            <Input placeholder="Insert article's name" value={searchTitle} onChange={(e)=>searchDataTitle(e.target.value, studiesData)}/>
+            <FormControl sx={conteinerSearch}>
+              <FormControl sx={inputconteinerSearch}>
+              <Input placeholder="Insert article's name" value={searchTitle} onChange={(e)=>searchDataTitle(e.target.value, studiesData)}
+                w="250px"
+                bgColor={"#C9D9E5"}
+                borderRadius={"3px"}
+                _placeholder={{ opacity: 1, color: "gray.500" }}
+                focusBorderColor="#526D82"
+                />
+                <SearchButton/>
+              </FormControl>
+            </FormControl>
+            
             <SelectInput
               names={["", "Accepted", "Duplicated", "Rejected", "Unclassified"]}
               values={["", "Accepted", "Duplicated", "Rejected", "Unclassified"]}
-              onSelect={handleSelectChange}
+              onSelect={(e)=>selectionDataFIlter(e.toString(), studiesData)}
               selectedValue={selectedValue}
               page={"selection"}
             />
@@ -82,7 +122,6 @@ export default function Selection<U extends StudyInterface | KeywordInterface>()
             bodyData={studiesDataFiltered? studiesDataFiltered: studiesData}
             filteredColumns={checkedValues}
             tableType={"selection"}
-            selectedStatus={selectedValue}
           />
           <StudySelectionArea />
         </Box>
