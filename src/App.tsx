@@ -47,9 +47,9 @@ function App() {
             <Route path="/newRevision/extraction" element={<Extraction />} />
             <Route path="/newRevision/insertion" element={<Insertion />} />
             <Route path="/newRevision/graphics" element={<Graphics />} />
-            <Route path="/newRevision/finalization" element={<Finalization />} />
             <Route path="/newRevision/visualization" element={<Visualization/>}/>
             <Route path="/newRevision/searchSession" element={<SearchSession />} />
+            <Route path="/newRevision/finalization" element={<Finalization />} />
           </Routes>
         </AppProvider>
       </Router>
