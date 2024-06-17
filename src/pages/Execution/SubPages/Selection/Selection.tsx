@@ -1,4 +1,4 @@
-import { Box } from "@chakra-ui/react";
+import { Box, Button, Input } from "@chakra-ui/react";
 import useInputState from "../../../../hooks/useInputState";
 import Header from "../../../../components/ui/Header/Header";
 import FlexLayout from "../../../../components/ui/Flex/Flex";
@@ -13,6 +13,7 @@ import { AppProvider } from "../../../../components/Context/AppContext";
 import { StudyInterface } from "../../../../../public/interfaces/IStudy";
 import { TableHeadersInterface } from "../../../../../public/interfaces/ITableHeaders";
 import { KeywordInterface } from "../../../../../public/interfaces/KeywordInterface";
+import { useState } from "react";
 
 export default function Selection<U extends StudyInterface | KeywordInterface>() {
   const studiesData: U[] | undefined = useFetchTableData("/data/NewStudyData.json");
@@ -27,6 +28,20 @@ export default function Selection<U extends StudyInterface | KeywordInterface>()
   const { value: selectedValue, handleChange: handleSelectChange } = useInputState<string | null>(null);
   const { value: checkedValues, handleChange: handleCheckboxChange } = useInputState<string[]>([]);
 
+  const [searchTitle, setSearchTitle] = useState<string>("")
+  const [studiesDataFiltered, setStudiesDataFiltered] = useState(studiesData)
+
+  const searchDataTitle = (name:string, dataBody:U[] | undefined) =>{
+    setSearchTitle(name);
+    const localSearch = dataBody.filter(check => check.title.toLowerCase().includes(name.toLowerCase()))
+    console.log(dataBody.filter(check => check.title.toLowerCase().includes(name.toLowerCase())))
+    console.log("aaaaaaaaaaaa")
+    console.log(localSearch)
+    if(localSearch){
+      setStudiesDataFiltered(localSearch)
+    }    
+  }
+
   if(!studiesData) return <>Studies data nor found</>
 
   return (
@@ -36,7 +51,7 @@ export default function Selection<U extends StudyInterface | KeywordInterface>()
 
         <Box sx={conteiner}>
           <Box sx={inputconteiner}>
-            <InputText type="search" placeholder="Insert article's name" nome="search" />
+            <Input placeholder="Insert article's name" value={searchTitle} onChange={(e)=>searchDataTitle(e.target.value, studiesData)}/>
             <SelectInput
               names={["", "Accepted", "Duplicated", "Rejected", "Unclassified"]}
               values={["", "Accepted", "Duplicated", "Rejected", "Unclassified"]}
@@ -64,7 +79,7 @@ export default function Selection<U extends StudyInterface | KeywordInterface>()
         <Box ml={"3em"} mr={"3em"} w={"78vw"}>
           <DynamicTable
             headerData={headerData}
-            bodyData={studiesData}
+            bodyData={studiesDataFiltered? studiesDataFiltered: studiesData}
             filteredColumns={checkedValues}
             tableType={"selection"}
             selectedStatus={selectedValue}
