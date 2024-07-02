@@ -8,9 +8,6 @@ A single component can have its own associated css, img or other files, and as s
 
 data: Should be used for different types of data files, such as the json that composes a section of text in a certain page.
 
-features: Meant for large (code-wise) features within the application. Elements should be put here if they have their own special
-services, hooks, libraries, components, utils, etc. This is meant to make it so the other folders arent crowded.
-
 global: Meant for elements that affect the entire application; the primary css and favicon, for example.
 
 hooks: Used for react hooks that are repeated throughout the application. Like the components folder, may be separated internally.
@@ -18,4 +15,4 @@ hooks: Used for react hooks that are repeated throughout the application. Like t
 pages: Has a folder for each page.
 Within each page, there may be locally used components, which should be put in the page's subcomponents folder.
 
-services: Encapsulation files for apis used within the application.
+utils: Code utilities used in many places throughout the application, such as formatting functions
