@@ -13,9 +13,10 @@ interface Props{
   id: string;
   url: string;
   label: string
+  type: "extractionQuestions" | 'robQuestions';
 }
 
-export default function InteractiveTable({id, url, label}: Props) {
+export default function InteractiveTable({id, url, label, type}: Props) {
   const { setRows, rows, addRow, handleDelete, handleQuestionChange, handleTypeChange, options, headers } =
     useInteractiveTable();
   const { sendTextualQuestion, sendPickListQuestion } = useSendExtractionForm();
