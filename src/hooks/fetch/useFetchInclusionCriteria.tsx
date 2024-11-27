@@ -5,7 +5,7 @@ import getRequestOptions from "../../utils/getRequestOptions";
 const useFetchInclusionCriteria = () => {
     const [inclusionCriterias, setInclusionCriterias] = useState<string[]>([]);
     const id = localStorage.getItem("systematicReviewId");
-    const path = `http://localhost:8080/systematic-study/${id}/protocol`;
+    const path = `/systematic-study/${id}/protocol`;
     const options = getRequestOptions();
 
     useEffect(() => {

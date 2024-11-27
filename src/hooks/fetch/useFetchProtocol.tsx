@@ -1,14 +1,13 @@
 import axios from '../../interceptor/interceptor';
 
 export default async function fetchProtocol(systematicStudyId: string) {
-    const url = "http://localhost:8080/";
     try {
         const accessToken = localStorage.getItem('accessToken');
-        let options = {
+        const options = {
             headers: { Authorization: `Bearer ${accessToken}` }
         }
 
-        const response = await axios.get(`${url}systematic-study/${systematicStudyId}/protocol`, options);
+        const response = await axios.get(`/systematic-study/${systematicStudyId}/protocol`, options);
         return response.data.content;
     } catch (error) {
         console.error("Error fetching protocol:", error);

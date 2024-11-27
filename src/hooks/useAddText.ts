@@ -9,14 +9,14 @@ export function useAddText(context: string) {
   const toast = useToast();
 
   useEffect(() => {
-    let id = localStorage.getItem('systematicReviewId');
+    const id = localStorage.getItem('systematicReviewId');
     const token = localStorage.getItem('accessToken');
     const options = {
       headers: { Authorization: `Bearer: ${ token }` }
     }
 
     async function fetchAddTexts(){
-      let response = await axios.get(`http://localhost:8080/systematic-study/${id}/protocol`, options);
+      const response = await axios.get(`/systematic-study/${id}/protocol`, options);
        
       if( context == 'Research Questions' ) setAddText(response.data.content.researchQuestions);
       
@@ -25,7 +25,7 @@ export function useAddText(context: string) {
       console.log("Keywords:", response.data.content.keywords);
       
       if( context == 'Inclusion criteria' ) {
-        let criterias = response.data.content.eligibilityCriteria
+        const criterias = response.data.content.eligibilityCriteria
         .filter((item: { description: string, type: string }) => {
           if(item.type == 'INCLUSION') return item;
         })
@@ -39,7 +39,7 @@ export function useAddText(context: string) {
       }
       
       if( context == 'Exclusion criteria' ) {
-        let criterias = response.data.content.eligibilityCriteria
+        const criterias = response.data.content.eligibilityCriteria
           .filter((item: { description: string, type: string }) => {
             if(item.type == 'EXCLUSION') return item;
           })
@@ -52,7 +52,7 @@ export function useAddText(context: string) {
     }
 
     fetchAddTexts();
-  }, [])
+  }, [context])
 
   const handleAddText = (newKeyword: string) => {
     

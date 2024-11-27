@@ -46,16 +46,16 @@ if(label == 'Risk of Bias Questions') adress = 'rob-question';
     const fetch = async () => {
       try {
         const accessToken = localStorage.getItem('accessToken');
-        let options = {
+        const options = {
           headers: { Authorization: `Bearer ${accessToken}` }
         }
 
         let response = await axios.get(url, options);
   
-        let link = `http://localhost:8080/api/v1/systematic-study/${id}/protocol/${adress}`;
+        const link = `/api/v1/systematic-study/${id}/protocol/${adress}`;
         response = await axios.get(link, options);
   
-        const fetchedRows = response.data.questions.map((item: { questionType: any; code: any; 
+        const fetchedRows = response.data.questions.map((item: { questionType: string; code: any; 
           description: any; questionId: string; options: string[], lower: number, 
           higher: number, scales: Record<string, number>}) => {
           let type;
@@ -81,7 +81,7 @@ if(label == 'Risk of Bias Questions') adress = 'rob-question';
           return {
             id: item.code,
             question: item.description,
-            type: type,
+            type,
             questionId: item.questionId,
             isNew: false,
             questions: questions,
@@ -98,7 +98,7 @@ if(label == 'Risk of Bias Questions') adress = 'rob-question';
     };
   
     fetch();
-  }, []);
+  }, [adress, id, setRows, url]);
 
   useEffect(() => {
     console.log(rows);
@@ -133,7 +133,7 @@ if(label == 'Risk of Bias Questions') adress = 'rob-question';
       }
 
       let questionId
-      let questionType = 'TEXTUAL';
+      const questionType = 'TEXTUAL';
       if(rows[index].isNew) questionId = await sendTextualQuestion(data);
       else updateTextualQuestion(data, rows[index].questionId, questionType);
       
@@ -191,12 +191,12 @@ if(label == 'Risk of Bias Questions') adress = 'rob-question';
     }
 
     const accessToken = localStorage.getItem('accessToken');
-    let options = {
+    const options = {
       headers: { Authorization: `Bearer ${accessToken}` }
     }
     
     setEditIndex(null);
-    await axios.get(`http://localhost:8080/api/v1/systematic-study/${id}/protocol/extraction-question`, options);
+    await axios.get(`/api/v1/systematic-study/${id}/protocol/extraction-question`, options);
   }
 
   function addNewRow() {

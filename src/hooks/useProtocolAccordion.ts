@@ -8,7 +8,7 @@ const useProtocolAccordion = () => {
 
     useEffect(() => {
         const id = localStorage.getItem('systematicReviewId');
-        let url = `http://localhost:8080/systematic-study/${id}/protocol`;
+        const url = `/systematic-study/${id}/protocol`;
         const token = localStorage.getItem('accessToken');
         const options = {
             headers: { Authorization: `Bearer ${token}` }

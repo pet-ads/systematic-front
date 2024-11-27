@@ -16,7 +16,7 @@ export default function Identification() {
     }
   }, [])
 
-  const url = `http://localhost:8080/systematic-study/${id}/protocol`
+  const url = `/systematic-study/${id}/protocol`
   const { databases } = useFetchDataBases(url);
   console.log(databases);
 

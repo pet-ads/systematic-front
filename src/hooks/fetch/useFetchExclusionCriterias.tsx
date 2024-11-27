@@ -5,7 +5,7 @@ import getRequestOptions from "../../utils/getRequestOptions";
 const useFetchExclusionCriteria = () => {
     const [exclusionCriterias, setInclusionCriterias] = useState<string[]>([]);
     const id = localStorage.getItem("systematicReviewId");
-    const path = `http://localhost:8080/systematic-study/${id}/protocol`;
+    const path = `/systematic-study/${id}/protocol`;
     const options = getRequestOptions();
 
     useEffect(() => {
@@ -23,7 +23,7 @@ const useFetchExclusionCriteria = () => {
         };
 
         fetchCriteria();
-    }, [])
+    }, [options, path])
 
     return exclusionCriterias;
 };

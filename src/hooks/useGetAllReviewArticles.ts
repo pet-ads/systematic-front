@@ -6,7 +6,7 @@ import { StudyInterface } from '../../public/interfaces/IStudy';
 const useGetAllReviewArticles = () => {
     const id = localStorage.getItem('systematicReviewId');
     const token = localStorage.getItem('accessToken');
-    const path = `http://localhost:8080/api/v1/systematic-study/${id}/study-review`;
+    const path = `/api/v1/systematic-study/${id}/study-review`;
     const options = {
         headers: {Authorization: `Bearer ${token}`}
     }

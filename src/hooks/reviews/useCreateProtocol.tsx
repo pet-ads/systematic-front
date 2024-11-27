@@ -33,20 +33,20 @@ const useCreateProtocol = () => {
     const [ analysisAndSynthesisProcess, setAnalysisAndSynthesisProcess ] = useState<string | null>(null);
     const navigate = useNavigate();
     const id = localStorage.getItem('systematicReviewId');
-    const url = `http://localhost:8080/systematic-study/${id}/protocol`;
+    const url = `/systematic-study/${id}/protocol`;
 
     useEffect(() => {
-        let token = localStorage.getItem('accessToken');
-        let id = localStorage.getItem('systematicReviewId');
-        let url = `http://localhost:8080/systematic-study/${id}/protocol`;
-        let options = {
+        const token = localStorage.getItem('accessToken');
+        const id = localStorage.getItem('systematicReviewId');
+        const url = `/systematic-study/${id}/protocol`;
+        const options = {
             headers: { Authorization: `Bearer ${token}` }
         }
 
         async function fetch() {
             const response = await axios.get(url, options);
             console.log(response);
-            let data = response.data;
+            const data = response.data;
             
             setGoal(data.content.goal);
             setJustification(data.content.justification);
@@ -75,9 +75,9 @@ const useCreateProtocol = () => {
     async function createProtocol() {
         let data;
         const token = localStorage.getItem('accessToken');
-        let picoc = { population, intervention, control, outcome, context };
+        const picoc = { population, intervention, control, outcome, context };
         
-        let options = {
+        const options = {
             headers: { Authorization: `Bearer ${token}` }
         } 
 
@@ -110,7 +110,7 @@ const useCreateProtocol = () => {
     }
 
     async function handleDataAndGoNext() {
-        let id = localStorage.getItem('systematicReviewId');
+        const id = localStorage.getItem('systematicReviewId');
 
         try {
             await createProtocol();
@@ -141,7 +141,7 @@ const useCreateProtocol = () => {
     async function sendSelectData(data: string[], context: string){
         let content;
         const token = localStorage.getItem('accessToken');
-        let options = {
+        const options = {
             headers: { Authentication: `Bearer ${ token }` }
         }
 
@@ -149,7 +149,7 @@ const useCreateProtocol = () => {
             if( context == 'Languages' ) content = { studiesLanguages: data };
             else content = { informationSources: data };
             
-            let response = await axios.put(url, content, options);
+            const response = await axios.put(url, content, options);
             console.log(response);
         }
         catch(err) { console.log(err); } 
@@ -158,19 +158,19 @@ const useCreateProtocol = () => {
     async function sendAddText(data: string[], context: string) {
         console.log(data, context);
         let content;
-        let token = localStorage.getItem(`accessToken`);
-        let options = {
+        const token = localStorage.getItem(`accessToken`);
+        const options = {
             headers: { Authorization: `Bearer ${ token }` }
         }
 
         if( context == 'Research Questions' ) content = { researchQuestions: data };
         if( context == 'Keywords' ) content = { keywords: data };
         if( context == 'Inclusion criteria' ) {
-            let array: { description: string, type: string }[] = data.map((item: string) => {
+            const array: { description: string, type: string }[] = data.map((item: string) => {
                 return { description: item, type: 'INCLUSION' };
             })
 
-            let response = await axios.get(url, options);
+            const response = await axios.get(url, options);
             let aux: {description: string, type: string}[] = response.data.content.eligibilityCriteria;
             aux = aux.filter((item) => {
                 if(item.type == "EXCLUSION") return item;
@@ -180,11 +180,11 @@ const useCreateProtocol = () => {
             content = { eligibilityCriteria: content };
         }
         if( context == 'Exclusion criteria' ) {
-            let array: { description: string, type: string }[] = data.map((item: string) => {
+            const array: { description: string, type: string }[] = data.map((item: string) => {
                 return { description: item, type: 'EXCLUSION' };
             })
 
-            let response = await axios.get(url, options);
+            const response = await axios.get(url, options);
             let aux: {description: string, type: string}[] = response.data.content.eligibilityCriteria;
             aux = aux.filter((item) => {
                 if(item.type == "INCLUSION") return item;

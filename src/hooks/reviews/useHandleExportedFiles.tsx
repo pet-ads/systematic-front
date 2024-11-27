@@ -32,14 +32,14 @@ const useHandleExportedFiles = ({setSessions, type}: Props) => {
             headers: { Authorization: `Bearer ${token}` }
         }
         const id = localStorage.getItem('systematicReviewId');
-        const url = `http://localhost:8080/api/v1/systematic-study/${id}/search-session`;
+        const url = `/api/v1/systematic-study/${id}/search-session`;
         formData.append('file', referenceFiles[referenceFiles.length - 1]);
         formData.append('data', data);
         
         try{
             await axios.post(url, formData, options);   
 
-            let searchSessions = await useGetSession(type);
+            const searchSessions = await useGetSession(type);
             console.log(searchSessions);
             setSessions(searchSessions.data.searchSessions); 
         }

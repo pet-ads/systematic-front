@@ -53,7 +53,7 @@ const useCreateReview = () => {
 
     async function useCreateReviewPut({title, description, id}: useCreateReviewPutProps) {
         try {
-            let url = `http://localhost:8080/api/v1/systematic-study/${id}`;
+            const url = `/api/v1/systematic-study/${id}`;
             const token = localStorage.getItem('accessToken');
     
             const data = {
@@ -65,7 +65,7 @@ const useCreateReview = () => {
                 headers: { Authorization: `Bearer ${token}` }
             }
     
-            let response = await axios.put(url, data, options);
+            const response = await axios.put(url, data, options);
             
             return response;
         }
@@ -75,7 +75,7 @@ const useCreateReview = () => {
     }
 
     async function useCreateReviewPost({title, description, collaborators}: useCreateReviewPostProps) {
-        const url = 'http://localhost:8080/api/v1/systematic-study';
+        const url = '/api/v1/systematic-study';
 
         if (!description){
             description = "null";
@@ -89,11 +89,11 @@ const useCreateReview = () => {
 
         try{
             const accessToken = localStorage.getItem('accessToken');
-            let options = {
+            const options = {
                 headers: { Authorization: `Bearer ${accessToken}` }
             }
 
-            let response = await axios.post(url, data, options);
+            const response = await axios.post(url, data, options);
 
             return response.data.systematicStudyId;
         } catch(err){

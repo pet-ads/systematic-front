@@ -6,7 +6,7 @@ const useGetSession = async (source: string) => {
         headers: { Authorization: `Bearer ${token}` }
     }
     const id = localStorage.getItem('systematicReviewId');
-    const url = `http://localhost:8080/api/v1/systematic-study/${id}/search-session-source/${source}`;
+    const url = `/api/v1/systematic-study/${id}/search-session-source/${source}`;
 
     return await axios.get(url, options);
 }

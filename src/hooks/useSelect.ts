@@ -10,14 +10,14 @@ export function useSelect(initialState: string[] = [], context: string) {
 
   useEffect(() => {
     const id = localStorage.getItem('systematicReviewId');
-    const url = `http://localhost:8080/systematic-study/${id}/protocol`;
+    const url = `/systematic-study/${id}/protocol`;
     
     async function fetchSelectedValues(){
       const token = localStorage.getItem('accessToken');
       const options = { 
         headers: { Authentication: `Bearer ${token}` } 
       }
-      let response = await axios.get(url, options);
+      const response = await axios.get(url, options);
 
       if( context == 'Languages' ) {
         setSelectedValues(response.data.content.studiesLanguages);
@@ -27,7 +27,7 @@ export function useSelect(initialState: string[] = [], context: string) {
 
     fetchSelectedValues();
 
-  }, [])
+  }, [context])
 
   const handleSelectChange = (value: string) => {
     setSelectedValue(value);
@@ -37,7 +37,7 @@ export function useSelect(initialState: string[] = [], context: string) {
     if (selectedValue !== null) {
       setSelectedValues((prevSelectedValues) => {
         
-        let data = [ ...prevSelectedValues, selectedValue ];
+        const data = [ ...prevSelectedValues, selectedValue ];
         sendSelectData(data, context);
 
         return data;

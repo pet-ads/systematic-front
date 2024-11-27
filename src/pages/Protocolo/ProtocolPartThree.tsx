@@ -14,21 +14,21 @@ export default function ProtocolPartThree() {
   const [analysis, setAnalysis] = useState('');
   const { id = '' } = useParams();
   const navigate = useNavigate();
-  const url = `http://localhost:8080/systematic-study/${id}/protocol`;
+  const url = `/systematic-study/${id}/protocol`;
 
   useEffect(() => {
     async function fetch(){
       const accessToken = localStorage.getItem('accessToken');
-      let options = {
+      const options = {
         headers: { Authorization: `Bearer ${accessToken}` }
       }
 
-      let response = await axios.get(url, options)
+      const response = await axios.get(url, options)
       setAnalysis(response.data.content.analysisAndSynthesisProcess);
     }
 
     fetch();
-  }, [])
+  }, [url])
 
   async function handleData() {
       await useCreateProtocolThree(analysis, id);

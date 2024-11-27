@@ -8,7 +8,7 @@ export function useVerifyIfLoggedIn() {
     useEffect(() => {
         const verifyLogin = async () => {
             try {
-                let response = await axios.post("http://localhost:8080/api/v1/auth/refresh", {}, { withCredentials: true });
+                const response = await axios.post("/api/v1/auth/refresh", {}, { withCredentials: true });
                 console.log(response);
                 if (response.status === 200) {
                     console.log("Login successful");

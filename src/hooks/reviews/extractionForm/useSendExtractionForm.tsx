@@ -30,14 +30,14 @@ interface LabeledProps{
 
 const useSendExtractionForm = (adress: string) => {
     async function sendTextualQuestion({question, questionId, reviewId}: TextualProps){
-        let url = `http://localhost:8080/api/v1/systematic-study/${reviewId}/protocol/${adress}/textual`;
+        const url = `/api/v1/systematic-study/${reviewId}/protocol/${adress}/textual`;
         const data = {
             code: questionId,
             description: question
         }
 
         try{
-            let response = await axios.post(url, data, {withCredentials: true});
+            const response = await axios.post(url, data, {withCredentials: true});
             console.log(response);
             return response.data.questionId;
         } catch(err){
@@ -46,7 +46,7 @@ const useSendExtractionForm = (adress: string) => {
     }
 
     async function sendPickListQuestion({question, questionId, reviewId, options}: PickListProps){
-        let url = `http://localhost:8080/api/v1/systematic-study/${reviewId}/protocol/${adress}/pick-list`;
+        const url = `/api/v1/systematic-study/${reviewId}/protocol/${adress}/pick-list`;
         const data = {
             code: questionId,
             description: question,
@@ -54,7 +54,7 @@ const useSendExtractionForm = (adress: string) => {
         }
 
         try{
-            let response = await axios.post(url, data, {withCredentials: true});
+            const response = await axios.post(url, data, {withCredentials: true});
             console.log(response);
             return response.data.questionId;
         } catch(err){
@@ -63,7 +63,7 @@ const useSendExtractionForm = (adress: string) => {
     }
 
     async function sendNumberScaleQuestion({question, questionId, reviewId, lower, higher}: NumberScaleProps){
-        let url = `http://localhost:8080/api/v1/systematic-study/${reviewId}/protocol/${adress}/number-scale`;
+        const url = `/api/v1/systematic-study/${reviewId}/protocol/${adress}/number-scale`;
         console.log(typeof(lower));
         
         const data = {
@@ -76,7 +76,7 @@ const useSendExtractionForm = (adress: string) => {
         console.log(lower);
 
         try{
-            let response = await axios.post(url, data, {withCredentials: true});
+            const response = await axios.post(url, data, {withCredentials: true});
             console.log(response);
             return response.data.questionId;
         } catch(err){
@@ -85,7 +85,7 @@ const useSendExtractionForm = (adress: string) => {
     }
 
     async function sendLabeledListQuestion({question, questionId, reviewId, scales}: LabeledProps) {
-        let url = `http://localhost:8080/api/v1/systematic-study/${reviewId}/protocol/${adress}/labeled-scale`;
+        const url = `/api/v1/systematic-study/${reviewId}/protocol/${adress}/labeled-scale`;
         const data = {
             code: questionId,
             description: question,
@@ -93,7 +93,7 @@ const useSendExtractionForm = (adress: string) => {
         }
 
         try{
-            let response = await axios.post(url, data, {withCredentials: true});
+            const response = await axios.post(url, data, {withCredentials: true});
             console.log(response);
             return response.data.questionId;
         } catch(err){
@@ -102,7 +102,7 @@ const useSendExtractionForm = (adress: string) => {
     }
 
     async function updateTextualQuestion({question, questionId, reviewId}: TextualProps, serverId: string | null, questionType: string){
-        let url = `http://localhost:8080/api/v1/systematic-study/${reviewId}/protocol/${adress}/${serverId}`;
+        const url = `/api/v1/systematic-study/${reviewId}/protocol/${adress}/${serverId}`;
         const data = {
             questionType: questionType,
             code: questionId,
@@ -110,7 +110,7 @@ const useSendExtractionForm = (adress: string) => {
         }
 
         try{
-            let response = await axios.put(url, data, {withCredentials: true});
+            const response = await axios.put(url, data, {withCredentials: true});
             console.log(response);
             return response.data.questionId;
         } catch(err){
@@ -119,7 +119,7 @@ const useSendExtractionForm = (adress: string) => {
     }
 
     async function updatePickListQuestion({question, questionId, reviewId, options}: PickListProps, serverId: string | null, questionType: string){
-        let url = `http://localhost:8080/api/v1/systematic-study/${reviewId}/protocol/${adress}/${serverId}`;
+        const url = `/api/v1/systematic-study/${reviewId}/protocol/${adress}/${serverId}`;
         const data = {
             questionType: questionType,
             code: questionId,
@@ -128,7 +128,7 @@ const useSendExtractionForm = (adress: string) => {
         }
 
         try{
-            let response = await axios.put(url, data, {withCredentials: true});
+            const response = await axios.put(url, data, {withCredentials: true});
             console.log(response);
             return response.data.questionId;
         } catch(err){
@@ -137,7 +137,7 @@ const useSendExtractionForm = (adress: string) => {
     }
 
     async function updateNumberScaleQuestion({question, questionId, reviewId, lower, higher}: NumberScaleProps, serverId: string | null){
-        let url = `http://localhost:8080/api/v1/systematic-study/${reviewId}/protocol/${adress}/${serverId}`;
+        const url = `/api/v1/systematic-study/${reviewId}/protocol/${adress}/${serverId}`;
         console.log(typeof(lower));
         
         const data = {
@@ -149,7 +149,7 @@ const useSendExtractionForm = (adress: string) => {
         }
 
         try{
-            let response = await axios.put(url, data, {withCredentials: true});
+            const response = await axios.put(url, data, {withCredentials: true});
             console.log(response);
             return response.data.questionId;
         } catch(err){
@@ -158,7 +158,7 @@ const useSendExtractionForm = (adress: string) => {
     }
 
     async function updateLabeledListQuestion({question, questionId, reviewId, scales}: LabeledProps, serverId: string | null) {
-        let url = `http://localhost:8080/api/v1/systematic-study/${reviewId}/protocol/${adress}/${serverId}`;
+        const url = `/api/v1/systematic-study/${reviewId}/protocol/${adress}/${serverId}`;
         const data = {
             code: questionId,
             description: question,
@@ -167,7 +167,7 @@ const useSendExtractionForm = (adress: string) => {
         }
 
         try{
-            let response = await axios.put(url, data, {withCredentials: true});
+            const response = await axios.put(url, data, {withCredentials: true});
             console.log(response);
             return response.data.questionId;
         } catch(err){

@@ -1,11 +1,13 @@
 import axios from "axios";
 
-const Axios = axios.create({});
+const Axios = axios.create({
+    baseURL: "http://localhost:8080",
+});
 
 Axios.interceptors.response.use((response) => response, async (error) => {
     if(error.response.status == 401 || error.response.status == 500){
         try{
-            let response = await axios.post("http://localhost:8080/api/v1/auth/refresh", {}, {withCredentials: true});
+            const response = await Axios.post("/api/v1/auth/refresh", {}, {withCredentials: true});
             console.log(response);
             
             if(response.status == 200){

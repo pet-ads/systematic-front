@@ -8,11 +8,11 @@ const useCreateProtocolTwo = async (analysis: string, id: string) => {
 
     console.log(data);
 
-    const url = `http://localhost:8080/systematic-study/${id}/protocol`;
+    const url = `/systematic-study/${id}/protocol`;
 
     try{
         const accessToken = localStorage.getItem('accessToken');
-        let options = {
+        const options = {
             headers: { Authorization: `Bearer ${accessToken}` }
         }
 
