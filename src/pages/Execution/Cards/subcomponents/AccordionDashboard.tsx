@@ -29,7 +29,7 @@ export default function AccordionDashboard({ type, sessions, setSessions }: IAcc
     }
 
     fetchSessions();
-  }, [type, sessions]);
+  }, [type]);
 
   const handleOpenModal = ({ action }: ActionsModal) => {
     setActionModal(action);

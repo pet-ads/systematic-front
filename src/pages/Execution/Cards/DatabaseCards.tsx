@@ -89,7 +89,7 @@ export default function DataBaseCard({ text }: DatabaseCardProps) {
             <EventButton
               fontSize={14}
               bgColor={"#263C56"}
-              w={"60px"}
+              w={"80px"}
               color={"#EBF0F3"}
               borderRadius="50px"
               icon={<AddIcon />}
@@ -106,7 +106,7 @@ export default function DataBaseCard({ text }: DatabaseCardProps) {
             <EventButton
               fontSize={14}
               bgColor={"#263C56"}
-              w={"60px"}
+              w={"80px"}
               color={"#EBF0F3"}
               icon={<AiOutlineDelete/>}
               borderRadius="50px"
@@ -126,6 +126,7 @@ export default function DataBaseCard({ text }: DatabaseCardProps) {
           action={deleteModal}
           sessions={sessions}
           databaseName={text}
+          onDeleteAll={() => setSessions([])}
         />
       )}
 

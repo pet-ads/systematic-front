@@ -19,9 +19,10 @@ interface DeleteDatabaseModalProps {
         numberOfRelatedStudies: number
     }[];
     databaseName: string;
+    onDeleteAll: () => void;
 }
 
-function DeleteDatabaseModal({ show, sessions, databaseName}: DeleteDatabaseModalProps) {
+function DeleteDatabaseModal({ show, sessions, databaseName, onDeleteAll}: DeleteDatabaseModalProps) {
     const { isOpen, onClose, onOpen } = useDisclosure();
     const [nameOfDatabase, setNameOfDatabase] = useState<string>("");
     const toast = useToast();
@@ -65,7 +66,8 @@ function DeleteDatabaseModal({ show, sessions, databaseName}: DeleteDatabaseModa
                 isClosable: true,
                 position: "top",
               });
-              close()    
+              close();
+              onDeleteAll();    
         } catch (err) {
             console.log(err);
             toast({
