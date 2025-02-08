@@ -9,13 +9,15 @@ import {
   MenuList,
 } from "@chakra-ui/react";
 import { PageLayout } from "../../pages/Execution/Selection/subcomponents/LayoutFactory";
+import { useEffect, useState } from "react";
 
 interface IComboBoxProps {
   text: string;
   options: string[];
   isDisabled: boolean;
   onOptionchange?: (option: string, isChecked: boolean) => void;
-  page: PageLayout
+  page: PageLayout;
+  selectedCriterias: string[]; // Alterado para string[] para evitar problemas de tipo
 }
 
 export default function ComboBox({
@@ -24,9 +26,42 @@ export default function ComboBox({
   isDisabled,
   onOptionchange,
   page,
+  selectedCriterias,
 }: IComboBoxProps) {
   const { handleIncludeItemClick, handleExcludeItemClick } =
-    useComboBoxSelection({page});
+    useComboBoxSelection({ page });
+
+  const [type, setType] = useState<string>("");
+  const [localSelectedCriterias, setLocalSelectedCriterias] = useState<string[]>(selectedCriterias);
+
+  // Sincroniza o estado local com as props
+  useEffect(() => {
+    setLocalSelectedCriterias(selectedCriterias);
+  }, [selectedCriterias]);
+
+  useEffect(() => {
+    if (text === "Include") setType("INCLUSION");
+    else setType("EXCLUSION");
+  }, [text]);
+
+  const handleCheckboxChange = (option: string, isChecked: boolean) => {
+    // Atualiza o estado local
+    const updatedCriterias = isChecked
+      ? [...localSelectedCriterias, option]
+      : localSelectedCriterias.filter((criteria) => criteria !== option);
+
+    setLocalSelectedCriterias(updatedCriterias);
+
+    // Chama a função apropriada para atualizar o backend
+    if (text === "Include") {
+      handleIncludeItemClick(isChecked, { description: option, type });
+    } else if (text === "Exclude") {
+      handleExcludeItemClick(isChecked, { description: option, type });
+    }
+
+    // Chama a função onOptionchange, se existir
+    onOptionchange?.(option, isChecked);
+  };
 
   return (
     <Menu closeOnSelect={false}>
@@ -82,30 +117,13 @@ export default function ComboBox({
       <MenuList>
         {options.map((option, index) => (
           <MenuItem key={index}>
-            {text === "Include" ? (
-              <Checkbox
-                isDisabled={isDisabled}
-                onChange={(e) => handleIncludeItemClick(e.target.checked)}
-              >
-                {option}
-              </Checkbox>
-            ) : text === "Exclude" ? (
-              <Checkbox
-                isDisabled={isDisabled}
-                onChange={(e) => handleExcludeItemClick(e.target.checked)}
-              >
-                {option}
-              </Checkbox>
-            ) : text === "filter options" && onOptionchange ? (
-              <Checkbox
-                isDisabled={isDisabled}
-                onChange={(e) => onOptionchange?.(option, e.target.checked)}
-              >
-                {option}
-              </Checkbox>
-            ) : (
-              <Checkbox isDisabled={isDisabled}>{option}</Checkbox>
-            )}
+            <Checkbox
+              isChecked={localSelectedCriterias.includes(option)}
+              isDisabled={isDisabled}
+              onChange={(e) => handleCheckboxChange(option, e.target.checked)}
+            >
+              {option}
+            </Checkbox>
           </MenuItem>
         ))}
       </MenuList>

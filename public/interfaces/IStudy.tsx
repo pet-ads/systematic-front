@@ -1,5 +1,4 @@
 import { StudyType } from "../enums/studyType";
-import { CriteriaType } from "../enums/criteriaType";
 import { ReadingPriority } from "../enums/readingPriority";
 import { SelectionStatus } from "../enums/selectionStatus";
 import { ExtractionStatus } from "../enums/extractionStatus";
@@ -17,7 +16,7 @@ export interface StudyInterface {
   keywords: string[];
   searchSources: string[];
   references: string[];
-  criteria: CriteriaType;
+  criteria: {description: string, type: string}[];
   formAnswers: unknown[]; // Defina o tipo correto para a resposta do formulário
   robAnswers: unknown[]; // Defina o tipo correto para a resposta do ROB
   comments: string;

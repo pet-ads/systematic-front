@@ -6,6 +6,7 @@ interface ArticleInterface {
     venue: string,
     year: string,
     selection: string,
+    criterion: {description: String, type: String}[];
     extraction: string,
     readingPriority: string;
     selectionStatus: string;

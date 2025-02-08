@@ -6,7 +6,7 @@ import { UseChangeStudyExtractionStatus } from "./useChangeStudyExtractionStatus
 import { PageLayout } from "../pages/Execution/Selection/subcomponents/LayoutFactory";
 
 interface ComboBoxSelectionProps{
-  page: PageLayout
+  page: PageLayout,
 }
 
 const useComboBoxSelection = ({page}: ComboBoxSelectionProps) => {
@@ -15,25 +15,25 @@ const useComboBoxSelection = ({page}: ComboBoxSelectionProps) => {
   const setIsIncluded = selectionContext?.setIsIncluded;
   const setIsExcluded = selectionContext?.setIsExcluded;
 
-  const handleIncludeItemClick = (isChecked: boolean) => {
+  const handleIncludeItemClick = (isChecked: boolean, criterion: {description: String, type: String}) => {
     if(setIsIncluded) setIsIncluded(isChecked);
     const articles = selectionContext?.articles;
     const articleIndex = appContext?.selectionStudyIndex;
     
     if(articles && articleIndex){
       const studyReviewId = articles[articleIndex].studyReviewId;
-      page.type === "Selection" ? UseChangeStudySelectionStatus({studyReviewId, status: 'INCLUDED'}) : UseChangeStudyExtractionStatus({studyReviewId, status: 'INCLUDED'})
+      page.type === "Selection" ? UseChangeStudySelectionStatus({studyReviewId, status: 'INCLUDED', criterion}) : UseChangeStudyExtractionStatus({studyReviewId, status: 'INCLUDED'})
     }
   };
 
-  const handleExcludeItemClick = (isChecked: boolean) => {
+  const handleExcludeItemClick = (isChecked: boolean, criterion: {description: String, type: String}) => {
     if(setIsExcluded) setIsExcluded(isChecked);
     const articles = selectionContext?.articles;
     const articleIndex = appContext?.selectionStudyIndex;
     
     if(articles && articleIndex){
       const studyReviewId = articles[articleIndex].studyReviewId;
-      page.type === "Selection" ? UseChangeStudySelectionStatus({studyReviewId, status: 'EXCLUDED'}) : UseChangeStudyExtractionStatus({studyReviewId, status: 'EXCLUDED'})
+      page.type === "Selection" ? UseChangeStudySelectionStatus({studyReviewId, status: 'EXCLUDED', criterion}) : UseChangeStudyExtractionStatus({studyReviewId, status: 'EXCLUDED'})
     }
   }
 
