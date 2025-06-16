@@ -9,35 +9,56 @@ function isProtocolPartOneFinished(response:  Protocol) {
 }
 
 function isPicocInitialized(response: Protocol){
-    return (response.picoc.control && response.picoc.control.trim() !== "") ||
-           (response.picoc.intervention && response.picoc.intervention.trim() !== "") ||
-           (response.picoc.outcome && response.picoc.outcome.trim() !== "") ||
-           (response.picoc.population && response.picoc.population.trim() !== ""); 
+  const { picoc } = response;
+    return (picoc.control && response.picoc.control.trim() !== "") ||
+           (picoc.intervention && response.picoc.intervention.trim() !== "") ||
+           (picoc.outcome && response.picoc.outcome.trim() !== "") ||
+           (picoc.population && response.picoc.population.trim() !== ""); 
 }
 
 function isPicocFinished(response: Protocol){
-    return response.picoc.control !== null && response.picoc.intervention !== null
-    && response.picoc.outcome !== null && response.picoc.population !== null; 
+  const { picoc } = response;
+  const { control, intervention, outcome, population } = picoc;
+    return control !== null && intervention !== null
+    && outcome !== null && population !== null; 
 }
     
 function isProtocolPartTwoFinished(response:  Protocol) {
-    return response.studiesLanguages !== null &&
-        response.eligibilityCriteria !== null &&
-        response.informationSources !== null &&
-        response.keywords !== null &&
-        response.sourcesSelectionCriteria !== null &&
-        response.searchMethod !== null &&
-        response.selectionProcess !== null 
+     const { 
+        studiesLanguages,
+        eligibilityCriteria,
+        informationSources,
+        keywords,
+        sourcesSelectionCriteria,
+        searchMethod,
+        selectionProcess } = response;
+
+    return studiesLanguages !== null &&
+        eligibilityCriteria !== null &&
+        informationSources !== null &&
+        keywords !== null &&
+        sourcesSelectionCriteria !== null &&
+        searchMethod !== null &&
+        selectionProcess !== null; 
     }
 
 function isProtocolPartThreeFinished(response:  Protocol) {
-    return response.researchQuestions !== null &&
-           response.analysisAndSynthesisProcess !== null
+    const { researchQuestions, analysisAndSynthesisProcess } = response;
+    return researchQuestions !== null &&
+           analysisAndSynthesisProcess !== null;
     }
 
-//function isSelectionProcessFinished(response:  StudyReview[]) { 
-//    return false;
-//}
+function isSelectionProcessFinished(response:  StudyReview[]) { 
+  for(let i = 0; i<response.length; i++){
+    if(response[i].extractionStatus === 'selected' || response[i].extractionStatus === 'included'){
+      return true;
+    }
+    if(response[i].extractionStatus === 'pending' || response[i].extractionStatus === 'unreviewed'){
+      return true;
+    }
+  }
+    return false;
+}
 
 function isExtractionProcessFinished(response:  StudyReview[]) { 
     for (let i = 0; i < response.length; i++) {
@@ -75,9 +96,9 @@ export default async function goToUnfinishedSystematicReviewPart(revisionId: str
         window.location.href = `http://localhost:5173/#/newReview/protocolpartThree/${revisionId}`;
       }
         
-    //   else if(!isSelectionProcessFinished(studiesData)) {
-    //     window.location.href = ` http://localhost:5173/#/newReview/selection`;
-    //   }
+      else if(!isSelectionProcessFinished(studiesData)) {
+       window.location.href = ` http://localhost:5173/#/newReview/selection`;
+      }
       else if (!isExtractionProcessFinished(studiesData)) window.location.href = `http://localhost:5173/#/newReview/extraction`;
       else window.location.href = `http://localhost:5173/#/newReview/finalization`;
 }
