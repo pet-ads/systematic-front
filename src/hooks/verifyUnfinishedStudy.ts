@@ -1,109 +1,100 @@
 import useFetchAllStudies from "./fetch/useFetchAllStudies";
 import useFetchProtocol from "./fetch/useFetchProtocol";
-import {Protocol} from "../../public/interfaces/protocolInterface";
-import {StudyReview} from "../../public/interfaces/studyReviewInterface";
+import { Protocol } from "../../public/interfaces/protocolInterface";
+import { StudyReview } from "../../public/interfaces/studyReviewInterface";
+import useFetchAllClassifiedArticles from "./fetch/useFetchAllClassifiedArticles";
+import ArticleInterface from "../../public/interfaces/ArticleInterface";
 
-
-function isProtocolPartOneFinished(response:  Protocol) {
-    return response.goal !== null && response.justification !== null
+function isProtocolPartOneFinished(response: Protocol) {
+  return response.goal !== null && response.justification !== null;
 }
-    
-function isPicocInitialized(response: Protocol){
+
+function isPicocInitialized(response: Protocol) {
   const { picoc } = response;
-    return (picoc.control && picoc.control.trim() !== "") ||
-           (picoc.intervention && picoc.intervention.trim() !== "") ||
-           (picoc.outcome && picoc.outcome.trim() !== "") ||
-           (picoc.population && picoc.population.trim() !== ""); 
+  return (
+    (picoc.control && picoc.control.trim() !== "") ||
+    (picoc.intervention && picoc.intervention.trim() !== "") ||
+    (picoc.outcome && picoc.outcome.trim() !== "") ||
+    (picoc.population && picoc.population.trim() !== "")
+  );
 }
 
-function isPicocFinished(response: Protocol){
+function isPicocFinished(response: Protocol) {
   const { picoc } = response;
-    return picoc.control !== null && picoc.intervention !== null
-    && picoc.outcome !== null && picoc.population !== null; 
+  return (
+    picoc.control !== null &&
+    picoc.intervention !== null &&
+    picoc.outcome !== null &&
+    picoc.population !== null
+  );
 }
 
-function isProtocolPartTwoFinished(response:  Protocol) {
-  const { studiesLanguages,
-        eligibilityCriteria,
-        informationSources,
-        keywords,
-        sourcesSelectionCriteria,
-        searchMethod,
-        selectionProcess } = response;
-    return studiesLanguages !== null &&
-        eligibilityCriteria !== null &&
-        informationSources !== null &&
-        keywords !== null &&
-        sourcesSelectionCriteria !== null &&
-        searchMethod !== null &&
-        selectionProcess !== null 
-    }
-
-function isProtocolPartThreeFinished(response:  Protocol) {
-  const { researchQuestions, analysisAndSynthesisProcess} = response;
-    return researchQuestions !== null &&
-           analysisAndSynthesisProcess !== null
-    }
-
-function isSelectionProcessFinished(response:  StudyReview[]) { 
-  for(let i=0; i<response.length; i++){
-    if(response[i].selectionStatus === 'Selected' || response[i].selectionStatus === 'Included'){
-      return true;
-    }
-    if(response[i].selectionStatus === 'Pending' || response[i].selectionStatus === 'Unreviewed'){
-      return true;
-    }
-  }
-    return false;
+function isProtocolPartTwoFinished(response: Protocol) {
+  const {
+    studiesLanguages,
+    eligibilityCriteria,
+    informationSources,
+    keywords,
+    sourcesSelectionCriteria,
+    searchMethod,
+    selectionProcess,
+  } = response;
+  return (
+    studiesLanguages !== null &&
+    eligibilityCriteria !== null &&
+    informationSources !== null &&
+    keywords !== null &&
+    sourcesSelectionCriteria !== null &&
+    searchMethod !== null &&
+    selectionProcess !== null
+  );
 }
 
-function isExtractionProcessFinished(response:  StudyReview[]) { 
-    for (let i = 0; i < response.length; i++) {
-        if (response[i].selectionStatus === 'selected' || response[i].selectionStatus === 'included') {
-            return true;
-        }
-        if (response[i].extractionStatus !== "Finished") {
-                return false; 
-            }
-    }
+function isProtocolPartThreeFinished(response: Protocol) {
+  const { researchQuestions, analysisAndSynthesisProcess } = response;
+  return researchQuestions !== null && analysisAndSynthesisProcess !== null;
 }
 
+function isSelectionProcessFinished(response: ArticleInterface[]) {
+  return response.length > 0;
+}
 
-
-
+function isExtractionProcessFinished(response: ArticleInterface[]) {
+  return response.length > 0;
+}
 
 export default async function verifyUnfinishedStudy(revisionId: string) {
-    const protocolData = await useFetchProtocol(revisionId);
-    const studiesData = await useFetchAllStudies(revisionId);
+  const protocolData = await useFetchProtocol(revisionId);
+  const {
+    duplicatedArticlesList,
+    excludedArticlesList,
+    includedArticlesList,
+    unclassifiedArticlesList,
+  } = useFetchAllClassifiedArticles();
 
-    
-    if (!isProtocolPartOneFinished(protocolData)) {
-        return "Protocol part 1";
-    }
- 
-    else if (isPicocInitialized(protocolData) && !isPicocFinished(protocolData)) {
-        return 'Picoc';
-    }
-   
-    else if (!isProtocolPartTwoFinished(protocolData)) {
-        return "Protocol part 2";
-    }
+  const articles = [
+    ...includedArticlesList,
+    ...excludedArticlesList,
+    ...unclassifiedArticlesList,
+    ...duplicatedArticlesList,
+  ];
 
-    else if (!isProtocolPartThreeFinished(protocolData)) {
-        return "Protocol part 3";
-    }
-
-
-    else if (!isSelectionProcessFinished(studiesData)) { 
-        return "Selection";
-    }
-
-    else if (!isExtractionProcessFinished(studiesData)) { 
-        return "Extraction";
-    }
-
-   
-    else {
-        return 'Finalization';
-    }
+  if (!isProtocolPartOneFinished(protocolData)) {
+    return "Protocol part 1";
+  } else if (
+    isPicocInitialized(protocolData) &&
+    !isPicocFinished(protocolData)
+  ) {
+    return "Picoc";
+  } else if (!isProtocolPartTwoFinished(protocolData)) {
+    return "Protocol part 2";
+  } else if (!isProtocolPartThreeFinished(protocolData)) {
+    return "Protocol part 3";
+  } else if (!isSelectionProcessFinished(articles)) {
+    return "Selection";
+  } else if (!isExtractionProcessFinished(includedArticlesList)) {
+    return "Extraction";
+  } else {
+    return "Finalization";
+  }
 }
