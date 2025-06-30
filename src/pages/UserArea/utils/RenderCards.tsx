@@ -1,5 +1,8 @@
-import RevisionCard from '../subcomponents/RevisionCard';
-import { cardDataProps } from '../../../hooks/fetch/useFetchRevisionCard';
+// Components
+import RevisionCard from "../subcomponents/RevisionCard";
+
+// Type
+import { cardDataProps } from "../../../hooks/fetch/useFetchRevisionCard";
 
 interface RenderCardsProps {
   data: cardDataProps[];
@@ -15,7 +18,6 @@ const RenderCards = ({ data }: RenderCardsProps) => {
           id={item.key}
           title={item.title}
           RevisorNames={item.collaborators}
-          status={item.status}
           creation={item.creation}
           isEdited={item.isEdited}
         />

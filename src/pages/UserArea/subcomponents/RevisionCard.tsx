@@ -1,13 +1,21 @@
+// External library
+import { Box, Card } from "@chakra-ui/react";
+
+// Components
 import CardIcon from "./CardIcon";
 import CardInfos from "./CardInfos";
 import EditionInfos from "./EditionInfos";
-import { Box, Card } from "@chakra-ui/react";
 import EnterRevisionButton from "./EnterRevisionButton";
-import { CardInfosConteiner, Cardstyles } from "../styles/revisionCardstyles";
-import goToUnfinishedSystematicReviewPart from "../../../hooks/goToUnfinishedSystematicReviewPart";
 
-interface iRevisionCardProps {
-  revisionId: string,
+// Hook
+import useNavigateToPendingStage from "../../../hooks/useNavigateToPendingStage";
+
+// Styles
+import { CardInfosConteiner, Cardstyles } from "../styles/revisionCardstyles";
+
+// Type
+interface RevisionCardProps {
+  revisionId: string;
   id: string;
   title: string;
   RevisorNames: string[];
@@ -17,22 +25,37 @@ interface iRevisionCardProps {
   isEdited: boolean;
 }
 
-export default function RevisionCard({ revisionId, id, title, RevisorNames, status, lastModification, isEdited, creation }: iRevisionCardProps) {
-  async function redirectToReview(){
+export default function RevisionCard({
+  revisionId,
+  id,
+  title,
+  RevisorNames,
+  lastModification,
+  isEdited,
+  creation,
+}: RevisionCardProps) {
+  const { redirectToPendingStage, stage } = useNavigateToPendingStage({
+    reviewId: revisionId,
+  });
+
+  async function redirectToReview() {
     localStorage.setItem("systematicReviewId", revisionId);
-    goToUnfinishedSystematicReviewPart(revisionId);
+    redirectToPendingStage();
   }
-  
+
   return (
-    <>
-      <Card sx={Cardstyles} onClick={redirectToReview}>
-        <CardIcon />
-        <CardInfos title={title} RevisorNames={RevisorNames}/>
-        <Box sx={CardInfosConteiner} id={id}>
-          <EnterRevisionButton text="Review Info"/>
-          <EditionInfos lastModification={(lastModification as string)} status={status} isEdited={isEdited} creation={creation} />
-        </Box>
-      </Card>
-    </>
+    <Card sx={Cardstyles} onClick={redirectToReview} cursor="pointer">
+      <CardIcon />
+      <CardInfos title={title} RevisorNames={RevisorNames} />
+      <Box sx={CardInfosConteiner} id={id}>
+        <EnterRevisionButton text="Review Info" />
+        <EditionInfos
+          lastModification={lastModification as string}
+          status={stage}
+          isEdited={isEdited}
+          creation={creation}
+        />
+      </Box>
+    </Card>
   );
 }
