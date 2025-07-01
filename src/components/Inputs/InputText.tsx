@@ -1,5 +1,5 @@
 import { FormControl, FormLabel, Input } from "@chakra-ui/react";
-import { inputconteiner } from "./styles/inputTextStyle";
+// import { inputconteiner } from "./styles/inputTextStyle";
 
 interface ITextFieldProps {
   label?: string;
@@ -15,16 +15,15 @@ export default function InputText({ label, placeholder, type, nome, onChange, la
   const isSearchField = type === "search";
 
   return (
-    <FormControl mt={isSearchField ? "" : 10} w={"60vw"}>
-      <FormControl sx={{ ...inputconteiner, flexDirection: labelAbove ? 'column' : 'row' }}>
+    <FormControl maxW={"60vw"} mt={isSearchField ? "" : 10}>
+      <FormControl>
         {label && (
           <FormLabel
             color={"#2E4B6C"}
-            mb={labelAbove ? "0.3rem" : "0"} 
-            textAlign="left" 
+            mb={labelAbove ? "0.3rem" : "0"}
+            textAlign="left"
             width="100%"
             mr={"5px"}
-            
           >
             {label}
           </FormLabel>
