@@ -2,9 +2,12 @@
 import { useContext } from "react";
 import { Box, Button, Flex } from "@chakra-ui/react";
 import { MdOutlineLowPriority } from "react-icons/md";
-import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import { MdOutlineNextPlan } from "react-icons/md";
+import { Icon } from "@chakra-ui/react";
+// import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { RiResetLeftLine } from "react-icons/ri";
 import { Tooltip } from "@chakra-ui/react";
+// import { useState } from "react";
 
 // Context
 import AppContext from "../../../components/Context/AppContext";
@@ -43,6 +46,7 @@ export default function ButtonsForSelection({
   page,
 }: ButtonsForSelectionProps) {
   const context = useContext(AppContext);
+  // const [selectedLayout, setSelectedLayout] = '';
 
   const { handleResetStatusToUnclassified } = useResetStatus({ page });
   const { handleChangePriority } = useChangePriority();
@@ -124,8 +128,11 @@ export default function ButtonsForSelection({
             borderRadius=".25rem"
           >
             <Button onClick={goToPreviousArticle} bg="white">
-              <IoIosArrowBack color="black" size="1.5rem" />
-              prev
+              <Icon
+                as={MdOutlineNextPlan}
+                transform="scaleX(-1)"
+                boxSize="1.75rem"
+              />
             </Button>
           </Tooltip>
         </Flex>
@@ -200,8 +207,7 @@ export default function ButtonsForSelection({
             borderRadius=".25rem"
           >
             <Button onClick={goToNextArticle} bg="white">
-              next
-              <IoIosArrowForward color="black" size="1.5rem" />
+              <MdOutlineNextPlan size="1.75rem" />
             </Button>
           </Tooltip>
         </Flex>
