@@ -5,9 +5,7 @@ import SessionPrev from "./SessionPrev";
 
 import UseDeleteSession from "../../../../hooks/reviews/useDeleteSession";
 
-import StudySelectionContext, {
-  StudySelectionProvider,
-} from "../../../../components/Context/StudiesSelectionContext";
+import StudySelectionContext from "../../../../components/Context/StudiesSelectionContext";
 
 import { Accordionbtn, accordion } from "../../styles/CardsStyle";
 import {
@@ -70,7 +68,6 @@ export default function AccordionDashboard({
   };
 
   return (
-    <StudySelectionProvider>
       <Accordion allowToggle sx={accordion} onChange={handleAccordionToggle}>
         {showModal == true && (
           <IdentificationModal
@@ -146,6 +143,5 @@ export default function AccordionDashboard({
           </AccordionPanel>
         </AccordionItem>
       </Accordion>
-    </StudySelectionProvider>
   );
 }
