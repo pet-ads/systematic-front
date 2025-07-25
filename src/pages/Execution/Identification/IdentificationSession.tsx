@@ -7,10 +7,12 @@ import useGetSessionStudies from "../../../hooks/useGetSessionStudies";
 
 import FlexLayout from "../../../components/ui/Flex/Flex";
 import { Flex } from "@chakra-ui/react";
+import { useVisibleColumns } from "../../../hooks/tables/useVisibleColumns";
 
 export default function IdentificationSession() {
   const { session = "" } = useParams();
   const { articles } = useGetSessionStudies(session);
+  const { visibleColumns } = useVisibleColumns();
 
   return (
     <FlexLayout defaultOpen={1} navigationType="Accordion">
@@ -21,7 +23,11 @@ export default function IdentificationSession() {
         w="calc(100% - 2rem)"
         h="90vh"
       >
-        <ArticlesTable articles={articles} page="Identification" />
+        <ArticlesTable
+          articles={articles}
+          visibleColumns={visibleColumns}
+          page="Identification"
+        />
       </Flex>
     </FlexLayout>
   );
