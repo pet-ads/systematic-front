@@ -11,8 +11,8 @@ import LayoutFactory from "../subcomponents/LayoutFactory";
 
 import StudySelectionContext from "../../../context/StudiesSelectionContext";
 
+import { useVisibleColumns } from "../../../hooks/tables/useVisibleColumns";
 import { inputconteiner } from "../styles/executionStyles";
-
 import ArticleInterface from "../../../types/ArticleInterface";
 import { PageLayout } from "../subcomponents/LayoutFactory";
 import ButtonsForMultipleSelection from "../subcomponents/ButtonsForMultipleSelection";
@@ -29,6 +29,8 @@ export default function Selection() {
   const page: PageLayout = "Selection";
 
   const selectionContext = useContext(StudySelectionContext);
+
+  const { visibleColumns } = useVisibleColumns();
 
   if (!selectionContext) throw new Error("Failed to get the selection context");
   const articles: ArticleInterface[] = useMemo(() => {
@@ -97,6 +99,7 @@ export default function Selection() {
               layout={layout}
               articles={filteredArticles}
               isLoading={selectionContext.isLoading}
+              visibleColumns={visibleColumns}
             />
           </Box>
         </Box>

@@ -4,17 +4,20 @@ import StudySelectionArea from "../StudySelectionArea";
 import ArticleInterface from "../../../../types/ArticleInterface";
 import { PageLayout } from "../LayoutFactory";
 import ArticlesTable from "../../../../components/Tables/ArticlesTable/ArticlesTable";
+import { ColumnVisibility } from "../../../../hooks/tables/useVisibleColumns";
 
 interface VerticalProps {
   isInverted: boolean;
   articles: ArticleInterface[];
   page: PageLayout;
+  visibleColumns: ColumnVisibility;
 }
 
 export const SplitVertical: React.FC<VerticalProps> = ({
   isInverted,
   articles,
   page,
+  visibleColumns,
 }) => {
   const verticalTransitionVariants = {
     initial: { opacity: 0, x: 5 },
@@ -44,7 +47,11 @@ export const SplitVertical: React.FC<VerticalProps> = ({
             exit="exit"
             style={{ maxWidth: "65%", maxHeight: "100%" }}
           >
-            <ArticlesTable articles={articles} page={page} />
+            <ArticlesTable
+              articles={articles}
+              page={page}
+              visibleColumns={visibleColumns}
+            />
           </motion.div>
         </AnimatePresence>
       ) : (
@@ -57,7 +64,11 @@ export const SplitVertical: React.FC<VerticalProps> = ({
             exit="exit"
             style={{ maxWidth: "65%", maxHeight: "100%" }}
           >
-            <ArticlesTable articles={articles} page={page} />
+            <ArticlesTable
+              articles={articles}
+              page={page}
+              visibleColumns={visibleColumns}
+            />
           </motion.div>
           <motion.div
             key="top"

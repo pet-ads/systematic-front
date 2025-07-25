@@ -12,6 +12,7 @@ import {
   Tooltip,
   Checkbox,
   Box,
+  Flex,
 } from "@chakra-ui/react";
 import { CheckCircleIcon, InfoIcon, WarningIcon } from "@chakra-ui/icons";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa6";
@@ -29,10 +30,15 @@ import StudySelectionContext from "../../../context/StudiesSelectionContext";
 
 // Hook
 import usePagination from "../../../hooks/tables/usePagination";
+import {
+  useVisibleColumns,
+  ColumnVisibility,
+} from "../../../hooks/tables/useVisibleColumns";
 
 // Components
 import PaginationControl from "./PaginationControl";
 import { Resizable } from "./Resizable";
+import ColumnToggleMenu from "../../../pages/Execution/subcomponents/ArticleTableControls";
 
 // Style
 import {
@@ -49,13 +55,13 @@ import { capitalize } from "../../../utils/CapitalizeText";
 import type ArticleInterface from "../../../types/ArticleInterface";
 import type { PageLayout } from "../../../pages/Execution/subcomponents/LayoutFactory";
 import type { ViewModel } from "../../../hooks/useLayoutPage";
-
 interface Props {
   articles: ArticleInterface[];
   handleHeaderClick: (key: keyof ArticleInterface) => void;
   sortConfig: { key: keyof ArticleInterface; direction: "asc" | "desc" } | null;
   page: PageLayout;
   layout?: ViewModel;
+  visibleColumns: ColumnVisibility;
 }
 
 type HeaderKeys =
@@ -82,6 +88,8 @@ export default function Expanded({
   page,
   layout,
 }: Props) {
+  const { visibleColumns, toggleColumn } = useVisibleColumns();
+
   const [columnWidths, setColumnWidths] = useState({
     studyReviewId: "3rem",
     title: "8rem",
@@ -157,7 +165,7 @@ export default function Expanded({
     }));
   };
 
-  if (!studyContext) return;
+  if (!studyContext) return null;
 
   const {
     firstSelected,
@@ -167,12 +175,18 @@ export default function Expanded({
   } = studyContext;
 
   const collapsedSpanTextChanged = {
-  ...collapsedSpanText,
-  w: "auto",
-};
+    ...collapsedSpanText,
+    w: "auto",
+  };
 
   return (
     <Box w="100%" maxH="82.5vh">
+      <Flex justify="flex-end" mb={4}>
+        <ColumnToggleMenu
+          visibleColumns={visibleColumns}
+          toggleColumn={toggleColumn}
+        />
+      </Flex>
       <TableContainer
         w="100%"
         maxH={
@@ -211,9 +225,23 @@ export default function Expanded({
               >
                 <RiCheckboxMultipleBlankFill size="1.25rem" />
               </Th>
-              {columns.map(
-                (col) =>
-                  shouldShowColumn(col.key) && (
+              {columns.map((col) => {
+                const isUserCol = [
+                  "title",
+                  "authors",
+                  "venue",
+                  "year",
+                ].includes(col.key);
+                let isVisible = shouldShowColumn(col.key);
+                if (isUserCol) {
+                  const keyMap =
+                    col.key === "venue"
+                      ? "journal"
+                      : (col.key as keyof ColumnVisibility);
+                  isVisible = visibleColumns[keyMap];
+                }
+                return (
+                  isVisible && (
                     <Th
                       key={col.key}
                       textAlign="center"
@@ -280,7 +308,8 @@ export default function Expanded({
                       </Resizable>
                     </Th>
                   )
-              )}
+                );
+              })}
             </Tr>
           </Thead>
           <Tbody>
@@ -325,58 +354,42 @@ export default function Expanded({
                       }}
                     />
                   </Td>
-                  <Td sx={tdSX} w={columnWidths.studyReviewId}>
-                    <Tooltip
-                      sx={tooltip}
-                      label={reference.title}
-                      aria-label="Full ID"
-                      hasArrow
-                    >
-                      <Text sx={collapsedSpanTextChanged}>
-                        {String(reference.studyReviewId).padStart(5, "0")}
-                      </Text>
-                    </Tooltip>
-                  </Td>
-                  <Td sx={tdSX} w={columnWidths.title}>
-                    <Tooltip
-                      sx={tooltip}
-                      label={reference.title}
-                      aria-label="Full Title"
-                      hasArrow
-                    >
-                      <Text sx={collapsedSpanTextChanged}>{reference.title}</Text>
-                    </Tooltip>
-                  </Td>
-                  <Td sx={tdSX} w={columnWidths.authors}>
-                    <Tooltip
-                      sx={tooltip}
-                      label={reference.authors}
-                      aria-label="Full Author List"
-                      hasArrow
-                    >
-                      <Text sx={collapsedSpanTextChanged}>{reference.authors}</Text>
-                    </Tooltip>
-                  </Td>
-                  <Td sx={tdSX} w={columnWidths.venue}>
-                    <Tooltip
-                      sx={tooltip}
-                      label={reference.venue}
-                      aria-label="Journal Name"
-                      hasArrow
-                    >
-                      <Text sx={collapsedSpanTextChanged}>{reference.venue}</Text>
-                    </Tooltip>
-                  </Td>
-                  <Td sx={tdSX} w={columnWidths.year}>
-                    <Tooltip
-                      sx={tooltip}
-                      label={reference.year}
-                      aria-label="Year of published"
-                      hasArrow
-                    >
-                      <Text sx={collapsedSpanTextChanged}>{reference.year}</Text>
-                    </Tooltip>
-                  </Td>
+                  {visibleColumns.title && (
+                    <Td sx={tdSX} w={columnWidths.title}>
+                      <Tooltip sx={tooltip} label={reference.title} hasArrow>
+                        <Text sx={collapsedSpanTextChanged}>
+                          {reference.title}
+                        </Text>
+                      </Tooltip>
+                    </Td>
+                  )}
+                  {visibleColumns.authors && (
+                    <Td sx={tdSX} w={columnWidths.authors}>
+                      <Tooltip sx={tooltip} label={reference.authors} hasArrow>
+                        <Text sx={collapsedSpanTextChanged}>
+                          {reference.authors}
+                        </Text>
+                      </Tooltip>
+                    </Td>
+                  )}
+                  {visibleColumns.journal && (
+                    <Td sx={tdSX} w={columnWidths.venue}>
+                      <Tooltip sx={tooltip} label={reference.venue} hasArrow>
+                        <Text sx={collapsedSpanTextChanged}>
+                          {reference.venue}
+                        </Text>
+                      </Tooltip>
+                    </Td>
+                  )}
+                  {visibleColumns.year && (
+                    <Td sx={tdSX} w={columnWidths.year}>
+                      <Tooltip sx={tooltip} label={reference.year} hasArrow>
+                        <Text sx={collapsedSpanTextChanged}>
+                          {reference.year}
+                        </Text>
+                      </Tooltip>
+                    </Td>
+                  )}
                   {page == "Selection" || page == "Identification" ? (
                     <Td sx={tdSX} w={columnWidths.selectionStatus}>
                       <Box
@@ -416,13 +429,10 @@ export default function Expanded({
                     </Td>
                   ) : null}
                   <Td sx={tdSX} w={columnWidths.score}>
-                    <Tooltip
-                      sx={tooltip}
-                      label={reference.score}
-                      aria-label="score of article"
-                      hasArrow
-                    >
-                      <Text sx={collapsedSpanTextChanged}>{reference.score}</Text>
+                    <Tooltip sx={tooltip} label={reference.score} hasArrow>
+                      <Text sx={collapsedSpanTextChanged}>
+                        {reference.score}
+                      </Text>
                     </Tooltip>
                   </Td>
                   <Td sx={tdSX} w={columnWidths.priority}>
@@ -445,7 +455,7 @@ export default function Expanded({
               ))
             ) : (
               <Tr>
-                <Td colSpan={8} textAlign="center">
+                <Td colSpan={columns.length + 1} textAlign="center">
                   No articles found.
                 </Td>
               </Tr>

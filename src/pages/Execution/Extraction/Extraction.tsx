@@ -13,6 +13,7 @@ import StudySelectionContext from "../../../context/StudiesSelectionContext";
 
 import { inputconteiner } from "../styles/executionStyles";
 
+import { useVisibleColumns } from "../../../hooks/tables/useVisibleColumns";
 import ArticleInterface from "../../../types/ArticleInterface";
 import { PageLayout } from "../subcomponents/LayoutFactory";
 import ButtonsForMultipleSelection from "../subcomponents/ButtonsForMultipleSelection";
@@ -33,6 +34,8 @@ export default function Extraction() {
       .filter((art): art is ArticleInterface => "studyReviewId" in art)
       .filter((art) => art.selectionStatus === "INCLUDED");
   }, [selectionContext.articles]);
+
+  const { visibleColumns } = useVisibleColumns();
 
   const { layout, handleChangeLayout } = useLayoutPage();
 
@@ -98,6 +101,7 @@ export default function Extraction() {
               layout={layout}
               articles={filteredArticles}
               isLoading={selectionContext.isLoading}
+              visibleColumns={visibleColumns}
             />
           </Box>
         </Box>

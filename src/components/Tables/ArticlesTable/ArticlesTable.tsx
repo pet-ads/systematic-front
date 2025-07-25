@@ -6,14 +6,16 @@ import ArticleInterface from "../../../types/ArticleInterface";
 import { PageLayout } from "../../../pages/Execution/subcomponents/LayoutFactory";
 import { ViewModel } from "../../../hooks/useLayoutPage";
 import AppContext from "../../../context/AppContext";
+import { ColumnVisibility } from "../../../hooks/tables/useVisibleColumns";
 
 interface Props {
   articles: ArticlesInterface[];
   page: PageLayout;
   layout?: ViewModel;
+  visibleColumns: ColumnVisibility;
 }
 
-export default function ArticlesTable({ articles, page, layout }: Props) {
+export default function ArticlesTable({ articles, page, layout, visibleColumns }: Props) {
   const [sortConfig, setSortConfig] = useState<{
     key: keyof ArticleInterface;
     direction: "asc" | "desc";
@@ -58,6 +60,7 @@ export default function ArticlesTable({ articles, page, layout }: Props) {
       sortConfig={sortConfig}
       page={page}
       layout={layout}
+      visibleColumns={visibleColumns}
     />
   );
 }

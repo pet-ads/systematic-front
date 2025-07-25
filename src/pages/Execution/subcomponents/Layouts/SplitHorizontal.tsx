@@ -5,12 +5,14 @@ import ArticleInterface from "../../../../types/ArticleInterface";
 import { PageLayout } from "../LayoutFactory";
 import ArticlesTable from "../../../../components/Tables/ArticlesTable/ArticlesTable";
 import { ViewModel } from "../../../../hooks/useLayoutPage";
+import { ColumnVisibility } from "../../../../hooks/tables/useVisibleColumns";
 
 interface HorizontalProps {
   isInverted: boolean;
   articles: ArticleInterface[];
   page: PageLayout;
   layout: ViewModel;
+  visibleColumns: ColumnVisibility;
 }
 
 export const SplitHorizontal: React.FC<HorizontalProps> = ({
@@ -18,6 +20,7 @@ export const SplitHorizontal: React.FC<HorizontalProps> = ({
   articles,
   page,
   layout,
+  visibleColumns,
 }) => {
   const horizontalTransitionVariants = {
     initial: { opacity: 0, y: 5 },
@@ -52,7 +55,12 @@ export const SplitHorizontal: React.FC<HorizontalProps> = ({
             animate="animate"
             exit="exit"
           >
-            <ArticlesTable articles={articles} page={page} layout={layout} />
+            <ArticlesTable
+              articles={articles}
+              page={page}
+              layout={layout}
+              visibleColumns={visibleColumns}
+            />
           </motion.div>
         </AnimatePresence>
       ) : (
@@ -64,7 +72,12 @@ export const SplitHorizontal: React.FC<HorizontalProps> = ({
             animate="animate"
             exit="exit"
           >
-            <ArticlesTable articles={articles} page={page} layout={layout} />
+            <ArticlesTable
+              articles={articles}
+              page={page}
+              layout={layout}
+              visibleColumns={visibleColumns}
+            />
           </motion.div>
           <motion.div
             key="top"
