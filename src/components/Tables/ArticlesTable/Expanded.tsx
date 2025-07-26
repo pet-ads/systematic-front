@@ -231,7 +231,7 @@ export default function Expanded({
                       >
                         {({ ref, isResizing }) => (
                           <Box
-                            ref={ref} 
+                            ref={ref as React.LegacyRef<HTMLDivElement>} 
                             position="relative"
                             h="100%"
                             w="100%" 
