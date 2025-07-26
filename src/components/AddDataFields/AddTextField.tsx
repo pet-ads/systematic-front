@@ -39,11 +39,13 @@ export default function AddTextField({ onAddText, text, label }: IAddTextFieldPr
 
   return (
     <FormControl sx={formcontrol} mt="3rem">
+      <FormLabel>{label}</FormLabel>
       <Box display="flex" justifyContent="space-between" alignItems="center">
-        <FormLabel>{label}</FormLabel>
-        <EventButton event={handleAddText} text="ADD" w={"2%"} />
+        <TextAreaInput value={inputValue} label="" placeholder={text} onChange={handleInputChange}></TextAreaInput>
       </Box>
-      <TextAreaInput value={inputValue} label="" placeholder={text} onChange={handleInputChange}></TextAreaInput>
+      <Box display="flex" justifyContent="center" mt={4}>
+        <EventButton event={handleAddText} text="ADD" />
+      </Box>
     </FormControl>
   );
 }
