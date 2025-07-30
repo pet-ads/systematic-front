@@ -1,6 +1,21 @@
 import axios from "axios";
 
-const Axios = axios.create({});
+const Axios = axios.create({
+  baseURL: "http://localhost:8080/api/v1/",
+  withCredentials: true
+});
+
+Axios.interceptors.request.use(
+  (config) => {
+    const accessToken = localStorage.getItem("accessToken");
+    if (accessToken) {
+      config.headers["Authorization"] = `Bearer ${accessToken}`;
+    }
+    return config;
+  }, (error) => {
+    return Promise.reject(error);
+  }
+);
 
 Axios.interceptors.response.use(
   (response) => response,

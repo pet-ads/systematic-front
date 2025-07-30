@@ -2,13 +2,10 @@
 import { useContext } from "react";
 
 // Service
-import axios from "axios";
+import Axios from "../../../../infrastructure/http/axiosClient.tsx";
 
 // Contenxt
 import StudySelectionContext from "@features/review/shared/context/StudiesSelectionContext";
-
-// Utils
-import getRequestOptions from "@features/auth/utils/getRequestOptions";
 
 // Type
 type PriorityValue = "VERY_LOW" | "LOW" | "HIGH" | "VERY_HIGH";
@@ -38,7 +35,6 @@ export default function useChangePriority() {
   }: ChangePriorityInArticle) => {
     try {
       const id = localStorage.getItem("systematicReviewId");
-      const options = getRequestOptions();
 
       const priorityValue = priorityMap[status];
 
@@ -46,15 +42,14 @@ export default function useChangePriority() {
         throw new Error(`Invalid status: ${status}`);
       }
 
-      const path = `http://localhost:8080/api/v1/systematic-study/${id}/study-review/reading-priority`;
-      await axios.patch(
+      const path = `systematic-study/${id}/study-review/reading-priority`;
+      await Axios.patch(
         path,
         {
           studyReviewId: [selectedArticleReview],
           status: priorityValue,
           criteria,
-        },
-        options
+        }
       );
       reloadArticles();
     } catch (error) {

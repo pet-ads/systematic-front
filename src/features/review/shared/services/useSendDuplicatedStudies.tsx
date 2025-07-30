@@ -1,5 +1,4 @@
-import axios from "axios";
-import getRequestOptions from "@features/auth/utils/getRequestOptions";
+import Axios from "../../../../infrastructure/http/axiosClient.tsx";
 
 interface SendDuplicatedStudiesProps {
   firstSelected: number;
@@ -11,12 +10,12 @@ export default function useSendDuplicatedStudies({
   duplicatedStudies,
 }: SendDuplicatedStudiesProps) {
   const studyReviewId = localStorage.getItem("systematicReviewId");
-  const options = getRequestOptions();
 
   const sendDuplicatedStudies = () => {
     if (firstSelected === null) return;
-    const path = `http://localhost:8080/api/v1/systematic-study/${studyReviewId}/study-review/${firstSelected}/duplicated`;
-    axios.patch(path, { duplicatedStudyIds: duplicatedStudies }, options);
+    const path = `systematic-study/${studyReviewId}/study-review/${firstSelected}/duplicated`;
+    
+    Axios.patch(path, { duplicatedStudyIds: duplicatedStudies });
   };
 
   return {
