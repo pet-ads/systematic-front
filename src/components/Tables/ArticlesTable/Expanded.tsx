@@ -390,7 +390,7 @@ export default function Expanded({
                       </Tooltip>
                     </Td>
                   )}
-                  {page == "Selection" || page == "Identification" ? (
+                  {visibleColumns.selectionStatus && (page == "Selection" || page == "Identification") ? (
                     <Td sx={tdSX} w={columnWidths.selectionStatus}>
                       <Box
                         display="flex"
@@ -409,7 +409,7 @@ export default function Expanded({
                       </Box>
                     </Td>
                   ) : null}
-                  {page == "Extraction" || page == "Identification" ? (
+                  {visibleColumns.extractionStatus && (page == "Extraction" || page == "Identification") ? (
                     <Td sx={tdSX} w={columnWidths.extractionStatus}>
                       <Box
                         display="flex"
@@ -428,13 +428,16 @@ export default function Expanded({
                       </Box>
                     </Td>
                   ) : null}
+                  {visibleColumns.score && (
                   <Td sx={tdSX} w={columnWidths.score}>
                     <Tooltip sx={tooltip} label={reference.score} hasArrow>
                       <Text sx={collapsedSpanTextChanged}>
                         {reference.score}
                       </Text>
                     </Tooltip>
-                  </Td>
+                    </Td>
+                  )}
+                  {visibleColumns.priority && (
                   <Td sx={tdSX} w={columnWidths.priority}>
                     <Box
                       display="flex"
@@ -450,7 +453,7 @@ export default function Expanded({
                         ).replace("_", " ")}
                       </Text>
                     </Box>
-                  </Td>
+                  </Td>)}
                 </Tr>
               ))
             ) : (
