@@ -1,6 +1,6 @@
 import { useDisclosure } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { useToast } from "@chakra-ui/react";
+import useToaster from "@components/feedback/Toaster";
 
 import {
   Button,
@@ -62,7 +62,7 @@ function DeleteDatabaseModal({
 }: DeleteDatabaseModalProps) {
   const { isOpen, onClose, onOpen } = useDisclosure();
   const [nameOfDatabase, setNameOfDatabase] = useState<string>("");
-  const toast = useToast();
+  const toast = useToaster();
 
   useEffect(() => {
     onOpen();
@@ -83,9 +83,7 @@ function DeleteDatabaseModal({
         title: "Invalid Database Name",
         description: "Please enter the correct database name to proceed.",
         status: "error",
-        duration: 4500,
-        isClosable: true,
-        position: "top",
+        duration: 'low'
       });
       return;
     }
@@ -99,9 +97,7 @@ function DeleteDatabaseModal({
         title: "All Study Sessions Deleted!",
         description: "Your study sessions have been successfully removed.",
         status: "success",
-        duration: 4500,
-        isClosable: true,
-        position: "top",
+        duration: 'low'
       });
       mutate();
       handleClose();
@@ -111,9 +107,7 @@ function DeleteDatabaseModal({
         title: "Action Failed",
         description: "Please ensure the field is filled before proceeding.",
         status: "error",
-        duration: 4500,
-        isClosable: true,
-        position: "top",
+        duration: "low"
       });
     }
   };

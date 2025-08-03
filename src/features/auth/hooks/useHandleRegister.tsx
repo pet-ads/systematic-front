@@ -1,12 +1,12 @@
 // External library
 import { useState } from "react";
-import { useToast } from "@chakra-ui/react";
 
 // Services
 import useRegisterUser from "../services/useRegisterUser";
 
 // Types
 import type { User } from "../types";
+import useToaster from "@components/feedback/Toaster";
 
 const useHandleRegister = (redirectFormLogin: () => void) => {
   const [name, setName] = useState<string>("");
@@ -23,8 +23,7 @@ const useHandleRegister = (redirectFormLogin: () => void) => {
   const [confirmPasswordError, setConfirmPasswordError] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-  const toast = useToast();
-
+  const toast = useToaster();
   const validateEmail = (email: string): boolean => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(String(email).toLowerCase());
@@ -122,10 +121,8 @@ const useHandleRegister = (redirectFormLogin: () => void) => {
             title: "Account created.",
             description: `You can now log in with your account, ${user}.`,
             status: "success",
-            duration: 9000,
-            isClosable: true,
-            position: "top",
-          });
+            duration: "high"
+          })
 
           redirectFormLogin();
         }
@@ -139,10 +136,8 @@ const useHandleRegister = (redirectFormLogin: () => void) => {
             title: "Network Error",
             description: "Please check your internet connection.",
             status: "error",
-            duration: 9000,
-            isClosable: true,
-            position: "top",
-          });
+            duration: "high"
+          })
         }
       } finally {
         setIsSubmitting(false);

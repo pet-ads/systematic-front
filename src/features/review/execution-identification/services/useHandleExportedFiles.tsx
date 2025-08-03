@@ -2,7 +2,7 @@
 import { SetStateAction, useState } from "react";
 import axios from "../../../../infrastructure/http/axiosClient";
 // import useGetSession from "./useGetSession";
-import { useToast } from "@chakra-ui/react";
+import useToaster from "@components/feedback/Toaster";
 import { InvalidEntry } from "@features/review/shared/context/StudiesSelectionContext";
 import getRequestOptions from "@features/auth/utils/getRequestOptions";
 import { KeyedMutator } from "swr";
@@ -26,7 +26,7 @@ interface Props {
 const useHandleExportedFiles = ({ mutate, setInvalidEntries }: Props) => {
   const [referenceFiles, setReferenceFiles] = useState<File[]>([]);
   const [source, setSource] = useState("");
-  const toast = useToast();
+  const toast = useToaster();
 
   const options = getRequestOptions();
   const id = localStorage.getItem("systematicReviewId");
@@ -57,9 +57,7 @@ const useHandleExportedFiles = ({ mutate, setInvalidEntries }: Props) => {
           title: "Duplicate file",
           description: "This file already exists!",
           status: "warning",
-          duration: 4500,
-          isClosable: true,
-          position: "top",
+          duration: "low"
         });
       } else {
         setReferenceFiles((prevFiles) => [...prevFiles, newFile]);
@@ -127,9 +125,7 @@ const useHandleExportedFiles = ({ mutate, setInvalidEntries }: Props) => {
           title: "Some files need revision",
           description: `${invalidArticles.length} file(s) could not be processed.`,
           status: "warning",
-          duration: 5000,
-          isClosable: true,
-          position: "top",
+          duration: "medium"
         });
       }
     } catch (err) {

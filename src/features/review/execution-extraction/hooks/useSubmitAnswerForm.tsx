@@ -1,5 +1,5 @@
 // External library
-import { useToast } from "@chakra-ui/react";
+import useToaster from "@components/feedback/Toaster";
 
 import type {
   AnswerStrucuture,
@@ -20,7 +20,7 @@ export function useSubmitAnswerForm({
   handleSendAnswer,
   mutateQuestion,
 }: SubmitAnswerFormProps) {
-  const toast = useToast();
+  const toast = useToaster();
 
   const handleSubmitAnswer = () => {
     const formatedResponses = responses.map((res) => {
@@ -43,10 +43,9 @@ export function useSubmitAnswerForm({
     if (hasIncompleteAnswers) {
       toast({
         title: "Please complete all answers before submitting.",
+        description: undefined,
         status: "warning",
-        duration: 4500,
-        isClosable: true,
-        position: "top",
+        duration: 'low'
       });
       return;
     }
@@ -57,19 +56,16 @@ export function useSubmitAnswerForm({
 
       toast({
         title: "Response sent successfully!",
+        description: undefined,
         status: "success",
-        duration: 4500,
-        isClosable: true,
-        position: "top",
+        duration: 'low'
       });
     } catch (error) {
       toast({
         title: "Error sending response",
         description: "Try again later.",
         status: "error",
-        duration: 4500,
-        isClosable: true,
-        position: "top",
+        duration: 'low'
       });
     }
   };

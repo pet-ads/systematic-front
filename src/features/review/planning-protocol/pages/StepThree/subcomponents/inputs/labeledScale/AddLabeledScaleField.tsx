@@ -11,7 +11,7 @@ import {
 import EventButton from "@components/common/buttons/EventButton";
 import { useState } from "react";
 // import { formcontrol } from "../../../features/review/planning-protocol/components/common/inputs/text/AddTextField/styles";
-import { useToast } from "@chakra-ui/react";
+import useToaster from "@components/feedback/Toaster";
 import TextAreaInput from "@components/common/inputs/InputTextArea";
 import { formcontrol } from "@features/review/planning-protocol/components/common/inputs/text/AddTextField/styles";
 
@@ -26,7 +26,7 @@ export default function AddLabeledListField({
 }: IAddTextFieldProps) {
   const [inputValue, setInputValue] = useState<string>("");
   const [value, setValue] = useState(0);
-  const toast = useToast;
+  const toast = useToaster();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInputValue(e.target.value);
@@ -41,9 +41,7 @@ export default function AddLabeledListField({
         title: "Empty Field",
         description: "The field must be filled!",
         status: "warning",
-        duration: 4500,
-        isClosable: true,
-        position: "top",
+        duration: "low"
       });
     }
   };

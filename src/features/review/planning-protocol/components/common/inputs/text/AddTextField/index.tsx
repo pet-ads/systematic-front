@@ -4,7 +4,7 @@ import EventButton from "@components/common/buttons/EventButton";
 import { useState } from "react";
 import { formcontrol } from "./styles";
 import { capitalize } from "../../../../../../../shared/utils/helpers/formatters/CapitalizeText";
-import { useToast } from "@chakra-ui/react";
+import useToaster from "@components/feedback/Toaster";
 
 interface IAddTextFieldProps {
   onAddText: (newKeyword: string) => void;
@@ -18,7 +18,7 @@ export default function AddTextField({
   label,
 }: IAddTextFieldProps) {
   const [inputValue, setInputValue] = useState<string>("");
-  const toast = useToast();
+  const toast = useToaster();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInputValue(e.target.value);
@@ -34,9 +34,7 @@ export default function AddTextField({
         title: "Empty Field",
         description: "The field must be filled!",
         status: "warning",
-        duration: 4500,
-        isClosable: true,
-        position: "top",
+        duration: 'low'
       });
     }
   };

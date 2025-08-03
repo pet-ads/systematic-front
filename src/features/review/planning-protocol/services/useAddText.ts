@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import useCreateProtocol from "./useCreateProtocol";
 import axios from "../../../../infrastructure/http/axiosClient";
-import { useToast } from "@chakra-ui/react";
+import useToaster from "@components/feedback/Toaster";
 
 export function useAddText(context: string) {
   const { sendAddText } = useCreateProtocol();
   const [AddText, setAddText] = useState<string[]>([]);
-  const toast = useToast();
+  const toast = useToaster();
 
   useEffect(() => {
     const id = localStorage.getItem("systematicReviewId");
@@ -63,9 +63,7 @@ export function useAddText(context: string) {
           title: "Duplicate Keyword",
           description: "This keyword already exists!",
           status: "warning",
-          duration: 4500,
-          isClosable: true,
-          position: "top",
+          duration: "low",
         });
         return prevKeyWord;
       }
