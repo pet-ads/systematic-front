@@ -1,4 +1,4 @@
-import { Button, Flex, Text, useBreakpointValue } from "@chakra-ui/react";
+import { Button, Flex, Text, } from "@chakra-ui/react";
 
 import { ArticlePreviewProps } from "./StudyData";
 
@@ -63,13 +63,6 @@ export default function ArticlePreview({ studyData }: ArticlePreviewProps) {
       color: "green",
     },
   };
-
-  const responsiveFontSize = useBreakpointValue({
-    base: "md",
-    md: "lg",
-    lg: "2xl",
-    xl: "3xl",
-  });
 
   const selectionStatus = statusIconMap[studyData.selectionStatus];
   const priorityLevel = priorityIconMap[studyData.readingPriority];
@@ -179,7 +172,7 @@ export default function ArticlePreview({ studyData }: ArticlePreviewProps) {
             </Text>
           </Text>
           <Text
-            fontSize={"20px"}
+            fontSize={"16px"}
             align={"right"}
             as="i"
             fontWeight={"Bold"}
@@ -190,7 +183,7 @@ export default function ArticlePreview({ studyData }: ArticlePreviewProps) {
         </Flex>
 
         <Text
-          fontSize={responsiveFontSize}
+          fontSize={["xl", "2xl", "3xl", "4xl"]}
           fontWeight={"bold"}
           fontFamily={"Boboni"}
           lineHeight={"2.3rem"}
