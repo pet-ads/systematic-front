@@ -63,9 +63,7 @@ export function useExtractionFormSubmission({
     if (hasIncompleteAnswers(combinedAnswers)) {
       toast({
         title: "Preencha todas as respostas antes de enviar.",
-        description: undefined,
         status: "warning",
-        duration: 'low'
       });
       return;
     }
@@ -82,16 +80,13 @@ export function useExtractionFormSubmission({
 
       toast({
         title: "Respostas enviadas com sucesso!",
-        description: undefined,
         status: "success",
-        duration: 'low'
       });
     } catch (error) {
       toast({
         title: "Erro ao enviar respostas",
         description: "Tente novamente mais tarde.",
         status: "error",
-        duration: 'low'
       });
     }
   };

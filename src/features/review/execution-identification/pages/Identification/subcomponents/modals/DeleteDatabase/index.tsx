@@ -83,7 +83,6 @@ function DeleteDatabaseModal({
         title: "Invalid Database Name",
         description: "Please enter the correct database name to proceed.",
         status: "error",
-        duration: 'low'
       });
       return;
     }
@@ -97,7 +96,6 @@ function DeleteDatabaseModal({
         title: "All Study Sessions Deleted!",
         description: "Your study sessions have been successfully removed.",
         status: "success",
-        duration: 'low'
       });
       mutate();
       handleClose();
@@ -107,7 +105,6 @@ function DeleteDatabaseModal({
         title: "Action Failed",
         description: "Please ensure the field is filled before proceeding.",
         status: "error",
-        duration: "low"
       });
     }
   };

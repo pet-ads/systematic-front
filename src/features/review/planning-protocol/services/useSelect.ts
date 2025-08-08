@@ -38,8 +38,7 @@ export function useSelect(initialState: string[] = [], context: string) {
       toast({
         title: "Empty Field",
         description: "The field must be filled!",
-        status: "warning",
-        duration: "low"
+        status: "warning"
       });
       return;
     }
@@ -47,8 +46,7 @@ export function useSelect(initialState: string[] = [], context: string) {
       toast({
         title: "Duplicate option",
         description: "This option already selected!",
-        status: "warning",
-        duration: "low"
+        status: "warning"
       });
       setSelectedValue(null);
       return;

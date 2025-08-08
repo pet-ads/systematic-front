@@ -1,19 +1,29 @@
 import { useToast } from "@chakra-ui/react";
-import useToasterDuration, { ToasterProps } from "@features/shared/toaster/createToaster";
+
+type Status = "success" | "error" | "warning" | "info" | "loading";
+type Position = "top" | "top-left" | "top-right" | "bottom" | "bottom-left" | "bottom-right";
+
+interface ToasterProps {
+  title: string;
+  status: Status;
+  description?: string;
+  duration?: number
+  isClosable?: boolean,
+  position?: Position
+}
 
 export default function useToaster() {
   const toast = useToast();
 
-  return ({ title, status, description, duration }: ToasterProps) => {
+  return ({ title, status, description, duration, isClosable, position}: ToasterProps) => {
     toast({
       title,
       status,
       description,
-      duration: useToasterDuration(duration),
-      isClosable: true,
-      position: "top",
+      duration: duration ? duration : 4500,
+      isClosable: isClosable ? isClosable : true,
+      position: position ? position : "top",
     });
   };
 }
-
 

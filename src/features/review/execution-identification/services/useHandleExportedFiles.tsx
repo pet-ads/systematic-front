@@ -57,7 +57,6 @@ const useHandleExportedFiles = ({ mutate, setInvalidEntries }: Props) => {
           title: "Duplicate file",
           description: "This file already exists!",
           status: "warning",
-          duration: "low"
         });
       } else {
         setReferenceFiles((prevFiles) => [...prevFiles, newFile]);
@@ -124,8 +123,7 @@ const useHandleExportedFiles = ({ mutate, setInvalidEntries }: Props) => {
         toast({
           title: "Some files need revision",
           description: `${invalidArticles.length} file(s) could not be processed.`,
-          status: "warning",
-          duration: "medium"
+          status: "warning"
         });
       }
     } catch (err) {

@@ -42,7 +42,6 @@ const SessionPrev = ({
       title: "Studies without references associated",
       description: "There are no references associated with this study",
       status: "info",
-      duration: 'low'
     });
   };
 

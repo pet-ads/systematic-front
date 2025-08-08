@@ -34,7 +34,6 @@ export default function AddTextField({
         title: "Empty Field",
         description: "The field must be filled!",
         status: "warning",
-        duration: 'low'
       });
     }
   };

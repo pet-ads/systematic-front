@@ -1,4 +1,4 @@
-// External libraries
+ // External libraries
 import {
   Button,
   Checkbox,
@@ -64,8 +64,7 @@ export default function ComboBox({
       title: "Ação não permitida",
       description:
         "Você não pode incluir ou excluir critérios de um artigo marcado como duplicado pelo sistema.",
-      status: "warning",
-      duration: "low"
+      status: "warning"
     });
 
   return (

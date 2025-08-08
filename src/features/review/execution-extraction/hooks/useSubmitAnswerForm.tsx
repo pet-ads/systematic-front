@@ -43,9 +43,7 @@ export function useSubmitAnswerForm({
     if (hasIncompleteAnswers) {
       toast({
         title: "Please complete all answers before submitting.",
-        description: undefined,
-        status: "warning",
-        duration: 'low'
+        status: "warning"
       });
       return;
     }
@@ -56,16 +54,13 @@ export function useSubmitAnswerForm({
 
       toast({
         title: "Response sent successfully!",
-        description: undefined,
-        status: "success",
-        duration: 'low'
+        status: "success"
       });
     } catch (error) {
       toast({
         title: "Error sending response",
         description: "Try again later.",
         status: "error",
-        duration: 'low'
       });
     }
   };

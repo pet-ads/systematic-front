@@ -62,8 +62,7 @@ export function useAddText(context: string) {
         toast({
           title: "Duplicate Keyword",
           description: "This keyword already exists!",
-          status: "warning",
-          duration: "low",
+          status: "warning"
         });
         return prevKeyWord;
       }
