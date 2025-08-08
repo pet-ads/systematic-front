@@ -16,6 +16,7 @@ interface ControlsProps {
   quantityOfPages: number;
   handlePrevPage: () => void;
   handleNextPage: () => void;
+  changeQuantityOfItens: (newQuantity: number) => void;
 }
 
 export default function PaginationControl({
@@ -24,6 +25,7 @@ export default function PaginationControl({
   quantityOfPages,
   handleNextPage,
   handlePrevPage,
+  changeQuantityOfItens,
 }: ControlsProps) {
   const numberOfCases = String(quantityOfPages).length;
 
@@ -65,6 +67,16 @@ export default function PaginationControl({
         </NumberInputStepper>
       </NumberInput>
       {isPaginationEnabled && <Button onClick={handleNextPage}>Próxima</Button>}
+      <Flex alignItems="center" gap=".5rem">
+        <Text>Rows per page</Text>
+        <select onChange={(e) => changeQuantityOfItens(Number(e.target.value))} defaultValue={15}>
+        <option value={10}>10</option>
+        <option value={15}>15</option>
+        <option value={20}>20</option>
+        <option value={25}>25</option>
+        <option value={30}>30</option>
+      </select>
+      </Flex>
     </Flex>
   );
 }

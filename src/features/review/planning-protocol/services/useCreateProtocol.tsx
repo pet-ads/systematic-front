@@ -1,8 +1,11 @@
+// External library
+import { useEffect, useState } from "react";
+
+// Infra
 import axios from "../../../../infrastructure/http/axiosClient";
 
-//importing hooks
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+// Hooks
+import { useNavigation } from "@features/shared/hooks/useNavigation";
 
 const useCreateProtocol = () => {
   const [flag, setFlag] = useState("");
@@ -37,8 +40,11 @@ const useCreateProtocol = () => {
   const [selectionProcess, setSelectionProcess] = useState<string | null>(null);
   const [analysisAndSynthesisProcess, setAnalysisAndSynthesisProcess] =
     useState<string | null>(null);
-  const navigate = useNavigate();
+
+  const { toGo } = useNavigation();
+
   const id = localStorage.getItem("systematicReviewId");
+
   const url = `http://localhost:8080/systematic-study/${id}/protocol`;
 
   useEffect(() => {
@@ -127,11 +133,11 @@ const useCreateProtocol = () => {
     try {
       await createProtocol();
 
-      if (flag == "protocol") navigate(`/newReview/protocolPartTwo/${id}`);
+      if (flag == "protocol") toGo(`/newReview/protocolPartTwo/${id}`);
 
-      if (flag == "protocolTwo") navigate(`/newReview/ProtocolPartThree/${id}`);
+      if (flag == "protocolTwo") toGo(`/newReview/ProtocolPartThree/${id}`);
 
-      if (flag == "protocolThree") navigate(`/newReview/extraction`);
+      if (flag == "protocolThree") toGo(`/newReview/extraction`);
     } catch (err) {
       console.log(err);
     }
@@ -142,9 +148,9 @@ const useCreateProtocol = () => {
 
     try {
       await createProtocol();
-      if (flag == "protocol") navigate(`/newReview`);
-      if (flag == "protocolTwo") navigate(`/newReview/protocol/${id}`);
-      if (flag == "protocolThree") navigate(`/newReview/protocolpartTwo/${id}`);
+      if (flag == "protocol") toGo(`/newReview`);
+      if (flag == "protocolTwo") toGo(`/newReview/protocol/${id}`);
+      if (flag == "protocolThree") toGo(`/newReview/protocolpartTwo/${id}`);
     } catch (err) {
       console.log(err);
     }

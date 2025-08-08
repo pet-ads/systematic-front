@@ -13,6 +13,7 @@ import {
   Checkbox,
   Box,
 } from "@chakra-ui/react";
+
 import { CheckCircleIcon, InfoIcon, WarningIcon } from "@chakra-ui/icons";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa6";
 import { IoIosCloseCircle } from "react-icons/io";
@@ -22,6 +23,7 @@ import {
   MdKeyboardArrowUp,
   MdKeyboardArrowDown,
 } from "react-icons/md";
+
 import { RiCheckboxMultipleBlankFill } from "react-icons/ri";
 
 // Context
@@ -31,6 +33,8 @@ import StudySelectionContext from "@features/review/shared/context/StudiesSelect
 import usePagination from "@features/review/shared/hooks/usePagination";
 
 // Components
+import PaginationControl from "../controlls/PaginationControl";
+import { Resizable } from "./subcomponents/Resizable";
 
 // Style
 import {
@@ -45,17 +49,15 @@ import { capitalize } from "@features/shared/utils/helpers/formatters/Capitalize
 
 // Type
 import type ArticleInterface from "@features/review/shared/types/ArticleInterface";
-import type { PageLayout } from "@features/review/shared/components/structure/LayoutFactory";
 import type { ViewModel } from "@features/review/shared/hooks/useLayoutPage";
-import { Resizable } from "./subcomponents/Resizable";
-import PaginationControl from "../controlls/PaginationControl";
+import type { ColumnVisibility } from "@features/review/shared/hooks/useVisibilityColumns";
 
 interface Props {
   articles: ArticleInterface[];
   handleHeaderClick: (key: keyof ArticleInterface) => void;
   sortConfig: { key: keyof ArticleInterface; direction: "asc" | "desc" } | null;
-  page: PageLayout;
   layout?: ViewModel;
+  columnsVisible: ColumnVisibility;
 }
 
 type HeaderKeys =
@@ -79,19 +81,19 @@ export default function Expanded({
   articles,
   handleHeaderClick,
   sortConfig,
-  page,
   layout,
+  columnsVisible,
 }: Props) {
   const [columnWidths, setColumnWidths] = useState({
-    studyReviewId: "3rem",
-    title: "8rem",
-    authors: "8rem",
-    venue: "5rem",
-    year: "3rem",
-    selectionStatus: "5rem ",
-    extractionStatus: "5rem ",
-    score: "3rem",
-    readingPriority: "5rem ",
+    studyReviewId: "62px",
+    title: "150px",
+    authors: "150px",
+    venue: "100px",
+    year: "62px",
+    selectionStatus: "100px",
+    extractionStatus: "100px",
+    score: "62px",
+    readingPriority: "100px",
   });
   const studyContext = useContext(StudySelectionContext);
 
@@ -109,7 +111,7 @@ export default function Expanded({
     {
       label: "Extraction",
       key: "extractionStatus",
-      width: columnWidths.selectionStatus,
+      width: columnWidths.extractionStatus,
     },
     { label: "Score", key: "score", width: columnWidths.score },
     {
@@ -133,14 +135,6 @@ export default function Expanded({
     VERY_HIGH: <MdKeyboardDoubleArrowUp color="#388E3C" size="1.5rem" />,
   };
 
-  const shouldShowColumn = (colKey: string) => {
-    if (colKey === "selectionStatus")
-      return page === "Selection" || page === "Identification";
-    if (colKey === "extractionStatus")
-      return page === "Extraction" || page === "Identification";
-    return true;
-  };
-
   const renderStatusIcon = (status: string) => statusIconMap[status] || null;
   const renderPriorityIcon = (priority: string) =>
     priorityIconMap[priority] || null;
@@ -152,13 +146,65 @@ export default function Expanded({
     paginatedArticles,
     handleNextPage,
     handlePrevPage,
+    changeQuantityOfItens,
   } = usePagination(articles);
 
-  const handleColumnResize = (key: string, newWidth: number) => {
-    setColumnWidths((prev) => ({
-      ...prev,
-      [key]: newWidth,
-    }));
+  const handleColumnResize = (key: HeaderKeys, newWidth: number) => {
+    setColumnWidths((prev) => {
+      const newWidths = { ...prev };
+
+      const visibleColumnsKeys = (Object.keys(prev) as HeaderKeys[]).filter(
+        (colKey) => columnsVisible[`${colKey}`]
+      );
+
+      const columnIndex = visibleColumnsKeys.indexOf(key);
+
+      const minWidth = 62;
+      const maxWidth = 300;
+      const currentWidth = parseFloat(prev[key]);
+      newWidth = Math.max(minWidth, Math.min(newWidth, maxWidth));
+      let difference = newWidth - currentWidth;
+
+      if (difference === 0 || columnIndex === visibleColumnsKeys.length - 1) {
+        newWidths[key] = `${newWidth}px`;
+        return newWidths;
+      }
+
+      let totalResizableWidth = 0;
+      for (let i = columnIndex + 1; i < visibleColumnsKeys.length; i++) {
+        totalResizableWidth +=
+          parseFloat(prev[visibleColumnsKeys[i]]) - minWidth;
+      }
+
+      if (difference > totalResizableWidth) {
+        const adjustedNewWidth = currentWidth + totalResizableWidth;
+        newWidths[key] = `${adjustedNewWidth}px`;
+        difference = adjustedNewWidth - currentWidth;
+
+        for (let i = columnIndex + 1; i < visibleColumnsKeys.length; i++) {
+          newWidths[visibleColumnsKeys[i]] = `${minWidth}px`;
+        }
+        return newWidths;
+      }
+
+      let remainingDifference = difference;
+      for (let i = columnIndex + 1; i < visibleColumnsKeys.length; i++) {
+        const nextColumnKey = visibleColumnsKeys[i];
+        const nextColumnWidth = parseFloat(prev[nextColumnKey]);
+        const spaceToReduce = nextColumnWidth - minWidth;
+        const reduction = Math.min(remainingDifference, spaceToReduce);
+
+        newWidths[nextColumnKey] = `${nextColumnWidth - reduction}px`;
+        remainingDifference -= reduction;
+
+        if (remainingDifference <= 0) {
+          break;
+        }
+      }
+
+      newWidths[key] = `${newWidth}px`;
+      return newWidths;
+    });
   };
 
   if (!studyContext) return;
@@ -173,6 +219,9 @@ export default function Expanded({
   const collapsedSpanTextChanged = {
     ...collapsedSpanText,
     w: "auto",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
   };
 
   return (
@@ -217,7 +266,7 @@ export default function Expanded({
               </Th>
               {columns.map(
                 (col) =>
-                  shouldShowColumn(col.key) && (
+                  columnsVisible[`${col.key}`] && (
                     <Th
                       key={col.key}
                       textAlign="center"
@@ -230,7 +279,8 @@ export default function Expanded({
                     >
                       <Resizable
                         direction="horizontal"
-                        minWidth={50}
+                        minWidth={62}
+                        maxWidth={300}
                         onResize={(width) => handleColumnResize(col.key, width)}
                       >
                         {({ ref, isResizing }) => (
@@ -255,17 +305,35 @@ export default function Expanded({
                               justifyContent="center"
                               alignItems="center"
                               w="100%"
-                              p="2rem 0 1rem 0"
+                              p="2rem 1rem 1rem 0"
+                              overflow="hidden"
+                              textOverflow="ellipsis"
+                              whiteSpace="nowrap"
                             >
-                              {col.label}
+                              <Text
+                                flex="1"
+                                overflow="hidden"
+                                textOverflow="ellipsis"
+                                whiteSpace="nowrap"
+                                textAlign="center"
+                                px="0.5rem"
+                              >
+                                {col.label}
+                              </Text>
                               {sortConfig?.key === col.key ? (
                                 sortConfig.direction === "asc" ? (
-                                  <FaChevronUp style={chevronIcon} />
+                                  <Box flexShrink={0}>
+                                    <FaChevronUp style={chevronIcon} />
+                                  </Box>
                                 ) : (
-                                  <FaChevronDown style={chevronIcon} />
+                                  <Box flexShrink={0}>
+                                    <FaChevronDown style={chevronIcon} />
+                                  </Box>
                                 )
                               ) : (
-                                <FaChevronDown style={chevronIcon} />
+                                <Box flexShrink={0}>
+                                  <FaChevronDown style={chevronIcon} />
+                                </Box>
                               )}
                             </Box>
                             <Box
@@ -341,55 +409,63 @@ export default function Expanded({
                       </Text>
                     </Tooltip>
                   </Td>
-                  <Td sx={tdSX} w={columnWidths.title}>
-                    <Tooltip
-                      sx={tooltip}
-                      label={reference.title}
-                      aria-label="Full Title"
-                      hasArrow
-                    >
-                      <Text sx={collapsedSpanTextChanged}>
-                        {reference.title}
-                      </Text>
-                    </Tooltip>
-                  </Td>
-                  <Td sx={tdSX} w={columnWidths.authors}>
-                    <Tooltip
-                      sx={tooltip}
-                      label={reference.authors}
-                      aria-label="Full Author List"
-                      hasArrow
-                    >
-                      <Text sx={collapsedSpanTextChanged}>
-                        {reference.authors}
-                      </Text>
-                    </Tooltip>
-                  </Td>
-                  <Td sx={tdSX} w={columnWidths.venue}>
-                    <Tooltip
-                      sx={tooltip}
-                      label={reference.venue}
-                      aria-label="Journal Name"
-                      hasArrow
-                    >
-                      <Text sx={collapsedSpanTextChanged}>
-                        {reference.venue}
-                      </Text>
-                    </Tooltip>
-                  </Td>
-                  <Td sx={tdSX} w={columnWidths.year}>
-                    <Tooltip
-                      sx={tooltip}
-                      label={reference.year}
-                      aria-label="Year of published"
-                      hasArrow
-                    >
-                      <Text sx={collapsedSpanTextChanged}>
-                        {reference.year}
-                      </Text>
-                    </Tooltip>
-                  </Td>
-                  {page == "Selection" || page == "Identification" ? (
+                  {columnsVisible["title"] && (
+                    <Td sx={tdSX} w={columnWidths.title}>
+                      <Tooltip
+                        sx={tooltip}
+                        label={reference.title}
+                        aria-label="Full Title"
+                        hasArrow
+                      >
+                        <Text sx={collapsedSpanTextChanged}>
+                          {reference.title}
+                        </Text>
+                      </Tooltip>
+                    </Td>
+                  )}
+                  {columnsVisible["authors"] && (
+                    <Td sx={tdSX} w={columnWidths.authors}>
+                      <Tooltip
+                        sx={tooltip}
+                        label={reference.authors}
+                        aria-label="Full Author List"
+                        hasArrow
+                      >
+                        <Text sx={collapsedSpanTextChanged}>
+                          {reference.authors}
+                        </Text>
+                      </Tooltip>
+                    </Td>
+                  )}
+                  {columnsVisible["venue"] && (
+                    <Td sx={tdSX} w={columnWidths.venue}>
+                      <Tooltip
+                        sx={tooltip}
+                        label={reference.venue}
+                        aria-label="Journal Name"
+                        hasArrow
+                      >
+                        <Text sx={collapsedSpanTextChanged}>
+                          {reference.venue}
+                        </Text>
+                      </Tooltip>
+                    </Td>
+                  )}
+                  {columnsVisible["year"] && (
+                    <Td sx={tdSX} w={columnWidths.year}>
+                      <Tooltip
+                        sx={tooltip}
+                        label={reference.year}
+                        aria-label="Year of published"
+                        hasArrow
+                      >
+                        <Text sx={collapsedSpanTextChanged}>
+                          {reference.year}
+                        </Text>
+                      </Tooltip>
+                    </Td>
+                  )}
+                  {columnsVisible["selectionStatus"] && (
                     <Td sx={tdSX} w={columnWidths.selectionStatus}>
                       <Box
                         display="flex"
@@ -407,8 +483,8 @@ export default function Expanded({
                         </Text>
                       </Box>
                     </Td>
-                  ) : null}
-                  {page == "Extraction" || page == "Identification" ? (
+                  )}
+                  {columnsVisible["extractionStatus"] && (
                     <Td sx={tdSX} w={columnWidths.extractionStatus}>
                       <Box
                         display="flex"
@@ -426,35 +502,45 @@ export default function Expanded({
                         </Text>
                       </Box>
                     </Td>
-                  ) : null}
-                  <Td sx={tdSX} w={columnWidths.score}>
-                    <Tooltip
-                      sx={tooltip}
-                      label={reference.score}
-                      aria-label="score of article"
-                      hasArrow
+                  )}
+                  {columnsVisible["score"] && (
+                    <Td sx={tdSX} w={columnWidths.score}>
+                      <Tooltip
+                        sx={tooltip}
+                        label={reference.score}
+                        aria-label="score of article"
+                        hasArrow
+                      >
+                        <Text sx={collapsedSpanTextChanged}>
+                          {reference.score}
+                        </Text>
+                      </Tooltip>
+                    </Td>
+                  )}
+                  {columnsVisible["readingPriority"] && (
+                    <Td
+                      sx={tdSX}
+                      w={columnWidths.readingPriority}
+                      pl="0.5rem"
+                      pr="0.5rem"
                     >
-                      <Text sx={collapsedSpanTextChanged}>
-                        {reference.score}
-                      </Text>
-                    </Tooltip>
-                  </Td>
-                  <Td sx={tdSX} w={columnWidths.readingPriority}>
-                    <Box
-                      display="flex"
-                      alignItems="center"
-                      justifyContent="center"
-                      gap="0.5rem"
-                    >
-                      {renderPriorityIcon(reference.readingPriority)}
-                      <Text sx={collapsedSpanTextChanged}>
-                        {capitalize(
-                          reference.readingPriority?.toString().toLowerCase() ||
-                            ""
-                        ).replace("_", " ")}
-                      </Text>
-                    </Box>
-                  </Td>
+                      <Box
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                        gap="0.5rem"
+                      >
+                        {renderPriorityIcon(reference.readingPriority)}
+                        <Text sx={collapsedSpanTextChanged}>
+                          {capitalize(
+                            reference.readingPriority
+                              ?.toString()
+                              .toLowerCase() || ""
+                          ).replace("_", " ")}
+                        </Text>
+                      </Box>
+                    </Td>
+                  )}
                 </Tr>
               ))
             ) : (
@@ -473,6 +559,7 @@ export default function Expanded({
         quantityOfPages={quantityOfPages}
         handleNextPage={handleNextPage}
         handlePrevPage={handlePrevPage}
+        changeQuantityOfItens={changeQuantityOfItens}
       />
     </Box>
   );

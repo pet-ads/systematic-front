@@ -1,16 +1,27 @@
-import { Box, Button, Flex } from "@chakra-ui/react";
-import HeaderLink from "./subcomponents/links/HeaderLink";
-import { HeaderTheme } from "./styles";
-import Logo from "../../../../../../assets/images/logos/startwhite.png";
-import { Image } from "@chakra-ui/react";
-import { Link, useNavigate } from "react-router-dom";
+// External library
 import { useState } from "react";
-import useRecoverUserData from "@features/auth/hooks/useRecoverUserData";
+import { Link } from "react-router-dom";
+import { Image } from "@chakra-ui/react";
+import { Box, Button, Flex } from "@chakra-ui/react";
+
+// Components
 import HomepageModal from "@features/landing/components/modals/HomepageModal/Index";
 import FormLogin from "@features/auth/components/forms/SignIn/Index";
 import FormSignup from "@features/auth/components/forms/Signup/Index";
 import ForgotPassword from "@features/auth/components/forms/ForgotPassword";
+import HeaderLink from "./subcomponents/links/HeaderLink";
 
+// Hooks
+import useRecoverUserData from "@features/auth/hooks/useRecoverUserData";
+import { useNavigation } from "@features/shared/hooks/useNavigation";
+
+// Assets
+import Logo from "../../../../../../assets/images/logos/startwhite.png";
+
+// Styles
+import { HeaderTheme } from "./styles";
+
+// Types
 interface IHeaderProps {
   show: boolean;
 }
@@ -27,7 +38,8 @@ export default function Header({ show }: IHeaderProps) {
   const [showModal, setShowModal] = useState(false);
   const [openModal, setOpenModal] = useState<IModal>("");
   const [username, setUsername] = useState<string | null>(null);
-  const navigate = useNavigate();
+
+  const { toGo } = useNavigation();
 
   useRecoverUserData(setUsername);
 
@@ -118,7 +130,7 @@ export default function Header({ show }: IHeaderProps) {
               _hover={{ color: "black", backgroundColor: "white" }}
               color={openModal == "login" && showModal ? "black" : "white"}
               bgColor={openModal == "login" && showModal ? "white" : "green"}
-              onClick={() => navigate("/user")}
+              onClick={() => toGo("/user")}
             >
               Bem vindo, {username}
             </Button>

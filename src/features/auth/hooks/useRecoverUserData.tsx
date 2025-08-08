@@ -1,15 +1,30 @@
 // Services
-import { useVerifyIfLoggedIn } from "../services/useVerifyIfLoggedIn";
+import { useVerifyIfLoggedIn as verifyIfLoggedIn } from "../services/useVerifyIfLoggedIn";
+
+// Hooks
+import { useAuth } from "@features/auth/hooks/useAuth";
+
+// Guards
+import { isLeft } from "@features/shared/errors/pattern/Either";
 
 export default async function useRecoverUserData(
   setUsername: React.Dispatch<React.SetStateAction<string | null>>
 ) {
-  const userData = localStorage.getItem("username");
-  const verifyIfLoggedInResponse = await useVerifyIfLoggedIn();
+  const result = useAuth();
 
-  if (verifyIfLoggedInResponse.isLoggedIn) setUsername(userData);
-  else {
-    localStorage.clean();
-    setUsername(userData);
+  if (isLeft(result)) {
+    return;
   }
+
+  const verifyIfLoggedInResponse = await verifyIfLoggedIn();
+
+  const { user } = result.value;
+
+  if (!result.value || user == null) return;
+
+  if (verifyIfLoggedInResponse.isLoggedIn) {
+    return;
+  }
+
+  setUsername(user.sub);
 }

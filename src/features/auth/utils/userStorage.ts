@@ -13,7 +13,7 @@ const TOKEN_KEY = "accessToken";
 // Types
 interface UserStorageProps {
   get: () => Either<ApplicationError, UserData>;
-  set: (data: UserData) => void;
+  set: (data: Omit<UserData, "id">) => void;
   clear: () => void;
 }
 
@@ -32,12 +32,11 @@ export const userStorage: UserStorageProps = {
       return errorFactory("custom", "Failed to parse user data.");
     }
   },
-  set: (data: UserData) => {
+  set: (data: Omit<UserData, "id">) => {
     localStorage.setItem(USER_KEY, JSON.stringify(data));
     localStorage.setItem(TOKEN_KEY, data.token);
   },
   clear: () => {
-    localStorage.removeItem(USER_KEY);
-    localStorage.removeItem(TOKEN_KEY);
+    localStorage.clear();
   },
 };

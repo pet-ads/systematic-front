@@ -1,13 +1,15 @@
-// ServerError.tsx
-import React from 'react';
-import { Box, Heading, Text, Button } from '@chakra-ui/react';
-import { useNavigate } from 'react-router-dom';
+// External library
+import React from "react";
+import { Box, Heading, Text, Button } from "@chakra-ui/react";
+
+// Hooks
+import { useNavigation } from "@features/shared/hooks/useNavigation";
 
 const ServerError: React.FC = () => {
-  const navigate = useNavigate();
+  const { toGo } = useNavigation();
 
   const handleBackToHome = () => {
-    navigate('/');
+    toGo("/");
   };
 
   return (
@@ -16,7 +18,8 @@ const ServerError: React.FC = () => {
         500
       </Heading>
       <Text fontSize="xl" color="gray.500">
-        Desculpe, houve um erro no servidor. Por favor, tente novamente mais tarde.
+        Desculpe, houve um erro no servidor. Por favor, tente novamente mais
+        tarde.
       </Text>
       <Button mt={6} colorScheme="teal" onClick={handleBackToHome}>
         Voltar para a Página Inicial

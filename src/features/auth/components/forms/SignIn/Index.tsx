@@ -13,15 +13,10 @@ export default function FormLogin({
   redirectForgotPassword: () => void;
 }) {
   const {
-    username,
-    setUsername,
-    password,
-    setPassword,
-    usernameError,
-    passwordError,
+    credentials,
+    errors,
+    handleChangeCredentials,
     handleSubmit,
-    error,
-    setError,
     isSubmitting,
   } = useHandleLogin();
 
@@ -34,30 +29,28 @@ export default function FormLogin({
           <input
             type="text"
             id="username"
-            value={username}
+            value={credentials.username}
             onChange={(e) => {
-              setUsername(e.target.value);
-              setError("");
+              handleChangeCredentials("username", e.target.value);
             }}
-            className={error || usernameError ? "inputError" : ""}
+            className={errors.username ? "inputError" : ""}
           />
-          {usernameError && <p className="error">{usernameError}</p>}
+          {errors.username && <p className="error">{errors.username}</p>}
         </div>
         <div className="inputGroup">
           <label htmlFor="password">Password</label>
           <input
             type="password"
             id="password"
-            value={password}
+            value={credentials.password}
             onChange={(e) => {
-              setPassword(e.target.value);
-              setError("");
+              handleChangeCredentials("password", e.target.value);
             }}
-            className={error || passwordError ? "inputError" : ""}
+            className={errors.password ? "inputError" : ""}
           />
-          {passwordError && <p className="error">{passwordError}</p>}
+          {errors.password && <p className="error">{errors.password}</p>}
         </div>
-        {error && <p className="error">{error}</p>}
+        {errors && <p className="error">{errors.general}</p>}
         <div className="actions">
           <button type="submit" disabled={isSubmitting}>
             {isSubmitting ? "Is submitting..." : "Log in"}

@@ -1,19 +1,39 @@
-import { Box, Icon } from "@chakra-ui/react";
-import { Link } from "react-router-dom";
+// External library
 import { ImExit } from "react-icons/im";
-import Style from "./LogouButton.module.css";
-import useLogout from "../../../../features/auth/services/useLogout";
+
+// Hooks
+import { useAuth } from "@features/auth/hooks/useAuth";
+import { useNavigation } from "@features/shared/hooks/useNavigation";
+
+// Guards
+import { isLeft } from "@features/shared/errors/pattern/Either";
+
+// Styles
+import style from "./LogouButton.module.css";
 
 const LogoutButton = () => {
-  const logout = useLogout();
+  const result = useAuth();
+  const { toGo } = useNavigation();
+
+  if (isLeft(result)) return null;
+
+  const { logout } = result.value;
+
+  const handleLogout = async () => {
+    await logout();
+    toGo("/");
+  };
 
   return (
-    <Box display="flex" w="120px" className={Style.linkBox}>
-      <Icon boxSize="21px" mr="7px" as={ImExit} color="#c9d9e5" />
-      <Link className={Style.link} onClick={logout} to="/">
+    <div
+      className={style.linkBox}
+      style={{ display: "flex", width: "120px", alignItems: "center" }}
+    >
+      <ImExit size={20} style={{ marginRight: "1rem", color: "#c9d9e5" }} />
+      <button className={style.link} onClick={handleLogout}>
         Logout
-      </Link>
-    </Box>
+      </button>
+    </div>
   );
 };
 

@@ -1,40 +1,61 @@
-import { useEffect, useState } from "react";
-import { cardDataProps, useFetchRevisionCard } from "./useFetchRevisionCard";
+// External library
+import useSWR from "swr";
 
-const useGetReviewCard = () => {
-  const [myRevisionsUrl, setMyRevisionsUrl] = useState("");
-  const [cardData, setCardData] = useState<cardDataProps[] | undefined>(
-    undefined
-  );
-  const [isLoaded, setIsLoaded] = useState(false);
+// Infra
+import Axios from "../../../infrastructure/http/axiosClient";
 
-  useEffect(() => {
-    localStorage.removeItem("systematicReviewId");
-    const url = localStorage.getItem("myReviewsLink");
+// Hooks
+import { useAuth } from "@features/auth/hooks/useAuth";
 
-    if (url) {
-      setMyRevisionsUrl(url);
+// Types
+import type { CardReview } from "../types";
+
+// Guards
+import { isLeft } from "@features/shared/errors/pattern/Either";
+
+// Utils
+import getRequestOptions from "@features/auth/utils/getRequestOptions";
+
+interface HttpResponse {
+  content: CardReview[];
+}
+
+export default function useGetReviewCard() {
+  localStorage.removeItem("systematicReviewId");
+
+  const result = useAuth();
+
+  const user = !isLeft(result) ? result.value.user : null;
+  const authLoading = !isLeft(result) ? result.value.isLoading : false;
+  const authError = isLeft(result) ? result.value.message : null;
+
+  const userId = user?.id ?? null;
+
+  const path =
+    !authLoading && userId
+      ? `http://localhost:8080/api/v1/systematic-study/owner/${userId}`
+      : null;
+
+  const fetchAllCardReview = async () => {
+    if (!path) return;
+    try {
+      const options = getRequestOptions();
+      const response = await Axios.get<HttpResponse>(path, options);
+      return response.data.content || [];
+    } catch (error) {
+      console.log("Error", error);
     }
-  }, []);
+  };
 
-  const rawData = useFetchRevisionCard(myRevisionsUrl);
+  const { data, isLoading, error, mutate } = useSWR(path, fetchAllCardReview, {
+    revalidateOnFocus: false,
+    revalidateOnMount: true,
+  });
 
-  useEffect(() => {
-    async function fetch() {
-      const newCardData = await Promise.all(
-        rawData.map(async (study) => {
-          return { ...study };
-        })
-      );
-
-      setCardData(newCardData);
-      if (cardData) setIsLoaded(true);
-    }
-
-    fetch();
-  }, [rawData]);
-
-  return { cardData, isLoaded };
-};
-
-export default useGetReviewCard;
+  return {
+    cardData: data,
+    isLoaded: !isLoading,
+    error: error || authError,
+    mutate,
+  };
+}

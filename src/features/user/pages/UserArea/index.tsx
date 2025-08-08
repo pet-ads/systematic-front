@@ -1,13 +1,15 @@
 // External library
 import { Flex } from "@chakra-ui/react";
 
-// Hooks
+// Services
 import useGetReviewCard from "../../services/useGetReviewCard";
 
 // Components
 import FlexLayout from "../../../../components/structure/Flex/Flex";
 import Header from "../../../../components/structure/Header/Header";
 import Loader from "../../../../components/feedback/Loader";
+
+// Factory
 import RenderCards from "./factory/cards/RenderCards";
 import RenderCreateNewReview from "./factory/cards/RenderCreateNewReview";
 

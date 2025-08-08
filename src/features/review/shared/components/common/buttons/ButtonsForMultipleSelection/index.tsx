@@ -14,11 +14,10 @@ const buttonSX = {
   justifyContent: "center",
   alignItems: "center",
   transition: "0.3s ease-in-out",
-  boxShadow: "md",
   p: "0 1rem",
   w: "100%",
   h: "2.5rem",
-  color: "white",
+  color: "#263C56",
 };
 
 interface ButtonsForMultipleSelectionProps {
@@ -60,33 +59,31 @@ export default function ButtonsForMultipleSelection({
     onShowSelectedArticles(false);
   };
 
-  return articles && Object.keys(articles).length >= 1 ? (
+  return articles && Object.keys(articles).length > 1 ? (
     <Flex gap=".5rem">
       {!isShown ? (
         <Button
           sx={buttonSX}
-          bg="#6B8E23"
-          border="2px solid #6B8E23"
-          _hover={{ bg: "white", color: "#6B8E23" }}
-          transition="0.2s ease-in-out"
+          bg="#EBF0F3"
+          _hover={{ bg: "white", color: "#263C56", boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)"}}
+          transition="0.1s ease-in-out"
           onClick={() => {
             onShowSelectedArticles(!isShown);
           }}
-          leftIcon={<FaEye />}
+          leftIcon={<FaEye color="green" />}
         >
           Show selected
         </Button>
       ) : (
         <Button
           sx={buttonSX}
-          bg="#6B8E23"
-          border="2px solid #6B8E23"
-          _hover={{ bg: "white", color: "#6B8E23" }}
+          bg="#EBF0F3"
+          _hover={{ bg: "white", color: "#263C56", boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)"}}
           transition="0.2s ease-in-out"
           onClick={() => {
             onShowSelectedArticles(!isShown);
           }}
-          leftIcon={<FaEye />}
+          leftIcon={<FaEye color="green" />}
         >
           Show all
         </Button>
@@ -94,37 +91,34 @@ export default function ButtonsForMultipleSelection({
 
       <Button
         sx={buttonSX}
-        bg="#3182CE"
-        border="2px solid #3182CE"
-        _hover={{ bg: "white", color: "#3182CE" }}
+        bg="#EBF0F3"
+        _hover={{ bg: "white", color: "#263C56", boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)"}}
         transition="0.2s ease-in-out"
         onClick={handleSendDuplicatedStudies}
-        leftIcon={<FaCheckCircle />}
+        leftIcon={<FaCheckCircle color="blue"/>}
       >
-        Mark to duplicated
+        Mark as duplicated
       </Button>
       <Button
         sx={buttonSX}
-        bg="#951717"
-        border="2px solid #951717"
-        _hover={{ bg: "white", color: "#951717" }}
+        bg="#EBF0F3"
+        _hover={{ bg: "white", color: "#263C56", boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)"}}
         transition="0.2s ease-in-out"
         onClick={handleSendExcludedStudies}
-        leftIcon={<FaTrashAlt />}
+        leftIcon={<FaTrashAlt color="red"/>}
       >
-        Mark to excluded
+        Mark as excluded
       </Button>
       <Button
         sx={buttonSX}
-        bg="#F6BB42"
-        border="2px solid #F6BB42"
-        _hover={{ bg: "white", color: "#F6BB42" }}
+        bg="#EBF0F3"
+        _hover={{ bg: "white", color: "#263C56", boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)"}}
         transition="0.2s ease-in-out"
         onClick={() => {
           studyContext.clearSelectedArticles();
           onShowSelectedArticles(false);
         }}
-        leftIcon={<MdOutlineCleaningServices />}
+        leftIcon={<MdOutlineCleaningServices color="orange"/>}
       >
         Clear selection
       </Button>

@@ -1,5 +1,4 @@
 // External library
-import { useNavigate } from "react-router-dom";
 import {
   Box,
   Button,
@@ -12,10 +11,11 @@ import {
 import { FaPlusCircle } from "react-icons/fa";
 
 // Component
-import CreateResponseComponent from "../../../factory/CreateResponseComponents/index.tsx";
+import CreateResponseComponent from "@features/review/execution-extraction/factory/CreateResponseComponents/index.tsx";
 
 // Hooks
-import { useExtractionFormSubmission } from "../../../services/useExtractionFormSubmission.tsx";
+import { useExtractionFormSubmission } from "@features/review/execution-extraction/services/useExtractionFormSubmission.tsx";
+import { useNavigation } from "@features/shared/hooks/useNavigation";
 
 // Styles
 import { button } from "../styles.ts";
@@ -47,7 +47,7 @@ export default function DataExtraction({
 }: DataExtractionFormProps) {
   const reviewId = localStorage.getItem("systematicReviewId");
 
-  const navigate = useNavigate();
+  const { toGo } = useNavigation();
 
   const { submitResponses } = useExtractionFormSubmission({
     responses: questions ?? {},
@@ -98,7 +98,7 @@ export default function DataExtraction({
                     }}
                     w="30%"
                     onClick={() =>
-                      navigate(`/newReview/ProtocolPartThree/${reviewId}`)
+                      toGo(`/newReview/ProtocolPartThree/${reviewId}`)
                     }
                   >
                     Create Questions
@@ -139,7 +139,7 @@ export default function DataExtraction({
                     }}
                     w="30%"
                     onClick={() =>
-                      navigate(`/newReview/ProtocolPartThree/${reviewId}`)
+                      toGo(`/newReview/ProtocolPartThree/${reviewId}`)
                     }
                   >
                     Create Questions

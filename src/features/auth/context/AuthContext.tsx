@@ -1,6 +1,5 @@
 // External library
 import { createContext, ReactNode, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 // Hooks
 import useDecodeToken from "@features/auth/hooks/useDecodeToken";
@@ -16,7 +15,7 @@ import { userStorage } from "@features/auth/utils/userStorage";
 import errorFactory from "@features/shared/errors/factory/errorFactory";
 
 // Error
-import { Either } from "@features/shared/errors/pattern/Either";
+import type { Either } from "@features/shared/errors/pattern/Either";
 import { ApplicationError } from "@features/shared/errors/base/ApplicationError";
 
 // Guards
@@ -31,7 +30,7 @@ export interface AuthContextProps {
   login: (
     credentials: AccessCredentials
   ) => Promise<Either<ApplicationError, void>>;
-  logout: () => void;
+  logout: () => Promise<Either<ApplicationError, void>>;
 }
 
 export const AuthContext = createContext<AuthContextProps | undefined>(
@@ -43,7 +42,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   const { decodeToken, checkTokenExpiration } = useDecodeToken();
-  const navigate = useNavigate();
 
   const initialize = (): Either<ApplicationError, UserData> => {
     setIsLoading(true);
@@ -87,7 +85,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         return errorFactory("custom", "Request is empty.");
       }
 
-      const { token } = response.data;
+      const { accessToken: token } = response.data;
 
       if (!token) {
         return errorFactory("unauthorized", "Token not found.");
@@ -99,13 +97,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         return errorFactory("unauthorized", "Expires Token.");
       }
 
-      const userData: UserData = {
-        ...decoded,
+      const { id, ...rest } = decoded;
+
+      const userData = {
+        ...rest,
         token,
       };
 
       userStorage.set(userData);
-      navigate("/user");
+      setUser({
+        ...userData,
+        id,
+      });
 
       return right(undefined);
     } catch (error) {
@@ -118,11 +121,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const logout = () => {
-    userStorage.clear();
-    logoutService();
-    setUser(null);
-    navigate("/");
+  const logout = async (): Promise<Either<ApplicationError, void>> => {
+    try {
+      await logoutService();
+      setUser(null);
+      return right(undefined);
+    } catch (error) {
+      return errorFactory("custom", "Erro ao fazer logout.");
+    }
   };
 
   return (

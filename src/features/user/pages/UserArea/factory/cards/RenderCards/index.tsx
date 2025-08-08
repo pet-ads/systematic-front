@@ -2,10 +2,10 @@
 import RevisionCard from "../../../subcomponents/cards/RevisionCard";
 
 // Type
-import { cardDataProps } from "../../../../../services/useFetchRevisionCard";
+import type { CardReview } from "@features/user/types";
 
 interface RenderCardsProps {
-  data: cardDataProps[];
+  data: CardReview[];
 }
 
 const RenderCards = ({ data }: RenderCardsProps) => {

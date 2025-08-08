@@ -1,8 +1,8 @@
-// External library
-import { useNavigate } from "react-router-dom";
+// Service
+import useFetchRevisionStage from "./useFetchRevisionStage.tsx";
 
 // Hook
-import useFetchRevisionStage from "./useFetchRevisionStage.tsx";
+import { useNavigation } from "@features/shared/hooks/useNavigation";
 
 // Type
 import type { Stage } from "./useFetchRevisionStage.tsx";
@@ -16,7 +16,7 @@ export default function useNavigateToPendingStage({
 }: NavigateToPendingStageProps) {
   const { stage, formatedStage } = useFetchRevisionStage({ reviewId });
 
-  const navigate = useNavigate();
+  const { toGo } = useNavigation();
 
   const getStageLink = (Stage: Stage) => {
     const basePath = "/newReview/";
@@ -37,7 +37,7 @@ export default function useNavigateToPendingStage({
   };
 
   const redirectToPendingStage = () => {
-    navigate(getStageLink(stage as Stage));
+    toGo(getStageLink(stage as Stage));
   };
 
   return { redirectToPendingStage, stage: formatedStage };

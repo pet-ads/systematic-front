@@ -9,6 +9,7 @@ export interface User {
 export interface JWTClaims {
   id: string;
   exp: number;
+  sub: string;
   iat: number;
 }
 

@@ -1,9 +1,16 @@
+// External library
 import { useEffect, useState } from "react";
+
+// Infra
 import axios from "../../../../infrastructure/http/axiosClient";
 
-import { useNavigate } from "react-router-dom";
+// Service
 import useSystematicStudyInfo from "./useSystematicStudyInfo";
 
+// Hooks
+import { useNavigation } from "@features/shared/hooks/useNavigation";
+
+// Types
 interface useCreateReviewPutProps {
   title: string;
   description: string;
@@ -24,7 +31,7 @@ const useCreateReview = () => {
   const [isReturn, setIsReturn] = useState(false);
   const [id, setId] = useState("");
 
-  const navigate = useNavigate();
+  const { toGo } = useNavigation();
 
   useEffect(() => {
     async function fetch() {
@@ -127,7 +134,7 @@ const useCreateReview = () => {
 
       localStorage.setItem("systematicReviewId", reviewId);
 
-      navigate(`/newReview/protocol/${reviewId}`);
+      toGo(`/newReview/protocol/${reviewId}`);
     }
   }
 
@@ -135,7 +142,7 @@ const useCreateReview = () => {
     if (title === "") setIsTitleValid(false);
     else {
       await useCreateReviewPut({ title, description, id });
-      navigate(`/newReview/protocol/${id}`);
+      toGo(`/newReview/protocol/${id}`);
     }
   }
 

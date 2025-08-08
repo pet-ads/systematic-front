@@ -1,25 +1,31 @@
-// Service
+// Infra
 import Axios from "../../../infrastructure/http/axiosClient";
 
-// Hooks
-import useDeleteUserData from "@features/auth/hooks/useDeleteUserData";
+// Error
+import type { Either } from "@features/shared/errors/pattern/Either";
+import { ApplicationError } from "@features/shared/errors/base/ApplicationError";
 
-export default function useLogout() {
-  const deleteUserData = useDeleteUserData();
+// Utils
+import { userStorage } from "../utils/userStorage";
 
-  const logout = async () => {
-    try {
-      await Axios.post(
-        "http://localhost:8080/api/v1/auth/logout",
-        {},
-        { withCredentials: true }
-      );
-      deleteUserData();
-    } catch (error) {
-      console.log(error);
-      throw error;
-    }
-  };
+// Factory
+import errorFactory from "@features/shared/errors/factory/errorFactory";
 
-  return logout;
+// Guard
+import { right } from "@features/shared/errors/pattern/Either";
+
+export default async function useLogout(): Promise<
+  Either<ApplicationError, void>
+> {
+  try {
+    await Axios.post(
+      "http://localhost:8080/api/v1/auth/logout",
+      {},
+      { withCredentials: true }
+    );
+    userStorage.clear();
+    return right(undefined);
+  } catch (error) {
+    return errorFactory("custom", "Error logging out.");
+  }
 }

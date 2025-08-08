@@ -44,27 +44,27 @@ export default function NavButton({
   };
 
   return (
-    <Link to={path}>
-      <Button
-        ml="2rem"
-        onClick={handleClick}
-        bgColor={bgColor}
-        color={color}
-        borderRadius={borderRadius}
-        _hover={{
-          bgColor: hoverBgColor,
-          color: hoverColor,
-          boxShadow: "0 6px 8px rgba(0, 0, 0, 0.15)",
-        }}
-        {...buttonProps}
-        transition="all 0.3s ease"
-        outline="none"
-        _focus={{
-          boxShadow: "0 0 0 3px rgba(66, 153, 225, 0.6)",
-        }}
-      >
-        {text}
-      </Button>
-    </Link>
+    <Button 
+      as={path ? Link : undefined}
+      to={path || undefined}
+      ml='2rem'
+      onClick={handleClick}
+      bgColor={bgColor} 
+      color={color}
+      borderRadius={borderRadius}
+      _hover={{ 
+        bgColor: hoverBgColor,
+        color: hoverColor,
+        boxShadow: "0 6px 8px rgba(0, 0, 0, 0.15)" 
+      }}
+      {...buttonProps}
+      transition="all 0.3s ease" 
+      outline="none" 
+      _focus={{
+        boxShadow: "0 0 0 3px rgba(66, 153, 225, 0.6)", 
+      }}
+    >
+      {text}
+    </Button> 
   );
 }

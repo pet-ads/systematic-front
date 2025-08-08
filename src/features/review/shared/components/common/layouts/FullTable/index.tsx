@@ -1,18 +1,26 @@
+// External library
 import { Box } from "@chakra-ui/react";
-import ArticleInterface from "../../../../types/ArticleInterface";
 
-import { PageLayout } from "../../../structure/LayoutFactory";
+// Components
 import ArticlesTable from "../../tables/ArticlesTable";
 
+// Hooks
+import { ColumnVisibility } from "@features/review/shared/hooks/useVisibilityColumns";
+
+// Types
+import type ArticleInterface from "../../../../types/ArticleInterface";
 interface TableProps {
   articles: ArticleInterface[];
-  page: PageLayout;
+  columnsVisible: ColumnVisibility;
 }
 
-export const FullTable: React.FC<TableProps> = ({ articles, page }) => {
+export const FullTable: React.FC<TableProps> = ({
+  articles,
+  columnsVisible,
+}) => {
   return (
     <Box w="100%" h="100%">
-      <ArticlesTable articles={articles} page={page} />
+      <ArticlesTable articles={articles} columnsVisible={columnsVisible} />
     </Box>
   );
 };

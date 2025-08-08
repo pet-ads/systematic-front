@@ -1,37 +1,44 @@
+// External library
 import { useContext, useMemo, useState } from "react";
 import { Box, Flex } from "@chakra-ui/react";
 
-import useInputState from "@features/review/shared/hooks/useInputState";
+// Context
+import StudySelectionContext from "@features/review/shared/context/StudiesSelectionContext";
 
+// Hooks
+import useInputState from "@features/review/shared/hooks/useInputState";
+import useLayoutPage from "../../../shared/hooks/useLayoutPage";
+import { useFilterReviewArticles } from "../../../shared/hooks/useFilterReviewArticles";
+
+// Components
 import Header from "../../../../../components/structure/Header/Header";
 import FlexLayout from "../../../../../components/structure/Flex/Flex";
 import InputText from "../../../../../components/common/inputs/InputText";
 import SelectInput from "../../../../../components/common/inputs/SelectInput";
 import LayoutFactory from "../../../shared/components/structure/LayoutFactory";
+import ButtonsForMultipleSelection from "../../../shared/components/common/buttons/ButtonsForMultipleSelection";
+import SelectLayout from "../../../shared/components/structure/LayoutButton";
+import ColumnVisibilityMenu from "@features/review/shared/components/common/menu/ColumnVisibilityMenu";
 
-import StudySelectionContext from "@features/review/shared/context/StudiesSelectionContext";
-
+// Styles
 import { inputconteiner } from "../../../shared/styles/executionStyles";
 
-import ArticleInterface from "../../../shared/types/ArticleInterface";
-import { PageLayout } from "../../../shared/components/structure/LayoutFactory";
-import ButtonsForMultipleSelection from "../../../shared/components/common/buttons/ButtonsForMultipleSelection";
-import useLayoutPage from "../../../shared/hooks/useLayoutPage";
-import SelectLayout from "../../../shared/components/structure/LayoutButton";
-import { useFilterReviewArticles } from "../../../shared/hooks/useFilterReviewArticles";
+// Types
+import type ArticleInterface from "../../../shared/types/ArticleInterface";
+import useVisibiltyColumns from "@features/review/shared/hooks/useVisibilityColumns";
 
 export default function Selection() {
+  const [searchString, setSearchString] = useState<string>("");
+  const [showSelected, setShowSelected] = useState<boolean>(false);
+  const selectionContext = useContext(StudySelectionContext);
+
   const { value: selectedStatus, handleChange: handleSelectChange } =
     useInputState<string | null>(null);
-
-  const [searchString, setSearchString] = useState<string>("");
-
-  const [showSelected, setShowSelected] = useState<boolean>(false);
-
   const { layout, handleChangeLayout } = useLayoutPage();
-  const page: PageLayout = "Selection";
 
-  const selectionContext = useContext(StudySelectionContext);
+  const { columnsVisible, toggleColumnVisibility } = useVisibiltyColumns({
+    page: "Selection",
+  });
 
   if (!selectionContext) throw new Error("Failed to get the selection context");
 
@@ -45,13 +52,13 @@ export default function Selection() {
     searchString,
     selectedStatus,
     allArticles,
-    page
+    "Selection"
   );
 
   const finalFilteredArticles = useMemo(() => {
     if (
       showSelected &&
-      Object.keys(selectionContext.selectedArticles).length > 0
+      Object.keys(selectionContext.selectedArticles).length > 1
     ) {
       const selectedIds = Object.keys(selectionContext.selectedArticles).map(
         Number
@@ -105,6 +112,10 @@ export default function Selection() {
               justifyContent="space-between"
               alignItems="center"
             >
+              <ColumnVisibilityMenu
+                columnsVisible={columnsVisible}
+                toggleColumnVisibility={toggleColumnVisibility}
+              />
               <SelectInput
                 names={["INCLUDED", "DUPLICATED", "EXCLUDED", "UNCLASSIFIED"]}
                 values={["INCLUDED", "DUPLICATED", "EXCLUDED", "UNCLASSIFIED"]}
@@ -118,8 +129,9 @@ export default function Selection() {
           <Box w="100%" h="82.5vh">
             <LayoutFactory
               page="Selection"
-              layout={layout}
               articles={finalFilteredArticles}
+              columnsVisible={columnsVisible}
+              layout={layout}
               isLoading={selectionContext.isLoading}
             />
           </Box>

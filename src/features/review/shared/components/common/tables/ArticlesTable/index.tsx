@@ -1,27 +1,30 @@
-import { PageLayout } from "@features/review/shared/components/structure/LayoutFactory";
-import { ViewModel } from "@features/review/shared/hooks/useLayoutPage";
+// External library
+import { useMemo, useState } from "react";
 
-import { useContext, useMemo, useState } from "react";
+import type ArticleInterface from "@features/review/shared/types/ArticleInterface";
 
-import AppContext from "@features/shared/context/ApplicationContext";
-import ArticleInterface from "@features/review/shared/types/ArticleInterface";
+// Components
 import Expanded from "./subcomponents/Expanded";
+
+// Types
+import type { ViewModel } from "@features/review/shared/hooks/useLayoutPage";
+import { ColumnVisibility } from "@features/review/shared/hooks/useVisibilityColumns";
 
 interface Props {
   articles: ArticleInterface[];
-  page: PageLayout;
   layout?: ViewModel;
+  columnsVisible: ColumnVisibility;
 }
 
-export default function ArticlesTable({ articles, page, layout }: Props) {
+export default function ArticlesTable({
+  articles,
+  layout,
+  columnsVisible,
+}: Props) {
   const [sortConfig, setSortConfig] = useState<{
     key: keyof ArticleInterface;
     direction: "asc" | "desc";
   } | null>(null);
-  const context = useContext(AppContext);
-  if (!context) {
-    throw new Error("Failed to get the context on articles table");
-  }
 
   const sortedArticles = useMemo(() => {
     if (!sortConfig) return articles;
@@ -56,8 +59,8 @@ export default function ArticlesTable({ articles, page, layout }: Props) {
       articles={sortedArticles}
       handleHeaderClick={handleHeaderClick}
       sortConfig={sortConfig}
-      page={page}
       layout={layout}
+      columnsVisible={columnsVisible}
     />
   );
 }

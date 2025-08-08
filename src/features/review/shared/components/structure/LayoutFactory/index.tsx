@@ -1,12 +1,19 @@
-import ArticleInterface from "../../../types/ArticleInterface";
-import SkeletonLoader from "@components/feedback/Skeleton";
-import { ViewModel } from "../../../hooks/useLayoutPage";
-import NoDataMessage from "../NoDataMessage";
 import React from "react";
+
+// Components
+import SkeletonLoader from "@components/feedback/Skeleton";
+import NoDataMessage from "../NoDataMessage";
 import { SplitVertical } from "../../common/layouts/SplitVertical";
 import { FullTable } from "../../common/layouts/FullTable";
 import { SplitHorizontal } from "../../common/layouts/SplitHorizontal";
 import { FullArticle } from "../../common/layouts/FullArticle";
+
+// Hooks
+import { ColumnVisibility } from "@features/review/shared/hooks/useVisibilityColumns";
+
+// Types
+import type ArticleInterface from "../../../types/ArticleInterface";
+import type { ViewModel } from "../../../hooks/useLayoutPage";
 
 export type PageLayout = "Selection" | "Extraction" | "Identification";
 
@@ -15,6 +22,7 @@ interface LayoutFactoryProps {
   articles: ArticleInterface[] | [];
   page: PageLayout;
   isLoading: boolean;
+  columnsVisible: ColumnVisibility;
 }
 
 export default function LayoutFactory({
@@ -22,14 +30,25 @@ export default function LayoutFactory({
   articles,
   page,
   isLoading,
+  columnsVisible,
 }: LayoutFactoryProps) {
   const layoutMap: Record<ViewModel, React.ReactNode> = {
-    table: <FullTable articles={articles} page={page} />,
+    table: <FullTable articles={articles} columnsVisible={columnsVisible} />,
     vertical: (
-      <SplitVertical articles={articles} isInverted={false} page={page} />
+      <SplitVertical
+        articles={articles}
+        isInverted={false}
+        page={page}
+        columnsVisible={columnsVisible}
+      />
     ),
     "vertical-invert": (
-      <SplitVertical articles={articles} isInverted={true} page={page} />
+      <SplitVertical
+        articles={articles}
+        isInverted
+        page={page}
+        columnsVisible={columnsVisible}
+      />
     ),
     horizontal: (
       <SplitHorizontal
@@ -37,6 +56,7 @@ export default function LayoutFactory({
         isInverted={false}
         page={page}
         layout={layout}
+        columnsVisible={columnsVisible}
       />
     ),
     "horizontal-invert": (
@@ -45,6 +65,7 @@ export default function LayoutFactory({
         isInverted={true}
         page={page}
         layout={layout}
+        columnsVisible={columnsVisible}
       />
     ),
     article: <FullArticle articles={articles} page={page} />,

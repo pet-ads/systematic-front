@@ -1,14 +1,16 @@
-// Unauthorized.tsx
-import React from 'react';
-import { Box, Heading, Text, Button } from '@chakra-ui/react';
-import { useNavigate } from 'react-router-dom';
+// External library
+import React from "react";
+import { Box, Heading, Text, Button } from "@chakra-ui/react";
+
+// Hooks
+import { useNavigation } from "@features/shared/hooks/useNavigation";
 
 const Unauthorized: React.FC = () => {
-  const navigate = useNavigate();
+  const { toGo } = useNavigation();
 
   const handleBackToHome = () => {
     localStorage.clear();
-    navigate('/');
+    toGo("/");
   };
 
   return (

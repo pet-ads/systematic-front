@@ -1,31 +1,28 @@
 // Service
 import Axios from "../../../infrastructure/http/axiosClient";
 
-// Hooks
-import useStorageUserData from "@features/auth/hooks/useStorageUserData";
-
 // Factory
 import errorFactory from "@features/shared/errors/factory/errorFactory";
 
 // Types
+import { HateoasLinks } from "@features/shared/types/hateoas";
 import { AccessCredentials } from "../types";
 
-export default async function useLoginUser(data: AccessCredentials) {
-  const storageUserData = useStorageUserData(data);
+type LoginUserOutput = {
+  accessToken: string;
+  _links: HateoasLinks;
+};
 
+export default async function useLoginUser(data: AccessCredentials) {
   try {
-    const response = await Axios.post(
+    const response = await Axios.post<LoginUserOutput>(
       "http://localhost:8080/api/v1/auth",
       data,
       {
         withCredentials: true,
       }
     );
-    localStorage.setItem(
-      "myReviewsLink",
-      response.data._links["find-my-reviews"].href
-    );
-    storageUserData();
+    localStorage.setItem("accessToken", response.data.accessToken);
     return response;
   } catch (error) {
     errorFactory("unauthorized", (error as Error).message);

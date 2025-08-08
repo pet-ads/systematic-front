@@ -1,6 +1,6 @@
 // External library
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { Progress, FormControl, Box } from "@chakra-ui/react";
 
 // Components
@@ -10,9 +10,14 @@ import TextAreaInput from "../../../../../components/common/inputs/InputTextArea
 import InteractiveTable from "./subcomponents/tables/InteractiveTable";
 import FlexLayout from "../../../../../components/structure/Flex/Flex";
 
-// Service
+// Infra
 import axios from "../../../../../infrastructure/http/axiosClient";
+
+// Service
 import createProtocolThree from "../../services/useCreateProtocolThree";
+
+// Hooks
+import { useNavigation } from "@features/shared/hooks/useNavigation";
 
 // Styles
 import { buttonBox, formControl } from "./styles";
@@ -20,7 +25,7 @@ import { buttonBox, formControl } from "./styles";
 export default function ProtocolPartThree() {
   const [analysis, setAnalysis] = useState("");
   const { id = "" } = useParams();
-  const navigate = useNavigate();
+  const { toGo } = useNavigation();
   const url = `http://localhost:8080/systematic-study/${id}/protocol`;
 
   useEffect(() => {
@@ -39,12 +44,12 @@ export default function ProtocolPartThree() {
 
   async function handleData() {
     await createProtocolThree(analysis, id);
-    navigate("/newReview/identification");
+    toGo("/newReview/identification");
   }
 
   async function handleDataReturn() {
     await createProtocolThree(analysis, id);
-    navigate(`/newReview/protocolpartTwo/${id}`);
+    toGo(`/newReview/protocolpartTwo/${id}`);
   }
 
   function handleAnalysisAndSynthesis(
