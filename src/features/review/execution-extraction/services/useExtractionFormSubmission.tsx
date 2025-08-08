@@ -1,6 +1,6 @@
 // External libraries
 import { useContext } from "react";
-import { useToast } from "@chakra-ui/react";
+import useToaster from "@components/feedback/Toaster";
 
 // Context
 import StudySelectionContext from "@features/review/shared/context/StudiesSelectionContext";
@@ -22,7 +22,7 @@ export function useExtractionFormSubmission({
   responses,
   onQuestionsMutated,
 }: UseFormSubmissionProps) {
-  const toast = useToast();
+  const toast = useToaster();
   const selectionContext = useContext(StudySelectionContext);
   const { articleInFocus } = useFocusedArticle({ page: "Extraction" });
   const { sendBatchAnswers } = useSendBatchAnswers();
@@ -64,9 +64,6 @@ export function useExtractionFormSubmission({
       toast({
         title: "Preencha todas as respostas antes de enviar.",
         status: "warning",
-        duration: 4500,
-        isClosable: true,
-        position: "top",
       });
       return;
     }
@@ -84,18 +81,12 @@ export function useExtractionFormSubmission({
       toast({
         title: "Respostas enviadas com sucesso!",
         status: "success",
-        duration: 4500,
-        isClosable: true,
-        position: "top",
       });
     } catch (error) {
       toast({
         title: "Erro ao enviar respostas",
         description: "Tente novamente mais tarde.",
         status: "error",
-        duration: 4500,
-        isClosable: true,
-        position: "top",
       });
     }
   };

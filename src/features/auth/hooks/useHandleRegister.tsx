@@ -1,12 +1,12 @@
 // External library
 import { useState } from "react";
-import { useToast } from "@chakra-ui/react";
 
 // Services
 import useRegisterUser from "../services/useRegisterUser";
 
 // Types
 import type { User } from "../types";
+import useToaster from "@components/feedback/Toaster";
 
 const useHandleRegister = (redirectFormLogin: () => void) => {
   const [name, setName] = useState<string>("");
@@ -23,7 +23,7 @@ const useHandleRegister = (redirectFormLogin: () => void) => {
   const [confirmPasswordError, setConfirmPasswordError] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-  const toast = useToast();
+  let toast = useToaster();
 
   const validateEmail = (email: string): boolean => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -118,14 +118,15 @@ const useHandleRegister = (redirectFormLogin: () => void) => {
         sessionStorage.setItem("userId", response.data.id);
 
         if (response.status === 201) {
+          console.log('ef----')
+
           toast({
             title: "Account created.",
-            description: `You can now log in with your account, ${user}.`,
-            status: "success",
-            duration: 9000,
-            isClosable: true,
-            position: "top",
+            status: "success", 
+            description: `You can now log in with your account, ${user}.`
           });
+
+          console.log(toast)
 
           redirectFormLogin();
         }
@@ -135,14 +136,15 @@ const useHandleRegister = (redirectFormLogin: () => void) => {
         if (errorMessage.includes("username")) setNameError(errorMessage);
         else if (errorMessage.includes("email")) setEmailError(errorMessage);
         else {
+          console.log('ef-=====---')
+          
           toast({
             title: "Network Error",
-            description: "Please check your internet connection.",
-            status: "error",
-            duration: 9000,
-            isClosable: true,
-            position: "top",
+            status: "error", 
+            description: `Please check your internet connection.`
           });
+
+          console.log(toast)
         }
       } finally {
         setIsSubmitting(false);
