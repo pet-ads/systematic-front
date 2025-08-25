@@ -66,7 +66,7 @@ export default function Profile() {
   );
 
   return (
-    <FlexLayout defaultOpen={0} navigationType="Default">
+    <FlexLayout navigationType="Default">
       <Header text="My Profile" />
       <Flex sx={conteiner}>
         {isLoading ? (

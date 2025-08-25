@@ -28,7 +28,7 @@ export default function NovaRevisao() {
   } = useCreateReview();
 
   return (
-    <FlexLayout navigationType="Accordion" defaultOpen={0}>
+    <FlexLayout navigationType="Accordion">
       <Header text="New Systematic Review" />
 
       <FormControl

@@ -58,15 +58,24 @@ export default function Protocol() {
   if (loading) return <></>;
 
   return (
-    <FlexLayout defaultOpen={0} navigationType="Accordion">
-      <Box w={"100%"}>
-        <Header text="Protocol" />
-        <Progress value={33} w={"100%"} />
+    <FlexLayout navigationType="Accordion">
+      <Box w="100%" px="1rem" py="1rem" h="fit-content">
         <Flex
-          w={"100%"}
-          justifyContent={"center"}
-          direction={"column"}
-          alignItems={"center"}
+          w="100%"
+          h="2.5rem"
+          alignItems="center"
+          mb="2rem"
+        >
+          <Header text="Protocol" />
+        </Flex>
+        <Progress value={33} w="100%" />
+      </Box>
+      <Box w="100%" px="1rem">
+        <Flex
+          w="100%"
+          justifyContent="center"
+          direction="column"
+          alignItems="center"
         >
           <FormControl sx={formControl}>
             <TextAreaInput

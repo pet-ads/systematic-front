@@ -22,7 +22,7 @@ import { SearchSorcesTable } from "../../components/tables/SearchSoucesTable";
 
 export default function Graphics() {
   return (
-    <FlexLayout navigationType="Accordion" defaultOpen={2}>
+    <FlexLayout navigationType="Accordion">
       <Header text="Graphics" />
       <Box sx={conteiner}>
         {/* SEÇÃO:GENERAL INFORMATION*/}

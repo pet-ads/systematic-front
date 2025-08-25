@@ -59,7 +59,7 @@ export default function ProtocolPartThree() {
   }
 
   return (
-    <FlexLayout defaultOpen={0} navigationType="Accordion">
+    <FlexLayout navigationType="Accordion">
       <Box
         w={"100%"}
         display={"flex"}

@@ -68,71 +68,63 @@ export default function Extraction() {
   }, [showSelected, startFilteredArticles, safeSelectedArticles]);
 
   return (
-    <FlexLayout defaultOpen={1} navigationType="Accordion">
-      <Box w="98%" m="1rem" h="fit-content">
-        <Box
+    <FlexLayout navigationType="Accordion">
+      <Box w="100%" px="1rem" py="1rem" h="fit-content">
+        <Flex
           w="100%"
-          h="100%"
-          display="flex"
-          flexDirection="column"
+          h="2.5rem"
           justifyContent="space-between"
+          alignItems="center"
+          mb="2rem"
         >
-          <Flex
-            w="100%"
-            h="2.5rem"
+          <Header text="Extraction" />
+          <SelectLayout handleChangeLayout={handleChangeLayout} />
+        </Flex>
+        <Box sx={inputconteiner}>
+          <Flex gap="1rem" w="35%" justifyContent="space-between">
+            <InputText
+              type="search"
+              placeholder="Insert article atribute"
+              nome="search"
+              onChange={(e) => setSearchString(e.target.value)}
+              value={searchString}
+            />
+            {layout !== "article" ? (
+              <ButtonsForMultipleSelection
+                onShowSelectedArticles={setShowSelected}
+                isShown={showSelected}
+              />
+            ) : null}
+          </Flex>
+          <Box
+            display="flex"
+            gap="1rem"
             justifyContent="space-between"
             alignItems="center"
-            mb="2rem"
           >
-            <Header text="Extraction" />
-            <SelectLayout handleChangeLayout={handleChangeLayout} />
-          </Flex>
-          <Box sx={inputconteiner}>
-            <Flex gap="1rem" w="35%" justifyContent="space-between">
-              <InputText
-                type="search"
-                placeholder="Insert article atribute"
-                nome="search"
-                onChange={(e) => setSearchString(e.target.value)}
-                value={searchString}
-              />
-              {layout !== "article" ? (
-                <ButtonsForMultipleSelection
-                  onShowSelectedArticles={setShowSelected}
-                  isShown={showSelected}
-                />
-              ) : null}
-            </Flex>
-            <Box
-              display="flex"
-              gap="1rem"
-              justifyContent="space-between"
-              alignItems="center"
-            >
-              <ColumnVisibilityMenu
-                columnsVisible={columnsVisible}
-                toggleColumnVisibility={toggleColumnVisibility}
-              />
-              <SelectInput
-                names={["INCLUDED", "DUPLICATED", "EXCLUDED", "UNCLASSIFIED"]}
-                values={["INCLUDED", "DUPLICATED", "EXCLUDED", "UNCLASSIFIED"]}
-                onSelect={(value) => handleSelectChange(value)}
-                selectedValue={selectedStatus}
-                page={"extraction"}
-                placeholder="Extraction status"
-              />
-            </Box>
-          </Box>
-          <Box w="100%" h="82.5vh">
-            <LayoutFactory
-              page="Extraction"
-              articles={finalFilteredArticles}
+            <ColumnVisibilityMenu
               columnsVisible={columnsVisible}
-              layout={layout}
-              isLoading={isLoading}
+              toggleColumnVisibility={toggleColumnVisibility}
+            />
+            <SelectInput
+              names={["INCLUDED", "DUPLICATED", "EXCLUDED", "UNCLASSIFIED"]}
+              values={["INCLUDED", "DUPLICATED", "EXCLUDED", "UNCLASSIFIED"]}
+              onSelect={(value) => handleSelectChange(value)}
+              selectedValue={selectedStatus}
+              page={"extraction"}
+              placeholder="Extraction status"
             />
           </Box>
         </Box>
+      </Box>
+      <Box w="100%" h="82.5vh" px="1rem">
+        <LayoutFactory
+          page="Extraction"
+          articles={finalFilteredArticles}
+          columnsVisible={columnsVisible}
+          layout={layout}
+          isLoading={isLoading}
+        />
       </Box>
     </FlexLayout>
   );
