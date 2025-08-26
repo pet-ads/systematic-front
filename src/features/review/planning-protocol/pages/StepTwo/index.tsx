@@ -9,6 +9,7 @@ import TextAreaInput from "../../../../../components/common/inputs/InputTextArea
 import AddTextTable from "../../components/common/inputs/text/AddTextTable";
 import AddSelectionTable from "../../components/common/inputs/selection/AddSelectionTable";
 import FlexLayout from "../../../../../components/structure/Flex/Flex";
+import { capitalize } from "../../../../shared/utils/helpers/formatters/CapitalizeText";
 
 // Service
 import useCreateProtocol from "../../services/useCreateProtocol";
@@ -71,7 +72,9 @@ export default function ProtocolPartTwo2() {
 
           <AddSelectionTable
             label="Languages"
-            options={["ENGLISH", "PORTUGUESE", "FRENCH", "SPANISH", "GERMAN"]}
+            options={[
+              capitalize("english"), capitalize("portuguese"), capitalize("french"), capitalize("spanish"), capitalize("german")
+            ]}
             placeholder={"Select language"}
             typeField="select"
           />
