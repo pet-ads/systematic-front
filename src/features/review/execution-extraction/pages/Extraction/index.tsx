@@ -45,9 +45,9 @@ export default function Extraction() {
   const isLoading = selectionContext?.isLoading ?? false;
 
   const allArticles: ArticleInterface[] = useMemo(() => {
-    return safeArticles
-      .filter((art): art is ArticleInterface => "studyReviewId" in art)
-      .filter((art) => art.selectionStatus === "INCLUDED");
+    return safeArticles.filter(
+      (art): art is ArticleInterface => "studyReviewId" in art
+    );
   }, [safeArticles]);
 
   const startFilteredArticles = useFilterReviewArticles(
@@ -66,6 +66,31 @@ export default function Extraction() {
     }
     return startFilteredArticles;
   }, [showSelected, startFilteredArticles, safeSelectedArticles]);
+
+  const statusCounts = useMemo(() => {
+    const counts: Record<string, number> = {
+      INCLUDED: 0,
+      DUPLICATED: 0,
+      EXCLUDED: 0,
+      UNCLASSIFIED: 0,
+    };
+
+    allArticles.forEach((article) => {
+      const status = article.extractionStatus as keyof typeof counts;
+      if (status && counts[status] !== undefined) {
+        counts[status] += 1;
+      }
+    });
+
+    return counts;
+  }, [allArticles]);
+
+  const statusOptions = [
+    { value: "INCLUDED", label: `Included (${statusCounts.INCLUDED})` },
+    { value: "DUPLICATED", label: `Duplicated (${statusCounts.DUPLICATED})` },
+    { value: "EXCLUDED", label: `Excluded (${statusCounts.EXCLUDED})` },
+    { value: "UNCLASSIFIED", label: `Unclassified (${statusCounts.UNCLASSIFIED})` },
+  ];
 
   return (
     <FlexLayout defaultOpen={1} navigationType="Accordion">
@@ -114,8 +139,8 @@ export default function Extraction() {
                 toggleColumnVisibility={toggleColumnVisibility}
               />
               <SelectInput
-                names={["INCLUDED", "DUPLICATED", "EXCLUDED", "UNCLASSIFIED"]}
-                values={["INCLUDED", "DUPLICATED", "EXCLUDED", "UNCLASSIFIED"]}
+                names={statusOptions.map((opt) => opt.label)}
+                values={statusOptions.map((opt) => opt.value)}
                 onSelect={(value) => handleSelectChange(value)}
                 selectedValue={selectedStatus}
                 page={"extraction"}
