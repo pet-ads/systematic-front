@@ -19,6 +19,7 @@ import LayoutFactory from "../../../shared/components/structure/LayoutFactory";
 import ButtonsForMultipleSelection from "../../../shared/components/common/buttons/ButtonsForMultipleSelection";
 import SelectLayout from "../../../shared/components/structure/LayoutButton";
 import ColumnVisibilityMenu from "@features/review/shared/components/common/menu/ColumnVisibilityMenu";
+import { capitalize } from "../../../../shared/utils/helpers/formatters/CapitalizeText";
 
 // Styles
 import { inputconteiner } from "../../../shared/styles/executionStyles";
@@ -114,7 +115,9 @@ export default function Extraction() {
                 toggleColumnVisibility={toggleColumnVisibility}
               />
               <SelectInput
-                names={["INCLUDED", "DUPLICATED", "EXCLUDED", "UNCLASSIFIED"]}
+                names={[
+                  capitalize("included"), capitalize("duplicated"), capitalize("excluded"), capitalize("unclassified"),
+                ]}
                 values={["INCLUDED", "DUPLICATED", "EXCLUDED", "UNCLASSIFIED"]}
                 onSelect={(value) => handleSelectChange(value)}
                 selectedValue={selectedStatus}

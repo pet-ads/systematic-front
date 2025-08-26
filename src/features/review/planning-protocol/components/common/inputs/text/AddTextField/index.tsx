@@ -49,7 +49,7 @@ export default function AddTextField({
         placeholder={text}
         onChange={handleInputChange}
       />
-      <EventButton event={handleAddText} text="ADD" w={"2%"} />
+      <EventButton event={handleAddText} text={capitalize("add")} w={"2%"} />
     </FormControl>
   );
 }

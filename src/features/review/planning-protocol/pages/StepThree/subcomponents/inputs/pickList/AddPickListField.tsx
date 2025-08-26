@@ -5,6 +5,7 @@ import { useState } from "react";
 import { formcontrol } from "@features/review/planning-protocol/components/common/inputs/text/AddTextField/styles";
 import TextAreaInput from "@components/common/inputs/InputTextArea";
 import useToaster from "@components/feedback/Toaster";
+import { capitalize } from "@features/shared/utils/helpers/formatters/CapitalizeText";
 
 interface IAddTextFieldProps {
   onAddText: (newKeyword: string) => void;
@@ -43,7 +44,7 @@ export default function AddPickListField({
         placeholder={text}
         onChange={handleInputChange}
       ></TextAreaInput>
-      <EventButton event={handleAddText} text="ADD" mt={2} w={"10%"} />
+      <EventButton event={handleAddText} text={capitalize("add")} mt={2} w={"10%"} />
     </FormControl>
   );
 }
