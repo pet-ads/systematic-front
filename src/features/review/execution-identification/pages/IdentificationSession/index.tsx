@@ -19,7 +19,7 @@ export default function IdentificationSession() {
   });
 
   return (
-    <FlexLayout defaultOpen={1} navigationType="Accordion">
+    <FlexLayout navigationType="Accordion">
       <Header text="Search Sessions" />
       <Box
         justifyContent="center"

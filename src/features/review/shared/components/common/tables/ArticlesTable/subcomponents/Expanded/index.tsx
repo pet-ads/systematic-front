@@ -81,7 +81,6 @@ export default function Expanded({
   articles,
   handleHeaderClick,
   sortConfig,
-  layout,
   columnsVisible,
 }: Props) {
   const [columnWidths, setColumnWidths] = useState({
@@ -229,19 +228,8 @@ export default function Expanded({
     <Box w="100%" maxH="82.5vh">
       <TableContainer
         w="100%"
-        minH={
-          layout == "horizontal" || layout == "horizontal-invert"
-            ? "15rem"
-            : {
-                base: "calc(100vh - 18rem)",
-                md: "calc(100vh - 15rem)",
-              }
-        }
-        maxH={
-          layout == "horizontal" || layout == "horizontal-invert"
-            ? "15rem"
-            : "calc(100vh - 15rem)"
-        }
+        minH="calc(100vh - 18rem)" // Ou um valor que se ajuste à sua necessidade
+        maxH="calc(100vh - 16rem)"
         borderRadius="1rem 1rem 0 0"
         boxShadow="lg"
         bg="white"

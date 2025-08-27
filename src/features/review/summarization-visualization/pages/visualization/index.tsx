@@ -4,7 +4,7 @@ import FlexLayout from "../../../../../components/structure/Flex/Flex";
 
 export default function Visualization() {
   return (
-    <FlexLayout navigationType="Accordion" defaultOpen={2}>
+    <FlexLayout navigationType="Accordion">
       <Header text="Visualization" />
       <Flex h="50%" width="100%" align="end" justifyContent="center">
         <Text fontSize="6xl">Recurso em desenvolvimento! </Text>

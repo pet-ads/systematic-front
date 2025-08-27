@@ -2,9 +2,9 @@
     background-color: #263C56;
     display: flex;
     flex-direction: column;
-    height: 96.5vh;
-    width: 16rem;
-    margin: 0 1rem 0 1rem;
+    height: calc(100% - 2rem); 
+    width: 14rem; 
+    margin: 1rem 1rem 1rem 1rem; 
 }
 
 .closeBtn {

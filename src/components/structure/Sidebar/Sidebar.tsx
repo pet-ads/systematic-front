@@ -6,19 +6,18 @@ import CloseButton from "./buttons/CloseButton";
 import Navigation from "./Navigation";
 import AppContext from "@features/shared/context/ApplicationContext";
 
-interface Props {
+interface SidebarProps {
   type: string;
 }
 
-const Sidebar = ({ type }: Props) => {
+const Sidebar = ({ type }: SidebarProps) => {
   const context = useContext(AppContext);
 
   if (!context) {
-    throw new Error("Failed to get the context in Sidebar.");
+    return null;
   }
 
   const { sidebarState, setSidebarState } = context;
-
   const isOpen = sidebarState === "open";
 
   const toggleSidebar = () => {
@@ -29,7 +28,7 @@ const Sidebar = ({ type }: Props) => {
     <motion.div
       className={isOpen ? Style.wrapper : Style.collapsed}
       animate={{
-        width: isOpen ? "16rem" : "0px",
+        width: isOpen ? "14rem" : "0px", 
         borderRadius: "1.25rem",
       }}
       transition={{ type: "tween", duration: 0.25 }}

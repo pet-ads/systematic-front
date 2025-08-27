@@ -40,7 +40,7 @@ export default function ProtocolPartTwo2() {
   }, []);
 
   return (
-    <FlexLayout defaultOpen={0} navigationType="Accordion">
+    <FlexLayout navigationType="Accordion">
       <Box
         w={"100%"}
         display={"flex"}
