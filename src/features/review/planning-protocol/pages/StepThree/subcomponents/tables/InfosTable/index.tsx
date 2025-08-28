@@ -1,9 +1,12 @@
 import EditButton from "@components/common/buttons/EditButton";
 import DeleteButton from "@components/common/buttons/DeleteButton";
 import { useEditState } from "@features/review/planning-protocol/hooks/useEdit";
+import { useState } from "react";
 import { tbConteiner } from "./styles";
-import { Table, Tbody, Tr, Td, TableContainer, Input } from "@chakra-ui/react";
+import { Table, Tbody, Tr, Td, TableContainer, Input, Button } from "@chakra-ui/react";
 import useCreateProtocol from "@features/review/planning-protocol/services/useCreateProtocol";
+import useToaster from "@components/feedback/Toaster";
+import { capitalize } from "@features/shared/utils/helpers/formatters/CapitalizeText";
 
 interface InfosTableProps {
   AddTexts: string[];
@@ -23,10 +26,35 @@ export default function InfosTable({
     useEditState({
       AddTexts,
       onSaveEdit: (editedValue, editIndex) => {
-        AddTexts[editIndex] = editedValue;
-        sendAddText(AddTexts, context);
+        const updatedAddTexts = [...AddTexts]; 
+        updatedAddTexts[editIndex] = editedValue; 
+        
+        sendAddText(updatedAddTexts, context);
       },
     });
+
+    const [newText, setNewText] = useState<string>("");
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      setNewText(e.target.value);
+    };
+
+    const toast = useToaster();
+
+    const handleAddNewText = () => {
+    const normalizedAddTextValue = capitalize(newText.toLowerCase().trim());
+    if (normalizedAddTextValue !== "") {
+      const updatedAddTexts = [...AddTexts, normalizedAddTextValue];
+      sendAddText(updatedAddTexts, context);
+      setNewText(""); 
+    } else {
+      toast({
+        title: "Empty Field",
+        description: "The field must be filled!",
+        status: "warning",
+      });
+    }
+  };
 
   return (
     <TableContainer sx={tbConteiner}>
@@ -57,6 +85,25 @@ export default function InfosTable({
               </Td>
             </Tr>
           ))}
+          <Tr>
+            <Td>
+              <Input
+                value={newText}
+                placeholder="Add new item..."
+                onChange={handleInputChange}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    handleAddNewText();
+                  }
+                }}
+                />
+            </Td>
+            <Td textAlign={"right"}>
+              <Button onClick={handleAddNewText} ml={2}>
+                ADD
+              </Button>
+            </Td>
+          </Tr>
         </Tbody>
       </Table>
     </TableContainer>
