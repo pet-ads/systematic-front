@@ -1,5 +1,4 @@
 // External library
-import { useEffect } from "react";
 import { Progress, FormControl, Box } from "@chakra-ui/react";
 
 // Components
@@ -18,26 +17,20 @@ import { btnBox, conteiner, flex } from "./styles";
 
 export default function ProtocolPartTwo2() {
   const {
-    searchString,
-    studyTypeDefinition,
-    dataCollectionProcess,
-    sourcesSelectionCriteria,
-    searchMethod,
-    selectionProcess,
-    setSearchString,
-    setDataCollectionProcess,
-    setStudyTypeDefinition,
-    setSourcesSelectionCriteria,
-    setSearchMethod,
-    setSelectionProcess,
-    handleDataAndGoNext,
-    handleDataAndReturn,
-    setFlag,
+    informationSourcesAndSearchStrategy,
+    eligibilityCriteria,
+    selectionAndExtraction,
+    handleChangeSelectionAndExtraction,
+    handleChangeEligibilityCriteria,
+    handleChangeInformationSourcesAndSearchStrategy,
+    syncAndNavigate,
   } = useCreateProtocol();
 
-  useEffect(() => {
-    setFlag("protocolTwo");
-  }, []);
+  const { searchMethod, searchString, sourcesSelectionCriteria } =
+    informationSourcesAndSearchStrategy;
+  const { studyTypeDefinition } = eligibilityCriteria;
+  const { dataCollectionProcess, selectionProcess } = selectionAndExtraction;
+  const id = localStorage.getItem("systematicReviewId") || "";
 
   return (
     <FlexLayout defaultOpen={0} navigationType="Accordion">
@@ -96,7 +89,10 @@ export default function ProtocolPartTwo2() {
           <TextAreaInput
             value={searchString}
             onChange={(e) => {
-              setSearchString(e.target.value);
+              handleChangeInformationSourcesAndSearchStrategy(
+                "searchString",
+                e.target.value
+              );
             }}
             label="Search String"
             placeholder="Enter the search string"
@@ -105,7 +101,10 @@ export default function ProtocolPartTwo2() {
           <TextAreaInput
             value={studyTypeDefinition}
             onChange={(e) => {
-              setStudyTypeDefinition(e.target.value);
+              handleChangeEligibilityCriteria(
+                "studyTypeDefinition",
+                e.target.value
+              );
             }}
             label="Study Type Definition"
             placeholder="Enter the study type definition"
@@ -113,8 +112,11 @@ export default function ProtocolPartTwo2() {
 
           <TextAreaInput
             value={sourcesSelectionCriteria}
-            onChange={(e) => {
-              setSourcesSelectionCriteria(e.target.value);
+            onChange={(event) => {
+              handleChangeInformationSourcesAndSearchStrategy(
+                "sourcesSelectionCriteria",
+                event.target.value
+              );
             }}
             label="Sources Selection Criteria"
             placeholder="Enter the sources selection criteria"
@@ -122,26 +124,35 @@ export default function ProtocolPartTwo2() {
 
           <TextAreaInput
             value={searchMethod}
-            onChange={(e) => {
-              setSearchMethod(e.target.value);
+            onChange={(event) => {
+              handleChangeInformationSourcesAndSearchStrategy(
+                "searchMethod",
+                event.target.value
+              );
             }}
-            label="Research Strategy"
-            placeholder="Enter research strategy"
+            label="Search Strategy"
+            placeholder="Enter Search Strategy"
           />
 
           <TextAreaInput
             value={selectionProcess}
-            onChange={(e) => {
-              setSelectionProcess(e.target.value);
+            onChange={(event) => {
+              handleChangeSelectionAndExtraction(
+                "selectionProcess",
+                event.target.value
+              );
             }}
-            label="Article Selection Process"
+            label="Study Selection Process"
             placeholder="Enter selection process"
           />
 
           <TextAreaInput
             value={dataCollectionProcess}
-            onChange={(e) => {
-              setDataCollectionProcess(e.target.value);
+            onChange={(event) => {
+              handleChangeSelectionAndExtraction(
+                "dataCollectionProcess",
+                event.target.value
+              );
             }}
             label="Data Collection Process"
             placeholder="Enter the data colletion process"
@@ -149,8 +160,18 @@ export default function ProtocolPartTwo2() {
         </FormControl>
 
         <Box sx={btnBox}>
-          <NavButton event={handleDataAndReturn} text="Back" />
-          <NavButton event={handleDataAndGoNext} text="Next" />
+          <NavButton
+            event={() =>
+              syncAndNavigate(`/review/planning/protocol-part-I/${id}`)
+            }
+            text="Back"
+          />
+          <NavButton
+            event={() =>
+              syncAndNavigate(`/review/planning/protocol-part-III/${id}`)
+            }
+            text="Next"
+          />
         </Box>
       </Box>
     </FlexLayout>

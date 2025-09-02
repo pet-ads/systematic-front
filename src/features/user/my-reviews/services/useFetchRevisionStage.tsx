@@ -13,10 +13,14 @@ type RevisionStageProps = {
 };
 
 export type Stage =
-  | "PROTOCOL_PART_I"
+  | "GENERAL_DEFINITION"
+  | "RESEARCH_QUESTIONS"
   | "PICOC"
-  | "PROTOCOL_PART_II"
-  | "PROTOCOL_PART_III"
+  | "ELIGIBILITY_CRITERIA"
+  | "INFORMATION_SOURCES_AND_SEARCH_STRATEGY"
+  | "SELECTION_AND_EXTRACTION"
+  | "RISK_OF_BIAS"
+  | "ANALYSIS_AND_SYNTHESIS_METHOD"
   | "IDENTIFICATION"
   | "SELECTION"
   | "EXTRACTION"
@@ -51,10 +55,15 @@ export default function useFetchRevisionStage({
   });
 
   const StageMap: Record<Stage, string> = {
-    PROTOCOL_PART_I: "Protocol Part I",
+    GENERAL_DEFINITION: "General Definition",
+    RESEARCH_QUESTIONS: "Research Questions",
     PICOC: "PICOC",
-    PROTOCOL_PART_II: "Protocol Part II",
-    PROTOCOL_PART_III: "Protocol Part III",
+    ELIGIBILITY_CRITERIA: "Eligibility Criteria",
+    INFORMATION_SOURCES_AND_SEARCH_STRATEGY:
+      "Information Sources And Search Strategy",
+    SELECTION_AND_EXTRACTION: "Selection And Extraction",
+    RISK_OF_BIAS: "Risk Of Bias",
+    ANALYSIS_AND_SYNTHESIS_METHOD: "Analysis And Synthesis Method",
     IDENTIFICATION: "Identification",
     SELECTION: "Selection",
     EXTRACTION: "Extraction",

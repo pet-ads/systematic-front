@@ -7,75 +7,204 @@ import axios from "../../../../infrastructure/http/axiosClient";
 // Hooks
 import { useNavigation } from "@features/shared/hooks/useNavigation";
 
-const useCreateProtocol = () => {
-  const [flag, setFlag] = useState("");
+// Utils
+import getRequestOptions from "@features/auth/utils/getRequestOptions";
 
-  //protocolOne States
+// Types
+import type { PICOC } from "../pages/Picoc/types";
+import type { ResearchQuestion } from "../pages/ResearchQuestions/types";
+import type { EligibilityCriteria } from "../pages/EligibilityCriteria/types";
+import type { InformationSourcesAndSearchStrategy } from "../pages/InformationSourcesAndSearchStrategy/types";
+import type { SelectionAndExtraction } from "../pages/SelectionAndExtraction/types";
+import type { AnalysisAndSynthesisOfResults } from "../pages/AnalysisAndSynthesisOfResults/types";
+
+// Constants
+const defaultResearchQuestion: ResearchQuestion = {
+  justification: "",
+};
+
+const defaultPicoc: PICOC = {
+  population: "",
+  intervention: "",
+  control: "",
+  outcome: "",
+  context: "",
+};
+
+const defaultEligibilityCriteria: EligibilityCriteria = {
+  studyTypeDefinition: "",
+};
+
+const defaultInformationSourcesAndSearchStrategy: InformationSourcesAndSearchStrategy =
+  {
+    searchMethod: "",
+    searchString: "",
+    sourcesSelectionCriteria: "",
+  };
+
+const defaultSelectionAndExtraction: SelectionAndExtraction = {
+  dataCollectionProcess: "",
+  selectionProcess: "",
+};
+
+const defaultAnalysisAndSynthesisOfResults: AnalysisAndSynthesisOfResults = {
+  analysisAndSynthesisProcess: "",
+};
+
+export default function useCreateProtocol() {
+  // General-Definition
   const [goal, setGoal] = useState<string | null>(null);
-  const [justification, setJustification] = useState<string | null>(null);
-  const [population, setPopulation] = useState<string | null>(null);
-  const [intervention, setIntervention] = useState<string | null>(null);
-  const [control, setControl] = useState<string | null>(null);
-  const [outcome, setOutcome] = useState<string | null>(null);
-  const [context, setContext] = useState<string | null>(null);
 
-  //protocolTwo states
-  const [searchString, setSearchString] = useState<string | null>(null);
-  const [studyTypeDefinition, setStudyTypeDefinition] = useState<string | null>(
-    null
+  // Research-Questions
+  const [researchQuestion, setResearchQuestion] = useState<ResearchQuestion>(
+    defaultResearchQuestion
   );
-  const [dataCollectionProcess, setDataCollectionProcess] = useState<
-    string | null
-  >(null);
+
+  // Picoc
+  const [picoc, setPicoc] = useState<PICOC>(defaultPicoc);
+
+  // Eligibility-Criteria
+  const [eligibilityCriteria, setEligibilityCriteria] =
+    useState<EligibilityCriteria>(defaultEligibilityCriteria);
+
+  // Information-Sources-And-Search-Strategy
+  const [
+    informationSourcesAndSearchStrategy,
+    setInformationSourcesAndSearchStrategy,
+  ] = useState<InformationSourcesAndSearchStrategy>(
+    defaultInformationSourcesAndSearchStrategy
+  );
+
+  // Selection-And-Extraction
+  const [selectionAndExtraction, setSelectionAndExtraction] =
+    useState<SelectionAndExtraction>(defaultSelectionAndExtraction);
+
+  // Analysis-And-Synthesis-Of-Results
+  const [analysisAndSynthesisOfResults, setAnalysisAndSynthesisOfResults] =
+    useState<AnalysisAndSynthesisOfResults>(
+      defaultAnalysisAndSynthesisOfResults
+    );
+
+  // Aux
+  const [flag, setFlag] = useState("");
+  console.log(flag);
+
   const [researchQuestions, setResearchQuestions] = useState<string[]>([]);
   const [keywords, setKeywords] = useState<string[]>([]);
   const [studiesLanguages, setStydiesLanguages] = useState<string[]>([]);
   const [inclusionCriteria, setInclusionCriteria] = useState<string[]>([]);
   const [exclusionCriteria, setExclusionCriteria] = useState<string[]>([]);
-  const [sourcesSelectionCriteria, setSourcesSelectionCriteria] = useState<
-    string | null
-  >(null);
   const [informationSources, setInformationSources] = useState<string[]>([]);
-  const [searchMethod, setSearchMethod] = useState<string | null>(null);
-  const [selectionProcess, setSelectionProcess] = useState<string | null>(null);
-  const [analysisAndSynthesisProcess, setAnalysisAndSynthesisProcess] =
-    useState<string | null>(null);
+
+  const handleChangeResearchQuestion = (
+    key: keyof ResearchQuestion,
+    value: string
+  ) => {
+    setResearchQuestion((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
+  };
+
+  const handleChangePicoc = (key: keyof PICOC, value: string) => {
+    setPicoc((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
+  };
+
+  const handleChangeEligibilityCriteria = (
+    key: keyof EligibilityCriteria,
+    value: string
+  ) => {
+    setEligibilityCriteria((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
+  };
+
+  const handleChangeInformationSourcesAndSearchStrategy = (
+    key: keyof InformationSourcesAndSearchStrategy,
+    value: string
+  ) => {
+    setInformationSourcesAndSearchStrategy((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
+  };
+
+  const handleChangeSelectionAndExtraction = (
+    key: keyof SelectionAndExtraction,
+    value: string
+  ) => {
+    setSelectionAndExtraction((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
+  };
+
+  const handleChangeAnalysisAndSynthesisOfResults = (
+    key: keyof AnalysisAndSynthesisOfResults,
+    value: string
+  ) => {
+    setAnalysisAndSynthesisOfResults((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
+  };
 
   const { toGo } = useNavigation();
 
-  const id = localStorage.getItem("systematicReviewId");
-
+  const id = localStorage.getItem("systematicReviewId") || "";
   const url = `http://localhost:8080/systematic-study/${id}/protocol`;
+  const options = getRequestOptions();
 
   useEffect(() => {
-    let token = localStorage.getItem("accessToken");
-    let id = localStorage.getItem("systematicReviewId");
-    let url = `http://localhost:8080/systematic-study/${id}/protocol`;
-    let options = {
-      headers: { Authorization: `Bearer ${token}` },
-    };
-
     async function fetch() {
       const response = await axios.get(url, options);
-      console.log(response);
-      let data = response.data;
+      const data = response.data.content;
 
-      setGoal(data.content.goal);
-      setJustification(data.content.justification);
-      setSearchString(data.content.searchString);
-      setStudyTypeDefinition(data.content.studyTypeDefinition);
-      setDataCollectionProcess(data.content.dataCollectionProcess);
-      setSourcesSelectionCriteria(data.content.sourcesSelectionCriteria);
-      setSearchMethod(data.content.searchMethod);
-      setSelectionProcess(data.content.selectionProcess);
-      setAnalysisAndSynthesisProcess(data.content.analysisAndSynthesisProcess);
+      setGoal(data.goal);
 
-      if (data.content.picoc != null) {
-        setPopulation(data.content.picoc.population);
-        setIntervention(data.content.picoc.intervention);
-        setControl(data.content.picoc.control);
-        setOutcome(data.content.picoc.outcome);
-        setContext(data.content.picoc.context);
+      handleChangeResearchQuestion("justification", data.justification);
+
+      handleChangeEligibilityCriteria(
+        "studyTypeDefinition",
+        data.studyTypeDefinition
+      );
+      handleChangeInformationSourcesAndSearchStrategy(
+        "searchString",
+        data.searchString
+      );
+      handleChangeInformationSourcesAndSearchStrategy(
+        "sourcesSelectionCriteria",
+        data.sourcesSelectionCriteria
+      );
+      handleChangeInformationSourcesAndSearchStrategy(
+        "searchMethod",
+        data.searchMethod
+      );
+
+      handleChangeSelectionAndExtraction(
+        "dataCollectionProcess",
+        data.dataCollectionProcess
+      );
+      handleChangeSelectionAndExtraction(
+        "selectionProcess",
+        data.selectionProcess
+      );
+
+      handleChangeAnalysisAndSynthesisOfResults(
+        "analysisAndSynthesisProcess",
+        data.analysisAndSynthesisProcess
+      );
+
+      if (data.picoc != null) {
+        handleChangePicoc("population", data.picoc.population);
+        handleChangePicoc("intervention", data.picoc.intervention);
+        handleChangePicoc("control", data.picoc.control);
+        handleChangePicoc("outcome", data.picoc.outcome);
+        handleChangePicoc("context", data.picoc.context);
       }
     }
 
@@ -84,75 +213,32 @@ const useCreateProtocol = () => {
 
   //protocolOne
 
-  async function createProtocol() {
-    let data;
-    const token = localStorage.getItem("accessToken");
-    let picoc = { population, intervention, control, outcome, context };
+  async function updateProtocol() {
+    const { justification } = researchQuestion;
+    const { studyTypeDefinition } = eligibilityCriteria;
+    const { searchMethod, searchString, sourcesSelectionCriteria } =
+      informationSourcesAndSearchStrategy;
+    const { dataCollectionProcess, selectionProcess } = selectionAndExtraction;
 
-    let options = {
-      headers: { Authorization: `Bearer ${token}` },
+    const data = {
+      goal,
+      justification,
+      picoc,
+      searchString,
+      studyTypeDefinition,
+      dataCollectionProcess,
+      sourcesSelectionCriteria,
+      searchMethod,
+      selectionProcess,
     };
-
-    if (
-      picoc.context != "" ||
-      picoc.control != "" ||
-      picoc.intervention != "" ||
-      picoc.outcome != "" ||
-      picoc.population != ""
-    ) {
-      data = {
-        goal,
-        justification,
-        picoc,
-        searchString,
-        studyTypeDefinition,
-        dataCollectionProcess,
-        sourcesSelectionCriteria,
-        searchMethod,
-        selectionProcess,
-      };
-    } else
-      data = {
-        goal,
-        justification,
-        picoc,
-        searchString,
-        studyTypeDefinition,
-        dataCollectionProcess,
-        sourcesSelectionCriteria,
-        searchMethod,
-        selectionProcess,
-      };
 
     return await axios.put(url, data, options);
   }
 
-  async function handleDataAndGoNext() {
-    let id = localStorage.getItem("systematicReviewId");
-
+  async function syncAndNavigate(path: string) {
     try {
-      await createProtocol();
-
-      if (flag == "protocol") toGo(`/review/planning/protocol-part-II/${id}`);
-
-      if (flag == "protocolTwo")
-        toGo(`/review/planning/protocol-part-III/${id}`);
-
-      if (flag == "protocolThree") toGo(`/review/execution/extraction`);
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
-  async function handleDataAndReturn() {
-    const id = localStorage.getItem("systematicReviewId");
-
-    try {
-      await createProtocol();
-      if (flag == "protocol") toGo(`/review`);
-      if (flag == "protocolTwo") toGo(`/review/planning/protocol-part-I/${id}`);
-      if (flag == "protocolThree")
-        toGo(`/review/planning/protocol-part-II/${id}`);
+      await updateProtocol();
+      toGo(path);
     } catch (err) {
       console.log(err);
     }
@@ -162,40 +248,30 @@ const useCreateProtocol = () => {
 
   async function sendSelectData(data: string[], context: string) {
     let content;
-    const token = localStorage.getItem("accessToken");
-    let options = {
-      headers: { Authentication: `Bearer ${token}` },
-    };
 
     try {
       if (context == "Languages") content = { studiesLanguages: data };
       else content = { informationSources: data };
 
-      let response = await axios.put(url, content, options);
-      console.log(response);
+      await axios.put(url, content, options);
     } catch (err) {
       console.log(err);
     }
   }
 
   async function sendAddText(data: string[], context: string) {
-    console.log(data, context);
     let content;
-    let token = localStorage.getItem(`accessToken`);
-    let options = {
-      headers: { Authorization: `Bearer ${token}` },
-    };
 
     if (context == "Research Questions") content = { researchQuestions: data };
     if (context == "Keywords") content = { keywords: data };
     if (context == "Inclusion criteria") {
-      let array: { description: string; type: string }[] = data.map(
+      const array: { description: string; type: string }[] = data.map(
         (item: string) => {
           return { description: item, type: "INCLUSION" };
         }
       );
 
-      let response = await axios.get(url, options);
+      const response = await axios.get(url, options);
       let aux: { description: string; type: string }[] =
         response.data.content.eligibilityCriteria;
       aux = aux.filter((item) => {
@@ -206,13 +282,13 @@ const useCreateProtocol = () => {
       content = { eligibilityCriteria: content };
     }
     if (context == "Exclusion criteria") {
-      let array: { description: string; type: string }[] = data.map(
+      const array: { description: string; type: string }[] = data.map(
         (item: string) => {
           return { description: item, type: "EXCLUSION" };
         }
       );
 
-      let response = await axios.get(url, options);
+      const response = await axios.get(url, options);
       let aux: { description: string; type: string }[] =
         response.data.content.eligibilityCriteria;
       aux = aux.filter((item) => {
@@ -231,55 +307,41 @@ const useCreateProtocol = () => {
     }
   }
 
-  //protocol three
-
   return {
-    createProtocol,
-    handleDataAndGoNext,
-    handleDataAndReturn,
+    goal,
+    researchQuestion,
+    researchQuestions,
+    picoc,
+    eligibilityCriteria,
+    informationSourcesAndSearchStrategy,
+    selectionAndExtraction,
+
+    keywords,
+    studiesLanguages,
+    inclusionCriteria,
+    exclusionCriteria,
+    informationSources,
+    analysisAndSynthesisOfResults,
+
+    handleChangeResearchQuestion,
+    handleChangePicoc,
+    handleChangeEligibilityCriteria,
+    handleChangeInformationSourcesAndSearchStrategy,
+    handleChangeSelectionAndExtraction,
+    handleChangeAnalysisAndSynthesisOfResults,
+
     setGoal,
-    setJustification,
-    setPopulation,
-    setIntervention,
-    setControl,
-    setOutcome,
-    setContext,
-    setSearchString,
-    setStudyTypeDefinition,
-    setDataCollectionProcess,
     setResearchQuestions,
     setKeywords,
     setStydiesLanguages,
     setInclusionCriteria,
     setExclusionCriteria,
-    setSourcesSelectionCriteria,
     setInformationSources,
-    setSearchMethod,
-    setSelectionProcess,
+
     sendSelectData,
     sendAddText,
-    goal,
-    justification,
-    population,
-    intervention,
-    control,
-    outcome,
-    context,
-    searchString,
-    studyTypeDefinition,
-    dataCollectionProcess,
-    researchQuestions,
-    keywords,
-    studiesLanguages,
-    inclusionCriteria,
-    exclusionCriteria,
-    sourcesSelectionCriteria,
-    informationSources,
-    searchMethod,
-    selectionProcess,
-    analysisAndSynthesisProcess,
+    createProtocol: updateProtocol,
+    syncAndNavigate,
     setFlag,
   };
-};
-
-export default useCreateProtocol;
+}

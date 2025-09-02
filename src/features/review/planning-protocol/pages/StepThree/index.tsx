@@ -1,6 +1,4 @@
 // External library
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 import { Progress, FormControl, Box } from "@chakra-ui/react";
 
 // Components
@@ -10,53 +8,23 @@ import TextAreaInput from "../../../../../components/common/inputs/InputTextArea
 import InteractiveTable from "./subcomponents/tables/InteractiveTable";
 import FlexLayout from "../../../../../components/structure/Flex/Flex";
 
-// Infra
-import axios from "../../../../../infrastructure/http/axiosClient";
-
-// Service
-import createProtocolThree from "../../services/useCreateProtocolThree";
-
-// Hooks
-import { useNavigation } from "@features/shared/hooks/useNavigation";
+// Services
+import useCreateProtocol from "../../services/useCreateProtocol";
 
 // Styles
 import { buttonBox, formControl } from "./styles";
 
 export default function ProtocolPartThree() {
-  const [analysis, setAnalysis] = useState("");
-  const { id = "" } = useParams();
-  const { toGo } = useNavigation();
+  const {
+    analysisAndSynthesisOfResults,
+    handleChangeAnalysisAndSynthesisOfResults,
+    syncAndNavigate,
+  } = useCreateProtocol();
+
+  const { analysisAndSynthesisProcess } = analysisAndSynthesisOfResults;
+
+  const id = localStorage.getItem("systematicReviewId") || "";
   const url = `http://localhost:8080/systematic-study/${id}/protocol`;
-
-  useEffect(() => {
-    async function fetch() {
-      const accessToken = localStorage.getItem("accessToken");
-      let options = {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      };
-
-      let response = await axios.get(url, options);
-      setAnalysis(response.data.content.analysisAndSynthesisProcess);
-    }
-
-    fetch();
-  }, []);
-
-  async function handleData() {
-    await createProtocolThree(analysis, id);
-    toGo("/review/execution/identification");
-  }
-
-  async function handleDataReturn() {
-    await createProtocolThree(analysis, id);
-    toGo(`/review/planning/protocol-part-II/${id}`);
-  }
-
-  function handleAnalysisAndSynthesis(
-    e: React.ChangeEvent<HTMLTextAreaElement>
-  ) {
-    setAnalysis(e.target.value);
-  }
 
   return (
     <FlexLayout defaultOpen={0} navigationType="Accordion">
@@ -74,10 +42,15 @@ export default function ProtocolPartThree() {
           <InteractiveTable id={id} url={url} label={"Extraction Questions"} />
 
           <TextAreaInput
-            value={analysis}
+            value={analysisAndSynthesisProcess}
             label="Analysis and Synthesis"
             placeholder="Enter your analysis"
-            onChange={handleAnalysisAndSynthesis}
+            onChange={(event) =>
+              handleChangeAnalysisAndSynthesisOfResults(
+                "analysisAndSynthesisProcess",
+                event.target.value
+              )
+            }
           />
 
           <InteractiveTable
@@ -88,8 +61,17 @@ export default function ProtocolPartThree() {
         </FormControl>
 
         <Box sx={buttonBox}>
-          <NavButton text="Back" event={handleDataReturn} />
-          <NavButton text="Save" event={handleData} w={"fit-content"} />
+          <NavButton
+            text="Back"
+            event={() =>
+              syncAndNavigate(`/review/planning/protocol-part-II/${id}`)
+            }
+          />
+          <NavButton
+            text="Save"
+            event={() => syncAndNavigate("/review/execution/identification")}
+            w={"fit-content"}
+          />
         </Box>
       </Box>
     </FlexLayout>

@@ -5,7 +5,7 @@ interface iButtonProps extends ButtonProps {
   text: string;
   path?: string;
   variant?: "default" | "dark";
-  event?: (() => Promise<void>) | string;
+  event?: (() => Promise<void>) | string | (() => void);
 }
 
 const variants = {
@@ -44,27 +44,27 @@ export default function NavButton({
   };
 
   return (
-    <Button 
+    <Button
       as={path ? Link : undefined}
       to={path || undefined}
-      ml='2rem'
+      ml="2rem"
       onClick={handleClick}
-      bgColor={bgColor} 
+      bgColor={bgColor}
       color={color}
       borderRadius={borderRadius}
-      _hover={{ 
+      _hover={{
         bgColor: hoverBgColor,
         color: hoverColor,
-        boxShadow: "0 6px 8px rgba(0, 0, 0, 0.15)" 
+        boxShadow: "0 6px 8px rgba(0, 0, 0, 0.15)",
       }}
       {...buttonProps}
-      transition="all 0.3s ease" 
-      outline="none" 
+      transition="all 0.3s ease"
+      outline="none"
       _focus={{
-        boxShadow: "0 0 0 3px rgba(66, 153, 225, 0.6)", 
+        boxShadow: "0 0 0 3px rgba(66, 153, 225, 0.6)",
       }}
     >
       {text}
-    </Button> 
+    </Button>
   );
 }

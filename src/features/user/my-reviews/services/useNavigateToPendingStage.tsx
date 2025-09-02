@@ -20,10 +20,14 @@ export default function useNavigateToPendingStage({
 
   const getStageLink = (Stage: Stage) => {
     const StageMap: Record<Stage, string> = {
-      PROTOCOL_PART_I: `/review/planning/protocol-part-I/${reviewId}`,
-      PICOC: `/review/planning/protocol-part-I/${reviewId}`,
-      PROTOCOL_PART_II: `/review/planning/protocol-part-II/${reviewId}`,
-      PROTOCOL_PART_III: `/review/planning/protocol-part-III/${reviewId}`,
+      GENERAL_DEFINITION: `/review/planning/protocol/general-definition`,
+      RESEARCH_QUESTIONS: `/review/planning/protocol/research-questions/${reviewId}`,
+      PICOC: `/review/planning/protocol/picoc/${reviewId}`,
+      ELIGIBILITY_CRITERIA: `/review/planning/protocol/eligibility-criteria/${reviewId}`,
+      INFORMATION_SOURCES_AND_SEARCH_STRATEGY: `/review/planning/protocol/information-sources-and-search-strategy/${reviewId}`,
+      SELECTION_AND_EXTRACTION: `/review/planning/protocol/selection-and-extraction/${reviewId}`,
+      RISK_OF_BIAS: `/review/planning/protocol/risk-of-bias-assessment/${reviewId}`,
+      ANALYSIS_AND_SYNTHESIS_METHOD: `/review/planning/protocol/analysis-and-synthesis-of-results/${reviewId}`,
       IDENTIFICATION: `/review/execution/identification`,
       SELECTION: `/review/execution/selection`,
       EXTRACTION: `/review/execution/extraction`,

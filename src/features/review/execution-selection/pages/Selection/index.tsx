@@ -65,6 +65,31 @@ export default function Selection() {
     return startFilteredArticles;
   }, [showSelected, startFilteredArticles, safeSelectedArticles]);
 
+  const statusCounts = useMemo(() => {
+    const counts: Record<string, number> = {
+      INCLUDED: 0,
+      DUPLICATED: 0,
+      EXCLUDED: 0,
+      UNCLASSIFIED: 0,
+    };
+
+    allArticles.forEach((article) => {
+      const status = article.selectionStatus as keyof typeof counts;
+      if (status && counts[status] !== undefined) {
+        counts[status] += 1;
+      }
+    });
+
+    return counts;
+  }, [allArticles]);
+
+  const statusOptions = [
+    { value: "INCLUDED", label: `Included (${statusCounts.INCLUDED})` },
+    { value: "DUPLICATED", label: `Duplicated (${statusCounts.DUPLICATED})` },
+    { value: "EXCLUDED", label: `Excluded (${statusCounts.EXCLUDED})` },
+    { value: "UNCLASSIFIED", label: `Unclassified (${statusCounts.UNCLASSIFIED})` },
+  ];
+
   return (
     <FlexLayout defaultOpen={1} navigationType="Accordion">
       <Box w="98%" m="1rem" h="fit-content">
@@ -111,11 +136,12 @@ export default function Selection() {
                 columnsVisible={columnsVisible}
                 toggleColumnVisibility={toggleColumnVisibility}
               />
-              <StatusSelect
-                articles={allArticles}
-                value={selectedStatus}
-                setValue={setSelectedStatus}
-                type="selection"
+              <SelectInput
+                names={statusOptions.map((opt) => opt.label)}
+                values={statusOptions.map((opt) => opt.value)}
+                onSelect={(value) => handleSelectChange(value)}
+                selectedValue={selectedStatus}
+                page={"selection"}
                 placeholder="Selection status"
               />
             </Box>

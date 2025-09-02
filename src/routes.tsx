@@ -15,7 +15,16 @@ import MyReviews from "@features/user/my-reviews/pages/MyReviews";
 import Profile from "@features/user/profile/pages/Profile";
 
 // Planning
-import NovaRevisao from "@features/review/planning-protocol/pages/NewReview";
+import GeneralDefinition from "@features/review/planning-protocol/pages/GeneralDefinition";
+import ResearchQuestions from "@features/review/planning-protocol/pages/ResearchQuestions";
+import Picoc from "@features/review/planning-protocol/pages/Picoc";
+import EligibilityCriteria from "@features/review/planning-protocol/pages/EligibilityCriteria";
+import InformationSourcesAndSearchStrategy from "@features/review/planning-protocol/pages/InformationSourcesAndSearchStrategy";
+import SelectionAndExtraction from "@features/review/planning-protocol/pages/SelectionAndExtraction";
+import RiskOfBiasAssessment from "@features/review/planning-protocol/pages/RiskOfBiasAssessment ";
+import AnalysisAndSynthesisOfResults from "@features/review/planning-protocol/pages/AnalysisAndSynthesisOfResults";
+
+// Protocol
 import Protocol from "@features/review/planning-protocol/pages/StepOne";
 import ProtocolPartThree from "@features/review/planning-protocol/pages/StepThree";
 import ProtocolPartTwo from "@features/review/planning-protocol/pages/StepTwo";
@@ -61,8 +70,38 @@ const routesList: RouteObject[] = [
     element: <ServerError />,
   },
   {
-    path: "/review",
-    element: <ProtectedRoute element={<NovaRevisao />} />,
+    path: "/review/planning/protocol/general-definition",
+    element: <ProtectedRoute element={<GeneralDefinition />} />,
+  },
+  {
+    path: "/review/planning/protocol/research-questions/:id",
+    element: <ProtectedRoute element={<ResearchQuestions />} />,
+  },
+  {
+    path: "/review/planning/protocol/picoc/:id",
+    element: <ProtectedRoute element={<Picoc />} />,
+  },
+  {
+    path: "/review/planning/protocol/eligibility-criteria/:id",
+    element: <ProtectedRoute element={<EligibilityCriteria />} />,
+  },
+  {
+    path: "/review/planning/protocol/information-sources-and-search-strategy/:id",
+    element: (
+      <ProtectedRoute element={<InformationSourcesAndSearchStrategy />} />
+    ),
+  },
+  {
+    path: "/review/planning/protocol/selection-and-extraction/:id",
+    element: <ProtectedRoute element={<SelectionAndExtraction />} />,
+  },
+  {
+    path: "/review/planning/protocol/risk-of-bias-assessment/:id",
+    element: <ProtectedRoute element={<RiskOfBiasAssessment />} />,
+  },
+  {
+    path: "/review/planning/protocol/analysis-and-synthesis-of-results/:id",
+    element: <ProtectedRoute element={<AnalysisAndSynthesisOfResults />} />,
   },
   {
     path: "/review/planning/protocol-part-I/:id",

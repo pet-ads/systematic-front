@@ -13,24 +13,23 @@ import AlertInputText from "@components/common/inputs/AlertInputText";
 import ResearcherFilter from "./subcomponents/ResearcherFilter";
 
 // Service
-import useCreateReview from "../../services/useCreateReview";
+import useCreateReview from "../../services/useStructureReview";
 
-export default function NovaRevisao() {
+export default function GeneralDefinition() {
   const {
-    description,
-    title,
-    handleDescription,
-    handleTitle,
+    generalDefinition,
+    handleChangeGeneralDefinition,
     handlePost,
     handlePut,
     isReturn,
     isTitleValid,
   } = useCreateReview();
 
-  return (
-    <FlexLayout navigationType="Accordion" defaultOpen={0}>
-      <Header text="New Systematic Review" />
+  const { title, description, goal } = generalDefinition;
 
+  return (
+    <FlexLayout navigationType="Accordion">
+      <Header text="Protocol: General Definition" />
       <FormControl
         m={"20px auto 0"}
         display={"flex"}
@@ -46,7 +45,9 @@ export default function NovaRevisao() {
             placeholder="Enter review title"
             type="text"
             nome="text"
-            onChange={handleTitle}
+            onChange={(event) =>
+              handleChangeGeneralDefinition("title", event.target.value)
+            }
             labelAbove={true}
           />
         ) : (
@@ -57,7 +58,9 @@ export default function NovaRevisao() {
             placeholder="Enter review title"
             type="text"
             nome="text"
-            onChange={handleTitle}
+            onChange={(event) =>
+              handleChangeGeneralDefinition("title", event.target.value)
+            }
             labelAbove={true}
           />
         )}
@@ -66,8 +69,19 @@ export default function NovaRevisao() {
           value={description}
           label="Description"
           placeholder="Enter review description"
-          onChange={handleDescription}
-        ></InputTextArea>
+          onChange={(event) =>
+            handleChangeGeneralDefinition("description", event.target.value)
+          }
+        />
+
+        <InputTextArea
+          value={goal}
+          label="Objectives"
+          placeholder="What are your goals?"
+          onChange={(event) =>
+            handleChangeGeneralDefinition("goal", event.target.value)
+          }
+        />
 
         <ResearcherFilter />
 

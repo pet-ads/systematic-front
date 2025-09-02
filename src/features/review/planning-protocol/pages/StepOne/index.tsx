@@ -1,5 +1,4 @@
 // External library
-import { useEffect } from "react";
 import {
   Box,
   FormControl,
@@ -30,30 +29,20 @@ import { btnBox, formControl } from "./styles";
 
 export default function Protocol() {
   const {
-    handleDataAndGoNext,
-    handleDataAndReturn,
-    setGoal,
-    setJustification,
-    setPopulation,
-    setIntervention,
-    setControl,
-    setOutcome,
-    setContext,
     goal,
-    justification,
-    population,
-    intervention,
-    control,
-    outcome,
-    context,
-    setFlag,
+    picoc,
+    researchQuestion,
+    setGoal,
+    handleChangeResearchQuestion,
+    handleChangePicoc,
+    syncAndNavigate,
   } = useCreatePortocol();
 
   const { showResearchQuestions, loading, showPicoc } = useProtocolAccordion();
+  const { population, intervention, control, outcome, context } = picoc;
+  const { justification } = researchQuestion;
 
-  useEffect(() => {
-    setFlag("protocol");
-  }, []);
+  const id = localStorage.getItem("systematicReviewId") || "";
 
   if (loading) return <></>;
 
@@ -82,7 +71,7 @@ export default function Protocol() {
               label="Primary question:"
               placeholder="The reason behind your research..."
               onChange={(e) => {
-                setJustification(e.target.value);
+                handleChangeResearchQuestion("justification", e.target.value);
               }}
             />
 
@@ -135,46 +124,41 @@ export default function Protocol() {
                     value={population}
                     label="Population:"
                     placeholder="What is your study population?"
-                    onChange={(e) => {
-                      setPopulation(e.target.value);
+                    onChange={(event) => {
+                      handleChangePicoc("population", event.target.value);
                     }}
-                    mt={4}
                   />
                   <TextAreaInput
                     value={intervention}
                     label="Intervention:"
                     placeholder="What is your intervention?"
-                    onChange={(e) => {
-                      setIntervention(e.target.value);
+                    onChange={(event) => {
+                      handleChangePicoc("intervention", event.target.value);
                     }}
-                    mt={4}
                   />
                   <TextAreaInput
                     value={control}
                     label="Control:"
                     placeholder="What is your control?"
-                    onChange={(e) => {
-                      setControl(e.target.value);
+                    onChange={(event) => {
+                      handleChangePicoc("control", event.target.value);
                     }}
-                    mt={4}
                   />
                   <TextAreaInput
                     value={outcome}
                     label="Outcome:"
                     placeholder="What is your outcome?"
-                    onChange={(e) => {
-                      setOutcome(e.target.value);
+                    onChange={(event) => {
+                      handleChangePicoc("outcome", event.target.value);
                     }}
-                    mt={4}
                   />
                   <TextAreaInput
                     value={context}
                     label="Context:"
                     placeholder="What is your context?"
-                    onChange={(e) => {
-                      setContext(e.target.value);
+                    onChange={(event) => {
+                      handleChangePicoc("context", event.target.value);
                     }}
-                    mt={4}
                   />
                 </AccordionPanel>
               </AccordionItem>
@@ -182,8 +166,18 @@ export default function Protocol() {
           </FormControl>
 
           <Box sx={btnBox}>
-            <NavButton event={handleDataAndReturn} text="Back" />
-            <NavButton event={handleDataAndGoNext} text="Next" />
+            <NavButton
+              event={() =>
+                syncAndNavigate(`/review/planning/protocol/general-definition`)
+              }
+              text="Back"
+            />
+            <NavButton
+              event={() =>
+                syncAndNavigate(`/review/planning/protocol-part-II/${id}`)
+              }
+              text="Next"
+            />
           </Box>
         </Flex>
       </Box>
