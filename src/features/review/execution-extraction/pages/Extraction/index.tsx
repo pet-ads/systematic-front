@@ -6,7 +6,6 @@ import { Box, Flex } from "@chakra-ui/react";
 import StudySelectionContext from "@features/review/shared/context/StudiesSelectionContext";
 
 // Hooks
-import useInputState from "@features/review/shared/hooks/useInputState";
 import useLayoutPage from "../../../shared/hooks/useLayoutPage";
 import { useFilterReviewArticles } from "../../../shared/hooks/useFilterReviewArticles";
 
@@ -14,11 +13,11 @@ import { useFilterReviewArticles } from "../../../shared/hooks/useFilterReviewAr
 import Header from "../../../../../components/structure/Header/Header";
 import FlexLayout from "../../../../../components/structure/Flex/Flex";
 import InputText from "../../../../../components/common/inputs/InputText";
-import SelectInput from "../../../../../components/common/inputs/SelectInput";
 import LayoutFactory from "../../../shared/components/structure/LayoutFactory";
 import ButtonsForMultipleSelection from "../../../shared/components/common/buttons/ButtonsForMultipleSelection";
 import SelectLayout from "../../../shared/components/structure/LayoutButton";
 import ColumnVisibilityMenu from "@features/review/shared/components/common/menu/ColumnVisibilityMenu";
+import StatusSelect from "@features/review/shared/components/common/inputs/StatusSelect";
 
 // Styles
 import { inputconteiner } from "../../../shared/styles/executionStyles";
@@ -32,8 +31,7 @@ export default function Extraction() {
   const [showSelected, setShowSelected] = useState<boolean>(false);
   const selectionContext = useContext(StudySelectionContext);
 
-  const { value: selectedStatus, handleChange: handleSelectChange } =
-    useInputState<string | null>(null);
+  const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
   const { layout, handleChangeLayout } = useLayoutPage();
 
   const { columnsVisible, toggleColumnVisibility } = useVisibiltyColumns({
@@ -113,12 +111,11 @@ export default function Extraction() {
                 columnsVisible={columnsVisible}
                 toggleColumnVisibility={toggleColumnVisibility}
               />
-              <SelectInput
-                names={["INCLUDED", "DUPLICATED", "EXCLUDED", "UNCLASSIFIED"]}
-                values={["INCLUDED", "DUPLICATED", "EXCLUDED", "UNCLASSIFIED"]}
-                onSelect={(value) => handleSelectChange(value)}
-                selectedValue={selectedStatus}
-                page={"extraction"}
+              <StatusSelect
+                articles={allArticles}
+                value={selectedStatus}
+                setValue={setSelectedStatus}
+                type="extraction"
                 placeholder="Extraction status"
               />
             </Box>

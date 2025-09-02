@@ -33,12 +33,18 @@ export default function AddSelectTable({
         <SelectInput
           values={options}
           names={options}
-          onSelect={handleSelectChange}
+          onSelect={(value) => {
+            if (value === null) {
+              handleSelectChange("");
+            } else {
+              handleSelectChange(value);
+            }
+          }}
           selectedValue={selectedValue}
           placeholder={placeholder}
           page={"protocol"}
+          showIcons={false}
         />
-        
       </FormControl>
         <EventButton text="Add" event={handleSelectAddButtonClick} w={"2%"} />
       <InfosTable

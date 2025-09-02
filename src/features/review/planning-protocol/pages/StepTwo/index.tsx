@@ -71,7 +71,7 @@ export default function ProtocolPartTwo2() {
 
           <AddSelectionTable
             label="Languages"
-            options={["ENGLISH", "PORTUGUESE", "FRENCH", "SPANISH", "GERMAN"]}
+            options={["English", "Portuguese", "French", "Spanish", "German"]}
             placeholder={"Select language"}
             typeField="select"
           />
