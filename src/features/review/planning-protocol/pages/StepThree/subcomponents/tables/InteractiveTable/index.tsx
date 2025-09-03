@@ -20,6 +20,7 @@ import axios from "../../../../../../../../infrastructure/http/axiosClient";
 import { useEffect, useState } from "react";
 import NumberScaleModal from "../../modals/NumberScaleModal";
 import PickListModal from "../../modals/PickListModal";
+import PickManyModal from "../../modals/PickManyModal";
 import LabeledScaleModal from "../../modals/LabeledScaleModal";
 
 interface Props {
@@ -48,21 +49,26 @@ export default function InteractiveTable({ id, url, label }: Props) {
     handleAddQuestions,
     handleNumberScale,
     handleLabeledList,
+    handlePickMany,
   } = useInteractiveTable();
   const {
     sendTextualQuestion,
     sendPickListQuestion,
     sendNumberScaleQuestion,
     sendLabeledListQuestion,
+    sendPickManyQuestion,
     updateTextualQuestion,
     updatePickListQuestion,
     updateNumberScaleQuestion,
     updateLabeledListQuestion,
+    updatePickManyQuestion,
   } = useSendExtractionForm(adress);
 
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const [numberScale, setnumberScale] = useState<number[]>([]);
   const [questions, setQuestions] = useState<string[]>([]);
+  const [pickManyQuestions, setPickManyQuestions] = useState<string[]>([]);
+
   const [labeledQuestions, setLabeledQuestions] = useState<
     Record<string, number>
   >({});
@@ -114,6 +120,10 @@ export default function InteractiveTable({ id, url, label }: Props) {
                 break;
               case "LABELED_SCALE":
                 type = "labeled list";
+                break;
+              case "PICK_MANY":
+                type = "pick many";
+                questions = item.options;
                 break;
             }
 
@@ -211,6 +221,20 @@ export default function InteractiveTable({ id, url, label }: Props) {
       if (rows[index].isNew) questionId = await sendLabeledListQuestion(data);
       else updateLabeledListQuestion(data, rows[index].questionId);
       handleServerSend(index, questionId);
+    } else if (rows[index].type == "pick many") {
+      const data = {
+        question: rows[index].question,
+        questionId: rows[index].id,
+        reviewId: id,
+        options: pickManyQuestions,
+      };
+
+      handlePickMany(index, pickManyQuestions);
+      
+      let questionId;
+      if (rows[index].isNew) questionId = await sendPickManyQuestion(data);
+      else updatePickManyQuestion(data, rows[index].questionId, "PICK_MANY");
+      handleServerSend(index, questionId);
     }
 
     const accessToken = localStorage.getItem("accessToken");
@@ -227,6 +251,7 @@ export default function InteractiveTable({ id, url, label }: Props) {
 
   function addNewRow() {
     addRow(setEditIndex, setQuestions);
+    setPickManyQuestions([]);
   }
 
   return (
@@ -286,6 +311,7 @@ export default function InteractiveTable({ id, url, label }: Props) {
                     setQuestions(row.questions);
                     setLabeledQuestions(row.scale);
                     setEditIndex(index);
+                    setPickManyQuestions(row.questions);
                     setShowModal(true);
                     setModalType(row.type);
                   }}
@@ -328,6 +354,14 @@ export default function InteractiveTable({ id, url, label }: Props) {
           show={setShowModal}
           questionHolder={setLabeledQuestions}
           questions={labeledQuestions}
+        />
+      )}
+
+      {showModal == true && modalType == "pick many" && (
+        <PickManyModal
+          show={setShowModal}
+          optionHolder={setPickManyQuestions}
+          options={pickManyQuestions}
         />
       )}
     </TableContainer>

@@ -14,7 +14,7 @@ export interface Row {
 
 export function useInteractiveTable() {
   const [rows, setRows] = useState<Row[]>([]);
-  const options = ["", "Textual", "Pick list", "Number scale", "Labeled List"];
+  const options = ["", "Textual", "Pick list", "Number scale", "Labeled List", "Pick many"];
   const headers = ["Id", "Question", "Type", ""];
 
   const addRow = (setEditIndex: React.Dispatch<SetStateAction<number | null>>, setQuestions: React.Dispatch<SetStateAction<string[]>>) => {
@@ -67,10 +67,30 @@ export function useInteractiveTable() {
     setRows(updatedRows);
   }
 
+  const handlePickMany = (index: number, value: string[]) => {
+    const updatedRows = [...rows];
+    updatedRows[index].questions = value;
+    setRows(updatedRows);
+  };
+
   const getRowsData = () => {
     return rows;
   };
 
-  return { setRows, rows, addRow, handleServerSend, handleNumberScale, handleDelete, handleQuestionChange, 
-    handleTypeChange, handleLabeledList, handleAddQuestions, options, headers, getRowsData };
+  return {
+    setRows,
+    rows,
+    addRow,
+    handleServerSend,
+    handleNumberScale,
+    handleDelete,
+    handleQuestionChange,
+    handleTypeChange,
+    handleLabeledList,
+    handlePickMany,
+    handleAddQuestions,
+    options,
+    headers,
+    getRowsData,
+  };
 }

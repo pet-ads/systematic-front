@@ -27,6 +27,13 @@ interface LabeledProps {
   reviewId: string;
   scales: Record<string, number>;
 }
+interface PickManyProps {
+  question: string;
+  questionId: number;
+  reviewId: string;
+  options: string[];
+}
+
 
 const useSendExtractionForm = (adress: string) => {
   async function sendTextualQuestion({
@@ -110,6 +117,28 @@ const useSendExtractionForm = (adress: string) => {
       code: questionId,
       description: question,
       scales,
+    };
+
+    try {
+      let response = await axios.post(url, data, { withCredentials: true });
+      console.log(response);
+      return response.data.questionId;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  async function sendPickManyQuestion({
+    question,
+    questionId,
+    reviewId,
+    options,
+  }: PickManyProps) {
+    let url = `http://localhost:8080/api/v1/systematic-study/${reviewId}/protocol/${adress}/pick-many`;
+    const data = {
+      code: questionId,
+      description: question,
+      options,
     };
 
     try {
@@ -209,15 +238,39 @@ const useSendExtractionForm = (adress: string) => {
     }
   }
 
+  async function updatePickManyQuestion(
+    { question, questionId, reviewId, options }: PickManyProps,
+    serverId: string | null,
+    questionType: string
+  ) {
+    let url = `http://localhost:8080/api/v1/systematic-study/${reviewId}/protocol/${adress}/${serverId}`;
+    const data = {
+      questionType: questionType,
+      code: questionId,
+      description: question,
+      options,
+    };
+
+    try {
+      let response = await axios.put(url, data, { withCredentials: true });
+      console.log(response);
+      return response.data.questionId;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   return {
     sendTextualQuestion,
     sendPickListQuestion,
     sendNumberScaleQuestion,
     sendLabeledListQuestion,
+    sendPickManyQuestion,
     updateTextualQuestion,
     updatePickListQuestion,
     updateNumberScaleQuestion,
     updateLabeledListQuestion,
+    updatePickManyQuestion,
   };
 };
 
