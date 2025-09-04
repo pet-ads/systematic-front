@@ -118,7 +118,7 @@ export default function Protocol() {
                   </AccordionButton>
                 </h2>
 
-                <AccordionPanel pb={4}>
+                <AccordionPanel pb={4} display="flex" flexDirection="column" gap={10}>
                   <Divider mb={4} />
                   <TextAreaInput
                     value={population}

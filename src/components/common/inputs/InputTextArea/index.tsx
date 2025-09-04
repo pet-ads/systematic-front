@@ -21,8 +21,8 @@ export default function TextAreaInput({ label, placeholder, onChange, value, ...
 
   return (
     <FormControl maxW={"60vw"}>
-      <FormLabel color={"#2E4B6C"}>{label}</FormLabel>
-      <Textarea bgColor={"#C9D9E5"} _placeholder={{ opacity: 1, color: 'gray.500' }}
+      <FormLabel  fontWeight={500} fontSize={"large"}>{label}</FormLabel>
+      <Textarea border="2px solid" borderColor="gray.300" bgColor={"#ffffffff"} _placeholder={{ opacity: 1, color: 'gray.500' }}
           focusBorderColor="#2E4B6C" placeholder={placeholder} onChange={handleChange}
           {...textareaProps} value={normalizedValue}/>
     </FormControl>

@@ -1,4 +1,4 @@
-import { FormControl, FormLabel } from "@chakra-ui/react";
+import { Box, FormControl, FormLabel } from "@chakra-ui/react";
 import SelectInput from "../../../../../../../../components/common/inputs/SelectInput";
 
 import EventButton from "@components/common/buttons/EventButton";
@@ -28,18 +28,21 @@ export default function AddSelectTable({
 
   return (
     <FormControl sx={conteiner} alignContent={"center"}>
-      <FormLabel>{label}</FormLabel>
-      <FormControl sx={formcontrol} justifyContent="space-between">
-        <SelectInput
-          values={options}
-          names={options}
-          onSelect={handleSelectChange}
-          selectedValue={selectedValue}
-          placeholder={placeholder}
-          page={"protocol"}
-        />
-        
-      </FormControl>
+
+      <Box display="flex" flexDirection="column" justifyContent="space-between">
+        <FormLabel  fontWeight={500} fontSize={"large"}>{label}</FormLabel>
+        <FormControl sx={formcontrol} justifyContent="space-between">
+          <SelectInput
+            values={options}
+            names={options}
+            onSelect={handleSelectChange}
+            selectedValue={selectedValue}
+            placeholder={placeholder}
+            page={"protocol"}
+          />
+          
+        </FormControl>
+      </Box>
         <EventButton text="Add" event={handleSelectAddButtonClick} w={"2%"} />
       <InfosTable
         typeField="select"

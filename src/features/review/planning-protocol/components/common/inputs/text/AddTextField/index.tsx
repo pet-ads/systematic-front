@@ -1,4 +1,4 @@
-import { Box, FormControl, FormLabel } from "@chakra-ui/react";
+import { Box, FormControl } from "@chakra-ui/react";
 import TextAreaInput from "../../../../../../../../components/common/inputs/InputTextArea";
 import EventButton from "@components/common/buttons/EventButton";
 import { useState } from "react";
@@ -40,15 +40,14 @@ export default function AddTextField({
 
   return (
     <FormControl sx={formcontrol} mt="3rem">
-      <Box display="flex" justifyContent="space-between" alignItems="center">
-        <FormLabel>{label}</FormLabel>
+      <Box display="flex" flexDirection="column" justifyContent="space-between">
+        <TextAreaInput
+          value={inputValue}
+          label={label}
+          placeholder={text}
+          onChange={handleInputChange}
+        />
       </Box>
-      <TextAreaInput
-        value={inputValue}
-        label=""
-        placeholder={text}
-        onChange={handleInputChange}
-      />
       <EventButton event={handleAddText} text="ADD" w={"2%"} />
     </FormControl>
   );

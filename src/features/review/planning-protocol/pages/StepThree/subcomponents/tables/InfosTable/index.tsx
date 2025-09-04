@@ -29,7 +29,7 @@ export default function InfosTable({
     });
 
   return (
-    <TableContainer sx={tbConteiner}>
+    <TableContainer border="2px solid" borderColor="gray.300" sx={tbConteiner} >
       <Table variant="simple" size="md">
         <Tbody className="tableBody">
           {AddTexts.map((addText, index) => (
