@@ -3,8 +3,9 @@ import DeleteButton from "@components/common/buttons/DeleteButton";
 import { useEditState } from "@features/review/planning-protocol/hooks/useEdit";
 import { useState } from "react";
 import { tbConteiner } from "./styles";
-import { Table, Tbody, Tr, Td, TableContainer, Input, Tfoot, Button, Flex } from "@chakra-ui/react";
+import { Table, Tbody, Tr, Td, TableContainer, Input, Tfoot, Flex } from "@chakra-ui/react";
 import useCreateProtocol from "@features/review/planning-protocol/services/useCreateProtocol";
+import EventButton from "@components/common/buttons/EventButton";
 
 interface InfosTableProps {
   AddTexts: string[];
@@ -82,9 +83,7 @@ const handleAddText = () => {
                   onChange={(e) => setNewText(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleAddText()}
                 />
-                <Button onClick={handleAddText}>
-                  ADD
-                </Button>
+                <EventButton text="Add" event={handleAddText} w={"2%"} />
               </Flex>
             </Td>
           </Tr>
