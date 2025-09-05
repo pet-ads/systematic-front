@@ -24,6 +24,7 @@ export default function AddTextTable({ text, placeholder }: AddTextTableProps) {
         />
         <InfosTable
           typeField={""}
+          onAddText={handleAddText}
           onDeleteAddedText={(index) => handleDeleteText(index, setAddText)}
           AddTexts={AddText}
           context={text}

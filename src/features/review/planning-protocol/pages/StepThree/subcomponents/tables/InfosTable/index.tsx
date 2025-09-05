@@ -1,13 +1,15 @@
 import EditButton from "@components/common/buttons/EditButton";
 import DeleteButton from "@components/common/buttons/DeleteButton";
 import { useEditState } from "@features/review/planning-protocol/hooks/useEdit";
+import { useState } from "react";
 import { tbConteiner } from "./styles";
-import { Table, Tbody, Tr, Td, TableContainer, Input } from "@chakra-ui/react";
+import { Table, Tbody, Tr, Td, TableContainer, Input, Tfoot, Button, Flex } from "@chakra-ui/react";
 import useCreateProtocol from "@features/review/planning-protocol/services/useCreateProtocol";
 
 interface InfosTableProps {
   AddTexts: string[];
   onDeleteAddedText: (index: number) => void;
+  onAddText: (newText : string) => void;
   typeField: string;
   context: string;
 }
@@ -15,6 +17,7 @@ interface InfosTableProps {
 export default function InfosTable({
   AddTexts,
   onDeleteAddedText,
+  onAddText,
   typeField,
   context,
 }: InfosTableProps) {
@@ -27,6 +30,15 @@ export default function InfosTable({
         sendAddText(AddTexts, context);
       },
     });
+
+const [newText, setNewText] = useState("");
+
+const handleAddText = () => {
+  if (newText.trim() !== "") {
+    onAddText(newText);
+    setNewText("");
+  }
+};
 
   return (
     <TableContainer sx={tbConteiner}>
@@ -58,6 +70,23 @@ export default function InfosTable({
             </Tr>
           ))}
         </Tbody>
+        <Tfoot>
+          <Tr>
+            <Td colSpan={2} padding="1rem">
+              <Flex gap="4">
+                <Input
+                  placeholder="Type new text here..."
+                  value={newText}
+                  onChange={(e) => setNewText(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleAddText()}
+                />
+                <Button onClick={handleAddText}>
+                  ADD
+                </Button>
+              </Flex>
+            </Td>
+          </Tr>
+        </Tfoot>
       </Table>
     </TableContainer>
   );

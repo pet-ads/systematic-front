@@ -27,7 +27,7 @@ export function useSelect(initialState: string[] = [], context: string) {
     }
 
     fetchSelectedValues();
-  }, []);
+  }, [context]);
 
   const handleSelectChange = (value: string) => {
     setSelectedValue(value);
@@ -59,6 +59,26 @@ export function useSelect(initialState: string[] = [], context: string) {
     setSelectedValue(null);
   };
 
+  const handleAddValue = (newValue: string) => {
+    const trimmedValue = newValue.trim();
+    if (!trimmedValue) {
+      toast({
+        title: "Empty Field",
+        description: "The field must be filled!",
+        status: "warning",
+      });
+      return;
+    }
+    if (selectedValues.includes(trimmedValue)) {
+      toast({
+        title: "Duplicate option",
+        description: "This option already exists!",
+        status: "warning",
+      });
+      return;
+    }
+  }
+
   const handleDeleteSelect = (index: number) => {
     setSelectedValues((prevSelectedValues) => {
       const updatedSelectedValues = [...prevSelectedValues];
@@ -76,5 +96,6 @@ export function useSelect(initialState: string[] = [], context: string) {
     handleSelectChange,
     handleSelectAddButtonClick,
     handleDeleteSelect,
+    handleAddValue,
   };
 }

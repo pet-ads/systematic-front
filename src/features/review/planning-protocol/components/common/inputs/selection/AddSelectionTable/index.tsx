@@ -24,6 +24,7 @@ export default function AddSelectTable({
     handleSelectChange,
     handleSelectAddButtonClick,
     handleDeleteSelect,
+    handleAddValue,
   } = useSelect([], label);
 
   return (
@@ -43,6 +44,7 @@ export default function AddSelectTable({
         <EventButton text="Add" event={handleSelectAddButtonClick} w={"2%"} />
       <InfosTable
         typeField="select"
+        onAddText={handleAddValue}
         onDeleteAddedText={(index) => handleDeleteSelect(index)}
         AddTexts={selectedValues}
         context={label}
