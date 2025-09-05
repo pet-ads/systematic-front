@@ -43,6 +43,7 @@ export default function AddSelectTable({
       </FormControl>
         <EventButton text="Add" event={handleSelectAddButtonClick} w={"2%"} />
       <InfosTable
+        placeholder={placeholder}
         typeField="select"
         onAddText={handleAddValue}
         onDeleteAddedText={(index) => handleDeleteSelect(index)}

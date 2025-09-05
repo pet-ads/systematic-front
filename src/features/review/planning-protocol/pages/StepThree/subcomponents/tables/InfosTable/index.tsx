@@ -12,6 +12,7 @@ interface InfosTableProps {
   onAddText: (newText : string) => void;
   typeField: string;
   context: string;
+  placeholder: string;
 }
 
 export default function InfosTable({
@@ -20,6 +21,7 @@ export default function InfosTable({
   onAddText,
   typeField,
   context,
+  placeholder,
 }: InfosTableProps) {
   const { sendAddText } = useCreateProtocol();
   const { editIndex, handleEdit, handleSaveEdit, editedValue, handleChange } =
@@ -75,7 +77,7 @@ const handleAddText = () => {
             <Td colSpan={2} padding="1rem">
               <Flex gap="4">
                 <Input
-                  placeholder="Type new text here..."
+                  placeholder={placeholder}
                   value={newText}
                   onChange={(e) => setNewText(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleAddText()}

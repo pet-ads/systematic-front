@@ -22,6 +22,7 @@ export default function AddTextTable({ text, placeholder }: AddTextTableProps) {
           onDeleteAddedText={(index) => handleDeleteText(index, setAddText)}
           AddTexts={AddText}
           context={text}
+          placeholder={placeholder}
         />
       </FormControl>
     </FormControl>
