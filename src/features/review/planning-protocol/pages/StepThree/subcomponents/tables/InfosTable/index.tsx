@@ -3,7 +3,7 @@ import DeleteButton from "@components/common/buttons/DeleteButton";
 import { useEditState } from "@features/review/planning-protocol/hooks/useEdit";
 import { useState } from "react";
 import { tbConteiner } from "./styles";
-import { Table, Tbody, Tr, Td, TableContainer, Input, Tfoot, Flex } from "@chakra-ui/react";
+import { Table, Tbody, Tr, Td, TableContainer, Input, Flex, Thead } from "@chakra-ui/react";
 import useCreateProtocol from "@features/review/planning-protocol/services/useCreateProtocol";
 import EventButton from "@components/common/buttons/EventButton";
 
@@ -46,6 +46,21 @@ const handleAddText = () => {
   return (
     <TableContainer sx={tbConteiner}>
       <Table variant="simple" size="md">
+        <Thead>
+          <Tr>
+            <Td colSpan={2} padding="1rem">
+              <Flex gap="4">
+                <Input
+                  placeholder={placeholder}
+                  value={newText}
+                  onChange={(e) => setNewText(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleAddText()}
+                />
+                <EventButton text="Add" event={handleAddText} w={"2%"} />
+              </Flex>
+            </Td>
+          </Tr>
+        </Thead>
         <Tbody className="tableBody">
           {AddTexts.map((addText, index) => (
             <Tr key={index}>
@@ -73,21 +88,6 @@ const handleAddText = () => {
             </Tr>
           ))}
         </Tbody>
-        <Tfoot>
-          <Tr>
-            <Td colSpan={2} padding="1rem">
-              <Flex gap="4">
-                <Input
-                  placeholder={placeholder}
-                  value={newText}
-                  onChange={(e) => setNewText(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && handleAddText()}
-                />
-                <EventButton text="Add" event={handleAddText} w={"2%"} />
-              </Flex>
-            </Td>
-          </Tr>
-        </Tfoot>
       </Table>
     </TableContainer>
   );
