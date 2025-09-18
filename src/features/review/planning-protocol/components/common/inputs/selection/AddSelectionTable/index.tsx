@@ -4,7 +4,7 @@ import SelectInput from "../../../../../../../../components/common/inputs/Select
 import EventButton from "@components/common/buttons/EventButton";
 import { useSelect } from "../../../../../services/useSelect";
 import { conteiner, formcontrol } from "./styles";
-import InfosTable from "@features/review/planning-protocol/pages/StepThree/subcomponents/tables/InfosTable";
+import SelectInfosTable from "@features/review/planning-protocol/pages/StepThree/subcomponents/tables/SelectInfosTable";
 
 interface AddSelectTableProps {
   options: string[];
@@ -24,7 +24,6 @@ export default function AddSelectTable({
     handleSelectChange,
     handleSelectAddButtonClick,
     handleDeleteSelect,
-    handleAddValue,
   } = useSelect([], label);
 
   return (
@@ -42,13 +41,9 @@ export default function AddSelectTable({
         
       </FormControl>
         <EventButton text="Add" event={handleSelectAddButtonClick} w={"2%"} />
-      <InfosTable
-        placeholder={placeholder}
-        typeField="select"
-        onAddText={handleAddValue}
-        onDeleteAddedText={(index) => handleDeleteSelect(index)}
-        AddTexts={selectedValues}
-        context={label}
+      <SelectInfosTable 
+        selectedItems={selectedValues}
+        onDeleteItem={handleDeleteSelect}
       />
     </FormControl>
   );
