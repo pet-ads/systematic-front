@@ -50,10 +50,12 @@ export default function EligibilityCriteria() {
           <AddTextTable
             text="Inclusion criteria"
             placeholder="Enter the criteria"
+            isSectionTitle
           />
           <AddTextTable
             text="Exclusion criteria"
             placeholder="Enter the criteria"
+            isSectionTitle
           />
           <TextAreaInput
             value={studyTypeDefinition}
@@ -65,12 +67,14 @@ export default function EligibilityCriteria() {
             }}
             label="Study Type Definition"
             placeholder="Enter the study type definition"
+            isSectionTitle
           />
           <AddSelectionTable
             label="Languages"
             options={languageOptions}
             placeholder={"Select language"}
             typeField="select"
+            isSectionTitle
           />
           <Box
             w={"60vw"}

@@ -12,12 +12,14 @@ interface AddSelectTableProps {
   placeholder: string;
   typeField: string;
   label: string;
+  isSectionTitle?: boolean;
 }
 
 export default function AddSelectTable({
   options,
   label,
   placeholder,
+  isSectionTitle,
 }: AddSelectTableProps) {
   const {
     selectedValue,
@@ -28,7 +30,6 @@ export default function AddSelectTable({
   } = useSelect([], label);
 
   const formattedOptions = options.map((opt) => capitalize(opt.toLowerCase()));
-
   const formatSelectedValues = selectedValues.map((value) =>
     capitalize(value.toLowerCase())
   );
@@ -36,7 +37,10 @@ export default function AddSelectTable({
   return (
     <FormControl sx={conteiner} alignContent={"center"}>
       <Box display="flex" flexDirection="column" justifyContent="space-between">
-        <FormLabel fontWeight={500} fontSize={"large"}>
+        <FormLabel
+          fontWeight={isSectionTitle ? 700 : 500}
+          fontSize={isSectionTitle ? "xl" : "lg"}
+        >
           {label}
         </FormLabel>
         <FormControl sx={formcontrol} justifyContent="space-between">

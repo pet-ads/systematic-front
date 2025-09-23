@@ -9,9 +9,10 @@ import InfosTable from "@features/review/planning-protocol/pages/StepThree/subco
 interface AddTextTableProps {
   text: string;
   placeholder: string;
+  isSectionTitle?: boolean;
 }
 
-export default function AddTextTable({ text, placeholder }: AddTextTableProps) {
+export default function AddTextTable({ text, placeholder, isSectionTitle }: AddTextTableProps) {
   const { AddText, handleAddText, setAddText } = useAddText(text);
   const { handleDeleteText } = useDeleteText(text);
   return (
@@ -21,6 +22,7 @@ export default function AddTextTable({ text, placeholder }: AddTextTableProps) {
           onAddText={handleAddText}
           label={text}
           text={placeholder}
+          isSectionTitle={isSectionTitle}
         />
         <InfosTable
           typeField={""}

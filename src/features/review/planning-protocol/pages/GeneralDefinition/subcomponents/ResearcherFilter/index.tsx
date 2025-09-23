@@ -40,6 +40,7 @@ export default function ResearcherFilter() {
         placeholder={"Enter the name of the researchers "}
         onChange={handleInputChange}
         value={inputValue}
+        isSectionTitle
       ></TextAreaInput>
     </FormControl>
   );

@@ -10,12 +10,14 @@ interface IAddTextFieldProps {
   onAddText: (newKeyword: string) => void;
   text: string;
   label: string;
+  isSectionTitle?: boolean;
 }
 
 export default function AddTextField({
   onAddText,
   text,
   label,
+  isSectionTitle,
 }: IAddTextFieldProps) {
   const [inputValue, setInputValue] = useState<string>("");
   const toast = useToaster();
@@ -46,6 +48,7 @@ export default function AddTextField({
           label={label}
           placeholder={text}
           onChange={handleInputChange}
+          isSectionTitle={isSectionTitle}
         />
       </Box>
       <EventButton event={handleAddText} text="ADD" w={"2%"} />

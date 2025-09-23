@@ -5,7 +5,7 @@ import { Box, FormControl } from "@chakra-ui/react";
 import Header from "@components/structure/Header/Header";
 import InputText from "@components/common/inputs/InputText";
 import NavButton from "@components/common/buttons/NavigationButton";
-import InputTextArea from "@components/common/inputs/InputTextArea";
+import TextAreaInput from "@components/common/inputs/InputTextArea";
 import FlexLayout from "@components/structure/Flex/Flex";
 import AlertInputText from "@components/common/inputs/AlertInputText";
 import CardDefault from "@components/common/cards";
@@ -31,17 +31,13 @@ export default function GeneralDefinition() {
   return (
     <FlexLayout navigationType="Accordion">
       <Header text="Protocol: General Definition" />
-      <CardDefault
-        backgroundColor="#fff"
-        borderRadius="1rem"
-        withShadow={false}
-      >
+      <CardDefault backgroundColor="#fff" borderRadius="1rem" withShadow={false}>
         <FormControl
           m={"20px auto 0"}
           display={"flex"}
           gap={10}
           flexDir={"column"}
-          w={"6 0vw"}
+          w={"60vw"}
           alignItems={"center"}
         >
           {isTitleValid ? (
@@ -55,6 +51,8 @@ export default function GeneralDefinition() {
                 handleChangeGeneralDefinition("title", event.target.value)
               }
               labelAbove={true}
+              isMainTitleField
+              isSectionTitle 
             />
           ) : (
             <AlertInputText
@@ -68,25 +66,29 @@ export default function GeneralDefinition() {
                 handleChangeGeneralDefinition("title", event.target.value)
               }
               labelAbove={true}
+              isMainTitleField
+              isSectionTitle
             />
           )}
 
-          <InputTextArea
+          <TextAreaInput
             value={description}
             label="Description"
             placeholder="Enter review description"
             onChange={(event) =>
               handleChangeGeneralDefinition("description", event.target.value)
             }
+            isSectionTitle
           />
 
-          <InputTextArea
+          <TextAreaInput
             value={objectives}
             label="Objectives"
             placeholder="What are your goals?"
             onChange={(event) =>
               handleChangeGeneralDefinition("objectives", event.target.value)
             }
+            isSectionTitle
           />
 
           <ResearcherFilter />
