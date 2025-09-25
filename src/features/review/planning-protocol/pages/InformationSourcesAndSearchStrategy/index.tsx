@@ -48,6 +48,7 @@ export default function InformationSourcesAndSearchStrategy() {
             }}
             label="Sources Selection Criteria"
             placeholder="Enter the sources selection criteria"
+            isSectionTitle
           />
           <AddSelectionTable
             label="Databases and Information Source"
@@ -64,6 +65,7 @@ export default function InformationSourcesAndSearchStrategy() {
             ]}
             placeholder={"Select Data Base"}
             typeField="select"
+            isSectionTitle
           />
           <TextAreaInput
             value={searchMethod}
@@ -75,10 +77,12 @@ export default function InformationSourcesAndSearchStrategy() {
             }}
             label="Search Strategy"
             placeholder="Enter Search Strategy"
+            isSectionTitle
           />
           <AddTextTable
             text="Keywords"
             placeholder="Enter the keywords related to your review"
+            isSectionTitle
           />
           <TextAreaInput
             value={searchString}
@@ -90,6 +94,7 @@ export default function InformationSourcesAndSearchStrategy() {
             }}
             label="Search String"
             placeholder="Enter the search string"
+            isSectionTitle
           />
           <Box
             w={"60vw"}

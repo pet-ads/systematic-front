@@ -46,6 +46,7 @@ export default function AnalysisAndSynthesisOfResults() {
                 event.target.value
               )
             }
+            isSectionTitle
           />
           <Box
             w={"60vw"}

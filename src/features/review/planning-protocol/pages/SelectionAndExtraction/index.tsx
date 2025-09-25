@@ -50,6 +50,7 @@ export default function SelectionAndExtraction() {
             }}
             label="Study Selection Process"
             placeholder="Enter selection process"
+            isSectionTitle
           />
           <TextAreaInput
             value={dataCollectionProcess}
@@ -61,6 +62,7 @@ export default function SelectionAndExtraction() {
             }}
             label="Data Collection Process"
             placeholder="Enter the data colletion process"
+            isSectionTitle
           />
           <InteractiveTable id={id} url={url} label={"Extraction Questions"} />
           <Box

@@ -56,6 +56,7 @@ export default function ResearchQuestions() {
               onChange={(event) =>
                 handleChangeResearchQuestion("justification", event.target.value)
               }
+              isSectionTitle
             />
 
             <Accordion defaultIndex={showResearchQuestions ? [0] : [-1]} allowToggle mt={6} w="60vw">

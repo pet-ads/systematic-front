@@ -33,43 +33,48 @@ export default function Picoc() {
         >
           <TextAreaInput
             value={population}
-            label="Population:"
+            label="Population"
             placeholder="What is your study population?"
             onChange={(event) => {
               handleChangePicoc("population", event.target.value);
             }}
+            isSectionTitle
           />
           <TextAreaInput
             value={intervention}
-            label="Intervention:"
+            label="Intervention"
             placeholder="What is your intervention?"
             onChange={(event) => {
               handleChangePicoc("intervention", event.target.value);
             }}
+            isSectionTitle
           />
           <TextAreaInput
             value={control}
-            label="Control:"
+            label="Control"
             placeholder="What is your control?"
             onChange={(event) => {
               handleChangePicoc("control", event.target.value);
             }}
+            isSectionTitle
           />
           <TextAreaInput
             value={outcome}
-            label="Outcome:"
+            label="Outcome"
             placeholder="What is your outcome?"
             onChange={(event) => {
               handleChangePicoc("outcome", event.target.value);
             }}
+            isSectionTitle
           />
           <TextAreaInput
             value={context}
-            label="Context:"
+            label="Context"
             placeholder="What is your context?"
             onChange={(event) => {
               handleChangePicoc("context", event.target.value);
             }}
+            isSectionTitle
           />
           <Box
             w={"60vw"}
