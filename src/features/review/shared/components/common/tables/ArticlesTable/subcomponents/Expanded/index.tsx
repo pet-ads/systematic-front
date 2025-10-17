@@ -376,11 +376,15 @@ export default function Expanded({
                       : "transparent"
                   }
                   onClick={(e) => {
+                    const target = e.target as HTMLElement;
+
                     if (
-                      (e.target as HTMLElement).tagName.toLowerCase() ===
-                      "input"
-                    )
+                      target.closest("input") ||
+                      target.closest("label") ||
+                      target.closest("button")
+                    ) {
                       return;
+                    }
 
                     setSelectedArticleReview(reference.studyReviewId);
 
