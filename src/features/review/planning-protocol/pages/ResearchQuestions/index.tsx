@@ -1,4 +1,3 @@
-// External library
 import {
   Accordion,
   AccordionButton,
@@ -11,7 +10,6 @@ import {
   Heading,
 } from "@chakra-ui/react";
 
-// Components
 import Header from "@components/structure/Header/Header";
 import NavButton from "@components/common/buttons/NavigationButton";
 import InputTextArea from "@components/common/inputs/InputTextArea";
@@ -19,7 +17,6 @@ import FlexLayout from "@components/structure/Flex/Flex";
 import AddTextTable from "../../components/common/inputs/text/AddTextTable";
 import CardDefault from "@components/common/cards";
 
-// Service
 import useCreateProtocol from "../../services/useCreateProtocol";
 import useProtocolAccordion from "../../services/useProtocolAccordion";
 
@@ -28,26 +25,20 @@ export default function ResearchQuestions() {
     useCreateProtocol();
 
   const { showResearchQuestions } = useProtocolAccordion();
-
   const { justification } = researchQuestion;
-
   const id = localStorage.getItem("systematicReviewId");
 
   return (
     <FlexLayout navigationType="Accordion">
       <Header text="Protocol: Research Questions" />
-      <CardDefault
-        backgroundColor="#fff"
-        borderRadius="1rem"
-        withShadow={false}
-      >
+      <CardDefault backgroundColor="#fff" borderRadius="1rem" withShadow={false}>
         <FormControl
-          m={"1rem auto 0"}
-          display={"flex"}
+          m="1rem auto 0"
+          display="flex"
           gap={1.5}
-          flexDir={"column"}
-          w={"60vw"}
-          alignItems={"center"}
+          flexDir="column"
+          w="60vw"
+          alignItems="center"
         >
           <InputTextArea
             value={justification}
@@ -78,18 +69,14 @@ export default function ResearchQuestions() {
                   <AddTextTable
                     text="Research Questions"
                     placeholder="Enter the other Research Questions"
+                    referencePrefix="RQ"
                   />
                 </Flex>
               </AccordionPanel>
             </AccordionItem>
           </Accordion>
 
-          <Box
-            w={"60vw"}
-            display={"flex"}
-            alignItems={"center"}
-            justifyContent={"end"}
-          >
+          <Box w="60vw" display="flex" alignItems="center" justifyContent="end">
             <NavButton
               event={() =>
                 syncAndNavigate(`/review/planning/protocol/picoc/${id}`)

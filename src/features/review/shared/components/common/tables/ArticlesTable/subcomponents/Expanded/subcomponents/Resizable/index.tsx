@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 
 interface ResizeHandlerProps {
-  ref: React.RefObject<HTMLDivElement | null>;
+  ref: React.RefObject<HTMLDivElement>;
   isResizing: boolean;
 }
 

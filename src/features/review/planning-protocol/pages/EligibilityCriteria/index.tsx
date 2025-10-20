@@ -1,7 +1,5 @@
-// External library
 import { Box, FormControl } from "@chakra-ui/react";
 
-// Components
 import Header from "@components/structure/Header/Header";
 import NavButton from "@components/common/buttons/NavigationButton";
 import AddTextTable from "../../components/common/inputs/text/AddTextTable";
@@ -10,7 +8,6 @@ import AddSelectionTable from "../../components/common/inputs/selection/AddSelec
 import FlexLayout from "@components/structure/Flex/Flex";
 import CardDefault from "@components/common/cards";
 
-// Service
 import useCreateProtocol from "../../services/useCreateProtocol";
 
 export default function EligibilityCriteria() {
@@ -34,49 +31,47 @@ export default function EligibilityCriteria() {
   return (
     <FlexLayout navigationType="Accordion">
       <Header text="Protocol: Eligibility Criteria" />
-      <CardDefault
-        backgroundColor="#fff"
-        borderRadius="1rem"
-        withShadow={false}
-      >
+      <CardDefault backgroundColor="#fff" borderRadius="1rem" withShadow={false}>
         <FormControl
-          m={"20px auto 0"}
-          display={"flex"}
+          m="20px auto 0"
+          display="flex"
           gap={10}
-          flexDir={"column"}
-          w={"60vw"}
-          alignItems={"center"}
+          flexDir="column"
+          w="60vw"
+          alignItems="center"
         >
           <AddTextTable
             text="Inclusion criteria"
             placeholder="Enter the criteria"
+            referencePrefix="IC"
           />
           <AddTextTable
             text="Exclusion criteria"
             placeholder="Enter the criteria"
+            referencePrefix="EC"
           />
           <TextAreaInput
             value={studyTypeDefinition}
-            onChange={(event) => {
+            onChange={(event) =>
               handleChangeEligibilityCriteria(
                 "studyTypeDefinition",
                 event.target.value
-              );
-            }}
+              )
+            }
             label="Study Type Definition"
             placeholder="Enter the study type definition"
           />
           <AddSelectionTable
             label="Languages"
             options={languageOptions}
-            placeholder={"Select language"}
+            placeholder="Select language"
             typeField="select"
           />
           <Box
-            w={"60vw"}
-            display={"flex"}
-            alignItems={"center"}
-            justifyContent={"end"}
+            w="60vw"
+            display="flex"
+            alignItems="center"
+            justifyContent="end"
           >
             <NavButton
               event={() =>

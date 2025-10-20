@@ -1,7 +1,5 @@
-// External library
 import { Box, FormControl } from "@chakra-ui/react";
 
-// Components
 import Header from "@components/structure/Header/Header";
 import NavButton from "@components/common/buttons/NavigationButton";
 import AddTextTable from "../../components/common/inputs/text/AddTextTable";
@@ -10,7 +8,6 @@ import AddSelectionTable from "../../components/common/inputs/selection/AddSelec
 import FlexLayout from "@components/structure/Flex/Flex";
 import CardDefault from "@components/common/cards";
 
-// Service
 import useCreateProtocol from "../../services/useCreateProtocol";
 
 export default function InformationSourcesAndSearchStrategy() {
@@ -27,28 +24,27 @@ export default function InformationSourcesAndSearchStrategy() {
   return (
     <FlexLayout navigationType="Accordion">
       <Header text="Protocol: Information Sources And Search Strategy" />
-      <CardDefault backgroundColor="#fff"
-          borderRadius="1rem"
-          withShadow={false}>
+      <CardDefault backgroundColor="#fff" borderRadius="1rem" withShadow={false}>
         <FormControl
-          m={"20px auto 0"}
-          display={"flex"}
+          m="20px auto 0"
+          display="flex"
           gap={10}
-          flexDir={"column"}
-          w={"60vw"}
-          alignItems={"center"}
+          flexDir="column"
+          w="60vw"
+          alignItems="center"
         >
           <TextAreaInput
             value={sourcesSelectionCriteria}
-            onChange={(event) => {
+            onChange={(event) =>
               handleChangeInformationSourcesAndSearchStrategy(
                 "sourcesSelectionCriteria",
                 event.target.value
-              );
-            }}
+              )
+            }
             label="Sources Selection Criteria"
             placeholder="Enter the sources selection criteria"
           />
+
           <AddSelectionTable
             label="Databases and Information Source"
             options={[
@@ -62,40 +58,41 @@ export default function InformationSourcesAndSearchStrategy() {
               "Forward Snowballing",
               "Grey Literature Sources",
             ]}
-            placeholder={"Select Data Base"}
+            placeholder="Select Data Base"
             typeField="select"
           />
           <TextAreaInput
             value={searchMethod}
-            onChange={(event) => {
+            onChange={(event) =>
               handleChangeInformationSourcesAndSearchStrategy(
                 "searchMethod",
                 event.target.value
-              );
-            }}
+              )
+            }
             label="Search Strategy"
             placeholder="Enter Search Strategy"
           />
           <AddTextTable
             text="Keywords"
             placeholder="Enter the keywords related to your review"
+            referencePrefix="K"
           />
           <TextAreaInput
             value={searchString}
-            onChange={(event) => {
+            onChange={(event) =>
               handleChangeInformationSourcesAndSearchStrategy(
                 "searchString",
                 event.target.value
-              );
-            }}
+              )
+            }
             label="Search String"
             placeholder="Enter the search string"
           />
           <Box
-            w={"60vw"}
-            display={"flex"}
-            alignItems={"center"}
-            justifyContent={"end"}
+            w="60vw"
+            display="flex"
+            alignItems="center"
+            justifyContent="end"
           >
             <NavButton
               event={() =>
