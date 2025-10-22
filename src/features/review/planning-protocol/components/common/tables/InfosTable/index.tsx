@@ -6,6 +6,7 @@ import { tbConteiner } from "./styles";
 import { Table, Tbody, Tr, Td, TableContainer, Input, Flex, Thead } from "@chakra-ui/react";
 import useCreateProtocol from "@features/review/planning-protocol/services/useCreateProtocol";
 import EventButton from "@components/common/buttons/EventButton";
+import useValidatorSQLInjection from "@features/shared/hooks/useValidatorSQLInjection";
 
 interface InfosTableProps {
   AddTexts: string[];
@@ -29,14 +30,21 @@ export default function InfosTable({
     useEditState({
       AddTexts,
       onSaveEdit: (editedValue, editIndex) => {
+        if(!validator({value: editedValue})){
+          return false
+        } 
         AddTexts[editIndex] = editedValue;
         sendAddText(AddTexts, context);
       },
     });
 
 const [newText, setNewText] = useState("");
+const validator = useValidatorSQLInjection();
 
 const handleAddText = () => {
+  if(!validator({value: newText})){
+    return false
+  } 
   if (newText.trim() !== "") {
     onAddText(newText);
     setNewText("");
@@ -63,29 +71,29 @@ const handleAddText = () => {
         </Thead>
         <Tbody className="tableBody">
           {AddTexts.map((addText, index) => (
-            <Tr key={index}>
-              <Td whiteSpace={"normal"} wordBreak={"break-word"} py={"1"}>
-                {editIndex === index ? (
-                  <Input value={editedValue} onChange={handleChange} />
-                ) : (
-                  addText
-                )}
-              </Td>
-              <Td textAlign={"right"} py={"1"}>
-                <DeleteButton
-                  index={index}
-                  handleDelete={() => onDeleteAddedText(index)}
-                />
-                {typeField !== "select" ? (
-                  <EditButton
+              <Tr key={index}>
+                <Td whiteSpace={"normal"} wordBreak={"break-word"} py={"1"}>
+                  {editIndex === index ? (
+                    <Input value={editedValue} onChange={handleChange} />
+                  ) : (
+                    addText
+                  )}
+                </Td>
+                <Td textAlign={"right"} py={"1"}>
+                  <DeleteButton
                     index={index}
-                    editIndex={editIndex}
-                    handleEdit={() => handleEdit(index)}
-                    handleSaveEdit={handleSaveEdit}
+                    handleDelete={() => onDeleteAddedText(index)}
                   />
-                ) : null}
-              </Td>
-            </Tr>
+                  {typeField !== "select" ? (
+                    <EditButton
+                      index={index}
+                      editIndex={editIndex}
+                      handleEdit={() => handleEdit(index)}
+                      handleSaveEdit={handleSaveEdit}
+                    />
+                  ) : null}
+                </Td>
+              </Tr>
           ))}
         </Tbody>
       </Table>
