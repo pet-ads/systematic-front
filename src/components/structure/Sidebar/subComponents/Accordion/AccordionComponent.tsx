@@ -15,6 +15,7 @@ import ProtocolAccordionSubItem from "./AccordionNavItem";
 
 // Hooks
 import useActiveSection from "@features/shared/hooks/useActiveSection";
+import useStructureReview from "@features/review/planning-protocol/services/useStructureReview";
 
 // Types
 type AccordionSection = "Planning" | "Execution" | "Summarization";
@@ -31,6 +32,9 @@ const sectionIcons: Record<AccordionSection, React.ReactNode> = {
 const AccordionComponent = () => {
   const id = localStorage.getItem("systematicReviewId");
   const { activeSection } = useActiveSection();
+
+  const { generalDefinition } = useStructureReview();
+  const titleIsFilled = generalDefinition.title && generalDefinition.title.trim() !== "";
 
   const sections: Record<
     AccordionSection,
@@ -126,6 +130,7 @@ const AccordionComponent = () => {
                 key={child.path}
                 to={child.path}
                 text={child.label}
+                disabled={!titleIsFilled && child.label !== "Definition"}
               />
             ))}
           </AccordionPanel>

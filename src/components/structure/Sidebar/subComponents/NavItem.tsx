@@ -9,18 +9,14 @@ import { CgProfile } from "react-icons/cg";
 interface Props {
   to: string;
   text: string;
-  isDisabled?: boolean;
 }
 
-const NavItem = ({ to, text, isDisabled }: Props) => {
+const NavItem = ({ to, text }: Props) => {
   return (
     <Box
       w="116px"
       display="flex"
       className={Styles.linksBox}
-      opacity={isDisabled ? 0.4 : 1}
-      pointerEvents={isDisabled ? "none" : "auto"}
-      cursor={isDisabled ? "not-allowed" : "pointer"}
     >
       {to == "/review/planning/protocol/general-definition" && (
         <Icon boxSize="20px" mr="7px" as={FiPlusCircle} color="#272927" />
