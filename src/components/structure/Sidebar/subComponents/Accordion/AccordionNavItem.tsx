@@ -40,7 +40,7 @@ const ProtocolAccordionSubItem = ({
   if (disabled) {
     return (
       <Tooltip
-        label="Adicione um título à review antes de acessar"
+        label="Defina sua Review primeiro"
         placement="right"
       >
         <Box
