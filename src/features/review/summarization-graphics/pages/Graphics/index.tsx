@@ -30,7 +30,7 @@ export default function Graphics() {
         <Box
           display="flex"
           gap="1rem"
-          flexWrap="wrap"
+          flexWrap="wrap" 
           mb={5}
           alignItems="flex-start"
         >
@@ -38,7 +38,6 @@ export default function Graphics() {
             flexDirection="column"
             gap="2rem"
             alignItems="flex-start"
-            mt="5rem"
             minH="6rem"
           >
             <SectionMenu onSelect={handleSectionChange} selected={section} />

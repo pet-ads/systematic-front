@@ -20,8 +20,8 @@ export default function TextAreaInput({ label, placeholder, onChange, value, ...
   const normalizedValue = value ?? "";
 
   return (
-    <FormControl maxW={"60vw"}>
-      <FormLabel  fontWeight={500} fontSize={"large"} mt={"3%"}>{label}</FormLabel>
+    <FormControl w={"60vw"}>
+      <FormLabel fontWeight={500} fontSize={"large"} >{label}</FormLabel>
       <Textarea border="2px solid" borderColor="gray.300" bgColor={"#ffffffff"} _placeholder={{ opacity: 1, color: 'gray.500' }}
           focusBorderColor="#2E4B6C" placeholder={placeholder} onChange={handleChange}
           {...textareaProps} value={normalizedValue}/>
