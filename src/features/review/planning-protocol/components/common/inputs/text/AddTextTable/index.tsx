@@ -7,9 +7,10 @@ import InfosTable from "@features/review/planning-protocol/components/common/tab
 interface AddTextTableProps {
   text: string;
   placeholder: string;
+  referencePrefix?: string;
 }
 
-export default function AddTextTable({ text, placeholder }: AddTextTableProps) {
+export default function AddTextTable({ text, placeholder, referencePrefix = "" }: AddTextTableProps) {
   const { AddText, handleAddText, setAddText } = useAddText(text);
   const { handleDeleteText } = useDeleteText(text);
   return (
@@ -18,11 +19,13 @@ export default function AddTextTable({ text, placeholder }: AddTextTableProps) {
         <FormLabel mt={"30px"} fontWeight={500} fontSize={"large"}>{text}</FormLabel>
         <InfosTable
           typeField={""}
-          onAddText={handleAddText}
+          onAddText={(value) => handleAddText(value)}
           onDeleteAddedText={(index) => handleDeleteText(index, setAddText)}
           AddTexts={AddText}
           context={text}
           placeholder={placeholder}
+          referencePrefix={referencePrefix}
+          setAddTexts={setAddText}
         />
       </FormControl>
     </FormControl>
