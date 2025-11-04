@@ -82,6 +82,7 @@ export default function ResearchQuestions() {
               <AddTextTable
                 text="Research Questions"
                 placeholder="Enter the other Research Questions"
+                referencePrefix="RQ"
               />
             </Flex>
           </AccordionPanel>
