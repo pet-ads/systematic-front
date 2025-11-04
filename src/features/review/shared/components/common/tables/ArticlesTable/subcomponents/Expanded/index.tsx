@@ -17,12 +17,6 @@ import {
 import { CheckCircleIcon, QuestionIcon, WarningIcon } from "@chakra-ui/icons";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa6";
 import { IoIosCloseCircle } from "react-icons/io";
-import {
-  MdOutlineKeyboardArrowLeft,
-  MdOutlineKeyboardArrowRight,
-  MdOutlineKeyboardDoubleArrowLeft,
-  MdOutlineKeyboardDoubleArrowRight,
-} from "react-icons/md";
 
 import { RiCheckboxMultipleBlankFill } from "react-icons/ri";
 
@@ -158,21 +152,7 @@ export default function Expanded({
     ),
   };
 
-  const priorityIconMap: Record<string, React.ReactElement> = {
-    VERY_LOW: (
-      <MdOutlineKeyboardDoubleArrowLeft color="#D32F2F" size="1.5rem" />
-    ),
-    LOW: <MdOutlineKeyboardArrowLeft color="#FBC02D" size="1.5rem" />,
-    HIGH: <MdOutlineKeyboardArrowRight color="#F57C00" size="1.5rem" />,
-    VERY_HIGH: (
-      <MdOutlineKeyboardDoubleArrowRight color="#388E3C" size="1.5rem" />
-    ),
-  };
-
   const renderStatusIcon = (status: string) => statusIconMap[status] || null;
-  const renderPriorityIcon = (priority: string) =>
-    priorityIconMap[priority] || null;
-
   const {
     currentPage,
     itensPerPage,
@@ -548,7 +528,7 @@ export default function Expanded({
                     </Td>
                   )}
                   {columnsVisible["score"] && (
-                    <Td sx={tdSX} w={columnWidths.score}>
+                    <Td sx={tdSX} w={columnWidths.score} pl="2rem">
                       <Tooltip
                         sx={tooltip}
                         label={reference.score}
@@ -565,7 +545,7 @@ export default function Expanded({
                     <Td
                       sx={tdSX}
                       w={columnWidths.readingPriority}
-                      pl="0.5rem"
+                      pl="2rem"
                       pr="0.5rem"
                     >
                       <Box
@@ -574,7 +554,6 @@ export default function Expanded({
                         justifyContent="start"
                         gap="0.5rem"
                       >
-                        {renderPriorityIcon(reference.readingPriority)}
                         <Text sx={collapsedSpanTextChanged}>
                           {capitalize(
                             reference.readingPriority
