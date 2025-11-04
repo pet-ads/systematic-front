@@ -22,6 +22,7 @@ import NumberScaleModal from "../../modals/NumberScaleModal";
 import PickListModal from "../../modals/PickListModal";
 import PickManyModal from "../../modals/PickManyModal";
 import LabeledScaleModal from "../../modals/LabeledScaleModal";
+import useValidatorSQLInjection from "@features/shared/hooks/useValidatorSQLInjection";
 
 interface Props {
   id: string;
@@ -74,6 +75,8 @@ export default function InteractiveTable({ id, url, label }: Props) {
   >({});
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState("");
+
+  const validator = useValidatorSQLInjection();
 
   useEffect(() => {
     console.log(adress);
@@ -164,6 +167,9 @@ export default function InteractiveTable({ id, url, label }: Props) {
   }
 
   async function handleSaveEdit(index: number) {
+    if(!validator({value: rows[index].question})){
+      return
+    }
     console.log(rows[index].question, rows[index].type, rows[index].id);
     if (rows[index].type == "textual") {
       const data = {

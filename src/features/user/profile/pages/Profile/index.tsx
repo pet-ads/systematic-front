@@ -25,6 +25,7 @@ import type { Profile, UpdateProfileDTO, Mode } from "../../types";
 
 // Utils
 import { splitInitialCaracter } from "../../utils/helpers/formatters/SplitInitialCarater";
+import useValidatorSQLInjection from "@features/shared/hooks/useValidatorSQLInjection";
 
 // Constants
 const defaultUserProfile: Profile = {
@@ -54,6 +55,7 @@ export default function Profile() {
   const { profile, isLoading } = useProfile();
   const { update } = useUpdateProfile();
   const toast = toaster();
+  const validator = useValidatorSQLInjection();
 
   useEffect(() => {
     if (!profile) return;
@@ -112,6 +114,12 @@ export default function Profile() {
       return;
     }
 
+    
+    if(!validator({value: updateProfile.affiliation})) return false
+    if(!validator({value: updateProfile.country})) return false
+    if(!validator({value: updateProfile.email})) return false
+    if(!validator({value: updateProfile.name})) return false
+    
     const result = await update(updateProfile);
 
     if (!result) return;

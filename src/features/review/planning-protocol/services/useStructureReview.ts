@@ -17,6 +17,7 @@ import { isLeft } from "@features/shared/errors/pattern/Either";
 
 // Components
 import useToaster from "@components/feedback/Toaster";
+import useValidatorSQLInjection from "@features/shared/hooks/useValidatorSQLInjection";
 
 // Constants
 const defaultGeneralDefinition = {
@@ -40,6 +41,7 @@ export default function useStructureReview() {
   const { update } = useUpdateReview();
   const { toGo } = useNavigation();
   const toast = useToaster();
+  const validator = useValidatorSQLInjection();
 
   const handleChangeGeneralDefinition = (
     key: keyof typeof generalDefinition,
@@ -84,6 +86,11 @@ export default function useStructureReview() {
 
   const handlePost = async () => {
     if (!hasValidTitle()) return;
+    if(!(validator({value: title}) && validator({value: description}) && validator({value: objectives}))) return;
+
+    for(let i = 0; i < collaborators.length; i++){
+      if(!validator({value: collaborators[i]})) return;
+    }
 
     const result = await create({
       title,
@@ -108,6 +115,11 @@ export default function useStructureReview() {
 
   const handlePut = async () => {
     if (!hasValidTitle()) return;
+    if(!(validator({value: title}) && validator({value: description}) && validator({value: objectives}))) return;
+
+    for(let i = 0; i < collaborators.length; i++){
+      if(!validator({value: collaborators[i]})) return;
+    }
 
     const result = await update({
       systematicStudyId: id,

@@ -6,6 +6,7 @@ import { tbConteiner } from "./styles";
 import { Table,Tbody,Tr,Td,TableContainer,Input,Flex,Thead,Box } from "@chakra-ui/react";
 import useCreateProtocol from "@features/review/planning-protocol/services/useCreateProtocol";
 import EventButton from "@components/common/buttons/EventButton";
+import useValidatorSQLInjection from "@features/shared/hooks/useValidatorSQLInjection";
 
 interface InfosTableProps {
   AddTexts: string[];
@@ -56,6 +57,7 @@ export default function InfosTable({
     });
 
   const [newText, setNewText] = useState("");
+  const validator = useValidatorSQLInjection();
   const [usedCodes, setUsedCodes] = useState<string[]>([]);
 
   useEffect(() => {
@@ -89,6 +91,7 @@ export default function InfosTable({
 
   const handleAddText = () => {
     const trimmedText = newText.trim();
+    if (!validator({ value: newText })) {return false}
     if (trimmedText === "") return;
     const code = generateNextCode();
     if (usedCodes.includes(code.toUpperCase())) {
