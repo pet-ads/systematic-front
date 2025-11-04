@@ -244,6 +244,7 @@ export default function Expanded({
     <Box w="100%" maxH="82.5vh">
       <TableContainer
         w="100%"
+        maxW="100%"
         minH={
           layout == "horizontal" || layout == "horizontal-invert"
             ? "16rem"
@@ -384,17 +385,18 @@ export default function Expanded({
                       : "transparent"
                   }
                   onClick={(e) => {
+                    const target = e.target as HTMLElement;
+
                     if (
-                      (e.target as HTMLElement).tagName.toLowerCase() ===
-                      "input"
-                    )
+                      target.closest("input") ||
+                      target.closest("label") ||
+                      target.closest("button")
+                    ) {
                       return;
+                    }
 
                     setSelectedArticleReview(reference.studyReviewId);
-
-                    if (onRowClick) {
-                      onRowClick(reference);
-                    }
+                    onRowClick?.(reference);
                   }}
                   transition="background-color 0.3s, box-shadow 0.3s"
                   p="0"
@@ -406,11 +408,13 @@ export default function Expanded({
                           reference.studyReviewId
                         ]
                       }
-                      onChange={() =>
+                      onClick={(e) => e.stopPropagation()}
+                      onChange={(e) => {
+                        e.stopPropagation();
                         toggleArticlesSelection(
                           reference.studyReviewId,
                           reference.title
-                        )
+                        )}
                       }
                       sx={{
                         borderColor: "#263C56",
