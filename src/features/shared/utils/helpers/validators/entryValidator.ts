@@ -13,8 +13,24 @@ export const hasSizeWithinValidRange = (
   max: number
 ): boolean => value.length >= min && value.length <= max;
 
-export const hasSQLInjectionChars = (value: string): boolean => {
-  const pattern =
-    /('|--|;|\/\*|\*\/|xp_|exec|select|insert|update|delete|drop|union)/i;
-  return pattern.test(value);
-};
+export function hasSQLInjectionChars(input: string): boolean {
+  if (!input) return false;
+  const s = input.toLowerCase();
+
+  const highConfidence: RegExp[] = [
+    /\b(drop|truncate|alter|create)\s+table\b/,         
+    /\b(delete)\s+from\b/,                              
+    /\b(insert)\s+into\b/,                              
+    /\b(update)\s+\w+\s+set\b/,                           
+    /\bunion\s+select\b/,                                 
+    /\b(or|and)\b\s+['"]?\d+['"]?\s*=\s*['"]?\d+['"]?/, 
+    /--|\/\*|\*\/|#/,                    
+    /\b(load_file|into\s+outfile|information_schema|pg_catalog|xp_)/,
+  ];
+
+  for (const rx of highConfidence) {
+    if (rx.test(s)) return true;
+  }
+
+  return false;
+}

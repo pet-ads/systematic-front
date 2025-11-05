@@ -1,72 +1,76 @@
+/* Basic styling to make DefaultTable functional and clean */
+/* This is based on the original Chakra UI to blend in */
+
 .tableContainer {
   width: 100%;
-  height: calc(100% - 20rem);
-  padding: 2rem 1.5rem;
-  border-radius: 1rem;
-  border: 1px solid #e2e8f0;
-  background-color: #ffffff;
 }
 
 .title {
-  position: sticky;
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin-bottom: 1rem;
-  color: #263c56;
+  font-size: 1.25rem; /* 20px */
+  font-weight: 700;
+  color: #2E4B6C; /* From original component */
+  margin-bottom: 1rem; /* 16px */
 }
 
 .tableWrapper {
-  width: 100%;
-  height: calc(100% - 3rem);
-  border-radius: 1rem;
-  border: 1px solid #e2e8f0;
+  border-radius: 8px;
   overflow: hidden;
-  overflow-y: auto;
+  border: 1px solid #C9D9E5; /* From original component */
 }
 
 .table {
   width: 100%;
-  table-layout: fixed;
   border-collapse: collapse;
+  background-color: white;
 }
 
 .th {
-  padding: 0.75rem 1rem;
+  background-color: #2E4B6C; /* From original component */
+  color: #DDE4E9; /* From original component */
+  padding: 0.75rem 1rem; /* 12px 16px */
+  text-align: left;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem; /* 12px */
+  letter-spacing: 0.05em;
   cursor: pointer;
-  border-bottom: 5px solid #dde4e9;
-  color: #263c56;
-  text-transform: capitalize;
-  position: sticky;
-  top: 0;
-  z-index: 1;
-  background-color: #ffffff;
+  user-select: none;
 }
 
 .headerContent {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  width: 100%;
+  gap: 0.5rem; /* 8px */
 }
 
 .chevronIcon {
-  color: #263c56;
-  flex-shrink: 0;
+  display: inline-block;
+  font-size: 0.8em;
 }
 
-.tr:hover {
-  background-color: #f1f5f9;
+.tr {
+  border-bottom: 1px solid #E2E8F0; /* Light gray border */
+}
+
+.tr:nth-child(even) {
+  background-color: #F7FAFC; /* Very light gray for striping */
+}
+
+.tr:last-child {
+  border-bottom: none;
 }
 
 .td {
-  padding: 0.75rem 1rem;
-  color: #4a5568;
+  padding: 0.75rem 1rem; /* 12px 16px */
+  color: #2D3748; /* Darker text */
+  font-size: 0.875rem; /* 14px */
+  vertical-align: middle; /* Align content vertically */
 }
 
-.emptyRow td {
+.emptyRow {
   text-align: center;
-  padding: 2rem;
-  color: #718096;
+  padding: 1rem;
+  color: #718096; /* Gray text */
   font-style: italic;
 }
 
@@ -74,5 +78,6 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  display: block;
+  max-width: 300px; /* Adjust as needed */
 }
+

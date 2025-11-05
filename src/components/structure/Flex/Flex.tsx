@@ -38,23 +38,20 @@ export default function FlexLayout({ navigationType, children }: iFlexLayout) {
       sx={{
         ...flexStyles,
         gridTemplateColumns: templateColumns,
-        gridTemplateRows: "1fr", // 1 linha que ocupa toda altura
-        height: "100vh",         // garante altura cheia da tela
+        gridTemplateRows: "1fr", 
+        height: "100vh",         
       }}
     >
-      {/* Sidebar ocupa altura toda */}
       <Sidebar type={navigationType} />
-
       <Box
         sx={{
           ...contentGridStyles,
           marginLeft: contentMargin,
-          height: "100%", // ocupa altura cheia também
+          height: "100%", 
           display: "grid",
-          gridTemplateRows: "auto 1fr", // header (auto) + conteúdo flexível
+          gridTemplateRows: "auto 1fr", 
         }}
       >
-        {/* Header em cima */}
         <Box
           gridColumn="1 / -1"
           gridRow="1"
@@ -66,13 +63,11 @@ export default function FlexLayout({ navigationType, children }: iFlexLayout) {
         >
           {header}
         </Box>
-
-        {/* Conteúdo ocupa o restante da altura */}
         <Box
           gridColumn="1 / -1"
           gridRow="2"
           height="100%"
-          overflow="auto" // evita quebrar layout se o conteúdo for muito grande
+          overflow="auto"
         >
           {mainContent}
         </Box>

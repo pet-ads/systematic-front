@@ -15,6 +15,7 @@ import ProtocolAccordionSubItem from "./AccordionNavItem";
 
 // Hooks
 import useActiveSection from "@features/shared/hooks/useActiveSection";
+import useStructureReview from "@features/review/planning-protocol/services/useStructureReview";
 
 // Types
 type AccordionSection = "Planning" | "Execution" | "Summarization";
@@ -32,6 +33,9 @@ const AccordionComponent = () => {
   const id = localStorage.getItem("systematicReviewId");
   const { activeSection } = useActiveSection();
 
+  const { generalDefinition } = useStructureReview();
+  const titleIsFilled = generalDefinition.title && generalDefinition.title.trim() !== "";
+
   const sections: Record<
     AccordionSection,
     {
@@ -44,7 +48,10 @@ const AccordionComponent = () => {
         path: `/review/planning/protocol/general-definition`,
         label: "Definition",
       },
-      { path: `/review/planning/protocol/picoc/${id}`, label: "PICOC" },
+      {
+        path: `/review/planning/protocol/picoc/${id}`,
+        label: "PICOC"
+      },
       {
         path: `/review/planning/protocol/research-questions/${id}`,
         label: "Research",
@@ -123,6 +130,7 @@ const AccordionComponent = () => {
                 key={child.path}
                 to={child.path}
                 text={child.label}
+                disabled={!titleIsFilled && child.label !== "Definition"}
               />
             ))}
           </AccordionPanel>

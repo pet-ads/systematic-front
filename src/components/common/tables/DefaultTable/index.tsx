@@ -12,14 +12,22 @@ export default function DefaultTable<T extends object>({
   title,
   columns,
   data,
+  enableSorting = true, 
 }: GenericTableProps<T>) {
   const [sortConfig, setSortConfig] = useState<SortConfig<T>>(null);
 
   const sortedData = useMemo(() => {
-    if (!sortConfig) return data;
+    if (!sortConfig || !enableSorting) return data;
+    const key = sortConfig.key as keyof T;
+
+    if (data.length > 0 && !(key in data[0])) {
+      return data;
+    }
+
     const sorted = [...data].sort((primary, secund) => {
-      const primaryValue = primary[sortConfig.key];
-      const nextValue = secund[sortConfig.key];
+      
+      const primaryValue = primary[key];
+      const nextValue = secund[key];
       if (primaryValue < nextValue)
         return sortConfig.direction === "asc" ? -1 : 1;
       if (primaryValue > nextValue)
@@ -27,19 +35,24 @@ export default function DefaultTable<T extends object>({
       return 0;
     });
     return sorted;
-  }, [data, sortConfig]);
+  }, [data, sortConfig, enableSorting]);
 
-  const handleHeaderClick = (key: keyof T) => {
+  const handleHeaderClick = (key: keyof T | string) => {
+    if (data.length > 0 && !(key in data[0])) {
+      return;
+    }
+
     let direction: "asc" | "desc" = "asc";
     if (sortConfig?.key === key && sortConfig.direction === "asc") {
       direction = "desc";
     }
-    setSortConfig({ key, direction });
+
+    setSortConfig({ key: key as keyof T, direction });
   };
 
   return (
     <div className={styles.tableContainer}>
-      <h1 className={styles.title}>{title}</h1>
+      {title && <h1 className={styles.title}>{title}</h1>}
       <div className={styles.tableWrapper}>
         <table className={styles.table}>
           <thead>
@@ -49,21 +62,23 @@ export default function DefaultTable<T extends object>({
                   key={String(col.key)}
                   className={styles.th}
                   style={{ width: col.width }}
-                  onClick={() => handleHeaderClick(col.key)}
+                  onClick={() => enableSorting && handleHeaderClick(col.key)}
                 >
                   <div className={styles.headerContent}>
                     <span>{col.label}</span>
-                    <span className={styles.chevronIcon}>
-                      {sortConfig?.key === col.key ? (
-                        sortConfig.direction === "asc" ? (
-                          <FaChevronUp />
+                    {enableSorting && (
+                      <span className={styles.chevronIcon}>
+                        {sortConfig?.key === col.key ? (
+                          sortConfig.direction === "asc" ? (
+                            <FaChevronUp />
+                          ) : (
+                            <FaChevronDown />
+                          )
                         ) : (
-                          <FaChevronDown />
-                        )
-                      ) : (
-                        <FaChevronDown style={{ opacity: 0.3 }} />
-                      )}
-                    </span>
+                          <FaChevronDown style={{ opacity: 0.3 }} />
+                        )}
+                      </span>
+                    )}
                   </div>
                 </th>
               ))}
@@ -80,19 +95,19 @@ export default function DefaultTable<T extends object>({
                       style={{
                         textAlign: column.render
                           ? "center"
-                          : typeof item[column.key] === "number"
+                          : typeof item[column.key as keyof T] === "number"
                           ? "end"
                           : "start",
                       }}
                     >
                       {column.render ? (
-                        column.render(item)
+                        column.render(item, rowIndex)
                       ) : (
                         <div
                           className={styles.truncate}
-                          title={String(item[column.key] ?? "")}
+                          title={String(item[column.key as keyof T] ?? "")}
                         >
-                          {String(item[column.key] ?? "")}
+                          {String(item[column.key as keyof T] ?? "")}
                         </div>
                       )}
                     </td>
@@ -110,3 +125,4 @@ export default function DefaultTable<T extends object>({
     </div>
   );
 }
+

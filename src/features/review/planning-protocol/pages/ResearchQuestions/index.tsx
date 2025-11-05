@@ -66,7 +66,7 @@ export default function ResearchQuestions() {
         defaultIndex={showResearchQuestions ? [0] : [-1]}
         allowToggle
         mt={6}
-        w="60vw"
+        w={"60vw"}
       >
         <AccordionItem>
           <h2 style={{ color: "#2E4B6C" }}>
@@ -82,6 +82,7 @@ export default function ResearchQuestions() {
               <AddTextTable
                 text="Research Questions"
                 placeholder="Enter the other Research Questions"
+                referencePrefix="RQ"
               />
             </Flex>
           </AccordionPanel>

@@ -14,6 +14,7 @@ import type { EligibilityCriteria } from "../pages/EligibilityCriteria/types";
 import type { InformationSourcesAndSearchStrategy } from "../pages/InformationSourcesAndSearchStrategy/types";
 import type { SelectionAndExtraction } from "../pages/SelectionAndExtraction/types";
 import type { AnalysisAndSynthesisOfResults } from "../pages/AnalysisAndSynthesisOfResults/types";
+import useValidatorSQLInjection from "@features/shared/hooks/useValidatorSQLInjection";
 
 // Constants
 const defaultResearchQuestion: ResearchQuestion = {
@@ -49,6 +50,8 @@ const defaultAnalysisAndSynthesisOfResults: AnalysisAndSynthesisOfResults = {
 };
 
 export default function useCreateProtocol() {
+  const validator = useValidatorSQLInjection();
+
   // General-Definition
   const [goal, setGoal] = useState<string | null>(null);
 
@@ -219,7 +222,7 @@ export default function useCreateProtocol() {
     const data = {
       goal,
       justification,
-      picoc,
+      picoc,  
       searchString,
       studyTypeDefinition,
       dataCollectionProcess,
@@ -228,13 +231,23 @@ export default function useCreateProtocol() {
       selectionProcess,
     };
 
+    if(data.goal) {if(!validator({value: data.goal})) return false}
+    if(!validator({value: data.justification})) return false
+    if(!validator({value: data.searchString})) return false
+    if(!validator({value: data.studyTypeDefinition})) return false
+    if(!validator({value: data.dataCollectionProcess})) return false
+    if(!validator({value: data.sourcesSelectionCriteria})) return false
+    if(!validator({value: data.searchMethod})) return false
+    if(!validator({value: data.selectionProcess})) return false
+    if(!(validator({value: picoc.context}) && validator({value: picoc.control}) && validator({value: picoc.intervention}) && validator({value: picoc.outcome}) && validator({value: picoc.population}))) return false;
+
     return await Axios.put(url, data);
   }
 
   async function syncAndNavigate(path: string) {
     try {
-      await updateProtocol();
-      toGo(path);
+      const res = await updateProtocol();
+      if(res) toGo(path);
     } catch (err) {
       console.log(err);
     }

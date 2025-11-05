@@ -3,6 +3,7 @@ import { useState } from "react";
 
 // Components
 import useToaster from "@components/feedback/Toaster";
+import useValidatorSQLInjection from "@features/shared/hooks/useValidatorSQLInjection";
 
 // Services
 import registerUser from "@features/auth/services/register";
@@ -50,6 +51,7 @@ const useHandleRegister = (redirectFormLogin: () => void) => {
     useState<Record<keyof RegisterUser, string>>(defaultErrors);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const toast = useToaster();
+  const validator = useValidatorSQLInjection();
 
   const {
     username,
@@ -130,6 +132,8 @@ const useHandleRegister = (redirectFormLogin: () => void) => {
     try {
       const { confirmPassword, ...rest } = createUser;
 
+      if(!(validator({value: createUser.affiliation}) && validator({value: createUser.confirmPassword}) && validator({value: createUser.country}) && validator({value: createUser.email}) && validator({value: createUser.name}) && validator({value: createUser.password}) && validator({value: createUser.username}))) return;
+        
       const result = await registerUser(rest);
 
       if (isLeft(result)) {
