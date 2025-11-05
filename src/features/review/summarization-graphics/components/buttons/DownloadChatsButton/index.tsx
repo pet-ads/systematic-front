@@ -1,8 +1,7 @@
 import { Menu, MenuButton, MenuList, MenuItem, Button } from "@chakra-ui/react";
 import { FiDownload, FiChevronDown } from "react-icons/fi";
 import { downloadPNG } from "../../export/ExportPng";
-import { downloadCSV } from "../../export/ExportCsv";
-
+//import { downloadCSV } from "../../export/ExportCsv";
 
 type Props = {
   selector: string;
