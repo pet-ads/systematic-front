@@ -1,23 +1,15 @@
+import { useEffect, useState } from "react";
 import { AddIcon } from "@chakra-ui/icons";
+import { Button, Input, Select, FormLabel } from "@chakra-ui/react";
+import Axios from "../../../../../../../infrastructure/http/axiosClient";
+
+import DefaultTable from "@components/common/tables/DefaultTable";
+import { Column } from "@components/common/tables/DefaultTable/types";
+
 import EditButton from "@components/common/buttons/EditButton";
 import DeleteButton from "@components/common/buttons/DeleteButton";
-import { useInteractiveTable } from "../../../../hooks/useInteractiveTable";
-import {
-  TableContainer,
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  Button,
-  Select,
-  Input,
-  FormLabel,
-} from "@chakra-ui/react";
+import { useInteractiveTable, Row } from "../../../../hooks/useInteractiveTable";
 import useSendExtractionForm from "../../../../../execution-extraction/services/useSendExtractionForm";
-import Axios from "../../../../../../../infrastructure/http/axiosClient";
-import { useEffect, useState } from "react";
 import NumberScaleModal from "../../modals/NumberScaleModal";
 import PickListModal from "../../modals/PickListModal";
 import PickManyModal from "../../modals/PickManyModal";
@@ -32,9 +24,7 @@ interface Props {
 
 export default function InteractiveTable({ id, url, label }: Props) {
   let adress = "";
-
   if (label == "Extraction Questions") adress = "extraction-question";
-
   if (label == "Risk of Bias Questions") adress = "rob-question";
 
   const {
@@ -45,13 +35,13 @@ export default function InteractiveTable({ id, url, label }: Props) {
     handleQuestionChange,
     handleTypeChange,
     options,
-    headers,
     handleServerSend,
     handleAddQuestions,
     handleNumberScale,
     handleLabeledList,
     handlePickMany,
   } = useInteractiveTable();
+
   const {
     sendTextualQuestion,
     sendPickListQuestion,
@@ -69,7 +59,6 @@ export default function InteractiveTable({ id, url, label }: Props) {
   const [numberScale, setnumberScale] = useState<number[]>([]);
   const [questions, setQuestions] = useState<string[]>([]);
   const [pickManyQuestions, setPickManyQuestions] = useState<string[]>([]);
-
   const [labeledQuestions, setLabeledQuestions] = useState<
     Record<string, number>
   >({});
@@ -79,10 +68,7 @@ export default function InteractiveTable({ id, url, label }: Props) {
   const validator = useValidatorSQLInjection();
 
   useEffect(() => {
-    console.log(adress);
-
     setQuestions([]);
-
     const fetch = async () => {
       try {
         const accessToken = localStorage.getItem("accessToken");
@@ -91,7 +77,6 @@ export default function InteractiveTable({ id, url, label }: Props) {
         };
 
         let response = await Axios.get(url, options);
-
         let link = `systematic-study/${id}/protocol/${adress}`;
         response = await Axios.get(link, options);
 
@@ -108,28 +93,13 @@ export default function InteractiveTable({ id, url, label }: Props) {
           }) => {
             let type;
             let questions;
-            console.log(item);
-
             switch (item.questionType) {
-              case "TEXTUAL":
-                type = "textual";
-                break;
-              case "PICK_LIST":
-                type = "pick list";
-                questions = item.options;
-                break;
-              case "NUMBERED_SCALE":
-                type = "number scale";
-                break;
-              case "LABELED_SCALE":
-                type = "labeled list";
-                break;
-              case "PICK_MANY":
-                type = "pick many";
-                questions = item.options;
-                break;
+              case "TEXTUAL": type = "textual"; break;
+              case "PICK_LIST": type = "pick list"; questions = item.options; break;
+              case "NUMBERED_SCALE": type = "number scale"; break;
+              case "LABELED_SCALE": type = "labeled list"; break;
+              case "PICK_MANY": type = "pick many"; questions = item.options; break;
             }
-
             return {
               id: item.code,
               question: item.description,
@@ -143,23 +113,16 @@ export default function InteractiveTable({ id, url, label }: Props) {
             };
           }
         );
-
         setRows(fetchedRows);
       } catch (error) {
         console.error("Erro ao buscar os dados:", error);
       }
     };
-
     fetch();
-  }, []);
-
-  useEffect(() => {
-    console.log(rows);
-  }, [rows]);
+  }, [id, url, adress, setRows]); // Added dependencies
 
   function handleSelect(index: number, newValue: string) {
-    handleTypeChange(index, newValue); // Atualiza o tipo primeiro
-
+    handleTypeChange(index, newValue);
     if (newValue !== "") {
       setModalType(newValue);
       setShowModal(true);
@@ -170,89 +133,89 @@ export default function InteractiveTable({ id, url, label }: Props) {
     if(!validator({value: rows[index].question})){
       return
     }
-    console.log(rows[index].question, rows[index].type, rows[index].id);
-    if (rows[index].type == "textual") {
-      const data = {
-        question: rows[index].question,
-        questionId: rows[index].id,
-        reviewId: id,
-      };
+    const row = rows[index];
+    const { question, id: questionId, type, isNew, questionId: serverId } = row;
+    const reviewId = id; // From props
 
-      let questionId;
-      let questionType = "TEXTUAL";
-      if (rows[index].isNew) questionId = await sendTextualQuestion(data);
-      else updateTextualQuestion(data, rows[index].questionId, questionType);
+    let data: any;
+    let questionType: string | null = null;
+    let newQuestionId: string | null = null;
 
-      handleServerSend(index, questionId);
-    } else if (rows[index].type == "pick list") {
-      const data = {
-        question: rows[index].question,
-        questionId: rows[index].id,
-        reviewId: id,
-        options: questions,
-      };
+    try {
+      if (type === "textual") {
+        questionType = "TEXTUAL";
+        data = { question, questionId, reviewId };
+        
+        if (isNew) {
+          newQuestionId = await sendTextualQuestion(data);
+        } else {
+          await updateTextualQuestion(data, serverId, questionType);
+        }
 
-      handleAddQuestions(index, questions);
-      let questionId;
-      if (rows[index].isNew) questionId = await sendPickListQuestion(data);
-      else updatePickListQuestion(data, rows[index].questionId, "PICK_LIST");
-      handleServerSend(index, questionId);
-    } else if (rows[index].type == "number scale") {
-      console.log(rows[index]);
-      const data = {
-        question: rows[index].question,
-        questionId: rows[index].id,
-        reviewId: id,
-        lower: numberScale[0],
-        higher: numberScale[1],
-      };
+      } else if (type === "pick list") {
+        questionType = "PICK_LIST";
+        data = { question, questionId, reviewId, options: questions };
+        handleAddQuestions(index, questions);
 
-      console.log(data);
+        if (isNew) {
+          newQuestionId = await sendPickListQuestion(data);
+        } else {
+          await updatePickListQuestion(data, serverId, questionType);
+        }
 
-      handleNumberScale(index, numberScale[0], numberScale[1]);
-      let questionId;
-      if (rows[index].isNew) questionId = await sendNumberScaleQuestion(data);
-      else updateNumberScaleQuestion(data, rows[index].questionId);
-      handleServerSend(index, questionId);
-    } else if (rows[index].type == "labeled list") {
-      const data = {
-        question: rows[index].question,
-        questionId: rows[index].id,
-        reviewId: id,
-        scales: labeledQuestions,
-      };
+      } else if (type === "number scale") {
+        questionType = "NUMBERED_SCALE";
+        data = {
+          question,
+          questionId,
+          reviewId,
+          lower: numberScale[0],
+          higher: numberScale[1],
+        };
+        handleNumberScale(index, numberScale[0], numberScale[1]);
 
-      handleLabeledList(index, labeledQuestions);
-      let questionId;
-      if (rows[index].isNew) questionId = await sendLabeledListQuestion(data);
-      else updateLabeledListQuestion(data, rows[index].questionId);
-      handleServerSend(index, questionId);
-    } else if (rows[index].type == "pick many") {
-      const data = {
-        question: rows[index].question,
-        questionId: rows[index].id,
-        reviewId: id,
-        options: pickManyQuestions,
-      };
+        if (isNew) {
+          newQuestionId = await sendNumberScaleQuestion(data);
+        } else {
+          await updateNumberScaleQuestion(data, serverId);
+        }
 
-      handlePickMany(index, pickManyQuestions);
+      } else if (type === "labeled list") {
+        questionType = "LABELED_SCALE";
+        data = { question, questionId, reviewId, scales: labeledQuestions };
+        handleLabeledList(index, labeledQuestions);
 
-      let questionId;
-      if (rows[index].isNew) questionId = await sendPickManyQuestion(data);
-      else updatePickManyQuestion(data, rows[index].questionId, "PICK_MANY");
-      handleServerSend(index, questionId);
+        if (isNew) {
+          newQuestionId = await sendLabeledListQuestion(data);
+        } else {
+          await updateLabeledListQuestion(data, serverId);
+        }
+
+      } else if (type === "pick many") {
+        questionType = "PICK_MANY";
+        data = { question, questionId, reviewId, options: pickManyQuestions };
+        handlePickMany(index, pickManyQuestions);
+
+        if (isNew) {
+          newQuestionId = await sendPickManyQuestion(data);
+        } else {
+          await updatePickManyQuestion(data, serverId, questionType);
+        }
+      }
+
+      if (isNew && newQuestionId) {
+        handleServerSend(index, newQuestionId);
+      }
+
+    } catch (error) {
+      console.error("Failed to save question:", error);
     }
 
-    const accessToken = localStorage.getItem("accessToken");
-    let options = {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    };
-
     setEditIndex(null);
-    await Axios.get(
-      `systematic-study/${id}/protocol/extraction-question`,
-      options
-    );
+
+    const accessToken = localStorage.getItem("accessToken");
+    let options = { headers: { Authorization: `Bearer ${accessToken}` } };
+    await Axios.get(`systematic-study/${id}/protocol/extraction-question`, options);
   }
 
   function addNewRow() {
@@ -260,85 +223,99 @@ export default function InteractiveTable({ id, url, label }: Props) {
     setPickManyQuestions([]);
   }
 
-  return (
-    <TableContainer>
-      <FormLabel color={"#2E4B6C"}>{label}</FormLabel>
-      <Table
-        variant="striped"
-        size="md"
-        w={"60vw"}
-        borderRadius={"8px"}
-        overflow="hidden"
-      >
-        <Thead bgColor={"#2E4B6C"}>
-          <Tr>
-            {headers.map((header) => (
-              <Th color={"#DDE4E9"}>{header}</Th>
-            ))}
-          </Tr>
-        </Thead>
-        <Tbody>
-          {rows.map((row, index) => (
-            <Tr key={index} bgColor={"#C9D9E5"}>
-              <Td>{row.id}</Td>
-              <Td>
-                <Input
-                  value={row.question}
-                  onChange={(e) => handleQuestionChange(index, e.target.value)}
-                  border={"solid 1px #303D50"}
-                />
-              </Td>
-              <Td>
-                <Select
-                  onChange={(e) => handleSelect(index, e.target.value)}
-                  border={"solid 1px #303D50"}
-                  value={row.type}
-                >
-                  {options.map((opt, i) => (
-                    <option key={i} value={opt.toLowerCase()}>
-                      {opt}
-                    </option>
-                  ))}
-                </Select>
-              </Td>
-              <Td>
-                <DeleteButton
-                  index={index}
-                  handleDelete={() => handleDelete(index)}
-                />
-                <EditButton
-                  itemDescription={row.question}
-                  itemType={row.type}
-                  index={index}
-                  editIndex={editIndex}
-                  handleEdit={() => {
-                    console.log(row);
-                    setnumberScale([row.lower, row.higher]);
-                    setQuestions(row.questions);
-                    setLabeledQuestions(row.scale);
-                    setEditIndex(index);
-                    setPickManyQuestions(row.questions);
-                    setShowModal(true);
-                    setModalType(row.type);
-                  }}
-                  handleSaveEdit={async () => {
-                    handleSaveEdit(index);
-                  }}
-                />
-              </Td>
-            </Tr>
+  const columns: Column<Row>[] = [
+    {
+      key: "id",
+      label: "ID",
+      width: "10%",
+    },
+    {
+      key: "question",
+      label: "QUESTION",
+      width: "40%",
+      render: (row, index) => (
+        <Input
+          value={row.question}
+          onChange={(e) => handleQuestionChange(index, e.target.value)}
+          border={"solid 1px #303D50"}
+          borderRadius="md"
+          size="sm"
+          bg="white"
+        />
+      ),
+    },
+    {
+      key: "type",
+      label: "TYPE",
+      width: "25%",
+      render: (row, index) => (
+        <Select
+          onChange={(e) => handleSelect(index, e.target.value)}
+          border={"solid 1px #303D50"}
+          borderRadius="md"
+          size="sm"
+          value={row.type}
+          bg="white"
+        >
+          {options.map((opt, i) => (
+            <option key={i} value={opt.toLowerCase()}>
+              {opt}
+            </option>
           ))}
-          <Tr bgColor={"#2E4B6C"}>
-            <Td></Td>
-            <Td colSpan={2}>
-              <Button size="sm" onClick={addNewRow}>
-                <AddIcon />
-              </Button>
-            </Td>
-            <Td></Td>
-          </Tr>
-        </Tbody>
-      </Table>
+        </Select>
+      ),
+    },
+    {
+      key: "questionId",
+      label: "", 
+      width: "15%",
+      render: (row, index) => (
+        <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center' }}>
+          <DeleteButton
+            index={index}
+            handleDelete={() => handleDelete(index)}
+          />
+          <EditButton
+            itemDescription={row.question}
+            itemType={row.type}
+            index={index}
+            editIndex={editIndex}
+            handleEdit={() => {
+              setnumberScale([row.lower, row.higher]);
+              setQuestions(row.questions);
+              setLabeledQuestions(row.scale);
+              setEditIndex(index);
+              setPickManyQuestions(row.questions);
+              setShowModal(true);
+              setModalType(row.type);
+            }}
+            handleSaveEdit={async () => {
+              handleSaveEdit(index);
+            }}
+          />
+        </div>
+      ),
+    }
+  ];
+
+  return (
+    <div>
+      <FormLabel color={"#2E4B6C"} mb={4} fontSize="lg" fontWeight="bold">
+        {label}
+      </FormLabel>
+      
+      <DefaultTable<Row>
+        columns={columns}
+        data={rows}
+        enableSorting={false}
+      />
+
+      <div style={{ marginTop: '1rem' }}>
+        <Button size="sm" onClick={addNewRow}>
+          <AddIcon />
+        </Button>
+      </div>
+
       {showModal == true && modalType == "pick list" && (
         <PickListModal
           show={setShowModal}
@@ -370,6 +347,7 @@ export default function InteractiveTable({ id, url, label }: Props) {
           options={pickManyQuestions}
         />
       )}
-    </TableContainer>
+    </div>
   );
 }
+
