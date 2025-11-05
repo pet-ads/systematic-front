@@ -1,36 +1,36 @@
-// External library
 import { Box, Text } from "@chakra-ui/react";
-
-// Hooks
-import useFetchQuestionAnswers from "../../../../services/useFetchQuestionAnwers";
-
-// components
 import PieChart from "../../../../components/charts/PieChart";
 import BarChart from "../../../../components/charts/BarChart";
 import { QuestionsTable } from "../../../../components/tables/QuestionsTable";
+import useFetchQuestionAnswers from "../../../../services/useFetchQuestionAnwers";
+import { barchartBox } from "../../styles";
+import ArticleInterface from "@features/review/shared/types/ArticleInterface";
 
-// Styles
-import { piechartBox, textDescription } from "../../styles";
+type Props = {
+  selectedQuestionId?: string;
+  filteredStudies: ArticleInterface[];
+  type: string;
+};
 
-// Types
 type Question = {
   questionId: string;
-  systematicStudyId: string;
   code: string;
   description: string;
-  questionType: "TEXTUAL" | "LABELED_SCALE" | "NUMBERED_SCALE" | "PICK_LIST" |"PICK_MANY";
+  questionType:
+  | "TEXTUAL"
+  | "LABELED_SCALE"
+  | "NUMBERED_SCALE"
+  | "PICK_LIST"
+  | "PICK_MANY";
   scales: Record<string, number> | null;
   higher: number | null;
   lower: number | null;
   options: string[] | null;
-  context: "EXTRACTION" | "ROB";
 };
 
 function parseLabel(labelStr: string) {
   const match = labelStr.match(/Label\(name:\s*(.+),\s*value:\s*(\d+)\)/);
-  if (match) {
-    return { name: match[1], value: Number(match[2]) };
-  }
+  if (match) return { name: match[1], value: Number(match[2]) };
   return null;
 }
 
@@ -38,59 +38,64 @@ function updateData(
   labels: (string | number)[],
   entries: [string, any[]][],
   questionType: string
-): number[] {
+) {
   if (questionType === "LABELED_SCALE") {
     return labels.map((label) => {
-      const entry = entries.find(([entryLabel]) => {
-        const match = parseLabel(entryLabel);
-        if (!match) return false;
-        return match.name === label;
-      });
+      const entry = entries.find(
+        ([entryLabel]) => parseLabel(entryLabel)?.name === label
+      );
       return entry ? entry[1].length : 0;
     });
   }
-
-  return labels.map((label) => {
-    const isPresent = entries.find(
-      ([entryLabel]) => entryLabel === label.toString()
-    );
-    return isPresent ? isPresent[1].length : 0;
-  });
+  if (questionType === "PICK_MANY") {
+    const counts: Record<string, number> = {};
+    entries.forEach(([entryLabel, ids]) => {
+      const clean = entryLabel.replace(/[\[\]]/g, "");
+      const selectedOptions = clean.split(",").map((s) => s.trim());
+      selectedOptions.forEach(
+        (opt) => (counts[opt] = (counts[opt] || 0) + ids.length)
+      );
+    });
+    return labels.map((label) => counts[label] || 0);
+  }
+  return labels.map((label) =>
+    entries.find(([entryLabel]) => entryLabel === label.toString())
+      ? entries.find(([entryLabel]) => entryLabel === label.toString())![1]
+        .length
+      : 0
+  );
 }
 
-function updateLabel(question: Question): (string | number)[] {
+function updateLabel(question: Question) {
   const questionType = question.questionType;
-
-  let labels: (string | number)[] = [];
-
   if (questionType === "NUMBERED_SCALE") {
     const higher = question.higher ?? 0;
     const lower = question.lower ?? 0;
-    labels = Array.from({ length: higher - lower + 1 }, (_, i) => lower + i);
+    return Array.from({ length: higher - lower + 1 }, (_, i) => lower + i);
   } else if (questionType === "LABELED_SCALE") {
-    labels = Object.entries(question.scales ?? {}).map(([key]) => `${key}`);
+    return Object.keys(question.scales ?? {});
   } else {
-    labels = question.options ?? [];
+    return question.options ?? [];
   }
-  return labels;
 }
+
 export const QuestionsCharts = ({
   selectedQuestionId,
-}: {
-  selectedQuestionId?: string;
-}) => {
+  filteredStudies,
+  type,
+}: Props) => {
   const { extractionAnswers, isLoadingExtractionAnswers } =
     useFetchQuestionAnswers();
 
-  if (isLoadingExtractionAnswers) return <Text>loading charts...</Text>;
+  if (isLoadingExtractionAnswers) return <Text>Loading charts...</Text>;
 
   const filteredAnswers = selectedQuestionId
     ? extractionAnswers.filter(
-        (q) => q.question.questionId === selectedQuestionId
-      )
+      (q) => q.question.questionId === selectedQuestionId
+    )
     : extractionAnswers.length
-    ? [extractionAnswers[0]]
-    : [];
+      ? [extractionAnswers[0]]
+      : [];
 
   if (filteredAnswers.length === 0)
     return (
@@ -99,55 +104,59 @@ export const QuestionsCharts = ({
       </Text>
     );
 
+  const filteredStudyIds = new Set(filteredStudies.map((s) => s.studyReviewId));
+
   return (
     <>
-      {filteredAnswers.map((question) => {
-        const description = question.question.description;
-        const questionId: any = question.question.questionId; // mantem como any
-        const code = question.question.code;
-        const entries = Object.entries(question.answer ?? {});
+      {filteredAnswers.map((q) => {
+        const question = q.question;
+        const code = question.code;
+        const description = question.description;
 
-        const questionType = question.question.questionType;
-        let chart = null;
-        const labels = updateLabel(question.question);
-        const data = updateData(labels, entries, questionType);
+const filteredEntries = Object.entries(q.answer ?? {}).map(([label, ids]) => {
+  const idsArray = Array.isArray(ids) ? ids : [];
+  const filteredIds = idsArray
+    .map((id) => Number(id)) // 🔹 converte tudo para número
+    .filter((id) => filteredStudyIds.has(id));
+  return [label, filteredIds] as [string, number[]];
+});
 
-        if (
-          questionType === "LABELED_SCALE" ||
-          questionType === "NUMBERED_SCALE" || questionType === "PICK_LIST"
-        ) {
-          chart = (
-            <Box sx={piechartBox}>
-              <PieChart
-                title={`Question code: ${code}`}
-                labels={labels}
-                data={data}
-              />
-            </Box>
+const filteredAnswer: Record<string, number[]> = Object.fromEntries(filteredEntries);
+
+
+
+        const labels = updateLabel(question);
+        const data = updateData(labels, filteredEntries, question.questionType);
+
+        let chartContent = null;
+
+        if (type === "Pie Chart") {
+          chartContent = (
+            <PieChart title={`Question ${code}`} labels={labels} data={data} />
           );
-        } else if (questionType === "PICK_MANY") {
-          chart = (
-            <Box>
-              <BarChart
-                title={`Question code: ${code}`}
-                labels={labels}
-                data={data}
-                section={'questions'}
-              />
-            </Box>
+        } else if (type === "Bar Chart") {
+          chartContent = (
+            <BarChart
+              title={`Question ${code}`}
+              labels={labels}
+              data={data}
+              section="questions"
+            />
           );
         } else {
-          chart = (
-            <QuestionsTable data={question.answer ?? {}}></QuestionsTable>
-          );
+
+          chartContent = <QuestionsTable data={filteredAnswer} />;
         }
 
-        if (!chart) return null;
-
         return (
-          <Box key={questionId}>
-            <Text sx={textDescription}>{description}</Text>
-            {chart}
+          <Box
+            key={question.questionId}
+            sx={type === "Bar Chart" ? barchartBox : undefined}
+          >
+            <Text mb={2} fontWeight="bold">
+              {description}
+            </Text>
+            {chartContent}
           </Box>
         );
       })}

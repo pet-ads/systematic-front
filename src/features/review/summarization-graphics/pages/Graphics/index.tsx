@@ -6,7 +6,8 @@ import SelectMenu from "../../components/menus/SelectMenu";
 import { useGraphicsState } from "../../hooks/useGraphicsState";
 import SectionMenu from "../../components/menus/SectionMenu";
 import FiltersMenu from "../../components/menus/FilterMenu";
-import { conteiner } from "./styles";
+import { inputconteiner } from "@features/review/shared/styles/executionStyles";
+
 
 export default function Graphics() {
   const {
@@ -25,23 +26,20 @@ export default function Graphics() {
 
   return (
     <FlexLayout navigationType="Accordion">
-      <Header text="Graphics" />
-      <Box sx={conteiner}>
-        <Box
-          display="flex"
-          gap="1rem"
-          flexWrap="wrap" 
-          mb={5}
-          alignItems="flex-start"
-        >
-          <Flex
-            flexDirection="column"
-            gap="2rem"
-            alignItems="flex-start"
-            minH="6rem"
-          >
+      <Box w="100%" px="1rem" py=".75rem" h="fit-content">
+        <Flex w="100%" h="2.5rem" alignItems="center" mb="1rem">
+          <Header text="Graphics" />
+        </Flex>
+        <Box sx={inputconteiner}>
+          <Flex flexDirection="column" gap="0.5rem" w="250px">
             <SectionMenu onSelect={handleSectionChange} selected={section} />
-            {section === "Form Questions" ? (
+            <SelectMenu
+              options={currentAllowedTypes}
+              selected={type}
+              onSelect={setType}
+              placeholder="Choose Layout"
+            />
+            {section === "Form Questions" && (
               <SelectMenu
                 options={allQuestions.filter((q) => q.questionId !== null)}
                 selected={allQuestions.find(
@@ -54,46 +52,27 @@ export default function Graphics() {
                 getKey={(q) => q.questionId ?? q.code}
                 placeholder="Choose Question"
               />
-            ) : (
-              currentAllowedTypes.length > 0 && (
-                <SelectMenu
-                  options={currentAllowedTypes}
-                  selected={type}
-                  onSelect={setType}
-                  placeholder="Choose Layout"
-                />
-              )
             )}
           </Flex>
         </Box>
-        <Flex
-          w="100%"
-          mb="2rem"
-          flexDirection="column"
-          alignItems="flex-start"
-          gap="0.5rem"
-        >
-          {filtersBySection[section]?.length > 0 && (
-            <>
-              <Text
-                fontWeight="semibold"
-                fontSize="lg"
-                color="#263C56"
-                mt="0.5rem"
-              >
-                Filters Area
-              </Text>
-              <FiltersMenu
-                availableFilters={filtersBySection[section]}
-                filters={filters}
-                setFilters={setFilters}
-              />
-            </>
-          )}
-        </Flex>
 
+        {/* Filters Area */}
+        {filtersBySection[section]?.length > 0 && (
+          <Box mb="1rem">
+            <Text fontWeight="semibold" fontSize="lg" color="#263C56" mb="0.5rem">
+              Filters Area
+            </Text>
+            <FiltersMenu
+              availableFilters={filtersBySection[section]}
+              filters={filters}
+              setFilters={setFilters}
+            />
+          </Box>
+        )}
+
+        {/* Charts */}
         <ChartsRenderer
-          key={section + type + JSON.stringify(filters)}
+          key={section + type + JSON.stringify(filters) + selectedQuestionId}
           section={section}
           type={type}
           filters={filters}
