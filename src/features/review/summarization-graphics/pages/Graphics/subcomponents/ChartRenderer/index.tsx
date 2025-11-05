@@ -1,5 +1,4 @@
 import { Box, Text } from "@chakra-ui/react";
-
 import {
   barchartBox,
   fluxogramaBox,
@@ -18,8 +17,10 @@ import { StudyInterface } from "@features/review/shared/types/IStudy";
 import { useMemo } from "react";
 import ArticleInterface from "@features/review/shared/types/ArticleInterface";
 import { FiltersState } from "@features/review/summarization-graphics/hooks/useGraphicsState";
-
 import LayoutFactoryChart from "@features/review/summarization-graphics/components/tables/ChartTable/LayoutFactoryChart";
+import BubbleChart from "@features/review/summarization-graphics/components/charts/BubbleChart";
+import useBubbleChartData from "@features/review/summarization-graphics/hooks/useBubbleData";
+import DownloadChartsButton from "@features/review/summarization-graphics/components/buttons/DownloadChatsButton";
 
 type Props = {
   section: string;
@@ -36,6 +37,8 @@ export default function ChartsRenderer({
 }: Props) {
   const { articles, isLoading: isLoadingArticles } = useGetAllReviewArticles();
 
+  const chartId = `chart-${section.replace(/\s+/g, "-").toLowerCase()}`;
+
   // Filters
   const filteredStudies = useMemo(() => {
     return articles
@@ -50,10 +53,20 @@ export default function ChartsRenderer({
           ? s.searchSources.some((src) => filters.source!.includes(src))
           : true
       );
-  }, [articles, filters.source]);
-  console.log(filteredStudies);
+  }, [articles, filters.source, filters.startYear, filters.endYear]);
 
   let content;
+
+  // Group by source
+  const sourceCountMap = useMemo(() => {
+    const map: Record<string, number> = {};
+    filteredStudies.forEach((s) => {
+      s.searchSources.forEach((src) => {
+        map[src] = (map[src] || 0) + 1;
+      });
+    });
+    return map;
+  }, [filteredStudies]);
 
   switch (section) {
     case "Search Sources":
@@ -62,24 +75,14 @@ export default function ChartsRenderer({
         break;
       }
 
-      // Group by source
-      const sourceCountMap = useMemo(() => {
-        const map: Record<string, number> = {};
-        filteredStudies.forEach((s) => {
-          s.searchSources.forEach((src) => {
-            map[src] = (map[src] || 0) + 1;
-          });
-        });
-        return map;
-      }, [filteredStudies, filters.criteria]);
-
       const labels = Object.keys(sourceCountMap);
       const totalOfStudies = Object.values(sourceCountMap);
+      const bubbleData = useBubbleChartData(filteredStudies);
 
       switch (type) {
         case "Pie Chart":
           content = (
-            <Box sx={piechartBox}>
+            <Box id={chartId} sx={piechartBox}>
               <PieChart
                 title="Search Sources"
                 labels={labels}
@@ -90,24 +93,40 @@ export default function ChartsRenderer({
           break;
         case "Bar Chart":
           content = (
-            <Box sx={barchartBox}>
+            <Box id={chartId} sx={barchartBox}>
               <BarChart
                 title="Search Sources"
                 labels={labels}
                 data={totalOfStudies}
-                section ={'searchSource'}
+                section="searchSource"
+              />
+            </Box>
+          );
+          break;
+        case "Bubble Chart":
+          content = (
+            <Box id={chartId} sx={piechartBox}>
+              <BubbleChart
+                title="Search Sources Evolution"
+                data={bubbleData}
+                yaxisText="Número de estudos"
               />
             </Box>
           );
           break;
         case "Table":
-          content = <SearchSorcesTable />;
+          content = (
+            <Box id={chartId}>
+              <SearchSorcesTable />
+            </Box>
+          );
           break;
       }
       break;
+
     case "S1_Inclusion Criteria":
       content = (
-        <Box sx={barchartBox}>
+        <Box id={chartId} sx={barchartBox}>
           <CriteriaBarChart
             criteria="inclusion"
             stage="selection"
@@ -115,12 +134,11 @@ export default function ChartsRenderer({
           />
         </Box>
       );
-
       break;
 
     case "S1_Exclusion Criteria":
       content = (
-        <Box sx={barchartBox}>
+        <Box id={chartId} sx={barchartBox}>
           <CriteriaBarChart
             criteria="exclusion"
             stage="selection"
@@ -128,12 +146,11 @@ export default function ChartsRenderer({
           />
         </Box>
       );
-
       break;
 
     case "S2_Inclusion Criteria":
       content = (
-        <Box sx={barchartBox}>
+        <Box id={chartId} sx={barchartBox}>
           <CriteriaBarChart
             criteria="inclusion"
             stage="extraction"
@@ -141,12 +158,11 @@ export default function ChartsRenderer({
           />
         </Box>
       );
-
       break;
 
     case "S2_Exclusion Criteria":
       content = (
-        <Box sx={barchartBox}>
+        <Box id={chartId} sx={barchartBox}>
           <CriteriaBarChart
             criteria="exclusion"
             stage="extraction"
@@ -172,50 +188,73 @@ export default function ChartsRenderer({
                 : true
             );
         },
-        filteredStudies
+        [filteredStudies, filters.criteria]
       );
-      console.log(articles);
 
       switch (type) {
         case "Table":
           content = (
-            <LayoutFactoryChart
-              articles={includedStudies as ArticleInterface[]}
-              isLoading={isLoadingArticles}
-            />
+            <Box id={chartId}>
+              <LayoutFactoryChart
+                articles={includedStudies as ArticleInterface[]}
+                isLoading={isLoadingArticles}
+              />
+            </Box>
           );
-
           break;
         case "Line Chart":
           content = (
-            <IncludedStudiesLineChart filteredStudies={includedStudies} />
+            <Box id={chartId}>
+              <IncludedStudiesLineChart filteredStudies={includedStudies} />
+            </Box>
           );
-
           break;
       }
       break;
 
     case "Form Questions":
-      content = <QuestionsCharts selectedQuestionId={selectedQuestionId} />;
+      content = (
+        <Box id={chartId}>
+          <QuestionsCharts
+            selectedQuestionId={selectedQuestionId}
+            filteredStudies={filteredStudies as ArticleInterface[]}
+            type={type}
+          />
+        </Box>
+      );
       break;
 
     case "Studies Funnel":
       content = (
-        <Box sx={fluxogramaBox}>
+        <Box id={chartId} sx={fluxogramaBox}>
           <StudiesFunnelChart />
         </Box>
       );
       break;
   }
 
-  return (
-    <Box sx={
-        section === "Included Studies" && type === "Table"
-          ? undefined
-          : graphicsconteiner
-      }
-    >
-      {content}
-    </Box>
-  );
+return (
+  <Box
+    position="relative"
+    sx={
+      section === "Included Studies" && type === "Table"
+        ? undefined
+        : graphicsconteiner
+    }
+  >
+    {content}
+
+    {section !== "Studies Funnel" && (
+      <Box
+        position="absolute"
+        bottom="1.5rem"
+        right="1.5rem"
+       
+      >
+        <DownloadChartsButton fileName={section} selector={`#${chartId}`}/>
+      </Box>
+    )}
+  </Box>
+);
+
 }

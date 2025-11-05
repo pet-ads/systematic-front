@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useFetchExtractionQuestions } from "@features/review/execution-extraction/services/useFetchExtractionQuestions";
 import { useFetchRobQuestions } from "@features/review/execution-extraction/services/useFetchRobQuestions";
 
@@ -28,9 +28,27 @@ export function useGraphicsState() {
   const [type, setType] = useState("Table");
   const [filters, setFilters] = useState<FiltersState>({});
 
+
+  const questionAllowedTypes = (questionId?: string) => {
+  if (!questionId) return [];
+  const question = allQuestions.find(q => q.questionId === questionId);
+  if (!question) return [];
+
+  switch (question.questionType) {
+    case "LABELED_SCALE":
+    case "NUMBERED_SCALE":
+    case "PICK_LIST":
+      return ["Pie Chart", "Table"];
+    case "PICK_MANY":
+      return ["Bar Chart", "Table"];
+    default:
+      return ["Table"]; // TEXTUAL ou outros
+  }
+};
+
   // tipos por seção
   const allowedTypes: Record<string, string[]> = {
-    "Search Sources": ["Pie Chart", "Bar Chart", "Table"],
+    "Search Sources": ["Pie Chart", "Bar Chart","Bubble Chart", "Table"],
     "S1_Inclusion Criteria": ["Bar Chart"],
     "S1_Exclusion Criteria": ["Bar Chart"],
     "S2_Inclusion Criteria": ["Bar Chart"],
@@ -50,14 +68,28 @@ export function useGraphicsState() {
     "Form Questions": ["Start Year", "End Year", "Source"],
   };
 
-  const handleSectionChange = (section: string) => {
-    setSection(section);
-    const allowed = allowedTypes[section] || [];
-    setType(allowed.length > 0 ? allowed[0] : "");
+  const handleSectionChange = (newSection: string) => {
+    setSection(newSection);
+    const allowed = newSection === "Form Questions" ? questionAllowedTypes(selectedQuestionId) : allowedTypes[newSection] || [];
+    if (allowed.length === 1) setType(allowed[0]);
+    else setType(allowed[0] || "");
   };
 
-  const currentAllowedTypes = allowedTypes[section] || [];
+ const currentAllowedTypes = section === "Form Questions" 
+    ? questionAllowedTypes(selectedQuestionId) 
+    : allowedTypes[section] || [];
 
+useEffect(() => {
+  if (section === "Form Questions") {
+    const allowed = questionAllowedTypes(selectedQuestionId);
+    if (allowed.length === 1) {
+      setType(allowed[0]);
+    } else if (!allowed.includes(type)) {
+      setType(allowed[0] || ""); 
+    }
+  }
+}, [selectedQuestionId, section]);
+ 
   return {
     allQuestions,
     selectedQuestionId,
