@@ -13,8 +13,12 @@ export default function DefaultTable<T extends object>({
   columns,
   data,
   enableSorting = true, 
+  externalSortConfig,
+  onExternalSort
 }: GenericTableProps<T>) {
-  const [sortConfig, setSortConfig] = useState<SortConfig<T>>(null);
+  const [internalSortConfig, setInternalSortConfig] = useState<SortConfig<T>>(null);
+
+  const sortConfig = externalSortConfig !== undefined ? externalSortConfig : internalSortConfig;
 
   const sortedData = useMemo(() => {
     if (!sortConfig || !enableSorting) return data;
@@ -47,7 +51,13 @@ export default function DefaultTable<T extends object>({
       direction = "desc";
     }
 
-    setSortConfig({ key: key as keyof T, direction });
+    const newConfig = { key: key as keyof T, direction };
+
+    if (onExternalSort) {
+      onExternalSort(newConfig);
+    } else {
+      setInternalSortConfig(newConfig);
+    }
   };
 
   return (

@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { AddIcon } from "@chakra-ui/icons";
-import { Button, Input, Select, FormLabel } from "@chakra-ui/react";
+import { AddIcon, ArrowDownIcon } from "@chakra-ui/icons";
+import { Button, Input, Select, FormLabel, IconButton } from "@chakra-ui/react";
 import Axios from "../../../../../../../infrastructure/http/axiosClient";
 
 import DefaultTable from "@components/common/tables/DefaultTable";
-import { Column } from "@components/common/tables/DefaultTable/types";
+import { Column, SortConfig } from "@components/common/tables/DefaultTable/types";
 
 import EditButton from "@components/common/buttons/EditButton";
 import DeleteButton from "@components/common/buttons/DeleteButton";
@@ -63,6 +63,8 @@ export default function InteractiveTable({ id, url, label }: Props) {
   >({});
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState("");
+
+  const [sortConfig, setSortConfig] = useState<SortConfig<Row>>(null);
 
   useEffect(() => {
     setQuestions([]);
@@ -217,6 +219,17 @@ export default function InteractiveTable({ id, url, label }: Props) {
     setPickManyQuestions([]);
   }
 
+  const handleSortToggle = () => {
+    let newDirection: "asc" | "desc" = "asc";
+    let newKey: keyof Row = "id"; 
+
+    if (sortConfig?.key === newKey && sortConfig.direction === "asc") {
+      newDirection = "desc";
+    }
+    
+    setSortConfig({ key: newKey, direction: newDirection });
+  };
+
   const columns: Column<Row>[] = [
     {
       key: "id",
@@ -297,17 +310,26 @@ export default function InteractiveTable({ id, url, label }: Props) {
       <FormLabel color={"#2E4B6C"} mb={4} fontSize="lg" fontWeight="bold">
         {label}
       </FormLabel>
-      
+
       <DefaultTable<Row>
         columns={columns}
         data={rows}
-        enableSorting={false}
+        enableSorting={true} 
+        externalSortConfig={sortConfig} 
+        onExternalSort={setSortConfig}
       />
 
-      <div style={{ marginTop: '1rem' }}>
+      <div style={{ marginTop: "1rem", display: "flex", gap: "0.5rem" }}>
         <Button size="sm" onClick={addNewRow}>
           <AddIcon />
         </Button>
+        <IconButton
+          size="sm"
+          aria-label="Sort table"
+          icon={<ArrowDownIcon />}
+          onClick={handleSortToggle}
+          title="Sort by ID (Asc/Desc)"
+        />
       </div>
 
       {showModal == true && modalType == "pick list" && (
