@@ -15,7 +15,6 @@ const buttonSX = {
   alignItems: "center",
   transition: "0.3s ease-in-out",
   p: "0 1rem",
-  w: "100%",
   h: "2.5rem",
   color: "#263C56",
 };

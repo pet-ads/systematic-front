@@ -92,8 +92,8 @@ export default function Selection() {
           <Header text="Selection" />
           <SelectLayout handleChangeLayout={handleChangeLayout} />
         </Flex>
-        <Box sx={inputconteiner}>
-          <Flex gap="1rem" w="35%" justifyContent="space-between">
+        <Flex sx={inputconteiner}>
+          <Box gap="1rem" w="1rem" justifyContent="space-between" display="flex">
             <InputText
               type="search"
               placeholder="Insert article atribute"
@@ -107,7 +107,7 @@ export default function Selection() {
                 isShown={showSelected}
               />
             ) : null}
-          </Flex>
+          </Box>
           <Box
             display="flex"
             gap="1rem"
@@ -126,7 +126,7 @@ export default function Selection() {
               placeholder="Selection status"
             />
           </Box>
-        </Box>
+        </Flex>
       </Box>
       <Box
         w="calc(100% - 1.25rem)"

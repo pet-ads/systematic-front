@@ -388,10 +388,11 @@ export default function Expanded({
                     const target = e.target as HTMLElement;
 
                     if (
-                      target.closest("input") ||
-                      target.closest("label") ||
-                      target.closest("button")
+                      target.closest("input[type='checkbox']") ||
+                      target.closest("button") ||
+                      target.closest(".ignore-row-click")
                     ) {
+                      e.stopPropagation();
                       return;
                     }
 
@@ -401,7 +402,12 @@ export default function Expanded({
                   transition="background-color 0.3s, box-shadow 0.3s"
                   p="0"
                 >
-                  <Td textAlign="center" w="5%">
+                  <Td
+                    textAlign="center"
+                    w="5%"
+                    onPointerDown={(e) => e.stopPropagation()}
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     <Checkbox
                       isChecked={
                         !!studyContext?.selectedArticles[
@@ -409,13 +415,14 @@ export default function Expanded({
                         ]
                       }
                       onClick={(e) => e.stopPropagation()}
+                      onPointerDown={(e) => e.stopPropagation()}
                       onChange={(e) => {
                         e.stopPropagation();
                         toggleArticlesSelection(
                           reference.studyReviewId,
                           reference.title
-                        )}
-                      }
+                        );
+                      }}
                       sx={{
                         borderColor: "#263C56",
                         _checked: {
