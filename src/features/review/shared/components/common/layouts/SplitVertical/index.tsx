@@ -47,6 +47,7 @@ export const SplitVertical: React.FC<VerticalProps> = ({
       h="calc(100% - 1rem)"
       gap="1rem"
       justifyContent="space-between"
+      pr=".5rem"
     >
       {isInverted ? (
         <AnimatePresence mode="wait">
