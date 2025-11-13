@@ -48,8 +48,9 @@ export const SplitHorizontal: React.FC<HorizontalProps> = ({
       w="100%"
       h="calc(100% - 1rem)"
       flexDirection="column"
-      gap="2.5rem"
+      gap="1rem"
       justifyContent="space-between"
+      overflow="hidden"
     >
       {isInverted ? (
         <AnimatePresence mode="wait">
@@ -59,9 +60,14 @@ export const SplitHorizontal: React.FC<HorizontalProps> = ({
             initial="initial"
             animate="animate"
             exit="exit"
-            style={{ width: "100%", height: "50%" }}
+            style={{ 
+              width: "100%", 
+              height: "48%",
+              display: "flex",
+              flexDirection: "column"
+            }}
           >
-            <Box w="100%" h="100%" overflowY="auto">
+            <Box w="100%" h="100%" overflowY="auto" overflowX="hidden">
               <StudySelectionArea
                 articles={articles}
                 page={page}
@@ -75,9 +81,14 @@ export const SplitHorizontal: React.FC<HorizontalProps> = ({
             initial="initial"
             animate="animate"
             exit="exit"
-            style={{ width: "100%", height: "50%" }}
+            style={{ 
+              width: "100%", 
+              height: "48%", 
+              display: "flex",
+              flexDirection: "column"
+            }}
           >
-            <Box w="100%" h="100%" overflowY="auto">
+            <Box w="100%" h="100%" overflowY="auto" overflowX="hidden">
               <ArticlesTable
                 articles={articles}
                 layout={layout}
@@ -95,9 +106,14 @@ export const SplitHorizontal: React.FC<HorizontalProps> = ({
             initial="initial"
             animate="animate"
             exit="exit"
-            style={{ width: "100%", height: "50%" }}
+            style={{ 
+              width: "100%", 
+              height: "48%", 
+              display: "flex",
+              flexDirection: "column"
+            }}
           >
-            <Box w="100%" h="100%" overflowY="auto">
+            <Box w="100%" h="100%" overflowY="auto" overflowX="hidden">
               <ArticlesTable
                 articles={articles}
                 layout={layout}
@@ -112,9 +128,14 @@ export const SplitHorizontal: React.FC<HorizontalProps> = ({
             initial="initial"
             animate="animate"
             exit="exit"
-            style={{ width: "100%", height: "50%" }}
+            style={{ 
+              width: "100%", 
+              height: "48%", 
+              display: "flex",
+              flexDirection: "column"
+            }}
           >
-            <Box w="100%" h="100%" overflowY="auto">
+            <Box w="100%" h="100%" overflowY="auto" overflowX="hidden">
               <StudySelectionArea
                 articles={articles}
                 page={page}
