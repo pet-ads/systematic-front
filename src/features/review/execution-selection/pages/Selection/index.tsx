@@ -93,7 +93,7 @@ export default function Selection() {
           <SelectLayout handleChangeLayout={handleChangeLayout} />
         </Flex>
         <Box sx={inputconteiner}>
-          <Flex gap="1rem" w="35%" justifyContent="space-between">
+          <Flex gap="1rem" w="1rem" justifyContent="space-between">
             <InputText
               type="search"
               placeholder="Insert article atribute"
