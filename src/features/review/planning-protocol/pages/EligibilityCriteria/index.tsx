@@ -56,11 +56,13 @@ export default function EligibilityCriteria() {
           text="Inclusion criteria"
           placeholder="Enter the criteria"
           referencePrefix="IC"
+          enableReferenceCode={true}
         />
         <AddTextTable
           text="Exclusion criteria"
           placeholder="Enter the criteria"
           referencePrefix="EC"
+          enableReferenceCode={true}
         />
         <TextAreaInput
           value={studyTypeDefinition}

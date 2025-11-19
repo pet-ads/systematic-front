@@ -1,22 +1,21 @@
 import EditButton from "@components/common/buttons/EditButton";
 import DeleteButton from "@components/common/buttons/DeleteButton";
 import { useEditState } from "@features/review/planning-protocol/hooks/useEdit";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { tbConteiner } from "./styles";
-import { Table,Tbody,Tr,Td,TableContainer,Input,Flex,Thead,Box } from "@chakra-ui/react";
+import { Table, Tbody, Tr, Td, TableContainer, Input, Flex, Thead, Th } from "@chakra-ui/react";
 import useCreateProtocol from "@features/review/planning-protocol/services/useCreateProtocol";
 import EventButton from "@components/common/buttons/EventButton";
-import useValidatorSQLInjection from "@features/shared/hooks/useValidatorSQLInjection";
 
 interface InfosTableProps {
   AddTexts: string[];
-  onDeleteAddedText?: (index: number) => void;
+  onDeleteAddedText: (index: number) => void;
   onAddText: (newText: string) => void;
   typeField: string;
   context: string;
   placeholder: string;
   referencePrefix?: string;
-  setAddTexts?: (arr: string[]) => void;
+  enableReferenceCode?: boolean;
 }
 
 export default function InfosTable({
@@ -27,105 +26,100 @@ export default function InfosTable({
   context,
   placeholder,
   referencePrefix = "",
-  setAddTexts,
+  enableReferenceCode = true,
 }: InfosTableProps) {
   const { sendAddText } = useCreateProtocol();
-  const { editIndex, handleEdit, handleSaveEdit, editedValue, handleChange } =
-    useEditState({
-      AddTexts,
-      onSaveEdit: (editedValue: string, editIndex: number) => {
-        const newCode = (editedValue.split(":")[0] || "").trim().toUpperCase();
-        if (!newCode) {
-          alert("O código de referência não pode estar vazio.");
-          return;
-        }
-        const duplicate = AddTexts.some((item, i) => {
-          if (i === editIndex) return false;
-          const code = (item.split(":")[0] || "").trim().toUpperCase();
-          return code === newCode;
-        });
-        if (duplicate) {
-          alert("Código de referência duplicado. Escolha outro código.");
-          return;
-        }
-
-        const updated = [...AddTexts];
-        updated[editIndex] = editedValue;
-        sendAddText(updated, context);
-        if (setAddTexts) setAddTexts(updated);
-      },
-    });
 
   const [newText, setNewText] = useState("");
-  const validator = useValidatorSQLInjection();
-  const [usedCodes, setUsedCodes] = useState<string[]>([]);
+  const [referenceCode, setReferenceCode] = useState("");
+  const [editedCode, setEditedCode] = useState("");
 
-  useEffect(() => {
-    const codes = AddTexts.map((entry) =>
-      (entry.split(":")[0] || "").trim().toUpperCase()
-    ).filter(Boolean);
-    setUsedCodes(codes);
-  }, [AddTexts]);
-
-  const generateNextCode = () => {
-    const prefix = referencePrefix ? referencePrefix.toUpperCase() : "";
-    const relevant = usedCodes.filter((c) =>
-      prefix ? c.startsWith(prefix + "-") : !c.includes("-")
-    );
-
-    const nums = relevant
-      .map((c) => {
-        const part = prefix ? c.split("-").pop() : c;
-        const n = part ? parseInt(part, 10) : NaN;
-        return Number.isNaN(n) ? null : n;
-      })
-      .filter((n): n is number => n !== null)
-      .sort((a, b) => a - b);
-    for (let i = 1; ; i++) {
-      if (!nums.includes(i)) {
-        const formatted = String(i).padStart(2, "0");
-        return prefix ? `${prefix}-${formatted}` : `${formatted}`;
-      }
-    }
+  const parseEntry = (entry: string) => {
+    if (!enableReferenceCode) return { code: "", text: entry };
+    const idx = entry.indexOf(":");
+    if (idx === -1) return { code: "", text: entry };
+    const code = entry.slice(0, idx).trim();
+    const text = entry.slice(idx + 1).trim();
+    return { code, text };
   };
 
-  const handleAddText = () => {
-    const trimmedText = newText.trim();
-    if (!validator({ value: newText })) {return false}
-    if (trimmedText === "") return;
-    const code = generateNextCode();
-    if (usedCodes.includes(code.toUpperCase())) {
+  const getAllCodes = (excludeIndex?: number) =>
+    enableReferenceCode
+      ? AddTexts.map((entry, i) => ({ code: parseEntry(entry).code, i }))
+          .filter(({ code, i }) => code && i !== excludeIndex)
+          .map(({ code }) => code)
+      : [];
+
+  const onSaveEdit = (editedValueParam: string, editIdx: number) => {
+    if (!enableReferenceCode) {
+      AddTexts[editIdx] = editedValueParam.trim();
+      sendAddText(AddTexts, context);
+      return;
+    }
+
+    const codeToSave = editedCode.trim().toUpperCase();
+    const codes = getAllCodes(editIdx);
+    if (codeToSave && codes.includes(codeToSave)) {
       alert("Esse código de referência já está em uso!");
       return;
     }
 
-    const entry = `${code}: ${trimmedText}`;
-    onAddText(entry);
-    setUsedCodes((prev: string[]) => [...prev, code.toUpperCase()]);
-    setNewText("");
+    const parsed = parseEntry(editedValueParam);
+    const editedTextOnly = parsed.text ?? editedValueParam.trim();
+
+    const newEntry = codeToSave
+      ? `${codeToSave}: ${editedTextOnly.trim()}`
+      : editedTextOnly.trim();
+
+    AddTexts[editIdx] = newEntry;
+    sendAddText(AddTexts, context);
   };
 
-  const handleDelete = (index: number) => {
-    const updated = AddTexts.filter((_, i) => i !== index).map((entry, i) => {
-      const parts = entry.split(":");
-      const content = parts.slice(1).join(":").trim();
-      const newNumber = i + 1;
-      const newCode = referencePrefix ? `${referencePrefix.toUpperCase()}-${String(newNumber).padStart(2,"0")}`
-        : `${String(newNumber).padStart(2, "0")}`;
-      return `${newCode}: ${content}`;
+  const { editIndex, handleEdit, handleSaveEdit, editedValue, handleChange } =
+    useEditState({
+      AddTexts,
+      onSaveEdit,
     });
 
-    if (setAddTexts) {
-      setAddTexts(updated);
-    } else if (typeof onDeleteAddedText === "function") {
-      onDeleteAddedText(index);
+  const handleSaveEditWrapper = () => {
+    if (editIndex !== null && editIndex !== undefined) {
+      onSaveEdit(editedValue, editIndex);
     }
-    sendAddText(updated, context);
+    handleSaveEdit();
+  };
 
-    const newCodes = updated.map((entry) =>
-      (entry.split(":")[0] || "").trim().toUpperCase()
-    );
-    setUsedCodes(newCodes);
+  const handleAddText = () => {
+    const trimmedText = newText.trim();
+    if (trimmedText === "") return;
+
+    if (!enableReferenceCode) {
+      onAddText(trimmedText);
+      setNewText("");
+      return;
+    }
+
+    const code = referenceCode.trim().toUpperCase();
+    const existingCodes = getAllCodes();
+
+    if (code && existingCodes.includes(code)) {
+      alert("Esse código de referência já está em uso!");
+      return;
+    }
+
+    const entry = code ? `${code}: ${trimmedText}` : trimmedText;
+    onAddText(entry);
+    setNewText("");
+    setReferenceCode("");
+  };
+
+  const handleEditWrapper = (index: number) => {
+    const { code, text } = parseEntry(AddTexts[index] || "");
+    setEditedCode(code);
+    handleEdit(index);
+
+    setTimeout(() => {
+      handleChange({ target: { value: text } } as any);
+    }, 0);
   };
 
   return (
@@ -133,59 +127,87 @@ export default function InfosTable({
       <Table variant="simple" size="md">
         <Thead>
           <Tr>
-            <Td colSpan={2} padding="1rem">
-              <Flex gap="4">
+            <Th colSpan={3} padding="1rem">
+              <Flex gap="4" align="center">
+                {enableReferenceCode && (
+                  <Input
+                    placeholder={`${referencePrefix}-01`}
+                    value={referenceCode}
+                    onChange={(e) => setReferenceCode(e.target.value)}
+                    onBlur={() =>
+                      setReferenceCode((s) => s.trim().toUpperCase())
+                    }
+                    w="100px"
+                    size="md"
+                    sx={{ textTransform: "uppercase" }}
+                  />
+                )}
                 <Input
                   placeholder={placeholder}
                   value={newText}
                   onChange={(e) => setNewText(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleAddText()}
                   flex="1"
+                  size="md"
                 />
-                <EventButton text="Add" event={handleAddText} w={"2%"} />
+                <EventButton text="Add" event={handleAddText} w={"40px"} />
               </Flex>
-            </Td>
+            </Th>
           </Tr>
         </Thead>
-        <Tbody className="tableBody">
+        <Tbody>
           {AddTexts.map((addText, index) => {
-            const code = (addText.split(":")[0] || "").trim();
-            const content = addText.split(":").slice(1).join(":").trim();
+            const { code, text } = parseEntry(addText);
             return (
               <Tr key={index}>
+                {enableReferenceCode && (
+                  <Td
+                    whiteSpace={"nowrap"}
+                    overflow="hidden"
+                    textOverflow={"ellipsis"}
+                    wordBreak={"normal"}
+                    py={"1"}
+                    w="120px"
+                  >
+                    {editIndex === index ? (
+                      <Input
+                        value={editedCode}
+                        onChange={(e) => setEditedCode(e.target.value)}
+                        onBlur={() =>
+                          setEditedCode((c) => c.trim().toUpperCase())
+                        }
+                        size="md"
+                        pl={0.5}
+                        pr={0.5}
+                        sx={{ textTransform: "uppercase" }}
+                      />
+                    ) : (
+                      code || "-"
+                    )}
+                  </Td>
+                )}
                 <Td whiteSpace={"normal"} wordBreak={"break-word"} py={"1"}>
                   {editIndex === index ? (
-                    <Flex align="center">
-                      <Input
-                        value={editedValue}
-                        onChange={handleChange}
-                        flex="1"
-                        autoFocus
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter") {
-                            handleSaveEdit();
-                          }
-                        }}
-                      />
-                    </Flex>
+                    <Input
+                      value={editedValue}
+                      onChange={handleChange}
+                      size="md"
+                    />
                   ) : (
-                    <Box>
-                      <strong style={{ marginRight: 8 }}>{code}</strong>
-                      <span>{content}</span>
-                    </Box>
+                    text
                   )}
                 </Td>
                 <Td textAlign={"right"} py={"1"}>
                   <DeleteButton
                     index={index}
-                    handleDelete={() => handleDelete(index)}
+                    handleDelete={() => onDeleteAddedText(index)}
                   />
                   {typeField !== "select" && (
                     <EditButton
                       index={index}
                       editIndex={editIndex}
-                      handleEdit={() => handleEdit(index)}
-                      handleSaveEdit={handleSaveEdit}
+                      handleEdit={() => handleEditWrapper(index)}
+                      handleSaveEdit={handleSaveEditWrapper}
                     />
                   )}
                 </Td>

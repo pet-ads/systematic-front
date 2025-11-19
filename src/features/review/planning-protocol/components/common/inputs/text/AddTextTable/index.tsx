@@ -8,15 +8,16 @@ interface AddTextTableProps {
   text: string;
   placeholder: string;
   referencePrefix?: string;
+  enableReferenceCode?: boolean;
 }
 
-export default function AddTextTable({ text, placeholder, referencePrefix = "" }: AddTextTableProps) {
+export default function AddTextTable({ text, placeholder, referencePrefix = "", enableReferenceCode = true }: AddTextTableProps) {
   const { AddText, handleAddText, setAddText } = useAddText(text);
   const { handleDeleteText } = useDeleteText(text);
   return (
     <FormControl sx={label}>
       <FormControl sx={formcontrol}>
-        <FormLabel mt={"30px"} fontWeight={500} fontSize={"large"}>{text}</FormLabel>
+        <FormLabel mt={"30px"} fontWeight={500} fontSize={"large"}> {text} </FormLabel>
         <InfosTable
           typeField={""}
           onAddText={(value) => handleAddText(value)}
@@ -25,7 +26,7 @@ export default function AddTextTable({ text, placeholder, referencePrefix = "" }
           context={text}
           placeholder={placeholder}
           referencePrefix={referencePrefix}
-          setAddTexts={setAddText}
+          enableReferenceCode={enableReferenceCode}
         />
       </FormControl>
     </FormControl>
