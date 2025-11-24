@@ -214,6 +214,12 @@ export default function InteractiveTable({ id, url, label }: Props) {
     await Axios.get(`systematic-study/${id}/protocol/extraction-question`, options);
   }
 
+  const handleIdChange = (index: number, newId: string) => {
+    setRows((prevRows) =>
+      prevRows.map((row, i) => (i === index ? { ...row, id: newId } : row))
+    );
+  };
+
   function addNewRow() {
     addRow(setEditIndex, setQuestions);
     setPickManyQuestions([]);
@@ -235,6 +241,16 @@ export default function InteractiveTable({ id, url, label }: Props) {
       key: "id",
       label: "ID",
       width: "10%",
+      render: (row, index) => (
+        <Input
+          value={row.id}
+          onChange={(e) => handleIdChange(index, e.target.value)}
+          border={"solid 1px #303D50"}
+          borderRadius="md"
+          size="sm"
+          bg="white"
+        />
+      ),
     },
     {
       key: "question",
