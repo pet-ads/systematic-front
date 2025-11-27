@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { AddIcon, ArrowDownIcon } from "@chakra-ui/icons";
-import { Button, Input, Select, FormLabel, IconButton } from "@chakra-ui/react";
+import { AddIcon } from "@chakra-ui/icons";
+import { Button, Input, Select, FormLabel } from "@chakra-ui/react";
 import Axios from "../../../../../../../infrastructure/http/axiosClient";
 
 import DefaultTable from "@components/common/tables/DefaultTable";
