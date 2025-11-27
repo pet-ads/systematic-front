@@ -225,16 +225,7 @@ export default function InteractiveTable({ id, url, label }: Props) {
     setPickManyQuestions([]);
   }
 
-  const handleSortToggle = () => {
-    let newDirection: "asc" | "desc" = "asc";
-    let newKey: keyof Row = "id"; 
-
-    if (sortConfig?.key === newKey && sortConfig.direction === "asc") {
-      newDirection = "desc";
-    }
-    
-    setSortConfig({ key: newKey, direction: newDirection });
-  };
+  
 
   const columns: Column<Row>[] = [
     {
