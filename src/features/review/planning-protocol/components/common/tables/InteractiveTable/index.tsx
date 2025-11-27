@@ -339,13 +339,7 @@ export default function InteractiveTable({ id, url, label }: Props) {
         <Button size="sm" onClick={addNewRow}>
           <AddIcon />
         </Button>
-        <IconButton
-          size="sm"
-          aria-label="Sort table"
-          icon={<ArrowDownIcon />}
-          onClick={handleSortToggle}
-          title="Sort by ID (Asc/Desc)"
-        />
+        
       </div>
 
       {showModal == true && modalType == "pick list" && (
