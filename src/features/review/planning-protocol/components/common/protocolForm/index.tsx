@@ -26,12 +26,10 @@ export default function ProtocolFormLayout({
     display: "flex",
     gap: 10,
     flexDir: "column" as const,
-    alignItems: "center", 
+    alignItems: "center",
     flexGrow: 1,
     w: "100%",
   };
-
-  const maxContentWidth = "55rem";
 
   return (
     <FlexLayout navigationType="Accordion">
@@ -41,50 +39,52 @@ export default function ProtocolFormLayout({
         borderRadius="1rem"
         withShadow={false}
       >
-        <Box
-          display="flex"
-          flexDirection="column"
+        <Box 
+          display="flex" 
+          flexDirection="column" 
           h="100%" 
           w="100%"
         >
           <Box
             flexGrow={1}
-            overflowY="auto" 
+            overflowY="auto"
             overflowX="hidden"
             w="100%"
             display="flex"
             flexDirection="column"
-            alignItems={"center"}
+            alignItems="center"
           >
-            <Box
-                mx="auto"
-                w="100%"
+            <FormControl
+              {...baseFormControlStyles}
+              {...formControlProps}
+              minW={0}
+              gap="2rem"
+              p={0}
             >
-                <FormControl
-                    {...baseFormControlStyles}
-                    {...formControlProps}
-                    minW={0}
-                    gap="2rem"
-                >
-                    {children}
-                </FormControl>
-            </Box>
+              <Box 
+                w="60vw" 
+                display="flex" 
+                flexDirection="column" 
+                gap="1.5rem"
+              >
+                {children}
+              </Box>
+            </FormControl>
           </Box>
-          <Box
+          <Box 
             flexShrink={0} 
-            w="100%"
-            pt={"0.69rem"}
+            w="100%" 
+            pt="0.69rem" 
             mb={4}
           >
             <Box
-                maxW={maxContentWidth}
-                mx="auto"
-                w="60vw"
-                display={"flex"}
-                alignItems={"center"}
-                justifyContent={"end"}
+              mx="auto"
+              w="60vw"
+              display="flex"
+              alignItems="center"
+              justifyContent="flex-end"
             >
-                {navButtons}
+              {navButtons}
             </Box>
           </Box>
         </Box>

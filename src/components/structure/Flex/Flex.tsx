@@ -33,13 +33,14 @@ export default function FlexLayout({ navigationType, children }: iFlexLayout) {
   const header = childrenArray[0];
   const mainContent = childrenArray.slice(1);
 
-  return (
+   return (
     <Box
       sx={{
         ...flexStyles,
         gridTemplateColumns: templateColumns,
-        gridTemplateRows: "1fr", 
-        height: "100vh",         
+        gridTemplateRows: "1fr",
+        height: "100vh",
+        overflow: "hidden", 
       }}
     >
       <Sidebar type={navigationType} />
@@ -47,14 +48,13 @@ export default function FlexLayout({ navigationType, children }: iFlexLayout) {
         sx={{
           ...contentGridStyles,
           marginLeft: contentMargin,
-          height: "100%", 
-          display: "grid",
-          gridTemplateRows: "auto 1fr", 
+          height: "100%",
+          display: "flex", 
+          flexDirection: "column",
         }}
       >
         <Box
-          gridColumn="1 / -1"
-          gridRow="1"
+          flexShrink={0} 
           sx={
             sidebarState === "collapsed"
               ? { paddingLeft: "4rem" }
@@ -64,10 +64,10 @@ export default function FlexLayout({ navigationType, children }: iFlexLayout) {
           {header}
         </Box>
         <Box
-          gridColumn="1 / -1"
-          gridRow="2"
-          height="100%"
-          overflow="auto"
+          flex="1" 
+          minH="0"
+          overflowX="hidden" 
+          overflowY="auto"
         >
           {mainContent}
         </Box>

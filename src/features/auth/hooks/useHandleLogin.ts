@@ -14,6 +14,7 @@ import type { AccessCredentials } from "@features/auth/types";
 // Guards
 import { isLeft } from "@features/shared/errors/pattern/Either";
 import useToaster from "@components/feedback/Toaster";
+import useValidatorSQLInjection from "@features/shared/hooks/useValidatorSQLInjection";
 
 export default function useHandleLogin() {
   const [credentials, setCredentials] = useState<AccessCredentials>({
@@ -32,6 +33,8 @@ export default function useHandleLogin() {
   const { login } = useAuthStore();
 
   const Toaster = useToaster();
+
+  const validator = useValidatorSQLInjection();
 
   const handleChangeCredentials = (
     field: keyof typeof credentials,
@@ -78,6 +81,7 @@ export default function useHandleLogin() {
 
     setIsSubmitting(true);
     try {
+      if(!(validator({value: credentials.password}) && validator({value: credentials.username}))) return;
       const loginResult = await login(credentials);
 
       if (isLeft(loginResult)) {
@@ -97,6 +101,7 @@ export default function useHandleLogin() {
       toGo("/home");
 
       setIsSubmitting(false);
+      
     } catch (error) {
       setErrors((prev) => ({
         ...prev,

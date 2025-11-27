@@ -165,15 +165,23 @@ export default function StudiesFunnelChart() {
     });
   });
 
-  for (let index = basedStartIndex; index < completedNodes.length; index++) {
-    edges.push({
-      id: `e${index}_${0}`,
-      source: index.toString(),
+let edgeCounter = 0;
+const dynamicEdges: Edge[] = Array.from(
+  { length: completedNodes.length - basedStartIndex },
+  (_, i) => {
+    const nodeIndex = basedStartIndex + i;
+    return {
+      id: `e${nodeIndex}_0_${edgeCounter++}`,
+      source: nodeIndex.toString(),
       target: "0",
       type: "straight",
-    });
+    };
   }
+);
+
+const allEdges = [...edges, ...dynamicEdges];
+
   if (isLoading) return <Text>Loading chart...</Text>;
 
-  return <FlowChart baseNodes={completedNodes} edges={edges} />;
+  return <FlowChart baseNodes={completedNodes} edges={allEdges} />;
 }

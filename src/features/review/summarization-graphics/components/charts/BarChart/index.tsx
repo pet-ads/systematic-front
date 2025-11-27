@@ -56,12 +56,13 @@ export default function BarChart({
           const fullText = labels[dataPointIndex];
           return `
             <Box style="padding: 8px; max-width: 300px; white-space: normal;">
-              <Text>${labelAbbreviation +(dataPointIndex + 1)} - ${fullText}</Text>
+              <Text>${fullText}</Text>
             </Box>`;
         },
       },
       xaxis: {
-        categories: labels.map((_, indexOf) => `${labelAbbreviation +(indexOf + 1)}`),
+      
+        categories: section =='searchSource' ? labels : labels.map((_, indexOf) => `${labelAbbreviation +(indexOf + 1)}`),
       },
 
       title: {

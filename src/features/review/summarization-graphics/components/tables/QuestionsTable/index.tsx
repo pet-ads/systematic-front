@@ -28,7 +28,8 @@ const totalResponses = Object.values(data).reduce((sum,ids)=>sum+ids.length,0);
           </Tr>
         </Thead>
         <Tbody>
-          {Object.entries(data).map(([answerText, ids]) => (
+          {Object.entries(data).filter(([_, ids]) => ids.length > 0).map(([answerText, ids]) => (
+            
             <Tr key={answerText} _hover={{ bg: "gray.300" }}>
               
               <ReportTd text={answerText}/>

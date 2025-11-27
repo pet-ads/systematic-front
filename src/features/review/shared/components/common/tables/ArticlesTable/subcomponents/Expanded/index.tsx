@@ -15,14 +15,9 @@ import {
 } from "@chakra-ui/react";
 
 import { CheckCircleIcon, QuestionIcon, WarningIcon } from "@chakra-ui/icons";
-import { FaChevronDown, FaChevronUp } from "react-icons/fa6";
+import { FaChevronDown, FaChevronUp} from "react-icons/fa6";
+import { MdOutlineKeyboardArrowLeft, MdOutlineKeyboardArrowRight, MdOutlineKeyboardDoubleArrowLeft, MdOutlineKeyboardDoubleArrowRight } from "react-icons/md";
 import { IoIosCloseCircle } from "react-icons/io";
-import {
-  MdOutlineKeyboardArrowLeft,
-  MdOutlineKeyboardArrowRight,
-  MdOutlineKeyboardDoubleArrowLeft,
-  MdOutlineKeyboardDoubleArrowRight,
-} from "react-icons/md";
 
 import { RiCheckboxMultipleBlankFill } from "react-icons/ri";
 
@@ -89,13 +84,13 @@ export default function Expanded({
   const [columnWidths, setColumnWidths] = useState({
     studyReviewId: "62px",
     title: "150px",
-    authors: "150px",
+    authors: "100px",
     venue: "100px",
-    year: "62px",
-    selectionStatus: "100px",
-    extractionStatus: "100px",
-    score: "62px",
-    readingPriority: "100px",
+    year: "65px",
+    selectionStatus: "90px",
+    extractionStatus: "90px",
+    score: "70px",
+    readingPriority: "80px",
   });
   const studyContext = useContext(StudySelectionContext);
 
@@ -123,13 +118,15 @@ export default function Expanded({
     },
   ];
 
-  const IconWrapper = ({ children }: { children: React.ReactNode }) => (
+  const IconWrapper = ({ children, bg, size = "1.25rem"}: { children: React.ReactNode; bg?: string; size?: string; }) => (
     <Box
       display="flex"
       alignItems="center"
       justifyContent="center"
-      w="1.25rem"
-      h="1.25rem"
+      w={size}
+      h={size}
+      borderRadius="full"
+      bg={bg || "transparent"}
     >
       {children}
     </Box>
@@ -158,20 +155,31 @@ export default function Expanded({
     ),
   };
 
+  const renderStatusIcon = (status: string) => statusIconMap[status] || null;
+
   const priorityIconMap: Record<string, React.ReactElement> = {
     VERY_LOW: (
-      <MdOutlineKeyboardDoubleArrowLeft color="#D32F2F" size="1.5rem" />
+      <IconWrapper bg="red.500" size="1rem">
+        <MdOutlineKeyboardDoubleArrowLeft color="white" size="1rem" />
+      </IconWrapper>
     ),
-    LOW: <MdOutlineKeyboardArrowLeft color="#FBC02D" size="1.5rem" />,
-    HIGH: <MdOutlineKeyboardArrowRight color="#F57C00" size="1.5rem" />,
+    LOW: (
+      <IconWrapper bg="yellow.500" size="1rem">
+        <MdOutlineKeyboardArrowLeft color="white" size="1rem" />
+      </IconWrapper>
+    ),
+    HIGH: (
+      <IconWrapper bg="orange.500" size="1rem">
+        <MdOutlineKeyboardArrowRight color="white" size="1rem" />
+      </IconWrapper>
+    ),
     VERY_HIGH: (
-      <MdOutlineKeyboardDoubleArrowRight color="#388E3C" size="1.5rem" />
+      <IconWrapper bg="green.500" size="1rem">
+        <MdOutlineKeyboardDoubleArrowRight color="white" size="1rem" />
+      </IconWrapper>
     ),
   };
-
-  const renderStatusIcon = (status: string) => statusIconMap[status] || null;
-  const renderPriorityIcon = (priority: string) =>
-    priorityIconMap[priority] || null;
+  const renderPriorityIcon = (priority: string) => priorityIconMap[priority] || null;
 
   const {
     currentPage,
@@ -264,6 +272,7 @@ export default function Expanded({
     <Box w="100%" maxH="82.5vh">
       <TableContainer
         w="100%"
+        maxW="100%"
         minH={
           layout == "horizontal" || layout == "horizontal-invert"
             ? "16rem"
@@ -296,6 +305,8 @@ export default function Expanded({
                 color="#263C56"
                 w="1rem"
                 bg="white"
+                paddingStart={"2rem"}
+                paddingEnd={"0.3rem"}
               >
                 <RiCheckboxMultipleBlankFill size="1rem" />
               </Th>
@@ -404,34 +415,44 @@ export default function Expanded({
                       : "transparent"
                   }
                   onClick={(e) => {
+                    const target = e.target as HTMLElement;
+
                     if (
-                      (e.target as HTMLElement).tagName.toLowerCase() ===
-                      "input"
-                    )
+                      target.closest("input[type='checkbox']") ||
+                      target.closest("button") ||
+                      target.closest(".ignore-row-click")
+                    ) {
+                      e.stopPropagation();
                       return;
+                    }
 
                     setSelectedArticleReview(reference.studyReviewId);
-
-                    if (onRowClick) {
-                      onRowClick(reference);
-                    }
+                    onRowClick?.(reference);
                   }}
                   transition="background-color 0.3s, box-shadow 0.3s"
                   p="0"
                 >
-                  <Td textAlign="center" w="5%">
+                  <Td
+                    textAlign="center"
+                    w="5%"
+                    onPointerDown={(e) => e.stopPropagation()}
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     <Checkbox
                       isChecked={
                         !!studyContext?.selectedArticles[
                           reference.studyReviewId
                         ]
                       }
-                      onChange={() =>
+                      onClick={(e) => e.stopPropagation()}
+                      onPointerDown={(e) => e.stopPropagation()}
+                      onChange={(e) => {
+                        e.stopPropagation();
                         toggleArticlesSelection(
                           reference.studyReviewId,
                           reference.title
-                        )
-                      }
+                        );
+                      }}
                       sx={{
                         borderColor: "#263C56",
                         _checked: {
@@ -496,7 +517,7 @@ export default function Expanded({
                     </Td>
                   )}
                   {columnsVisible["year"] && (
-                    <Td sx={tdSX} w={columnWidths.year}>
+                    <Td sx={tdSX} w={columnWidths.year} pl={"2.2rem"}>
                       <Tooltip
                         sx={tooltip}
                         label={reference.year}
@@ -548,7 +569,7 @@ export default function Expanded({
                     </Td>
                   )}
                   {columnsVisible["score"] && (
-                    <Td sx={tdSX} w={columnWidths.score}>
+                    <Td sx={tdSX} w={columnWidths.score} pl="3rem">
                       <Tooltip
                         sx={tooltip}
                         label={reference.score}
@@ -565,16 +586,16 @@ export default function Expanded({
                     <Td
                       sx={tdSX}
                       w={columnWidths.readingPriority}
-                      pl="0.5rem"
+                      pl="2rem"
                       pr="0.5rem"
                     >
                       <Box
                         display="flex"
                         alignItems="center"
-                        justifyContent="start"
-                        gap="0.5rem"
+                        justifyContent="flex-start"
+                        gap="0.7rem"
                       >
-                        {renderPriorityIcon(reference.readingPriority)}
+                        {renderPriorityIcon(reference.readingPriority?.toString())}
                         <Text sx={collapsedSpanTextChanged}>
                           {capitalize(
                             reference.readingPriority

@@ -14,6 +14,7 @@ import NumberScaleModal from "../../modals/NumberScaleModal";
 import PickListModal from "../../modals/PickListModal";
 import PickManyModal from "../../modals/PickManyModal";
 import LabeledScaleModal from "../../modals/LabeledScaleModal";
+import useValidatorSQLInjection from "@features/shared/hooks/useValidatorSQLInjection";
 
 interface Props {
   id: string;
@@ -65,6 +66,8 @@ export default function InteractiveTable({ id, url, label }: Props) {
   const [modalType, setModalType] = useState("");
 
   const [sortConfig, setSortConfig] = useState<SortConfig<Row>>(null);
+
+  const validator = useValidatorSQLInjection();
 
   useEffect(() => {
     setQuestions([]);
@@ -129,6 +132,9 @@ export default function InteractiveTable({ id, url, label }: Props) {
   }
 
   async function handleSaveEdit(index: number) {
+    if(!validator({value: rows[index].question})){
+      return
+    }
     const row = rows[index];
     const { question, id: questionId, type, isNew, questionId: serverId } = row;
     const reviewId = id; // From props

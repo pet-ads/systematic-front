@@ -10,9 +10,8 @@ export const inputconteiner = {
   display: "flex",
   width: "100%",
   m: "0 0 1rem 0",
-  gap: "2rem",
   justifyContent: "space-between",
-  alingItems: "center",
+  alignItems: "center",
 };
 
 export const ckconteiner = {
@@ -22,7 +21,6 @@ export const ckconteiner = {
 };
 
 export const btnconteiner = {
-  w: "100%",
   display: "flex",
   flexDir: "row",
   justifyContent: "flex-end",
