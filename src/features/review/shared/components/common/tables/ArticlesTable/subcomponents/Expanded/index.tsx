@@ -1,5 +1,5 @@
 // External library
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useRef, useEffect } from "react"; 
 import {
   TableContainer,
   Table,
@@ -91,7 +91,45 @@ export default function Expanded({
     score: "62px",
     readingPriority: "100px",
   });
+  
   const studyContext = useContext(StudySelectionContext);
+  
+  const headerScrollRef = useRef<HTMLDivElement>(null);
+  const bodyScrollRef = useRef<HTMLDivElement>(null);
+  const isSyncingScroll = useRef(false);
+  
+  useEffect(() => {
+    const headerElement = headerScrollRef.current;
+    const bodyElement = bodyScrollRef.current;
+
+    if (!headerElement || !bodyElement) return;
+
+    const handleHeaderScroll = () => {
+      if (isSyncingScroll.current) return;
+      isSyncingScroll.current = true;
+      bodyElement.scrollLeft = headerElement.scrollLeft;
+      requestAnimationFrame(() => {
+        isSyncingScroll.current = false;
+      });
+    };
+
+    const handleBodyScroll = () => {
+      if (isSyncingScroll.current) return;
+      isSyncingScroll.current = true;
+      headerElement.scrollLeft = bodyElement.scrollLeft;
+      requestAnimationFrame(() => {
+        isSyncingScroll.current = false;
+      });
+    };
+
+    headerElement.addEventListener('scroll', handleHeaderScroll);
+    bodyElement.addEventListener('scroll', handleBodyScroll);
+
+    return () => {
+      headerElement.removeEventListener('scroll', handleHeaderScroll);
+      bodyElement.removeEventListener('scroll', handleBodyScroll);
+    };
+  }, []);
 
   const columns: Column[] = [
     { label: "ID", key: "studyReviewId", width: columnWidths.studyReviewId },
@@ -242,7 +280,7 @@ export default function Expanded({
 
   return (
     <Box w="100%" maxH="82.5vh">
-      <TableContainer
+      <Box
         w="100%"
         maxW="100%"
         minH={
@@ -258,328 +296,388 @@ export default function Expanded({
         borderRadius="1rem 1rem 0 0"
         boxShadow="lg"
         bg="white"
-        overflowY="auto"
+        overflow="hidden"
+        display="flex"
+        flexDirection="column"
       >
-        <Table variant="unstyled" colorScheme="black" size="md" layout="fixed">
-          <Thead
-            bg="white"
-            borderRadius="1rem"
-            justifyContent="space-around"
-            position="sticky"
-            top="0"
-            zIndex="1"
-            borderBottom=".5rem solid #C9D9E5"
-          >
-            <Tr>
-              <Th
-                alignItems="center"
-                justifyContent="center"
-                color="#263C56"
-                w="1rem"
+        <Box 
+          ref={headerScrollRef} 
+          flexShrink={0} 
+          bg="white"
+          overflowX="auto"
+          minW="0"
+          sx={{
+            '&::-webkit-scrollbar': {
+              height: '8px',
+            },
+            '&::-webkit-scrollbar-track': {
+              background: '#f1f1f1',
+            },
+            '&::-webkit-scrollbar-thumb': {
+              background: '#888',
+              borderRadius: '4px',
+            },
+            '&::-webkit-scrollbar-thumb:hover': {
+              background: '#555',
+            },
+          }}
+        >
+          <TableContainer w="100%" minW="min-content">
+            <Table variant="unstyled" colorScheme="black" size="md" layout="fixed" minW="100%">
+              <Thead
                 bg="white"
+                borderRadius="1rem"
+                justifyContent="space-around"
+                position="sticky"
+                top="0"
+                zIndex="1"
+                borderBottom=".5rem solid #C9D9E5"
               >
-                <RiCheckboxMultipleBlankFill size="1rem" />
-              </Th>
-              {columns.map(
-                (col) =>
-                  columnsVisible[`${col.key}`] && (
-                    <Th
-                      key={col.key}
-                      textAlign="center"
-                      color="#263C56"
-                      fontSize="medium"
-                      textTransform="capitalize"
-                      cursor="pointer"
-                      w={columnWidths[col.key]}
-                    >
-                      <Resizable
-                        direction="horizontal"
-                        minWidth={62}
-                        maxWidth={300}
-                        onResize={(width) => handleColumnResize(col.key, width)}
-                      >
-                        {({ ref, isResizing }) => (
-                          <Box
-                            ref={ref}
-                            position="relative"
-                            h="100%"
-                            w="100%"
-                            display="flex"
-                            alignItems="center"
-                            justifyContent="center"
-                            onClick={() =>
-                              !isResizing &&
-                              handleHeaderClick(
-                                col.key as keyof ArticleInterface
-                              )
-                            }
+                <Tr>
+                  <Th
+                    alignItems="center"
+                    justifyContent="center"
+                    color="#263C56"
+                    w="62px"
+                    minW="62px"
+                    bg="white"
+                  >
+                    <RiCheckboxMultipleBlankFill size="1rem" />
+                  </Th>
+                  {columns.map(
+                    (col) =>
+                      columnsVisible[`${col.key}`] && (
+                        <Th
+                          key={col.key}
+                          textAlign="center"
+                          color="#263C56"
+                          fontSize="medium"
+                          textTransform="capitalize"
+                          cursor="pointer"
+                          w={columnWidths[col.key]}
+                          minW={columnWidths[col.key]}
+                        >
+                          <Resizable
+                            direction="horizontal"
+                            minWidth={62}
+                            maxWidth={300}
+                            onResize={(width) => handleColumnResize(col.key, width)}
                           >
-                            <Box
-                              display="flex"
-                              gap=".5rem"
-                              justifyContent="center"
-                              alignItems="center"
-                              w="100%"
-                              p=".25rem"
-                              overflow="hidden"
-                              textOverflow="ellipsis"
-                              whiteSpace="nowrap"
-                            >
-                              <Text
-                                flex="1"
-                                overflow="hidden"
-                                textOverflow="ellipsis"
-                                whiteSpace="nowrap"
-                                textAlign="start"
-                                px="0.5rem"
+                            {({ ref, isResizing }) => (
+                              <Box
+                                ref={ref}
+                                position="relative"
+                                h="100%"
+                                w="100%"
+                                display="flex"
+                                alignItems="center"
+                                justifyContent="center"
+                                onClick={() =>
+                                  !isResizing &&
+                                  handleHeaderClick(
+                                    col.key as keyof ArticleInterface
+                                  )
+                                }
                               >
-                                {col.label}
-                              </Text>
-                              {sortConfig?.key === col.key ? (
-                                sortConfig.direction === "asc" ? (
-                                  <Box flexShrink={0}>
-                                    <FaChevronUp style={chevronIcon} />
-                                  </Box>
-                                ) : (
-                                  <Box flexShrink={0}>
-                                    <FaChevronDown style={chevronIcon} />
-                                  </Box>
-                                )
-                              ) : (
-                                <Box flexShrink={0}>
-                                  <FaChevronDown style={chevronIcon} />
+                                <Box
+                                  display="flex"
+                                  gap=".5rem"
+                                  justifyContent="center"
+                                  alignItems="center"
+                                  w="100%"
+                                  p=".25rem"
+                                  overflow="hidden"
+                                  textOverflow="ellipsis"
+                                  whiteSpace="nowrap"
+                                >
+                                  <Text
+                                    flex="1"
+                                    overflow="hidden"
+                                    textOverflow="ellipsis"
+                                    whiteSpace="nowrap"
+                                    textAlign="start"
+                                    px="0.5rem"
+                                  >
+                                    {col.label}
+                                  </Text>
+                                  {sortConfig?.key === col.key ? (
+                                    sortConfig.direction === "asc" ? (
+                                      <Box flexShrink={0}>
+                                        <FaChevronUp style={chevronIcon} />
+                                      </Box>
+                                    ) : (
+                                      <Box flexShrink={0}>
+                                        <FaChevronDown style={chevronIcon} />
+                                      </Box>
+                                    )
+                                  ) : (
+                                    <Box flexShrink={0}>
+                                      <FaChevronDown style={chevronIcon} />
+                                    </Box>
+                                  )}
                                 </Box>
-                              )}
-                            </Box>
-                            <Box
-                              className="resize-handle"
-                              position="absolute"
-                              right="0"
-                              top="0"
-                              bottom="0"
-                              width=".25rem"
-                              cursor="col-resize"
-                              zIndex={2}
-                              _hover={{ bg: "#263C56" }}
-                            />
-                          </Box>
-                        )}
-                      </Resizable>
-                    </Th>
-                  )
-              )}
-            </Tr>
-          </Thead>
-          <Tbody>
-            {articles.length > 0 ? (
-              articles.map((reference, index) => (
-                <Tr
-                  key={index}
-                  bg={
-                    firstSelected == reference.studyReviewId
-                      ? "#A8E6A2"
-                      : deletedArticles.find(
-                          (id) => id === reference.studyReviewId
-                        )
-                      ? "#F5B7B1"
-                      : "transparent"
-                  }
-                  onClick={(e) => {
-                    const target = e.target as HTMLElement;
-
-                    if (
-                      target.closest("input") ||
-                      target.closest("label") ||
-                      target.closest("button")
-                    ) {
-                      return;
-                    }
-
-                    setSelectedArticleReview(reference.studyReviewId);
-                    onRowClick?.(reference);
-                  }}
-                  transition="background-color 0.3s, box-shadow 0.3s"
-                  p="0"
-                >
-                  <Td textAlign="center" w="5%">
-                    <Checkbox
-                      isChecked={
-                        !!studyContext?.selectedArticles[
-                          reference.studyReviewId
-                        ]
-                      }
-                      onClick={(e) => e.stopPropagation()}
-                      onChange={(e) => {
-                        e.stopPropagation();
-                        toggleArticlesSelection(
-                          reference.studyReviewId,
-                          reference.title
-                        )}
-                      }
-                      sx={{
-                        borderColor: "#263C56",
-                        _checked: {
-                          bg: "#263C56",
-                          borderColor: "#263C56",
-                        },
-                      }}
-                    />
-                  </Td>
-                  <Td sx={tdSX} w={columnWidths.studyReviewId}>
-                    <Tooltip
-                      sx={tooltip}
-                      label={reference.title}
-                      aria-label="Full ID"
-                      hasArrow
-                    >
-                      <Text sx={collapsedSpanTextChanged}>
-                        {String(reference.studyReviewId).padStart(5, "0")}
-                      </Text>
-                    </Tooltip>
-                  </Td>
-                  {columnsVisible["title"] && (
-                    <Td sx={tdSX} w={columnWidths.title}>
-                      <Tooltip
-                        sx={tooltip}
-                        label={reference.title}
-                        aria-label="Full Title"
-                        hasArrow
-                      >
-                        <Text sx={collapsedSpanTextChanged}>
-                          {reference.title}
-                        </Text>
-                      </Tooltip>
-                    </Td>
-                  )}
-                  {columnsVisible["authors"] && (
-                    <Td sx={tdSX} w={columnWidths.authors}>
-                      <Tooltip
-                        sx={tooltip}
-                        label={reference.authors}
-                        aria-label="Full Author List"
-                        hasArrow
-                      >
-                        <Text sx={collapsedSpanTextChanged}>
-                          {reference.authors}
-                        </Text>
-                      </Tooltip>
-                    </Td>
-                  )}
-                  {columnsVisible["venue"] && (
-                    <Td sx={tdSX} w={columnWidths.venue}>
-                      <Tooltip
-                        sx={tooltip}
-                        label={reference.venue}
-                        aria-label="Journal Name"
-                        hasArrow
-                      >
-                        <Text sx={collapsedSpanTextChanged}>
-                          {reference.venue}
-                        </Text>
-                      </Tooltip>
-                    </Td>
-                  )}
-                  {columnsVisible["year"] && (
-                    <Td sx={tdSX} w={columnWidths.year}>
-                      <Tooltip
-                        sx={tooltip}
-                        label={reference.year}
-                        aria-label="Year of published"
-                        hasArrow
-                      >
-                        <Text sx={collapsedSpanTextChanged}>
-                          {reference.year}
-                        </Text>
-                      </Tooltip>
-                    </Td>
-                  )}
-                  {columnsVisible["selectionStatus"] && (
-                    <Td sx={tdSX} w={columnWidths.selectionStatus}>
-                      <Box
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="flex-start"
-                        gap="0.5rem"
-                      >
-                        {renderStatusIcon(reference.selectionStatus)}
-                        <Text sx={collapsedSpanTextChanged}>
-                          {capitalize(
-                            reference.selectionStatus
-                              ?.toString()
-                              .toLowerCase() || ""
-                          )}
-                        </Text>
-                      </Box>
-                    </Td>
-                  )}
-                  {columnsVisible["extractionStatus"] && (
-                    <Td sx={tdSX} w={columnWidths.extractionStatus}>
-                      <Box
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="flex-start"
-                        gap="0.5rem"
-                      >
-                        {renderStatusIcon(reference.extractionStatus)}
-                        <Text sx={collapsedSpanTextChanged}>
-                          {capitalize(
-                            reference.extractionStatus
-                              ?.toString()
-                              .toLowerCase() || ""
-                          )}
-                        </Text>
-                      </Box>
-                    </Td>
-                  )}
-                  {columnsVisible["score"] && (
-                    <Td sx={tdSX} w={columnWidths.score} pl="2rem">
-                      <Tooltip
-                        sx={tooltip}
-                        label={reference.score}
-                        aria-label="score of article"
-                        hasArrow
-                      >
-                        <Text sx={collapsedSpanTextChanged}>
-                          {reference.score}
-                        </Text>
-                      </Tooltip>
-                    </Td>
-                  )}
-                  {columnsVisible["readingPriority"] && (
-                    <Td
-                      sx={tdSX}
-                      w={columnWidths.readingPriority}
-                      pl="2rem"
-                      pr="0.5rem"
-                    >
-                      <Box
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="start"
-                        gap="0.5rem"
-                      >
-                        <Text sx={collapsedSpanTextChanged}>
-                          {capitalize(
-                            reference.readingPriority
-                              ?.toString()
-                              .toLowerCase() || ""
-                          ).replace("_", " ")}
-                        </Text>
-                      </Box>
-                    </Td>
+                                <Box
+                                  className="resize-handle"
+                                  position="absolute"
+                                  right="0"
+                                  top="0"
+                                  bottom="0"
+                                  width=".25rem"
+                                  cursor="col-resize"
+                                  zIndex={2}
+                                  _hover={{ bg: "#263C56" }}
+                                />
+                              </Box>
+                            )}
+                          </Resizable>
+                        </Th>
+                      )
                   )}
                 </Tr>
-              ))
-            ) : (
-              <Tr>
-                <Td colSpan={8} textAlign="center">
-                  No articles found.
-                </Td>
-              </Tr>
-            )}
-          </Tbody>
-        </Table>
-      </TableContainer>
+              </Thead>
+            </Table>
+          </TableContainer>
+        </Box>
+        <Box
+          ref={bodyScrollRef} 
+          flex="1"
+          minW="0"
+          minH="0"
+          overflow="auto"
+          sx={{
+            '&::-webkit-scrollbar': {
+              width: '8px',
+              height: '8px',
+            },
+            '&::-webkit-scrollbar-track': {
+              background: '#f1f1f1',
+            },
+            '&::-webkit-scrollbar-thumb': {
+              background: '#888',
+              borderRadius: '4px',
+            },
+            '&::-webkit-scrollbar-thumb:hover': {
+              background: '#555',
+            },
+            scrollbarWidth: 'thin',
+            scrollbarColor: '#888 #f1f1f1',
+          }}
+        >
+          <TableContainer w="100%" bg="white" minW="min-content">
+            <Table variant="unstyled" colorScheme="black" size="md" layout="fixed" minW="100%">
+              <Tbody>
+                {articles.length > 0 ? (
+                  articles.map((reference, index) => (
+                    <Tr
+                      key={index}
+                      bg={
+                        firstSelected == reference.studyReviewId
+                          ? "#A8E6A2"
+                          : deletedArticles.find(
+                              (id) => id === reference.studyReviewId
+                            )
+                          ? "#F5B7B1"
+                          : "transparent"
+                      }
+                      onClick={(e) => {
+                        const target = e.target as HTMLElement;
+
+                        if (
+                          target.closest("input") ||
+                          target.closest("label") ||
+                          target.closest("button")
+                        ) {
+                          return;
+                        }
+
+                        setSelectedArticleReview(reference.studyReviewId);
+                        onRowClick?.(reference);
+                      }}
+                      transition="background-color 0.3s, box-shadow 0.3s"
+                      p="0"
+                    >
+                      <Td textAlign="center" w="62px" minW="62px">
+                        <Checkbox
+                          isChecked={
+                            !!studyContext?.selectedArticles[
+                              reference.studyReviewId
+                            ]
+                          }
+                          onClick={(e) => e.stopPropagation()}
+                          onChange={(e) => {
+                            e.stopPropagation();
+                            toggleArticlesSelection(
+                              reference.studyReviewId,
+                              reference.title
+                            )}
+                          }
+                          sx={{
+                            borderColor: "#263C56",
+                            _checked: {
+                              bg: "#263C56",
+                              borderColor: "#263C56",
+                            },
+                          }}
+                        />
+                      </Td>
+                      <Td sx={tdSX} w={columnWidths.studyReviewId} minW={columnWidths.studyReviewId}>
+                        <Tooltip
+                          sx={tooltip}
+                          label={reference.title}
+                          aria-label="Full ID"
+                          hasArrow
+                        >
+                          <Text sx={collapsedSpanTextChanged}>
+                            {String(reference.studyReviewId).padStart(5, "0")}
+                          </Text>
+                        </Tooltip>
+                      </Td>
+                      {columnsVisible["title"] && (
+                        <Td sx={tdSX} w={columnWidths.title} minW={columnWidths.title}>
+                          <Tooltip
+                            sx={tooltip}
+                            label={reference.title}
+                            aria-label="Full Title"
+                            hasArrow
+                          >
+                            <Text sx={collapsedSpanTextChanged}>
+                              {reference.title}
+                            </Text>
+                          </Tooltip>
+                        </Td>
+                      )}
+                      {columnsVisible["authors"] && (
+                        <Td sx={tdSX} w={columnWidths.authors} minW={columnWidths.authors}>
+                          <Tooltip
+                            sx={tooltip}
+                            label={reference.authors}
+                            aria-label="Full Author List"
+                            hasArrow
+                          >
+                            <Text sx={collapsedSpanTextChanged}>
+                              {reference.authors}
+                            </Text>
+                          </Tooltip>
+                        </Td>
+                      )}
+                      {columnsVisible["venue"] && (
+                        <Td sx={tdSX} w={columnWidths.venue} minW={columnWidths.venue}>
+                          <Tooltip
+                            sx={tooltip}
+                            label={reference.venue}
+                            aria-label="Journal Name"
+                            hasArrow
+                          >
+                            <Text sx={collapsedSpanTextChanged}>
+                              {reference.venue}
+                            </Text>
+                          </Tooltip>
+                        </Td>
+                      )}
+                      {columnsVisible["year"] && (
+                        <Td sx={tdSX} w={columnWidths.year} minW={columnWidths.year}>
+                          <Tooltip
+                            sx={tooltip}
+                            label={reference.year}
+                            aria-label="Year of published"
+                            hasArrow
+                          >
+                            <Text sx={collapsedSpanTextChanged}>
+                              {reference.year}
+                            </Text>
+                          </Tooltip>
+                        </Td>
+                      )}
+                      {columnsVisible["selectionStatus"] && (
+                        <Td sx={tdSX} w={columnWidths.selectionStatus} minW={columnWidths.selectionStatus}>
+                          <Box
+                            display="flex"
+                            alignItems="center"
+                            justifyContent="flex-start"
+                            gap="0.5rem"
+                          >
+                            {renderStatusIcon(reference.selectionStatus)}
+                            <Text sx={collapsedSpanTextChanged}>
+                              {capitalize(
+                                reference.selectionStatus
+                                  ?.toString()
+                                  .toLowerCase() || ""
+                              )}
+                            </Text>
+                          </Box>
+                        </Td>
+                      )}
+                      {columnsVisible["extractionStatus"] && (
+                        <Td sx={tdSX} w={columnWidths.extractionStatus} minW={columnWidths.extractionStatus}>
+                          <Box
+                            display="flex"
+                            alignItems="center"
+                            justifyContent="flex-start"
+                            gap="0.5rem"
+                          >
+                            {renderStatusIcon(reference.extractionStatus)}
+                            <Text sx={collapsedSpanTextChanged}>
+                              {capitalize(
+                                reference.extractionStatus
+                                  ?.toString()
+                                  .toLowerCase() || ""
+                              )}
+                            </Text>
+                          </Box>
+                        </Td>
+                      )}
+                      {columnsVisible["score"] && (
+                        <Td sx={tdSX} w={columnWidths.score} pl="2rem" minW={columnWidths.score}>
+                          <Tooltip
+                            sx={tooltip}
+                            label={reference.score}
+                            aria-label="score of article"
+                            hasArrow
+                          >
+                            <Text sx={collapsedSpanTextChanged}>
+                              {reference.score}
+                            </Text>
+                          </Tooltip>
+                        </Td>
+                      )}
+                      {columnsVisible["readingPriority"] && (
+                        <Td
+                          sx={tdSX}
+                          w={columnWidths.readingPriority}
+                          pl="2rem"
+                          pr="0.5rem"
+                          minW={columnWidths.readingPriority}
+                        >
+                          <Box
+                            display="flex"
+                            alignItems="center"
+                            justifyContent="start"
+                            gap="0.5rem"
+                          >
+                            <Text sx={collapsedSpanTextChanged}>
+                              {capitalize(
+                                reference.readingPriority
+                                  ?.toString()
+                                  .toLowerCase() || ""
+                              ).replace("_", " ")}
+                            </Text>
+                          </Box>
+                        </Td>
+                      )}
+                    </Tr>
+                  ))
+                ) : (
+                  <Tr>
+                    <Td colSpan={8} textAlign="center">
+                      No articles found.
+                    </Td>
+                  </Tr>
+                )}
+              </Tbody>
+            </Table>
+          </TableContainer>
+        </Box>
+      </Box>
       <PaginationControl
         itensPerPage={itensPerPage}
         currentPage={currentPage}
