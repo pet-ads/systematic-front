@@ -17,6 +17,7 @@ interface Props {
   columnsVisible: ColumnVisibility;
   onRowClick?: (article: ArticleInterface) => void;
   pagination: PaginationControls;
+  checkbox?: boolean;
 }
 
 export default function ArticlesTable({
@@ -25,6 +26,7 @@ export default function ArticlesTable({
   columnsVisible,
   onRowClick,
   pagination,
+  checkbox
 }: Props) {
   const [sortConfig, setSortConfig] = useState<{
     key: keyof ArticleInterface;
@@ -68,6 +70,7 @@ export default function ArticlesTable({
       columnsVisible={columnsVisible}
       onRowClick={onRowClick}
       pagination={pagination}
+      checkbox={checkbox}
     />
   );
 }

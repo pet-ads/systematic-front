@@ -64,6 +64,7 @@ export default function IdentificationSession() {
             handleGoToFinal,
             changeQuantityOfItens,
           }}
+          checkbox={false}
         />
       </Box>
     </FlexLayout>
