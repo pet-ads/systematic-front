@@ -240,7 +240,6 @@ export default function InteractiveTable({ id, url, label }: Props) {
       label: "ID",
       width: "10%",
       render: (row, index) => {
-        // 1. Check if this specific row is being edited
         const isEditing = editIndex === index; 
 
         return (
@@ -248,14 +247,12 @@ export default function InteractiveTable({ id, url, label }: Props) {
             value={row.id}
             onChange={(e) => handleIdChange(index, e.target.value)}
             
-            // 2. Lock input if not editing
             isReadOnly={!isEditing} 
             
-            // 3. Change styling based on state
             border={isEditing ? "solid 1px #303D50" : "transparent"} 
             bg={isEditing ? "white" : "transparent"} 
             cursor={isEditing ? "text" : "default"}
-            _focus={{ boxShadow: isEditing ? "outline" : "none" }} // Remove blue glow if clicked in read-only
+            _focus={{ boxShadow: isEditing ? "outline" : "none" }}
             
             borderRadius="md"
             size="sm"
@@ -268,12 +265,10 @@ export default function InteractiveTable({ id, url, label }: Props) {
       label: "QUESTION",
       width: "40%",
       render: (row, index) => {
-        // 1. Check if this specific row is being edited
         const isEditing = editIndex === index;
 
         return (
           <Textarea
-            // 1. Connect the autosize logic
             as={TextareaAutosize} 
             minRows={1}
             minH="unset"
@@ -281,25 +276,22 @@ export default function InteractiveTable({ id, url, label }: Props) {
             value={row.question}
             onChange={(e) => handleQuestionChange(index, e.target.value)}
             
-            // 2. Logic to handle "View" vs "Edit" mode
             isReadOnly={!isEditing}
             
-            // 3. Styling
             border={isEditing ? "solid 1px #303D50" : "transparent"}
             bg={isEditing ? "white" : "transparent"}
             cursor={isEditing ? "text" : "default"}
             _focus={{ boxShadow: isEditing ? "outline" : "none" }}
             
-            // 4. Layout & Behavior
-            resize="none"       // Disable manual resize handle (auto takes over)
-            overflow="hidden"   // Hide scrollbars
-            whiteSpace="pre-wrap" // Ensures long text breaks lines and preserves formatting
-            w="100%"            // Ensure it takes full column width
+            resize="none"
+            overflow="hidden"
+            whiteSpace="pre-wrap"
+            w="100%"
             
             borderRadius="md"
             size="sm"
             py={2}
-            px={2} // Add a little horizontal padding for text readability
+            px={2}
           />
         );
       },
@@ -316,14 +308,12 @@ export default function InteractiveTable({ id, url, label }: Props) {
             onChange={(e) => handleSelect(index, e.target.value)}
             value={row.type}
             
-            // Disable dropdown interaction when not editing
             isDisabled={!isEditing} 
             
-            // Styling to make it look like text when disabled
             border={isEditing ? "solid 1px #303D50" : "transparent"}
             bg={isEditing ? "white" : "transparent"}
-            color="black" // Ensures text stays readable when disabled
-            _disabled={{ opacity: 1, cursor: "default" }} // Overrides default grayed-out look
+            color="black" 
+            _disabled={{ opacity: 1, cursor: "default" }} 
             
             borderRadius="md"
             size="sm"
@@ -353,11 +343,11 @@ export default function InteractiveTable({ id, url, label }: Props) {
             index={index}
             editIndex={editIndex}
             handleEdit={() => {
-              setnumberScale([row.lower, row.higher]);
-              setQuestions(row.questions);
-              setLabeledQuestions(row.scale);
+              setnumberScale([row.lower || 1, row.higher || 5]); 
+              setQuestions(row.questions || []); 
+              setLabeledQuestions(row.scale || {});
               setEditIndex(index);
-              setPickManyQuestions(row.questions);
+              setPickManyQuestions(row.questions || []);
               setShowModal(true);
               setModalType(row.type);
             }}
