@@ -1,11 +1,11 @@
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 import Header from "../../../../../components/structure/Header/Header";
 
 import useGetSessionStudies from "../../services/useGetSessionStudies";
 
 import FlexLayout from "../../../../../components/structure/Flex/Flex";
-import { Box } from "@chakra-ui/react";
+import { Box, Button } from "@chakra-ui/react";
 import ArticlesTable from "@features/review/shared/components/common/tables/ArticlesTable";
 import useVisibiltyColumns from "@features/review/shared/hooks/useVisibilityColumns";
 import ColumnVisibilityMenu from "@features/review/shared/components/common/menu/ColumnVisibilityMenu";
@@ -45,6 +45,16 @@ export default function IdentificationSession() {
           width="100%"
           marginBottom="1.5rem"
         >
+          <Button
+            as={Link}
+            to={`/review/execution/identification`}
+            backgroundColor={"#263C56"}
+            color={"#EBF0F3"}
+            boxShadow="sm"
+            _hover={{ bg: "#2A4A6D", boxShadow: "md" }}
+          >
+            Back
+          </Button>
           <ColumnVisibilityMenu
             columnsVisible={columnsVisible}
             toggleColumnVisibility={toggleColumnVisibility}
