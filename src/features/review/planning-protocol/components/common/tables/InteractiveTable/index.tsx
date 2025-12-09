@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { AddIcon } from "@chakra-ui/icons";
-import { Button, Input, Select, FormLabel } from "@chakra-ui/react";
+import { Button, Input, Select, FormLabel, Textarea } from "@chakra-ui/react";
 import Axios from "../../../../../../../infrastructure/http/axiosClient";
 
 import DefaultTable from "@components/common/tables/DefaultTable";
@@ -8,6 +8,7 @@ import { Column, SortConfig } from "@components/common/tables/DefaultTable/types
 
 import EditButton from "@components/common/buttons/EditButton";
 import DeleteButton from "@components/common/buttons/DeleteButton";
+import TextareaAutosize from "react-textarea-autosize";
 import { useInteractiveTable, Row } from "../../../../hooks/useInteractiveTable";
 import useSendExtractionForm from "../../../../../execution-extraction/services/useSendExtractionForm";
 import NumberScaleModal from "../../modals/NumberScaleModal";
@@ -238,52 +239,103 @@ export default function InteractiveTable({ id, url, label }: Props) {
       key: "id",
       label: "ID",
       width: "10%",
-      render: (row, index) => (
-        <Input
-          value={row.id}
-          onChange={(e) => handleIdChange(index, e.target.value)}
-          border={"solid 1px #303D50"}
-          borderRadius="md"
-          size="sm"
-          bg="white"
-        />
-      ),
+      render: (row, index) => {
+        // 1. Check if this specific row is being edited
+        const isEditing = editIndex === index; 
+
+        return (
+          <Input
+            value={row.id}
+            onChange={(e) => handleIdChange(index, e.target.value)}
+            
+            // 2. Lock input if not editing
+            isReadOnly={!isEditing} 
+            
+            // 3. Change styling based on state
+            border={isEditing ? "solid 1px #303D50" : "transparent"} 
+            bg={isEditing ? "white" : "transparent"} 
+            cursor={isEditing ? "text" : "default"}
+            _focus={{ boxShadow: isEditing ? "outline" : "none" }} // Remove blue glow if clicked in read-only
+            
+            borderRadius="md"
+            size="sm"
+          />
+        );
+      },
     },
     {
       key: "question",
       label: "QUESTION",
       width: "40%",
-      render: (row, index) => (
-        <Input
-          value={row.question}
-          onChange={(e) => handleQuestionChange(index, e.target.value)}
-          border={"solid 1px #303D50"}
-          borderRadius="md"
-          size="sm"
-          bg="white"
-        />
-      ),
+      render: (row, index) => {
+        // 1. Check if this specific row is being edited
+        const isEditing = editIndex === index;
+
+        return (
+          <Textarea
+            // 1. Connect the autosize logic
+            as={TextareaAutosize} 
+            minRows={1}
+            minH="unset"
+            
+            value={row.question}
+            onChange={(e) => handleQuestionChange(index, e.target.value)}
+            
+            // 2. Logic to handle "View" vs "Edit" mode
+            isReadOnly={!isEditing}
+            
+            // 3. Styling
+            border={isEditing ? "solid 1px #303D50" : "transparent"}
+            bg={isEditing ? "white" : "transparent"}
+            cursor={isEditing ? "text" : "default"}
+            _focus={{ boxShadow: isEditing ? "outline" : "none" }}
+            
+            // 4. Layout & Behavior
+            resize="none"       // Disable manual resize handle (auto takes over)
+            overflow="hidden"   // Hide scrollbars
+            whiteSpace="pre-wrap" // Ensures long text breaks lines and preserves formatting
+            w="100%"            // Ensure it takes full column width
+            
+            borderRadius="md"
+            size="sm"
+            py={2}
+            px={2} // Add a little horizontal padding for text readability
+          />
+        );
+      },
     },
     {
       key: "type",
       label: "TYPE",
       width: "25%",
-      render: (row, index) => (
-        <Select
-          onChange={(e) => handleSelect(index, e.target.value)}
-          border={"solid 1px #303D50"}
-          borderRadius="md"
-          size="sm"
-          value={row.type}
-          bg="white"
-        >
-          {options.map((opt, i) => (
-            <option key={i} value={opt.toLowerCase()}>
-              {opt}
-            </option>
-          ))}
-        </Select>
-      ),
+      render: (row, index) => {
+        const isEditing = editIndex === index;
+
+        return (
+          <Select
+            onChange={(e) => handleSelect(index, e.target.value)}
+            value={row.type}
+            
+            // Disable dropdown interaction when not editing
+            isDisabled={!isEditing} 
+            
+            // Styling to make it look like text when disabled
+            border={isEditing ? "solid 1px #303D50" : "transparent"}
+            bg={isEditing ? "white" : "transparent"}
+            color="black" // Ensures text stays readable when disabled
+            _disabled={{ opacity: 1, cursor: "default" }} // Overrides default grayed-out look
+            
+            borderRadius="md"
+            size="sm"
+          >
+            {options.map((opt, i) => (
+              <option key={i} value={opt.toLowerCase()}>
+                {opt}
+              </option>
+            ))}
+          </Select>
+        );
+      },
     },
     {
       key: "questionId",
