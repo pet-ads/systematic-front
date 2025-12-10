@@ -53,6 +53,7 @@ interface Props {
   columnsVisible: ColumnVisibility;
   onRowClick?: (article: ArticleInterface) => void;
   pagination: PaginationControls;
+  checkbox?: boolean;
 }
 
 type HeaderKeys =
@@ -80,6 +81,7 @@ export default function Expanded({
   columnsVisible,
   onRowClick,
   pagination,
+  checkbox,
 }: Props) {
   const [columnWidths, setColumnWidths] = useState({
     studyReviewId: "62px",
@@ -299,17 +301,20 @@ export default function Expanded({
             borderBottom=".5rem solid #C9D9E5"
           >
             <Tr>
-              <Th
-                alignItems="center"
-                justifyContent="center"
-                color="#263C56"
-                w="1rem"
-                bg="white"
-                paddingStart={"2rem"}
-                paddingEnd={"0.3rem"}
-              >
-                <RiCheckboxMultipleBlankFill size="1rem" />
-              </Th>
+              {checkbox === false ?
+                <></> : 
+                <Th
+                  alignItems="center"
+                  justifyContent="center"
+                  color="#263C56"
+                  w="1rem"
+                  bg="white"
+                  paddingStart={"2rem"}
+                  paddingEnd={"0.3rem"}
+                >
+                  <RiCheckboxMultipleBlankFill size="1rem" />
+                </Th>
+              }
               {columns.map(
                 (col) =>
                   columnsVisible[`${col.key}`] && (
@@ -432,36 +437,40 @@ export default function Expanded({
                   transition="background-color 0.3s, box-shadow 0.3s"
                   p="0"
                 >
-                  <Td
-                    textAlign="center"
-                    w="5%"
-                    onPointerDown={(e) => e.stopPropagation()}
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <Checkbox
-                      isChecked={
-                        !!studyContext?.selectedArticles[
-                          reference.studyReviewId
-                        ]
-                      }
-                      onClick={(e) => e.stopPropagation()}
+                  {checkbox === false ?
+                    <></> : 
+                    
+                    <Td
+                      textAlign="center"
+                      w="5%"
                       onPointerDown={(e) => e.stopPropagation()}
-                      onChange={(e) => {
-                        e.stopPropagation();
-                        toggleArticlesSelection(
-                          reference.studyReviewId,
-                          reference.title
-                        );
-                      }}
-                      sx={{
-                        borderColor: "#263C56",
-                        _checked: {
-                          bg: "#263C56",
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <Checkbox
+                        isChecked={
+                          !!studyContext?.selectedArticles[
+                            reference.studyReviewId
+                          ]
+                        }
+                        onClick={(e) => e.stopPropagation()}
+                        onPointerDown={(e) => e.stopPropagation()}
+                        onChange={(e) => {
+                          e.stopPropagation();
+                          toggleArticlesSelection(
+                            reference.studyReviewId,
+                            reference.title
+                          );
+                        }}
+                        sx={{
                           borderColor: "#263C56",
-                        },
-                      }}
-                    />
-                  </Td>
+                          _checked: {
+                            bg: "#263C56",
+                            borderColor: "#263C56",
+                          },
+                        }}
+                      />
+                    </Td>
+                  }
                   <Td sx={tdSX} w={columnWidths.studyReviewId}>
                     <Tooltip
                       sx={tooltip}
