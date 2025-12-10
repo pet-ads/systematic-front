@@ -13,6 +13,8 @@ export interface GenericTableProps<T> {
   columns: Column<T>[];
   data: T[];
   enableSorting?: boolean; 
+  externalSortConfig?: SortConfig<T>;
+  onExternalSort?: (config: SortConfig<T>) => void;
 }
 
 export type SortConfig<T> = {

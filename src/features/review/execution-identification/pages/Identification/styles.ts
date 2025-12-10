@@ -8,13 +8,12 @@ export const conteiner = {
 export const dataBaseconteiner = {
   display: "grid",
   gridTemplateColumns: "repeat(auto-fill, minmax(32rem, 1fr))",
-  justifyContent: "start", 
+  justifyContent: "center",
+  justifyItems: "center",
   boxSizing: "border-box",
-  w: "100%",
+  width: "100%",
   gap: "2rem",
-  mt: 10,
-  h: "100%",
-  margin: "0 !important",
+  margin: "0 auto",
+  padding: "0rem",
   maxHeight: "calc(100vh - 1.5rem)",
-  padding: "2rem",
 };
