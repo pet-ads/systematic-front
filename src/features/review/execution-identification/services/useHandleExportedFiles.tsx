@@ -132,6 +132,11 @@ const useHandleExportedFiles = ({
           description: `${invalidArticles.length} file(s) could not be processed.`,
           status: "warning",
         });
+      } else {
+        toast({
+          title: "Files uploaded successfully",
+          status: "success",
+        });
       }
     } catch (err) {
       console.log(err);

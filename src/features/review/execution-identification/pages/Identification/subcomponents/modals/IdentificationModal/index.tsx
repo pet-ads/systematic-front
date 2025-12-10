@@ -17,6 +17,7 @@ import {
   Box,
   IconButton,
   Flex,
+  FormErrorMessage,
 } from "@chakra-ui/react";
 
 import { DeleteIcon } from "@chakra-ui/icons";
@@ -52,7 +53,7 @@ function IdentificationModal({
 }: IdentificationModalProps) {
   const [searchString, setSearchString] = useState<string>("");
   const [comment, setComment] = useState<string>("");
-
+  const [isError, setIsError] = useState(false);
   const { isOpen, onClose, onOpen } = useDisclosure();
 
   const selectionContext = useContext(StudySelectionContext);
@@ -78,7 +79,19 @@ function IdentificationModal({
     onOpen();
   }, []);
 
+  const handleSearchStringChange = (
+    e: React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
+    setSearchString(e.target.value);
+    if (isError) setIsError(false);
+  };
+
   const handleSubmit = () => {
+    if (searchString.trim() === "") {
+      setIsError(true);
+      return;
+    }
+
     sendFilesToServer();
     reloadArticles();
     show(false);
@@ -115,12 +128,16 @@ function IdentificationModal({
             <FormLabel>Date</FormLabel>
             <Input type="date" defaultValue={getCurrentDate()} />
           </FormControl>
-          <FormControl mb={4}>
+          <FormControl mb={4} isRequired isInvalid={isError}>
             <FormLabel>Search String</FormLabel>
             <Textarea
               placeholder="Enter your search string"
-              onChange={(event) => setSearchString(event.target.value)}
+              value={searchString}
+              onChange={handleSearchStringChange}
             />
+            {isError && (
+              <FormErrorMessage>Search string is required.</FormErrorMessage>
+            )}
           </FormControl>
           <FormControl mb={4}>
             <FormLabel>Comments</FormLabel>
