@@ -34,7 +34,7 @@ export default function useFetchIncludedStudiesAnswers({
 
   const { data, isLoading, mutate } = useSWR(path, fetcher, {
     revalidateOnFocus: false,
-    revalidateOnMount: false,
+    revalidateOnMount: true,
   });
 
   async function fetcher() {

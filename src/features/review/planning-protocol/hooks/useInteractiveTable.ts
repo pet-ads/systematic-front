@@ -2,7 +2,7 @@ import { SetStateAction, useState } from "react";
 
 export interface Row {
   isNew: boolean;
-  id: number;
+  id: number | string;
   questionId: string | null;
   question: string;
   type: string;

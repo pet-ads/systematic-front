@@ -83,6 +83,7 @@ export default function ResearchQuestions() {
                 text="Research Questions"
                 placeholder="Enter the other Research Questions"
                 referencePrefix="RQ"
+                enableReferenceCode={true}
               />
             </Flex>
           </AccordionPanel>

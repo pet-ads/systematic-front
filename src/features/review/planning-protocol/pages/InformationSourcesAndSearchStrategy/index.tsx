@@ -86,7 +86,7 @@ export default function InformationSourcesAndSearchStrategy() {
         <AddTextTable
           text="Keywords"
           placeholder="Enter the keywords related to your review"
-          referencePrefix="K"
+          enableReferenceCode={false}
         />
         <TextAreaInput
           value={searchString}

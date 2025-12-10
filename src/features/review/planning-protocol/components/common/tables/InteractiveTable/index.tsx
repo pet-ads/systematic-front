@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import { AddIcon } from "@chakra-ui/icons";
-import { Button, Input, Select, FormLabel } from "@chakra-ui/react";
+import { Button, Input, Select, FormLabel, Textarea } from "@chakra-ui/react";
 import Axios from "../../../../../../../infrastructure/http/axiosClient";
 
 import DefaultTable from "@components/common/tables/DefaultTable";
-import { Column } from "@components/common/tables/DefaultTable/types";
+import { Column, SortConfig } from "@components/common/tables/DefaultTable/types";
 
 import EditButton from "@components/common/buttons/EditButton";
 import DeleteButton from "@components/common/buttons/DeleteButton";
+import TextareaAutosize from "react-textarea-autosize";
 import { useInteractiveTable, Row } from "../../../../hooks/useInteractiveTable";
 import useSendExtractionForm from "../../../../../execution-extraction/services/useSendExtractionForm";
 import NumberScaleModal from "../../modals/NumberScaleModal";
@@ -64,6 +65,8 @@ export default function InteractiveTable({ id, url, label }: Props) {
   >({});
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState("");
+
+  const [sortConfig, setSortConfig] = useState<SortConfig<Row>>(null);
 
   const validator = useValidatorSQLInjection();
 
@@ -218,52 +221,111 @@ export default function InteractiveTable({ id, url, label }: Props) {
     await Axios.get(`systematic-study/${id}/protocol/extraction-question`, options);
   }
 
+  const handleIdChange = (index: number, newId: string) => {
+    setRows((prevRows) =>
+      prevRows.map((row, i) => (i === index ? { ...row, id: newId } : row))
+    );
+  };
+
   function addNewRow() {
     addRow(setEditIndex, setQuestions);
     setPickManyQuestions([]);
   }
+
+  
 
   const columns: Column<Row>[] = [
     {
       key: "id",
       label: "ID",
       width: "10%",
+      render: (row, index) => {
+        const isEditing = editIndex === index; 
+
+        return (
+          <Input
+            value={row.id}
+            onChange={(e) => handleIdChange(index, e.target.value)}
+            
+            isReadOnly={!isEditing} 
+            
+            border={isEditing ? "solid 1px #303D50" : "transparent"} 
+            bg={isEditing ? "white" : "transparent"} 
+            cursor={isEditing ? "text" : "default"}
+            _focus={{ boxShadow: isEditing ? "outline" : "none" }}
+            
+            borderRadius="md"
+            size="sm"
+          />
+        );
+      },
     },
     {
       key: "question",
       label: "QUESTION",
       width: "40%",
-      render: (row, index) => (
-        <Input
-          value={row.question}
-          onChange={(e) => handleQuestionChange(index, e.target.value)}
-          border={"solid 1px #303D50"}
-          borderRadius="md"
-          size="sm"
-          bg="white"
-        />
-      ),
+      render: (row, index) => {
+        const isEditing = editIndex === index;
+
+        return (
+          <Textarea
+            as={TextareaAutosize} 
+            minRows={1}
+            minH="unset"
+            
+            value={row.question}
+            onChange={(e) => handleQuestionChange(index, e.target.value)}
+            
+            isReadOnly={!isEditing}
+            
+            border={isEditing ? "solid 1px #303D50" : "transparent"}
+            bg={isEditing ? "white" : "transparent"}
+            cursor={isEditing ? "text" : "default"}
+            _focus={{ boxShadow: isEditing ? "outline" : "none" }}
+            
+            resize="none"
+            overflow="hidden"
+            whiteSpace="pre-wrap"
+            w="100%"
+            
+            borderRadius="md"
+            size="sm"
+            py={2}
+            px={2}
+          />
+        );
+      },
     },
     {
       key: "type",
       label: "TYPE",
       width: "25%",
-      render: (row, index) => (
-        <Select
-          onChange={(e) => handleSelect(index, e.target.value)}
-          border={"solid 1px #303D50"}
-          borderRadius="md"
-          size="sm"
-          value={row.type}
-          bg="white"
-        >
-          {options.map((opt, i) => (
-            <option key={i} value={opt.toLowerCase()}>
-              {opt}
-            </option>
-          ))}
-        </Select>
-      ),
+      render: (row, index) => {
+        const isEditing = editIndex === index;
+
+        return (
+          <Select
+            onChange={(e) => handleSelect(index, e.target.value)}
+            value={row.type}
+            
+            isDisabled={!isEditing} 
+            
+            border={isEditing ? "solid 1px #303D50" : "transparent"}
+            bg={isEditing ? "white" : "transparent"}
+            color="black" 
+            _disabled={{ opacity: 1, cursor: "default" }} 
+            
+            borderRadius="md"
+            size="sm"
+          >
+            {options.map((opt, i) => (
+              <option key={i} value={opt.toLowerCase()}>
+                {opt}
+              </option>
+            ))}
+          </Select>
+        );
+      },
     },
     {
       key: "questionId",
@@ -281,11 +343,11 @@ export default function InteractiveTable({ id, url, label }: Props) {
             index={index}
             editIndex={editIndex}
             handleEdit={() => {
-              setnumberScale([row.lower, row.higher]);
-              setQuestions(row.questions);
-              setLabeledQuestions(row.scale);
+              setnumberScale([row.lower || 1, row.higher || 5]); 
+              setQuestions(row.questions || []); 
+              setLabeledQuestions(row.scale || {});
               setEditIndex(index);
-              setPickManyQuestions(row.questions);
+              setPickManyQuestions(row.questions || []);
               setShowModal(true);
               setModalType(row.type);
             }}
@@ -303,17 +365,20 @@ export default function InteractiveTable({ id, url, label }: Props) {
       <FormLabel color={"#2E4B6C"} mb={4} fontSize="lg" fontWeight="bold">
         {label}
       </FormLabel>
-      
+
       <DefaultTable<Row>
         columns={columns}
         data={rows}
-        enableSorting={false}
+        enableSorting={true} 
+        externalSortConfig={sortConfig} 
+        onExternalSort={setSortConfig}
       />
 
-      <div style={{ marginTop: '1rem' }}>
+      <div style={{ marginTop: "1rem", display: "flex", gap: "0.5rem" }}>
         <Button size="sm" onClick={addNewRow}>
           <AddIcon />
         </Button>
+        
       </div>
 
       {showModal == true && modalType == "pick list" && (

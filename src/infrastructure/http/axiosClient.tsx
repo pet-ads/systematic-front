@@ -13,9 +13,6 @@ import { isLeft } from "@features/shared/errors/pattern/Either";
 
 const Axios = axios.create({
   baseURL: import.meta.env.VITE_PUBLIC_API_URL,
-  headers: {
-    "Content-Type": "application/json",
-  },
   withCredentials: true,
   timeout: 100000,
 });
@@ -26,6 +23,12 @@ Axios.interceptors.request.use(
 
     if (token && !config.headers.Authorization) {
       config.headers.Authorization = `Bearer ${token}`;
+    }
+
+    if (!(config.data instanceof FormData)) {
+      if (!config.headers["Content-Type"]) {
+        config.headers.set("Content-Type", "application/json");
+      }
     }
 
     return config;
@@ -43,7 +46,7 @@ Axios.interceptors.response.use(
     };
 
     if (!error.response) {
-      return Promise.reject(error);
+      return Promise.reject(error); 
     }
 
     const { status } = error.response;
