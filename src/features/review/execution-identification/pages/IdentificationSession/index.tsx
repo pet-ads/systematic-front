@@ -40,10 +40,11 @@ export default function IdentificationSession() {
         <Box
           display="flex"
           gap="1rem"
-          justifyContent="end"
+          justifyContent="space-between"
           alignContent="center"
           width="100%"
           marginBottom="1.5rem"
+          px="1rem"
         >
           <Button
             as={Link}
