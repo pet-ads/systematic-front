@@ -90,7 +90,7 @@ export default function Selection() {
           mb="2rem"
         >
           <Header text="Selection" />
-          <SelectLayout handleChangeLayout={handleChangeLayout}/>
+          <SelectLayout handleChangeLayout={handleChangeLayout} layout={layout}/>
         </Flex>
         <Box sx={inputconteiner}>
           <Flex gap="1rem" w="1rem" justifyContent="space-between">
