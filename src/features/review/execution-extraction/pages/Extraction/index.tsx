@@ -138,6 +138,7 @@ export default function Extraction() {
           articles={finalFilteredArticles}
           columnsVisible={columnsVisible}
           layout={layout}
+          handleChangeLayout={handleChangeLayout}
           isLoading={isLoading}
           pagination={{
             currentPage,

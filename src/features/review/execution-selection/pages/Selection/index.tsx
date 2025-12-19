@@ -90,7 +90,7 @@ export default function Selection() {
           mb="2rem"
         >
           <Header text="Selection" />
-          <SelectLayout handleChangeLayout={handleChangeLayout} />
+          <SelectLayout handleChangeLayout={handleChangeLayout}/>
         </Flex>
         <Box sx={inputconteiner}>
           <Flex gap="1rem" w="1rem" justifyContent="space-between">
@@ -138,6 +138,7 @@ export default function Selection() {
           articles={finalFilteredArticles}
           columnsVisible={columnsVisible}
           layout={layout}
+          handleChangeLayout={handleChangeLayout}
           isLoading={isLoading}
           reloadArticles={mutate}
           pagination={{

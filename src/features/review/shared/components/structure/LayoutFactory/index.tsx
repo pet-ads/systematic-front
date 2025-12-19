@@ -22,6 +22,7 @@ export type PageLayout = "Selection" | "Extraction" | "Identification";
 
 interface LayoutFactoryProps {
   layout: ViewModel;
+  handleChangeLayout: (newLayout: ViewModel) => void;
   articles: ArticleInterface[] | [];
   page: PageLayout;
   isLoading: boolean;
@@ -32,6 +33,7 @@ interface LayoutFactoryProps {
 
 export default function LayoutFactory({
   layout,
+  handleChangeLayout,
   articles,
   page,
   isLoading,
@@ -50,6 +52,7 @@ export default function LayoutFactory({
   const handleRowClick = (article: ArticleInterface) => {
     if (!selectedArticle) {
       setSelectedArticle(article);
+      handleChangeLayout("vertical");
       setCurrentLayout("vertical");
     }
   };
