@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 
 // Components
 import SkeletonLoader from "@components/feedback/Skeleton";
@@ -41,15 +41,8 @@ export default function LayoutFactory({
   pagination,
   reloadArticles,
 }: LayoutFactoryProps) {
-  const [currentLayout, setCurrentLayout] = useState<ViewModel>(layout);
-
-  useEffect(() => {
-    setCurrentLayout(layout);
-  }, [layout]);
-
   const handleRowClick = () => {
       handleChangeLayout("vertical");
-      setCurrentLayout("vertical");
     
   };
 
@@ -116,7 +109,7 @@ export default function LayoutFactory({
   return isLoading ? (
     <SkeletonLoader width="100%" height="100%" />
   ) : articles && articles.length > 0 ? (
-    layoutMap[currentLayout]
+    layoutMap[layout]
   ) : (
     <NoDataMessage />
   );
