@@ -42,19 +42,15 @@ export default function LayoutFactory({
   reloadArticles,
 }: LayoutFactoryProps) {
   const [currentLayout, setCurrentLayout] = useState<ViewModel>(layout);
-  const [selectedArticle, setSelectedArticle] =
-    useState<ArticleInterface | null>(null);
 
   useEffect(() => {
     setCurrentLayout(layout);
   }, [layout]);
 
-  const handleRowClick = (article: ArticleInterface) => {
-    if (!selectedArticle) {
-      setSelectedArticle(article);
+  const handleRowClick = () => {
       handleChangeLayout("vertical");
       setCurrentLayout("vertical");
-    }
+    
   };
 
   const layoutMap: Record<ViewModel, React.ReactNode> = {
