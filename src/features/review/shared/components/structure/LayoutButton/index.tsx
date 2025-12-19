@@ -15,18 +15,19 @@ import { RiFlipHorizontalLine } from "react-icons/ri";
 
 import { ViewModel } from "../../../hooks/useLayoutPage";
 
-import React, { useState } from "react";
+import React from "react";
 import { capitalize } from "../../../../../shared/utils/helpers/formatters/CapitalizeText";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 
 interface SelectLayoutProps {
   handleChangeLayout: (newLayout: ViewModel) => void;
+  layout: ViewModel;
 }
 
 export default function SelectLayout({
   handleChangeLayout,
+  layout,
 }: SelectLayoutProps) {
-  const [selectedLayout, setSelectedLayout] = useState<ViewModel>("table");
 
   const buttons: Record<
     ViewModel,
@@ -87,10 +88,9 @@ export default function SelectLayout({
             key={index}
             onClick={() => {
               handleChangeLayout(element.layoutType);
-              setSelectedLayout(element.layoutType);
             }}
             bg={
-              selectedLayout === element.layoutType ? "blue.100" : "transparent"
+              layout === element.layoutType ? "blue.100" : "transparent"
             }
             _hover={{ bg: "blue.200" }}
           >

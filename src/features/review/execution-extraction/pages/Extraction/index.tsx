@@ -90,7 +90,7 @@ export default function Extraction() {
           mb="2rem"
         >
           <Header text="Extraction" />
-          <SelectLayout handleChangeLayout={handleChangeLayout} />
+          <SelectLayout handleChangeLayout={handleChangeLayout} layout={layout}/>
         </Flex>
         <Box sx={inputconteiner}>
           <Flex gap="1rem" w="1rem" justifyContent="space-between">
@@ -138,6 +138,7 @@ export default function Extraction() {
           articles={finalFilteredArticles}
           columnsVisible={columnsVisible}
           layout={layout}
+          handleChangeLayout={handleChangeLayout}
           isLoading={isLoading}
           pagination={{
             currentPage,
