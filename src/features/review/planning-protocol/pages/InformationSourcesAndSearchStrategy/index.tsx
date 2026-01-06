@@ -22,7 +22,7 @@ export default function InformationSourcesAndSearchStrategy() {
 
   return (
     <ProtocolFormLayout
-      headerText="Protocol: Information Sources And Search Strategy"
+      headerText="Protocol: Information Sources and Search Strategy"
       navButtons={
         <>
           <NavButton
