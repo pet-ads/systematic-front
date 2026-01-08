@@ -48,7 +48,8 @@ export default function Selection() {
     handleBackToInitial,
     handleGoToFinal,
     changeQuantityOfItens,
-  } = usePaginationState({ totalPages: fetchedTotalPages, initialSize: 20 });
+  } = usePaginationState({ totalPages: fetchedTotalPages, initialSize: 20, setPage: selectionContext?.setPage, setSize: selectionContext?.setSize });
+
 
   const { articles, isLoading, totalElements, totalPages, mutate } =
     useFetchSelectionArticles({

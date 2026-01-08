@@ -5,13 +5,12 @@ import React, {
   createContext,
   useState,
 } from "react";
-import { KeyedMutator } from "swr";
-
-import useGetAllReviewArticles from "../services/useGetAllReviewArticles";
+//import { KeyedMutator } from "swr";
 
 import ArticleInterface from "../types/ArticleInterface";
 import useSelectedArticles from "../hooks/useSelectedArticles";
 import { StudyInterface } from "../types/IStudy";
+import useFetchSelectionArticles from "@features/review/execution-selection/services/useFetchSelectionArticles";
 
 export interface InvalidEntry {
   id: string;
@@ -26,7 +25,7 @@ interface AppContextType {
   isExcluded: boolean;
   setIsExcluded: React.Dispatch<React.SetStateAction<boolean>>;
   articles: ArticleInterface[] | StudyInterface[] | [];
-  reloadArticles: KeyedMutator<ArticleInterface[] | StudyInterface[] | []>;
+  //reloadArticles: KeyedMutator<ArticleInterface[] | StudyInterface[] | []>;
   reload: boolean;
   setReload: Dispatch<SetStateAction<boolean>>;
   invalidEntries: InvalidEntry[];
@@ -42,6 +41,10 @@ interface AppContextType {
   clearSelectedArticles: () => void;
   selectedArticleReview: number;
   setSelectedArticleReview: Dispatch<SetStateAction<number>>;
+  page: number;
+  setPage: React.Dispatch<React.SetStateAction<number>>
+  size: number;
+  setSize: React.Dispatch<React.SetStateAction<number>>
 }
 
 const StudySelectionContext = createContext<AppContextType | undefined>(
@@ -60,8 +63,13 @@ export const StudySelectionProvider: React.FC<AppProviderProps> = ({
   const [isExcluded, setIsExcluded] = useState(false);
   const [invalidEntries, setInvalidEntries] = useState<InvalidEntry[]>([]);
   const [selectedArticleReview, setSelectedArticleReview] = useState(-1);
-
-  const { articles, mutate, isLoading } = useGetAllReviewArticles();
+  const [page, setPage] = useState<number>(1)
+  const [size, setSize] = useState(20)
+  const { articles, isLoading } =
+    useFetchSelectionArticles({
+      page: page - 1,
+      size: size,
+    });
 
   const {
     selectedArticles,
@@ -79,7 +87,7 @@ export const StudySelectionProvider: React.FC<AppProviderProps> = ({
         isExcluded,
         setIsExcluded,
         articles,
-        reloadArticles: mutate,
+        //reloadArticles: mutate,
         reload,
         setReload,
         invalidEntries,
@@ -92,6 +100,10 @@ export const StudySelectionProvider: React.FC<AppProviderProps> = ({
         clearSelectedArticles,
         selectedArticleReview,
         setSelectedArticleReview,
+        page,
+        setPage,
+        size,
+        setSize
       }}
     >
       {children}
