@@ -10,7 +10,7 @@ import React, {
 import ArticleInterface from "../types/ArticleInterface";
 import useSelectedArticles from "../hooks/useSelectedArticles";
 import { StudyInterface } from "../types/IStudy";
-import useFetchSelectionArticles from "@features/review/execution-selection/services/useFetchSelectionArticles";
+import useFetchExtractionArticles from "@features/review/execution-extraction/services/useFetchExtractionArticles";
 
 export interface InvalidEntry {
   id: string;
@@ -47,7 +47,7 @@ export interface AppContextType {
   setSize: React.Dispatch<React.SetStateAction<number>>
 }
 
-const StudySelectionContext = createContext<AppContextType | undefined>(
+const StudyExtractionContext = createContext<AppContextType | undefined>(
   undefined
 );
 
@@ -55,7 +55,7 @@ interface AppProviderProps {
   children: ReactNode;
 }
 
-export const StudySelectionProvider: React.FC<AppProviderProps> = ({
+export const StudyExtractionProvider: React.FC<AppProviderProps> = ({
   children,
 }) => {
   const [isIncluded, setIsIncluded] = useState(false);
@@ -66,7 +66,7 @@ export const StudySelectionProvider: React.FC<AppProviderProps> = ({
   const [page, setPage] = useState<number>(1)
   const [size, setSize] = useState(20)
   const { articles, isLoading } =
-    useFetchSelectionArticles({
+    useFetchExtractionArticles({
       page: page - 1,
       size: size,
     });
@@ -80,7 +80,7 @@ export const StudySelectionProvider: React.FC<AppProviderProps> = ({
   } = useSelectedArticles();
 
   return (
-    <StudySelectionContext.Provider
+    <StudyExtractionContext.Provider
       value={{
         isIncluded,
         setIsIncluded,
@@ -107,8 +107,8 @@ export const StudySelectionProvider: React.FC<AppProviderProps> = ({
       }}
     >
       {children}
-    </StudySelectionContext.Provider>
+    </StudyExtractionContext.Provider>
   );
 };
 
-export default StudySelectionContext;
+export default StudyExtractionContext;
