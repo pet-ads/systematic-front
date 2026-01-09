@@ -3,11 +3,12 @@ import { useContext, useMemo } from "react";
 
 // Context
 import StudySelectionContext from "@features/review/shared/context/StudiesSelectionContext";
-import StudyExtractionContext, { AppContextType } from "@features/review/shared/context/StudiesExtractionContext";
+import StudyExtractionContext from "@features/review/shared/context/StudiesExtractionContext";
 
 // Type
 import type ArticleInterface from "../types/ArticleInterface";
 import type { PageLayout } from "../components/structure/LayoutFactory";
+import AppContextType from "../types/StudiesContextInterface";
 
 type FocusedArticleOutputProps = {
   articleInFocus?: ArticleInterface;

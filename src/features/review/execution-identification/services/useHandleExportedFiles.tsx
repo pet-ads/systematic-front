@@ -3,8 +3,8 @@ import { SetStateAction, useState } from "react";
 import Axios from "../../../../infrastructure/http/axiosClient";
 // import useGetSession from "./useGetSession";
 import useToaster from "@components/feedback/Toaster";
-import { InvalidEntry } from "@features/review/shared/context/StudiesSelectionContext";
 import { KeyedMutator } from "swr";
+import { InvalidEntry } from "@features/review/shared/types/StudiesContextInterface";
 
 interface Props {
   mutate: KeyedMutator<
