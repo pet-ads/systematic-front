@@ -16,7 +16,7 @@ import {
 import { FaChevronDown, FaChevronUp } from "react-icons/fa6";
 
 // Context
-import StudySelectionContext from "@features/review/shared/context/StudiesSelectionContext";
+import StudyContext from "@features/review/shared/context/StudiesContext";
 
 // Hook
 import usePagination from "@features/review/shared/hooks/usePagination";
@@ -75,7 +75,7 @@ export default function ChartExpanded({
     ic: "100px",
   });
 
-  const studyContext = useContext(StudySelectionContext);
+  const studyContext = useContext(StudyContext);
   const inclusionCriterias = useFetchInclusionCriteria();
 
   if (!studyContext) return null;

@@ -2,7 +2,7 @@ import { useContext, useState } from "react";
 
 import UseDeleteSession from "../../../../../services/useDeleteSession";
 
-import StudySelectionContext from "@features/review/shared/context/StudiesSelectionContext";
+import StudyContext from "@features/review/shared/context/StudiesContext";
 import type IAcordionDashboard from "../../../../../types";
 
 import { Accordionbtn, accordion } from "../styles";
@@ -36,11 +36,11 @@ export default function AccordionDashboard({
   const [showModal, setShowModal] = useState(false);
   const [actionModal, setActionModal] = useState<"create" | "update">("create");
 
-  const selectionContext = useContext(StudySelectionContext);
+  const studiesContext = useContext(StudyContext);
 
   const context = {
-    invalidEntries: selectionContext?.invalidEntries,
-    setInvalidEntries: selectionContext?.setInvalidEntries,
+    invalidEntries: studiesContext?.invalidEntries,
+    setInvalidEntries: studiesContext?.setInvalidEntries,
   };
 
   const getTotalStudiesRelated = () => {

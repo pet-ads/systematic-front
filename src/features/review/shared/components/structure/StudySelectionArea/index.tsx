@@ -6,7 +6,7 @@ import { Box, Flex } from "@chakra-ui/react";
 import ButtonsForSelection from "../../common/buttons/ButtonsForSelection";
 
 // Context
-import StudySelectionContext from "@features/review/shared/context/StudiesSelectionContext";
+import StudyContext from "@features/review/shared/context/StudiesContext";
 
 // Types
 import type { PageLayout } from "../LayoutFactory";
@@ -27,12 +27,12 @@ export default function StudySelectionArea({
   page,
   reloadArticles,
 }: StudySelectionAreaProps) {
-  const selectionContext = useContext(StudySelectionContext);
+  const studiesContext = useContext(StudyContext);
 
-  if (!selectionContext)
+  if (!studiesContext)
     throw new Error("Failed to get selection context on study Selection area");
 
-  const { selectedArticleReview, setSelectedArticleReview } = selectionContext;
+  const { selectedArticleReview, setSelectedArticleReview } = studiesContext;
 
   if (!articles || articles.length === 0) return null;
 

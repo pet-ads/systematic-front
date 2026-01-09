@@ -1,8 +1,6 @@
-import { KeyedMutator } from "swr";
 import ArticleInterface from "./ArticleInterface";
-import { StudyInterface } from "./IStudy";
-import { SelectionArticles } from "@features/review/execution-selection/services/useFetchSelectionArticles";
 import { Dispatch, SetStateAction } from "react";
+import { PageLayout } from "../components/structure/LayoutFactory";
 
 export interface InvalidEntry {
   id: string;
@@ -16,13 +14,10 @@ export default interface AppContextType {
   setIsIncluded: React.Dispatch<React.SetStateAction<boolean>>;
   isExcluded: boolean;
   setIsExcluded: React.Dispatch<React.SetStateAction<boolean>>;
-  articles: ArticleInterface[] | StudyInterface[] | [];
-  reloadArticles: KeyedMutator<SelectionArticles>;
   reload: boolean;
   setReload: Dispatch<SetStateAction<boolean>>;
   invalidEntries: InvalidEntry[];
   setInvalidEntries: Dispatch<SetStateAction<InvalidEntry[]>>;
-  isLoading: boolean;
   selectedArticles: Record<
     number,
     { id: number; title: string; isChecked: boolean }
@@ -36,5 +31,8 @@ export default interface AppContextType {
   page: number;
   setPage: React.Dispatch<React.SetStateAction<number>>
   size: number;
-  setSize: React.Dispatch<React.SetStateAction<number>>
+  setSize: React.Dispatch<React.SetStateAction<number>>;
+  getArticles: (page: PageLayout) => ArticleInterface[] | undefined;  
+  isLoading: (page: PageLayout) => boolean;
+  reloadArticles: (page: PageLayout) => void;
 }

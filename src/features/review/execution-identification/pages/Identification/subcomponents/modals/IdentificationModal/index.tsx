@@ -23,7 +23,7 @@ import {
 import { DeleteIcon } from "@chakra-ui/icons";
 
 import { KeyedMutator } from "swr";
-import StudySelectionContext from "@features/review/shared/context/StudiesSelectionContext";
+import StudyContext from "@features/review/shared/context/StudiesContext";
 import useHandleExportedFiles from "@features/review/execution-identification/services/useHandleExportedFiles";
 import DragAndDrop from "@components/common/inputs/DragAndDropInput";
 
@@ -56,10 +56,10 @@ function IdentificationModal({
   const [isError, setIsError] = useState(false);
   const { isOpen, onClose, onOpen } = useDisclosure();
 
-  const selectionContext = useContext(StudySelectionContext);
-  if (!selectionContext)
+  const studiesContext = useContext(StudyContext);
+  if (!studiesContext)
     throw new Error("Failed to get selection context on identification modal!");
-  const reloadArticles = selectionContext.reloadArticles;
+  const reloadArticles = studiesContext.reloadArticles;
 
   const {
     handleFile,
@@ -69,7 +69,7 @@ function IdentificationModal({
     setSource,
   } = useHandleExportedFiles({
     mutate: mutate,
-    setInvalidEntries: selectionContext.setInvalidEntries,
+    setInvalidEntries: studiesContext.setInvalidEntries,
     searchString,
     comment,
   });
@@ -93,7 +93,7 @@ function IdentificationModal({
     }
 
     sendFilesToServer();
-    reloadArticles();
+    reloadArticles("Selection");
     show(false);
     onClose();
   };

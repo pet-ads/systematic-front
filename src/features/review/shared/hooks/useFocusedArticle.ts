@@ -2,13 +2,11 @@
 import { useContext, useMemo } from "react";
 
 // Context
-import StudySelectionContext from "@features/review/shared/context/StudiesSelectionContext";
-import StudyExtractionContext from "@features/review/shared/context/StudiesExtractionContext";
+import StudyContext from "@features/review/shared/context/StudiesContext";
 
 // Type
 import type ArticleInterface from "../types/ArticleInterface";
 import type { PageLayout } from "../components/structure/LayoutFactory";
-import AppContextType from "../types/StudiesContextInterface";
 
 type FocusedArticleOutputProps = {
   articleInFocus?: ArticleInterface;
@@ -21,18 +19,11 @@ type FocusedArticleInputProps = {
 export default function useFocusedArticle({
   page,
 }: FocusedArticleInputProps): FocusedArticleOutputProps {
-  let param: React.Context<AppContextType | undefined>;
-  
-  if (page === "Selection" || page === "Identification"){
-    param = StudySelectionContext
-  }else{
-    param = StudyExtractionContext
-  }
-  
-  const context = useContext(param)
+  const context = useContext(StudyContext)
 
   if (!context) throw new Error("Context not available");
-  const { selectedArticleReview, articles } = context;
+  const { selectedArticleReview, getArticles } = context;
+  const articles = getArticles(page);
 
   const availableArticlesList = useMemo(() => {
     if (!articles) return [];

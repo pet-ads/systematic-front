@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { Button, Flex } from "@chakra-ui/react";
 
-import StudySelectionContext from "@features/review/shared/context/StudiesSelectionContext";
+import StudyContext from "@features/review/shared/context/StudiesContext";
 import { UseChangeStudySelectionStatus } from "../../../../services/useChangeStudySelectionStatus";
 import useSendDuplicatedStudies from "../../../../services/useSendDuplicatedStudies";
 import { FaCheckCircle, FaEye, FaTrashAlt } from "react-icons/fa";
@@ -28,7 +28,7 @@ export default function ButtonsForMultipleSelection({
   onShowSelectedArticles,
   isShown,
 }: ButtonsForMultipleSelectionProps) {
-  const studyContext = useContext(StudySelectionContext);
+  const studyContext = useContext(StudyContext);
 
   const duplicatedStudies = studyContext?.deletedArticles.filter(
     (art) => art != studyContext?.firstSelected

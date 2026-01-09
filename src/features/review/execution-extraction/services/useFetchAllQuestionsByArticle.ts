@@ -2,7 +2,7 @@
 import { useContext, useEffect, useState } from "react";
 
 // Context
-import StudySelectionContext from "@features/review/shared/context/StudiesSelectionContext";
+import StudyContext from "@features/review/shared/context/StudiesContext";
 
 // Hooks
 import useFetchIncludedStudiesAnswers from "./useFetchIncludedStudiesAnswers";
@@ -21,10 +21,10 @@ export default function useFetchAllQuestionsByArticle() {
     Record<number, ArticleAnswerStrucuture>
   >({});
 
-  const selectionContext = useContext(StudySelectionContext);
+  const studiesContext = useContext(StudyContext);
 
-  const articleId = selectionContext
-    ? selectionContext.selectedArticleReview
+  const articleId = studiesContext
+    ? studiesContext.selectedArticleReview
     : -1;
 
   const { question, mutate, isLoading } = useFetchIncludedStudiesAnswers({
@@ -32,7 +32,7 @@ export default function useFetchAllQuestionsByArticle() {
   });
 
   const handlerUpdateAnswerStructure = (
-    articleId: number = Number(selectionContext?.selectedArticleReview) || -1,
+    articleId: number = Number(studiesContext?.selectedArticleReview) || -1,
     questionId: string,
     type: FormType,
     response: AnswerProps

@@ -3,7 +3,7 @@ import { useContext, useMemo, useState } from "react";
 import { Box, Flex } from "@chakra-ui/react";
 
 // Context
-import StudyExtractionContext from "@features/review/shared/context/StudiesExtractionContext";
+import StudyContext from "@features/review/shared/context/StudiesContext";
 
 // Hooks
 import useInputState from "@features/review/shared/hooks/useInputState";
@@ -32,7 +32,7 @@ export default function Extraction() {
   const [searchString, setSearchString] = useState<string>("");
   const [showSelected, setShowSelected] = useState<boolean>(false);
   const [fetchedTotalPages, setFetchedTotalPages] = useState<number>(1);
-  const extractionContext = useContext(StudyExtractionContext);
+  const StudiesContext = useContext(StudyContext);
   const { value: selectedStatus, handleChange: handleSelectChange } =
     useInputState<string | null>(null);
   const { layout, handleChangeLayout } = useLayoutPage();
@@ -60,7 +60,7 @@ export default function Extraction() {
     setFetchedTotalPages(totalPages);
   }
 
-  const safeSelectedArticles = extractionContext?.selectedArticles ?? {};
+  const safeSelectedArticles = StudiesContext?.selectedArticles ?? {};
 
   const startFilteredArticles = useFilterReviewArticles(
     searchString,

@@ -3,7 +3,7 @@ import { useContext, useMemo, useState } from "react";
 import { Box, Flex } from "@chakra-ui/react";
 
 // Context
-import StudySelectionContext from "@features/review/shared/context/StudiesSelectionContext";
+import StudyContext from "@features/review/shared/context/StudiesContext";
 
 // Hooks
 import useInputState from "@features/review/shared/hooks/useInputState";
@@ -32,7 +32,7 @@ export default function Selection() {
   const [searchString, setSearchString] = useState<string>("");
   const [showSelected, setShowSelected] = useState<boolean>(false);
   const [fetchedTotalPages, setFetchedTotalPages] = useState<number>(1);
-  const selectionContext = useContext(StudySelectionContext);
+  const studiesContext = useContext(StudyContext);
   const { value: selectedStatus, handleChange: handleSelectChange } =
     useInputState<string | null>(null);
   const { layout, handleChangeLayout } = useLayoutPage();
@@ -48,7 +48,7 @@ export default function Selection() {
     handleBackToInitial,
     handleGoToFinal,
     changeQuantityOfItens,
-  } = usePaginationState({ totalPages: fetchedTotalPages, initialSize: 20, setPage: selectionContext?.setPage, setSize: selectionContext?.setSize });
+  } = usePaginationState({ totalPages: fetchedTotalPages, initialSize: 20, setPage: studiesContext?.setPage, setSize: studiesContext?.setSize });
 
 
   const { articles, isLoading, totalElements, totalPages, mutate } =
@@ -61,7 +61,7 @@ export default function Selection() {
     setFetchedTotalPages(totalPages);
   }
 
-  const safeSelectedArticles = selectionContext?.selectedArticles ?? {};
+  const safeSelectedArticles = studiesContext?.selectedArticles ?? {};
 
   const startFilteredArticles = useFilterReviewArticles(
     searchString,

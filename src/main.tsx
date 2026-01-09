@@ -5,8 +5,7 @@ import ReactDOM from "react-dom/client";
 // Contexts
 import { ChakraProvider } from "@chakra-ui/react";
 import { AppProvider } from "./features/shared/context/ApplicationContext";
-import { StudySelectionProvider } from "@features/review/shared/context/StudiesSelectionContext.tsx";
-import { StudyExtractionProvider } from "@features/review/shared/context/StudiesExtractionContext.tsx";
+import { StudyProvider } from "@features/review/shared/context/StudiesContext.tsx";
 
 // Components
 import App from "./App.tsx";
@@ -18,11 +17,9 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ChakraProvider>
       <AppProvider>
-        <StudySelectionProvider>
-          <StudyExtractionProvider>
+        <StudyProvider>
             <App />
-          </StudyExtractionProvider>
-        </StudySelectionProvider>
+        </StudyProvider>
       </AppProvider>
     </ChakraProvider>
   </React.StrictMode>
