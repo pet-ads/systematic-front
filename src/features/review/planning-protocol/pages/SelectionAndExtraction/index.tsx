@@ -21,7 +21,7 @@ export default function SelectionAndExtraction() {
 
   return (
     <ProtocolFormLayout
-      headerText="Protocol: Selection And Extraction"
+      headerText="Protocol: Selection and Extraction"
       navButtons={(
         <>
           <NavButton
