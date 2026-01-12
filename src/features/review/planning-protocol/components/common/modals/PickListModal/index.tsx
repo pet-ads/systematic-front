@@ -66,7 +66,7 @@ export default function PickListModal({ show, questionHolder, questions }: Props
                 onDeleteAddedText={handleDeleteText}
                 AddTexts={questions}
                 context="Options"
-                placeholder="Options here"
+                placeholder="Enter options here"
                 referencePrefix=""
                 
                 enableReferenceCode={false} 
