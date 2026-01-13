@@ -74,6 +74,9 @@ export default function DataExtraction({
               !Array.isArray(sectionQuestions) ||
               sectionQuestions.length < 1
             ) {
+              if (isRiskOfBiasKey) {
+                return null;
+              }
               return (
                 <Box key={sectionKey}>
                   {index > 0 && <Divider />}
@@ -92,11 +95,7 @@ export default function DataExtraction({
                     <Text fontSize="md" fontWeight="bold" color="gray.800">
                       No questions found
                     </Text>
-                    <Text fontSize="sm" color="gray.600" maxW="90%">
-                      {isRiskOfBiasKey
-                        ? `Create ${formatedFormKey} questions to register your answers.`
-                        : "(Optional) You can create Risk of Bias questions to assess methodological quality."}
-                    </Text>
+
                     <Button
                       leftIcon={<FaPlusCircle />}
                       mt="1rem"
@@ -104,9 +103,7 @@ export default function DataExtraction({
                       colorScheme="gray"
                       onClick={() =>
                         toGo(
-                          typeFormKey === "EXTRACTION"
-                            ? `/review/planning/protocol/selection-and-extraction/${reviewId}`
-                            : `/review/planning/protocol/risk-of-bias-assessment/${reviewId}`
+                          `/review/planning/protocol/selection-and-extraction/${reviewId}`
                         )
                       }
                     >
