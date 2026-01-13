@@ -3,7 +3,7 @@ import { useContext } from "react";
 import useToaster from "@components/feedback/Toaster";
 
 // Context
-import StudySelectionContext from "@features/review/shared/context/StudiesSelectionContext";
+import StudyContext from "@features/review/shared/context/StudiesContext";
 
 // Hooks
 import { useSendBatchAnswers } from "./useSendBatchAnswers";
@@ -23,7 +23,7 @@ export function useExtractionFormSubmission({
   onQuestionsMutated,
 }: UseFormSubmissionProps) {
   const toast = useToaster();
-  const selectionContext = useContext(StudySelectionContext);
+  const studiesContext = useContext(StudyContext);
   const { articleInFocus } = useFocusedArticle({ page: "Extraction" });
   const { sendBatchAnswers } = useSendBatchAnswers();
 
@@ -48,10 +48,10 @@ export function useExtractionFormSubmission({
     }));
 
   const updateStudyStatus = async () => {
-    if (!articleInFocus || !selectionContext) return;
+    if (!articleInFocus || !studiesContext) return;
     if (articleInFocus.extractionStatus !== "UNCLASSIFIED") return;
     UseChangeStudyExtractionStatus({
-      studyReviewId: [selectionContext.selectedArticleReview],
+      studyReviewId: [studiesContext.selectedArticleReview],
       criterias: [],
       status: "INCLUDED",
     });
@@ -74,8 +74,8 @@ export function useExtractionFormSubmission({
       onQuestionsMutated();
       await updateStudyStatus();
 
-      if (selectionContext) {
-        selectionContext.reloadArticles();
+      if (studiesContext) {
+        studiesContext.reloadArticles("Extraction");
       }
 
       toast({

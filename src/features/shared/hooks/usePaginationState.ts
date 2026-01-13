@@ -9,16 +9,32 @@ const MIN_ITENS_PER_PAGE = 10;
 interface PaginationState {
   totalPages: number;
   initialSize: number;
+  setPage?: React.Dispatch<React.SetStateAction<number>>;
+  setSize?: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export default function usePaginationState({
   totalPages,
   initialSize = 20,
+  setPage,
+  setSize,
 }: PaginationState) {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [itensPerPage, setItensPerPage] = useState<number>(initialSize);
 
   const quantityOfPages = totalPages > 0 ? totalPages : 1;
+
+  useEffect(() => {
+    if (setPage) {
+      setPage(currentPage);
+    }
+  }, [currentPage, setPage]);
+
+  useEffect(() => {
+    if (setSize) {
+      setSize(itensPerPage);
+    }
+  }, [itensPerPage, setSize]);
 
   useEffect(() => {
     if (currentPage > quantityOfPages) {

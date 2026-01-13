@@ -1,6 +1,6 @@
 import { useContext, useMemo } from "react";
 
-import StudySelectionContext from "@features/review/shared/context/StudiesSelectionContext";
+import StudyContext from "@features/review/shared/context/StudiesContext";
 
 import ArticleInterface from "../types/ArticleInterface";
 
@@ -14,7 +14,7 @@ type ClassifiedArticlesOutput = {
 };
 
 export default function useFetchAllClassifiedArticles(): ClassifiedArticlesOutput {
-  const selectionContext = useContext(StudySelectionContext);
+  const studiesContext = useContext(StudyContext);
 
   const classifiedArticles = useMemo(() => {
     const articlesStatusMap: Record<ArticleStatus, ArticleInterface[]> = {
@@ -24,16 +24,18 @@ export default function useFetchAllClassifiedArticles(): ClassifiedArticlesOutpu
       EXCLUDED: [],
     };
 
-    if (!selectionContext?.articles) return articlesStatusMap;
+    const articles = studiesContext?.getArticles('Selection')
 
-    selectionContext.articles.map((article) => {
+    if (!articles) return articlesStatusMap;
+
+    articles.map((article) => {
       if (!("studyReviewId" in article)) return;
       const status = article.selectionStatus as ArticleStatus;
       articlesStatusMap[status].push(article);
     });
 
     return articlesStatusMap;
-  }, [selectionContext?.articles]);
+  }, [studiesContext]);
 
   return {
     includedArticlesList: classifiedArticles.INCLUDED,

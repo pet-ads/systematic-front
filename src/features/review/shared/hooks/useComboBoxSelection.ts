@@ -2,7 +2,7 @@
 import { useCallback, useContext } from "react";
 
 // Context
-import StudySelectionContext from "@features/review/shared/context/StudiesSelectionContext";
+import StudyContext from "@features/review/shared/context/StudiesContext";
 
 // Hook
 import { UseChangeStudySelectionStatus } from "../services/useChangeStudySelectionStatus";
@@ -21,11 +21,11 @@ const useComboBoxSelection = ({
   page,
   reloadArticles,
 }: ComboBoxSelectionProps) => {
-  const selectionContext = useContext(StudySelectionContext);
+  const studiesContext = useContext(StudyContext);
 
-  if (!selectionContext) throw new Error("Context not available");
+  if (!studiesContext) throw new Error("Context not available");
 
-  const { selectedArticleReview } = selectionContext;
+  const { selectedArticleReview } = studiesContext;
 
   const changeStatus = useCallback(
     (status: "INCLUDED" | "EXCLUDED", criterias: string[]) => {

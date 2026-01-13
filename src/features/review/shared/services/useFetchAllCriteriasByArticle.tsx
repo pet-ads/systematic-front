@@ -9,7 +9,7 @@ import useFetchExclusionCriteria from "./useFetchExclusionCriterias";
 // Types
 import { PageLayout } from "../components/structure/LayoutFactory";
 import useRevertCriterionState from "./useRevertCriterionState";
-import StudySelectionContext from "../context/StudiesSelectionContext";
+import StudyContext from "../context/StudiesContext";
 
 export type OptionType = "INCLUSION" | "EXCLUSION";
 
@@ -39,9 +39,9 @@ export default function useFetchAllCriteriasByArticle({
     {}
   );
 
-  const selectionContext = useContext(StudySelectionContext);
+  const studiesContext = useContext(StudyContext);
 
-  if (!selectionContext) {
+  if (!studiesContext) {
     return {
       criterias: {
         options: {
@@ -53,7 +53,7 @@ export default function useFetchAllCriteriasByArticle({
     };
   }
 
-  const { selectedArticleReview } = selectionContext;
+  const { selectedArticleReview } = studiesContext;
 
   const { criteria } = useFetchCriteriaForFocusedArticle({
     articleId: selectedArticleReview,

@@ -5,7 +5,7 @@ import { useContext } from "react";
 import Axios from "../../../../infrastructure/http/axiosClient";
 
 // Contenxt
-import StudySelectionContext from "@features/review/shared/context/StudiesSelectionContext";
+import StudyContext from "@features/review/shared/context/StudiesContext";
 import { SelectionArticles } from "@features/review/execution-selection/services/useFetchSelectionArticles";
 import { KeyedMutator } from "swr";
 
@@ -31,11 +31,11 @@ const priorityMap: Record<string, PriorityValue> = {
 export default function useChangePriority({
   reloadArticles,
 }: useChangePriorityPayload) {
-  const selectionContext = useContext(StudySelectionContext);
+  const studiesContext = useContext(StudyContext);
 
-  if (!selectionContext) throw new Error("Context not available");
+  if (!studiesContext) throw new Error("Context not available");
 
-  const { selectedArticleReview } = selectionContext;
+  const { selectedArticleReview } = studiesContext;
 
   const handleChangePriority = async ({
     status,

@@ -22,7 +22,7 @@ import { IoIosCloseCircle } from "react-icons/io";
 import { RiCheckboxMultipleBlankFill } from "react-icons/ri";
 
 // Context
-import StudySelectionContext from "@features/review/shared/context/StudiesSelectionContext";
+import StudyContext from "@features/review/shared/context/StudiesContext";
 
 // Components
 import PaginationControl from "../controlls/PaginationControl";
@@ -94,7 +94,8 @@ export default function Expanded({
     score: "70px",
     readingPriority: "80px",
   });
-  const studyContext = useContext(StudySelectionContext);
+
+  const studyContext = useContext(StudyContext);
 
   const columns: Column[] = [
     { label: "ID", key: "studyReviewId", width: columnWidths.studyReviewId },
