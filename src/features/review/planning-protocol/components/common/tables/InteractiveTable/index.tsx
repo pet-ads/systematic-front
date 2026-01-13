@@ -54,6 +54,7 @@ export default function InteractiveTable({ id, url, label }: Props) {
     updateNumberScaleQuestion,
     updateLabeledListQuestion,
     updatePickManyQuestion,
+    deleteQuestion,
   } = useSendExtractionForm(adress);
 
   const [editIndex, setEditIndex] = useState<number | null>(null);
@@ -221,6 +222,26 @@ export default function InteractiveTable({ id, url, label }: Props) {
     await Axios.get(`systematic-study/${id}/protocol/extraction-question`, options);
   }
 
+  async function handleSaveDelete(index: number) {
+    if(!validator({value: rows[index].question})){
+      return
+    }
+    const row = rows[index];
+    const { questionId: serverId } = row;
+    const reviewId = id;
+
+    let data: any;
+
+    try {
+      data = { reviewId };
+      await deleteQuestion(data, serverId);
+      handleDelete(index)
+      
+    } catch (error) {
+      console.error("Failed to delete question:", error);
+    } 
+  }
+
   const handleIdChange = (index: number, newId: string) => {
     setRows((prevRows) =>
       prevRows.map((row, i) => (i === index ? { ...row, id: newId } : row))
@@ -335,7 +356,7 @@ export default function InteractiveTable({ id, url, label }: Props) {
         <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center' }}>
           <DeleteButton
             index={index}
-            handleDelete={() => handleDelete(index)}
+            handleDelete={() => handleSaveDelete(index)}
           />
           <EditButton
             itemDescription={row.question}

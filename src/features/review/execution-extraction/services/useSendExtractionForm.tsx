@@ -251,6 +251,21 @@ const useSendExtractionForm = (adress: string) => {
     }
   }
 
+  async function deleteQuestion(
+    {reviewId }: PickManyProps,
+    serverId: string | null,
+  ) {
+    const url = `systematic-study/${reviewId}/protocol/${adress}/${serverId}`;
+    
+    try {
+      const response = await Axios.delete(url, { withCredentials: true });
+      return response
+    } catch (err) {
+      alert('erro')
+      console.log(err);
+    }
+  }
+
   return {
     sendTextualQuestion,
     sendPickListQuestion,
@@ -262,6 +277,7 @@ const useSendExtractionForm = (adress: string) => {
     updateNumberScaleQuestion,
     updateLabeledListQuestion,
     updatePickManyQuestion,
+    deleteQuestion,
   };
 };
 
