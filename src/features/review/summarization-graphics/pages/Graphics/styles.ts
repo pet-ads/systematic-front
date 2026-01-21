@@ -12,17 +12,17 @@ export const conteiner = {
 
 export const graphicsconteiner = {
   maxW: "100%",
+  mt:"5px",
   borderWidth: "1px",
   borderRadius: "lg",
-  padding: "2em",
   display: "flex",
-  flexWrap: "wrap",            
+  flexWrap: "wrap",
   gap: "2em",                 
   justifyContent: "center",   
   alignItems:"center",
-  boxShadow: "md",
   bg: 'white',
 };
+
 export const barchartBox = {
   width: "45%",
   padding: "2px",
