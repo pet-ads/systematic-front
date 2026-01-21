@@ -39,12 +39,7 @@ const baseNodes: Node[] = [
     id: "5",
     data: { label: "Full-text studies excluded with reasons" },
     position: { x: 480, y: 450 },
-  },
-  {
-    id: "6",
-    data: { label: "Studies included in qualitative synthesis" },
-    position: { x: 200, y: 550 },
-  },
+  }
   
 ];
 
@@ -53,8 +48,7 @@ const edges: Edge[] = [
   { id: "e1_2", source: "1", target: "2", type: "straight" },
   { id: "e2_3", source: "2", target: "3", type: "straight" },
   { id: "e2_4", source: "2", target: "4", type: "straight" },
-  { id: "e4_5", source: "4", target: "5", type: "straight" },
-  { id: "e4_6", source: "4", target: "6", type: "straight" },
+  { id: "e4_5", source: "4", target: "5", type: "straight" }
  
 ];
 
