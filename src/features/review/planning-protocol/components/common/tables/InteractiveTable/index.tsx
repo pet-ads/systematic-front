@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { AddIcon } from "@chakra-ui/icons";
 import { Button, Input, Select, FormLabel, Textarea } from "@chakra-ui/react";
 import Axios from "../../../../../../../infrastructure/http/axiosClient";
+import EventButton from "@components/common/buttons/EventButton";
+
 
 import DefaultTable from "@components/common/tables/DefaultTable";
 import { Column, SortConfig } from "@components/common/tables/DefaultTable/types";
@@ -374,11 +375,10 @@ export default function InteractiveTable({ id, url, label }: Props) {
         onExternalSort={setSortConfig}
       />
 
-      <div style={{ marginTop: "1rem", display: "flex", gap: "0.5rem" }}>
+      <div style={{ marginTop: "1rem", display: "flex", gap: "0.5rem", justifyContent: "end" }}>
         <Button size="sm" onClick={addNewRow}>
-          <AddIcon />
+          <EventButton text="Add" w={"40px"} />
         </Button>
-        
       </div>
 
       {showModal == true && modalType == "pick list" && (
