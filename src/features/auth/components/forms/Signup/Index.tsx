@@ -2,6 +2,12 @@ import { Link } from "react-router-dom";
 import "../styles.css";
 import useHandleSignup from "../../../hooks/useHandleRegister";
 
+const Countries = ["Argentina", "Australia", "Austria", "Belgium", "Brazil", "Canada", "Chile", "China",
+  "Denmark", "Egypt", "Finland", "France", "Germany", "Greece", "India", "Iran", "Ireland", "Israel",
+  "Italy", "Japan", "Mexico", "Netherlands", "New Zealand", "Norway", "Pakistan", "Portugal",
+  "Saudi Arabia", "South Africa", "South Korea", "Spain", "Sweden", "Switzerland", "Turkey",
+  "United Kingdom", "United States", "Colombia"].sort();
+
 export default function FormSignup({
   redirectFormLogin,
 }: {
@@ -31,10 +37,10 @@ export default function FormSignup({
       <h2>Sign Up</h2>
       <div className="contentForm">
         <div className="inputGroup">
-          <label htmlFor="name">Username</label>
+          <label htmlFor="username">Username</label>
           <input
             type="text"
-            id="name"
+            id="username"
             value={username}
             onChange={(e) =>
               handleChangeUserInformations("username", e.target.value)
@@ -87,19 +93,22 @@ export default function FormSignup({
         </div>
 
         <div className="inputGroup">
-          <label htmlFor="state">Country</label>
+          <label htmlFor="country">Country</label>
           <select
+            id="country"
             value={country}
             onChange={(e) =>
               handleChangeUserInformations("country", e.target.value)
             }
             className={errors.country ? "inputError" : ""}
           >
-            <option>Select Country</option>
-            <option>Brazil</option>
-            <option>Spain</option>
-            <option>United Kingdom</option>
-            <option>France</option>
+            <option value="">Select Country</option>
+            {Countries.map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
+            <option value="Other">Other...</option>
           </select>
           {errors.country && <p className="error">{errors.country}</p>}
         </div>
