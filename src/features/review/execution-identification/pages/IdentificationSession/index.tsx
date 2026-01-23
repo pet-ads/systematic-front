@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 
 import Header from "../../../../../components/structure/Header/Header";
@@ -12,6 +13,7 @@ import ColumnVisibilityMenu from "@features/review/shared/components/common/menu
 import usePaginationState from "@features/shared/hooks/usePaginationState";
 
 export default function IdentificationSession() {
+  const [fetchedTotalPages, setFetchedTotalPages] = useState<number>(1);
   const { session = "" } = useParams();
   
   const [searchParams] = useSearchParams();
@@ -30,10 +32,13 @@ export default function IdentificationSession() {
     handleBackToInitial,
     handleGoToFinal,
     changeQuantityOfItens,
-  } = usePaginationState({ totalPages: Math.ceil(totalItems / 20), initialSize: 20 });
+  } = usePaginationState({ totalPages: fetchedTotalPages, initialSize: 20 });
 
-  const { articles } = useGetSessionStudies(session, currentPage - 1, itensPerPage);
-  
+  const { articles, totalPages } = useGetSessionStudies(session, currentPage - 1, itensPerPage);
+
+  if (totalPages && totalPages !== fetchedTotalPages) {
+    setFetchedTotalPages(totalPages);
+  }
 
   return (
     <FlexLayout navigationType="Accordion">
@@ -74,7 +79,7 @@ export default function IdentificationSession() {
           pagination={{
             currentPage,
             itensPerPage,
-            quantityOfPages: Math.ceil(totalItems / 20),
+            quantityOfPages: totalPages,
             totalElements: totalItems,
             handleNextPage,
             handlePrevPage,
