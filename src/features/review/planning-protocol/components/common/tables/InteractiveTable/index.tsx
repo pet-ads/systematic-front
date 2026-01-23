@@ -363,7 +363,7 @@ export default function InteractiveTable({ id, url, label }: Props) {
 
   return (
     <div>
-      <FormLabel color={"#2E4B6C"} mb={4} fontSize="lg" fontWeight="bold">
+      <FormLabel mb={4} fontSize="lg">
         {label}
       </FormLabel>
 
