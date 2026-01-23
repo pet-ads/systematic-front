@@ -13,24 +13,27 @@ import usePaginationState from "@features/shared/hooks/usePaginationState";
 
 export default function IdentificationSession() {
   const { session = "" } = useParams();
-  const { articles } = useGetSessionStudies(session);
-
+  
   const [searchParams] = useSearchParams();
-
+  
   const totalItems = Number(searchParams.get("totalItems")) || 0;
-
+  
   const { columnsVisible, toggleColumnVisibility } = useVisibiltyColumns({
-    page: "Identification",
+    page: "Identification", 
   });
-
+  
   const {
     currentPage,
+    itensPerPage,
     handleNextPage,
     handlePrevPage,
     handleBackToInitial,
     handleGoToFinal,
     changeQuantityOfItens,
   } = usePaginationState({ totalPages: Math.ceil(totalItems / 20), initialSize: 20 });
+
+  const { articles } = useGetSessionStudies(session, currentPage - 1, itensPerPage);
+  
 
   return (
     <FlexLayout navigationType="Accordion">
@@ -70,7 +73,7 @@ export default function IdentificationSession() {
           columnsVisible={columnsVisible}
           pagination={{
             currentPage,
-            itensPerPage: 20,
+            itensPerPage,
             quantityOfPages: Math.ceil(totalItems / 20),
             totalElements: totalItems,
             handleNextPage,
