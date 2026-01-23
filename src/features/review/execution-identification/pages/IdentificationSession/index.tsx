@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 
 import Header from "../../../../../components/structure/Header/Header";
 
@@ -15,6 +15,10 @@ export default function IdentificationSession() {
   const { session = "" } = useParams();
   const { articles } = useGetSessionStudies(session);
 
+  const [searchParams] = useSearchParams();
+
+  const totalItems = Number(searchParams.get("totalItems")) || 0;
+
   const { columnsVisible, toggleColumnVisibility } = useVisibiltyColumns({
     page: "Identification",
   });
@@ -26,7 +30,7 @@ export default function IdentificationSession() {
     handleBackToInitial,
     handleGoToFinal,
     changeQuantityOfItens,
-  } = usePaginationState({ totalPages: 1, initialSize: 20 });
+  } = usePaginationState({ totalPages: Math.ceil(totalItems / 20), initialSize: 20 });
 
   return (
     <FlexLayout navigationType="Accordion">
@@ -67,8 +71,8 @@ export default function IdentificationSession() {
           pagination={{
             currentPage,
             itensPerPage: 20,
-            quantityOfPages: 3,
-            totalElements: articles.length,
+            quantityOfPages: Math.ceil(totalItems / 20),
+            totalElements: totalItems,
             handleNextPage,
             handlePrevPage,
             handleBackToInitial,
