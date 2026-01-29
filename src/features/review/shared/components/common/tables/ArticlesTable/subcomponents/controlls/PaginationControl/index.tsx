@@ -41,22 +41,22 @@ const PaginationControl: React.FC<PaginationControlProps> = ({
   const actionButtons: ActionButton[] = [
     {
       label: "First page",
-      icon: <MdKeyboardDoubleArrowLeft />,
+      icon: <MdKeyboardDoubleArrowLeft size={20} />,
       action: handleBackToInitial,
     },
     {
       label: "Previous page",
-      icon: <MdKeyboardArrowLeft />,
+      icon: <MdKeyboardArrowLeft size={20} />,
       action: handlePrevPage,
     },
     {
       label: "Next page",
-      icon: <MdKeyboardArrowRight />,
+      icon: <MdKeyboardArrowRight size={20} />,
       action: handleNextPage,
     },
     {
       label: "Last page",
-      icon: <MdKeyboardDoubleArrowRight />,
+      icon: <MdKeyboardDoubleArrowRight size={20} />,
       action: handleGoToFinal,
     },
   ];
@@ -124,9 +124,16 @@ const PaginationControl: React.FC<PaginationControlProps> = ({
               <Button
                 key={index}
                 variant="outline"
-                fontSize="1.25rem"
                 onClick={action}
                 aria-label={label}
+                minW="40px"
+                minH="40px"
+                w="40px"
+                h="40px"
+                p="0"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
               >
                 {icon}
               </Button>
