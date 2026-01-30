@@ -218,17 +218,19 @@ export default function useCreateProtocol() {
     const { searchMethod, searchString, sourcesSelectionCriteria } =
       informationSourcesAndSearchStrategy;
     const { dataCollectionProcess, selectionProcess } = selectionAndExtraction;
+    const { analysisAndSynthesisProcess } = analysisAndSynthesisOfResults;
 
     const data = {
       goal,
       justification,
-      picoc,  
+      picoc,
       searchString,
       studyTypeDefinition,
       dataCollectionProcess,
       sourcesSelectionCriteria,
       searchMethod,
       selectionProcess,
+      analysisAndSynthesisProcess,
     };
 
     if(data.goal) {if(!validator({value: data.goal})) return false}
@@ -238,7 +240,8 @@ export default function useCreateProtocol() {
     if(!validator({value: data.dataCollectionProcess})) return false
     if(!validator({value: data.sourcesSelectionCriteria})) return false
     if(!validator({value: data.searchMethod})) return false
-    if(!validator({value: data.selectionProcess})) return false
+    if (!validator({ value: data.selectionProcess })) return false
+    if (!validator({ value: data.analysisAndSynthesisProcess })) return false;  
     if(!(validator({value: picoc.context}) && validator({value: picoc.control}) && validator({value: picoc.intervention}) && validator({value: picoc.outcome}) && validator({value: picoc.population}))) return false;
 
     return await Axios.put(url, data);
