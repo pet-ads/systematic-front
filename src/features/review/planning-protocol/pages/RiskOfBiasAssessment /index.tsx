@@ -18,7 +18,7 @@ export default function RiskOfBiasAssessment() {
 
   return (
     <ProtocolFormLayout
-      headerText="Protocol: Risk Of Bias Assessment"
+      headerText="Protocol: Risk of Bias Assessment"
       navButtons={
         <>
           <NavButton

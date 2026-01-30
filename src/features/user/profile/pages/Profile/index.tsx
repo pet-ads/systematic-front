@@ -176,7 +176,7 @@ export default function Profile() {
   return (
     <FlexLayout navigationType="Default">
       <Header text="My Profile" />
-      <CardDefault backgroundColor="white" borderRadius="1rem" withShadow>
+      <CardDefault backgroundColor="white" borderRadius="1rem" withShadow={false}>
         {isLoading ? (
           <SkeletonLoader width="100%" height="100%" />
         ) : (

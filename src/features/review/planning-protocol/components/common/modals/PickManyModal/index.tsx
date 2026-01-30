@@ -7,12 +7,16 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  useDisclosure,
+  FormControl,
+  FormLabel,
 } from "@chakra-ui/react";
-import { useDisclosure } from "@chakra-ui/react";
-import AddPickListTable from "@features/review/planning-protocol/components/common/inputs/pickList/AddPickListTable";
-import { useEffect } from "react";
-
-import { Dispatch, SetStateAction } from "react";
+import { useEffect, Dispatch, SetStateAction } from "react";
+import InfosTable from "@features/review/planning-protocol/components/common/tables/InfosTable";
+import {
+  formcontrol,
+  label,
+} from "@features/review/planning-protocol/components/common/inputs/text/AddTextTable/styles";
 
 interface Props {
   show: Dispatch<SetStateAction<boolean>>;
@@ -20,20 +24,28 @@ interface Props {
   options: string[];
 }
 
-function PickManyModal({ show, optionHolder, options }: Props) {
+export default function PickManyModal({ show, optionHolder, options }: Props) {
   const { isOpen, onClose, onOpen } = useDisclosure();
 
   useEffect(() => {
     onOpen();
-  }, []);
+  }, [onOpen]);
 
   function close() {
     show(false);
     onClose();
   }
 
+  const handleAddText = (value: string) => {
+    optionHolder((prev) => [...prev, value]);
+  };
+
+  const handleDeleteText = (index: number) => {
+    optionHolder((prev) => prev.filter((_, i) => i !== index));
+  };
+
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={close} size="xl">
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>
@@ -41,12 +53,23 @@ function PickManyModal({ show, optionHolder, options }: Props) {
           <ModalCloseButton onClick={close} />
         </ModalHeader>
         <ModalBody>
-          <AddPickListTable
-            text="Multiple Options"
-            placeholder="Type an option"
-            questionHolder={optionHolder}
-            questions={options}
-          />
+          <FormControl sx={label}>
+            <FormControl sx={formcontrol}>
+              <FormLabel mt={"30px"} fontWeight={500} fontSize={"large"}>
+                Multiple Options
+              </FormLabel>
+              <InfosTable
+                typeField=""
+                onAddText={handleAddText}
+                onDeleteAddedText={handleDeleteText}
+                AddTexts={options}
+                context="Multiple Options"
+                placeholder="Type an option"
+                referencePrefix=""
+                enableReferenceCode={false}
+              />
+            </FormControl>
+          </FormControl>
         </ModalBody>
         <ModalFooter>
           <Button onClick={close}>Close</Button>
@@ -55,5 +78,3 @@ function PickManyModal({ show, optionHolder, options }: Props) {
     </Modal>
   );
 }
-
-export default PickManyModal;
