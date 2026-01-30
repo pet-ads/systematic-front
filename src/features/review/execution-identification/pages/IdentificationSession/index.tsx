@@ -1,4 +1,5 @@
-import { Link, useParams } from "react-router-dom";
+import { useState } from "react";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 
 import Header from "../../../../../components/structure/Header/Header";
 
@@ -12,21 +13,32 @@ import ColumnVisibilityMenu from "@features/review/shared/components/common/menu
 import usePaginationState from "@features/shared/hooks/usePaginationState";
 
 export default function IdentificationSession() {
+  const [fetchedTotalPages, setFetchedTotalPages] = useState<number>(1);
   const { session = "" } = useParams();
-  const { articles } = useGetSessionStudies(session);
-
+  
+  const [searchParams] = useSearchParams();
+  
+  const totalItems = Number(searchParams.get("totalItems")) || 0;
+  
   const { columnsVisible, toggleColumnVisibility } = useVisibiltyColumns({
-    page: "Identification",
+    page: "Identification", 
   });
-
+  
   const {
     currentPage,
+    itensPerPage,
     handleNextPage,
     handlePrevPage,
     handleBackToInitial,
     handleGoToFinal,
     changeQuantityOfItens,
-  } = usePaginationState({ totalPages: 1, initialSize: 20 });
+  } = usePaginationState({ totalPages: fetchedTotalPages, initialSize: 20 });
+
+  const { articles, totalPages } = useGetSessionStudies(session, currentPage - 1, itensPerPage);
+
+  if (totalPages && totalPages !== fetchedTotalPages) {
+    setFetchedTotalPages(totalPages);
+  }
 
   return (
     <FlexLayout navigationType="Accordion">
@@ -66,9 +78,9 @@ export default function IdentificationSession() {
           columnsVisible={columnsVisible}
           pagination={{
             currentPage,
-            itensPerPage: 20,
-            quantityOfPages: 3,
-            totalElements: articles.length,
+            itensPerPage,
+            quantityOfPages: totalPages,
+            totalElements: totalItems,
             handleNextPage,
             handlePrevPage,
             handleBackToInitial,
