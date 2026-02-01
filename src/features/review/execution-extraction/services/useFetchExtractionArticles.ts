@@ -19,9 +19,11 @@ interface HttpResponse {
   totalPages: number;
 }
 
-interface FetchParams extends Params {}
+interface FetchParams extends Params {
+  search?: string;
+  status?: string | null;
+}
 
-// Constants
 const EMPTY_PAGINATION_DATA: HttpResponse = {
   studyReviews: [],
   totalElements: 0,
@@ -31,24 +33,41 @@ const EMPTY_PAGINATION_DATA: HttpResponse = {
   page: 0,
 };
 
-const useFetchExtractionArticles = ({ page = 0, size = 20 }: FetchParams) => {
+const useFetchExtractionArticles = ({
+  page = 0,
+  size = 20,
+  search = "",
+  status = null,
+}: FetchParams) => {
   const id = localStorage.getItem("systematicReviewId");
-  const endpoint = `systematic-study/${id}/study-review/selection-included`;
+  
+  const endpoint = `systematic-study/${id}/study-review/search`;
+
+  const queryParams: Record<string, any> = {
+    page,
+    size,
+    selectionStatus: "INCLUDED",
+  };
+
+  if (search) {
+    queryParams.title = search;
+  }
+
+  if (status) {
+    queryParams.extractionStatus = status;
+  }
 
   const swrKey = useMemo(() => {
     if (!id) return null;
-    return [endpoint, page, size, "extraction-page"];
-  }, [id, page, size, endpoint]);
+    return [endpoint, queryParams];
+  }, [id, endpoint, JSON.stringify(queryParams)]);
 
   const fetcher = async () => {
     if (!id) return EMPTY_PAGINATION_DATA;
 
     try {
       const response = await Axios.get<HttpResponse>(endpoint, {
-        params: {
-          page,
-          size,
-        },
+        params: queryParams,
       });
 
       return response.data;
@@ -68,16 +87,14 @@ const useFetchExtractionArticles = ({ page = 0, size = 20 }: FetchParams) => {
 
   const articles = data?.studyReviews || [];
   const totalElements = data?.totalElements || 0;
-  const totalPages = data?.totalPages || 0;
-
-  const filteredArticles = useMemo(() => {
-    return articles
-      .filter((art): art is ArticleInterface => "studyReviewId" in art)
-      .filter((art) => art.selectionStatus === "INCLUDED");
-  }, [articles]);
+  
+  const calculatedPages = size > 0 ? Math.ceil(totalElements / size) : 0;
+  const totalPages = calculatedPages > 0 ? calculatedPages : (data?.totalPages || 0);
 
   return {
-    articles: filteredArticles,
+    articles: articles.filter(
+      (art): art is ArticleInterface => "studyReviewId" in art
+    ),
     totalElements,
     totalPages,
     mutate,
