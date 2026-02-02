@@ -33,7 +33,7 @@ interface DataExtractionFormProps {
     articleId: number | undefined,
     questionId: string,
     type: FormType,
-    response: AnswerProps
+    response: AnswerProps,
   ) => void;
 }
 
@@ -103,7 +103,7 @@ export default function DataExtraction({
                       colorScheme="gray"
                       onClick={() =>
                         toGo(
-                          `/review/planning/protocol/selection-and-extraction/${reviewId}`
+                          `/review/planning/protocol/selection-and-extraction/${reviewId}`,
                         )
                       }
                     >
@@ -117,7 +117,7 @@ export default function DataExtraction({
             return (
               <Box key={sectionKey}>
                 {index > 0 && <Divider />}
-                <Box mb="1.5rem">
+                <Box mb="1.5rem" px={{ base: "1rem", md: "2rem" }}>
                   <Heading
                     size="md"
                     color="black"
@@ -133,6 +133,7 @@ export default function DataExtraction({
                   <Box
                     key={`${typeFormKey}-${currentId}-${question.questionId}`}
                     mb="1rem"
+                    px={{ base: "1rem", md: "2rem" }}
                   >
                     <CreateResponseComponent
                       articleId={currentId}
@@ -145,11 +146,11 @@ export default function DataExtraction({
                 ))}
               </Box>
             );
-          }
+          },
         )}
       </Box>
       {hasAnyQuestion && (
-        <Flex w="100%" justifyContent="flex-end" p="1.25rem 0" mt="1.5rem">
+        <Flex w="100%" justifyContent="flex-end" p="1.25rem 2rem" mt="1.5rem">
           <Button
             leftIcon={<BsSend fontSize="1rem" />}
             type="submit"
