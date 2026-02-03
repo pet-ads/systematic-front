@@ -1,26 +1,25 @@
-import { Box, Text } from "@chakra-ui/react";
-import {
-  barchartBox,
-  fluxogramaBox,
-  graphicsconteiner,
-  piechartBox,
-} from "../../styles";
-import CriteriaBarChart from "../CriteriaBarChart";
-import { SearchSorcesTable } from "@features/review/summarization-graphics/components/tables/SearchSoucesTable";
-import { IncludedStudiesLineChart } from "../IncludedStudiesLineChart";
-import { QuestionsCharts } from "../QuestionsCharts";
-import StudiesFunnelChart from "../StudiesFunnelChart";
-import PieChart from "@features/review/summarization-graphics/components/charts/PieChart";
-import BarChart from "@features/review/summarization-graphics/components/charts/BarChart";
-import useGetAllReviewArticles from "@features/review/shared/services/useGetAllReviewArticles";
-import { StudyInterface } from "@features/review/shared/types/IStudy";
-import { useMemo } from "react";
-import ArticleInterface from "@features/review/shared/types/ArticleInterface";
+import { useCallback, useMemo, useState } from "react";
+import { Box, Flex } from "@chakra-ui/react";
+import { graphicsconteiner } from "../../styles";
+
 import { FiltersState } from "@features/review/summarization-graphics/hooks/useGraphicsState";
-import LayoutFactoryChart from "@features/review/summarization-graphics/components/tables/ChartTable/LayoutFactoryChart";
-import BubbleChart from "@features/review/summarization-graphics/components/charts/BubbleChart";
-import useBubbleChartData from "@features/review/summarization-graphics/hooks/useBubbleData";
+
+import useGetAllReviewArticles from "@features/review/shared/services/useGetAllReviewArticles";
+
+import SearchSourcesRenderer from "./SearchSourcesRenderer";
+import IncludedStudiesRenderer from "./IncludedStudiesRenderer";
+import CriteriaRenderer from "./CriteriaRenderer";
+import StudiesFunnelRenderer from "./StudiesFunnelRenderer";
+import ProtocolRenderer from "./ProtocolRenderer";
 import DownloadChartsButton from "@features/review/summarization-graphics/components/buttons/DownloadChatsButton";
+import FormQuestionsRenderer from "./FormQuestionsRenderer";
+import { downloadCSV } from "@features/review/summarization-graphics/components/export/ExportCsv";
+import { getCsvData } from "@features/review/summarization-graphics/components/export/ExportCsv/CsvFactoty/getCsvData";
+import useFetchQuestionAnswers from "@features/review/summarization-graphics/services/useFetchQuestionAnwers";
+import { buildQuestionsCsv } from "@features/review/summarization-graphics/components/export/ExportCsv/CsvQuestions/buildQuestionsCsv";
+import ArticleInterface from "@features/review/shared/types/ArticleInterface";
+import { useFetchStudiesByStage } from "@features/review/summarization-graphics/services/useFetchStudiesByStage";
+import useFetchStudiesByCriteria from "@features/review/summarization-graphics/services/useFetchStudiesByCriteria";
 
 type Props = {
   section: string;
@@ -28,6 +27,7 @@ type Props = {
   filters: FiltersState;
   selectedQuestionId?: string;
 };
+export type CsvRow = Record<string, string | number>;
 
 export default function ChartsRenderer({
   section,
@@ -35,11 +35,15 @@ export default function ChartsRenderer({
   filters,
   selectedQuestionId,
 }: Props) {
-  const { articles, isLoading: isLoadingArticles } = useGetAllReviewArticles();
+  const { articles, isLoading } = useGetAllReviewArticles();
+  const [, setCsvData] = useState<CsvRow[]>([]);
 
-  const chartId = `chart-${section.replace(/\s+/g, "-").toLowerCase()}`;
+  const { extractionAnswers } = useFetchQuestionAnswers();
 
-  // Filters
+  const handleCsvData = useCallback((data: CsvRow[]) => {
+    setCsvData(data);
+  }, []);
+
   const filteredStudies = useMemo(() => {
     return articles
       .filter((s) => {
@@ -55,206 +59,152 @@ export default function ChartsRenderer({
       );
   }, [articles, filters.source, filters.startYear, filters.endYear]);
 
-  let content;
+  const isCriteriaSection = [
+    "S1_Inclusion Criteria",
+    "S1_Exclusion Criteria",
+    "S2_Inclusion Criteria",
+    "S2_Exclusion Criteria",
+  ].includes(section);
 
-  // Group by source
-  const sourceCountMap = useMemo(() => {
-    const map: Record<string, number> = {};
-    filteredStudies.forEach((s) => {
-      s.searchSources.forEach((src) => {
-        map[src] = (map[src] || 0) + 1;
-      });
-    });
-    return map;
-  }, [filteredStudies]);
+  let filteredStageIds: number[] | undefined;
+  let studiesByCriteria: Record<string, number[]> | undefined;
 
-  switch (section) {
-    case "Search Sources":
-      if (isLoadingArticles) {
-        content = <Text>Loading chart ...</Text>;
-        break;
-      }
+  if (isCriteriaSection) {
+    const [stagePart, criteriaPart] = section.split("_");
+    const criteriaType = criteriaPart.replace(" Criteria", "").toLowerCase();
+    const stage = stagePart === "S1" ? "selection" : "extraction";
 
-      const labels = Object.keys(sourceCountMap);
-      const totalOfStudies = Object.values(sourceCountMap);
-      const bubbleData = useBubbleChartData(filteredStudies);
+    const { studiesByStage } = useFetchStudiesByStage(stage);
+    const { studiesByCriteria: fetchedCriteria } =
+      useFetchStudiesByCriteria(criteriaType);
 
-      switch (type) {
-        case "Pie Chart":
-          content = (
-            <Box id={chartId} sx={piechartBox}>
-              <PieChart
-                title="Search Sources"
-                labels={labels}
-                data={totalOfStudies}
-              />
-            </Box>
-          );
-          break;
-        case "Bar Chart":
-          content = (
-            <Box id={chartId} sx={barchartBox}>
-              <BarChart
-                title="Search Sources"
-                labels={labels}
-                data={totalOfStudies}
-                section="searchSource"
-              />
-            </Box>
-          );
-          break;
-        case "Bubble Chart":
-          content = (
-            <Box id={chartId} sx={piechartBox}>
-              <BubbleChart
-                title="Search Sources Evolution"
-                data={bubbleData}
-                yaxisText="Número de estudos"
-              />
-            </Box>
-          );
-          break;
-        case "Table":
-          content = (
-            <Box id={chartId}>
-              <SearchSorcesTable />
-            </Box>
-          );
-          break;
-      }
-      break;
+    const stageIds =
+      criteriaType === "inclusion"
+        ? studiesByStage?.includedStudies?.ids ?? []
+        : studiesByStage?.excludedStudies?.ids ?? [];
 
-    case "S1_Inclusion Criteria":
-      content = (
-        <Box id={chartId} sx={barchartBox}>
-          <CriteriaBarChart
-            criteria="inclusion"
-            stage="selection"
-            filteredStudies={filteredStudies}
-          />
-        </Box>
-      );
-      break;
+    const filteredStudiesIds = filteredStudies
+      .map((s) =>
+        "studyReviewId" in s
+          ? s.studyReviewId
+          : "studyId" in s
+          ? s.studyId
+          : null
+      )
+      .filter((id): id is number => id !== null);
 
-    case "S1_Exclusion Criteria":
-      content = (
-        <Box id={chartId} sx={barchartBox}>
-          <CriteriaBarChart
-            criteria="exclusion"
-            stage="selection"
-            filteredStudies={filteredStudies}
-          />
-        </Box>
-      );
-      break;
-
-    case "S2_Inclusion Criteria":
-      content = (
-        <Box id={chartId} sx={barchartBox}>
-          <CriteriaBarChart
-            criteria="inclusion"
-            stage="extraction"
-            filteredStudies={filteredStudies}
-          />
-        </Box>
-      );
-      break;
-
-    case "S2_Exclusion Criteria":
-      content = (
-        <Box id={chartId} sx={barchartBox}>
-          <CriteriaBarChart
-            criteria="exclusion"
-            stage="extraction"
-            filteredStudies={filteredStudies}
-          />
-        </Box>
-      );
-      break;
-
-    case "Included Studies":
-      const includedStudies = useMemo<(StudyInterface | ArticleInterface)[]>(
-        () => {
-          return filteredStudies
-            .filter((study) => study.extractionStatus === "INCLUDED")
-            .filter((s): s is StudyInterface =>
-              filters.criteria && filters.criteria.length > 0
-                ? "criteria" in s
-                : true
-            )
-            .filter((study) =>
-              filters.criteria && filters.criteria.length > 0
-                ? study.criteria.some((c) => filters.criteria!.includes(c))
-                : true
-            );
-        },
-        [filteredStudies, filters.criteria]
-      );
-
-      switch (type) {
-        case "Table":
-          content = (
-            <Box id={chartId}>
-              <LayoutFactoryChart
-                articles={includedStudies as ArticleInterface[]}
-                isLoading={isLoadingArticles}
-              />
-            </Box>
-          );
-          break;
-        case "Line Chart":
-          content = (
-            <Box id={chartId}>
-              <IncludedStudiesLineChart filteredStudies={includedStudies} />
-            </Box>
-          );
-          break;
-      }
-      break;
-
-    case "Form Questions":
-      content = (
-        <Box id={chartId}>
-          <QuestionsCharts
-            selectedQuestionId={selectedQuestionId}
-            filteredStudies={filteredStudies as ArticleInterface[]}
-            type={type}
-          />
-        </Box>
-      );
-      break;
-
-    case "Studies Funnel":
-      content = (
-        <Box id={chartId} sx={fluxogramaBox}>
-          <StudiesFunnelChart />
-        </Box>
-      );
-      break;
+    filteredStageIds = stageIds.filter((id) => filteredStudiesIds.includes(id));
+    studiesByCriteria = fetchedCriteria?.criteria;
   }
 
-return (
-  <Box
-    position="relative"
-    sx={
-      section === "Included Studies" && type === "Table"
-        ? undefined
-        : graphicsconteiner
-    }
-  >
-    {content}
+  if (isLoading) return <Box>Loading...</Box>;
 
-    {section !== "Studies Funnel" && (
-      <Box
-        position="absolute"
-        bottom="1.5rem"
-        right="1.5rem"
-       
-      >
-        <DownloadChartsButton fileName={section} selector={`#${chartId}`}/>
-      </Box>
-    )}
-  </Box>
-);
+  const chartId = `chart-${section.replace(/\s+/g, "-").toLowerCase()}`;
 
+  // Map de renderers
+  const rendererMap: Record<string, any> = {
+    "Search Sources": (props: any) => (
+      <SearchSourcesRenderer {...props} chartId={chartId} />
+    ),
+    "Included Studies": (props: any) => (
+      <IncludedStudiesRenderer {...props} chartId={chartId} />
+    ),
+    "S1_Inclusion Criteria": (props: any) => (
+      <CriteriaRenderer
+        {...props}
+        stage="selection"
+        criteria="inclusion"
+        chartId={chartId}
+      />
+    ),
+    "S1_Exclusion Criteria": (props: any) => (
+      <CriteriaRenderer
+        {...props}
+        stage="selection"
+        criteria="exclusion"
+        chartId={chartId}
+      />
+    ),
+    "S2_Inclusion Criteria": (props: any) => (
+      <CriteriaRenderer
+        {...props}
+        stage="extraction"
+        criteria="inclusion"
+        chartId={chartId}
+      />
+    ),
+    "S2_Exclusion Criteria": (props: any) => (
+      <CriteriaRenderer
+        {...props}
+        stage="extraction"
+        criteria="exclusion"
+        chartId={chartId}
+      />
+    ),
+    "Form Questions": (props: any) => (
+      <FormQuestionsRenderer
+        {...props}
+        chartId={chartId}
+        selectedQuestionId={selectedQuestionId}
+      />
+    ),
+    "Studies Funnel": () => <StudiesFunnelRenderer chartId={chartId} />,
+    Protocol: () => <ProtocolRenderer />,
+  };
+
+  const Renderer = rendererMap[section];
+  if (!Renderer) return <Box>Seção não encontrada</Box>;
+
+  return (
+    <Box
+      pt={"1rem"}
+      sx={{
+        ...graphicsconteiner,
+        p:
+          section === "Included Studies" ||
+          (section === "Search Sources" && type === "Table")
+            ? undefined
+            : "2rem",
+        boxShadow: "md",
+      }}
+    >
+      <Renderer
+        filteredStudies={filteredStudies}
+        type={type}
+        onCsvData={handleCsvData}
+      />
+
+      {section !== "Studies Funnel" && section !== "Protocol" && (
+        <Flex w="100%" justifyContent="flex-end" p="1rem">
+          <DownloadChartsButton
+            selector={`#${chartId}`}
+            fileName={section}
+            onDownloadCsv={() => {
+              if (section === "Form Questions") {
+                downloadCSV(
+                  "questions",
+                  buildQuestionsCsv(
+                    extractionAnswers,
+                    filteredStudies as ArticleInterface[],
+                    selectedQuestionId
+                  )
+                );
+              } else {
+                downloadCSV(
+                  section,
+                  getCsvData(
+                    section,
+                    filteredStudies,
+                    type,
+                    filteredStageIds,
+                    studiesByCriteria
+                  )
+                );
+              }
+            }}
+          />
+        </Flex>
+      )}
+    </Box>
+  );
 }

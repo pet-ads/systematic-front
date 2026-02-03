@@ -23,10 +23,10 @@ export default function BubbleChart({ title, data, width = 900 ,heigth=500,yaxis
   download: true,
   selection: false,
   zoom: false,
-  zoomin: false,
-  zoomout: false,
+  zoomin: true,
+  zoomout: true,
   pan: false,
-  reset: false,
+  reset: false
           },
         },
     },
@@ -46,10 +46,10 @@ export default function BubbleChart({ title, data, width = 900 ,heigth=500,yaxis
     },
     xaxis: {
       type: "category",
-      labels: {
-        rotate: 0,
-      },
+      labels: { rotate: 0 },
     },
+
+
     yaxis: {
       title: {
         text: yaxisText,

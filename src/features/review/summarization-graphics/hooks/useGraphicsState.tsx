@@ -54,7 +54,8 @@ export function useGraphicsState() {
     "S2_Inclusion Criteria": ["Bar Chart"],
     "S2_Exclusion Criteria": ["Bar Chart"],
     "Studies Funnel": [],
-    "Included Studies": ["Line Chart", "Table"],
+    "Included Studies": ["Line Chart", "Table","Bubble Chart"],
+    "Download Protocol": []
   };
 
   const filtersBySection: Record<string, FilterType[]> = {
@@ -66,6 +67,7 @@ export function useGraphicsState() {
     "Studies Funnel": [],
     "Included Studies": ["Start Year", "End Year", "Source","Criteria"],
     "Form Questions": ["Start Year", "End Year", "Source"],
+    "Download Protocol": []
   };
 
   const handleSectionChange = (newSection: string) => {

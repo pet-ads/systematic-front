@@ -1,19 +1,23 @@
-export function downloadCSV(data: Array<Record<string, any>>, fileName: string) {
-  if (!data || data.length === 0) return;
+export function downloadCSV(filename: string, rows: Record<string, any>[]) {
+  if (!rows || rows.length === 0) return;
 
-  const headers = Object.keys(data[0]);
-  const csvRows = [
-    headers.join(","), 
-    ...data.map(row => headers.map(header => `"${row[header]}"`).join(",")) // Valores
-  ];
+  const headers = Object.keys(rows[0]);
 
-  const csvString = csvRows.join("\n");
-  const blob = new Blob([csvString], { type: "text/csv;charset=utf-8;" });
-  const link = document.createElement("a");
+  const csv = [
+    headers.join(","),
+    ...rows.map((row) =>
+      headers.map(h => `"${String(row[h]).replace(/"/g, '""')}"`)
+
+    ),
+  ].join("\n");
+
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
   const url = URL.createObjectURL(blob);
 
-  link.href = url;
-  link.setAttribute("download", `${fileName}.csv`);
-  link.click();
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `${filename}.csv`;
+  a.click();
+
   URL.revokeObjectURL(url);
 }
