@@ -63,7 +63,8 @@ export default function InfosTable({
     const codes = getAllCodes(editIdx);
     if (codeToSave && codes.includes(codeToSave)) {
       toaster({
-        title: `O código de referência '${codeToSave}' já está em uso. Escolha outro.`,
+        title: `The reference code '${codeToSave}' is already in use.`,
+        description: "Please choose another one.",
         status: "error",
       });
       return false;
@@ -109,7 +110,8 @@ export default function InfosTable({
 
     if (code && existingCodes.includes(code)) {
       toaster({
-        title: `O código de referência '${code}' já está em uso. Escolha outro.`,
+        title: `The reference code '${code}' is already in use.`,
+        description: "Please choose another one.",
         status: "error",
       });
       return true;
