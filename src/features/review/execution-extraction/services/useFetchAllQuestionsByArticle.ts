@@ -2,7 +2,7 @@
 import { useContext, useEffect, useState } from "react";
 
 // Context
-import StudySelectionContext from "@features/review/shared/context/StudiesSelectionContext";
+import StudyContext from "@features/review/shared/context/StudiesContext";
 
 // Hooks
 import useFetchIncludedStudiesAnswers from "./useFetchIncludedStudiesAnswers";
@@ -21,21 +21,19 @@ export default function useFetchAllQuestionsByArticle() {
     Record<number, ArticleAnswerStrucuture>
   >({});
 
-  const selectionContext = useContext(StudySelectionContext);
+  const studiesContext = useContext(StudyContext);
 
-  const articleId = selectionContext
-    ? selectionContext.selectedArticleReview
-    : -1;
+  const articleId = studiesContext ? studiesContext.selectedArticleReview : -1;
 
   const { question, mutate, isLoading } = useFetchIncludedStudiesAnswers({
     articleId,
   });
 
   const handlerUpdateAnswerStructure = (
-    articleId: number = Number(selectionContext?.selectedArticleReview) || -1,
+    articleId: number = Number(studiesContext?.selectedArticleReview) || -1,
     questionId: string,
     type: FormType,
-    response: AnswerProps
+    response: AnswerProps,
   ) => {
     const key = type === "EXTRACTION" ? "extractionQuestions" : "robQuestions";
 
@@ -43,7 +41,7 @@ export default function useFetchAllQuestionsByArticle() {
     if (!article) return;
 
     const updatedQuestions = article[key].map((quest) =>
-      quest.questionId === questionId ? { ...quest, answer: response } : quest
+      quest.questionId === questionId ? { ...quest, answer: response } : quest,
     );
 
     const updatedArticle: ArticleAnswerStrucuture = {
@@ -86,7 +84,7 @@ export default function useFetchAllQuestionsByArticle() {
       if (prev[articleId]) return prev;
 
       const mapToStructure = (
-        questions: QuestionAnswer[]
+        questions: QuestionAnswer[],
       ): AnswerStrucuture[] =>
         questions.map((quest) => {
           let formattedAnswer = quest.answer;
@@ -124,7 +122,7 @@ export default function useFetchAllQuestionsByArticle() {
         [articleId]: structuredAnswers,
       };
     });
-  }, [question, articleId, articlesStructureAnswers]);
+  }, [question, articleId]);
 
   return {
     question: articlesStructureAnswers,

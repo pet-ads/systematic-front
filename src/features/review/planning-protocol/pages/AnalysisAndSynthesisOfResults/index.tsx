@@ -19,7 +19,7 @@ export default function AnalysisAndSynthesisOfResults() {
 
   return (
     <ProtocolFormLayout
-      headerText="Protocol: Analysis And Synthesis Of Results"
+      headerText="Protocol: Analysis and Synthesis of Results"
       navButtons={(
         <>
           <NavButton

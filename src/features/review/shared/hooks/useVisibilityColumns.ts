@@ -49,6 +49,12 @@ export default function useVisibiltyColumns({
     if (page === "Extraction") {
       visibility.selectionStatus = null;
     }
+    if (page === "Identification"){
+      visibility.selectionStatus = null;
+      visibility.extractionStatus = null;
+      visibility.score = false;
+      visibility.readingPriority = false;
+    }
     return visibility;
   }, [page]);
 

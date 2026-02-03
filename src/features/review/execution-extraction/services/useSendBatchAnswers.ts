@@ -5,16 +5,16 @@ import { useContext } from "react";
 import Axios from "../../../../infrastructure/http/axiosClient";
 
 // Context
-import StudySelectionContext from "@features/review/shared/context/StudiesSelectionContext";
+import StudyContext from "@features/review/shared/context/StudiesContext";
 
 // Types
 import type { SendAnswerProps } from "../types";
 
 export function useSendBatchAnswers() {
-  const selectionContext = useContext(StudySelectionContext);
+  const studiesContext = useContext(StudyContext);
 
   const sendBatchAnswers = async ({ answers }: SendAnswerProps) => {
-    if (!selectionContext) {
+    if (!studiesContext) {
       console.warn(
         "Context not available, cannot send answer from the question."
       );
@@ -22,7 +22,7 @@ export function useSendBatchAnswers() {
     }
     try {
       const id = localStorage.getItem("systematicReviewId");
-      const path = `systematic-study/${id}/study-review/${selectionContext.selectedArticleReview}/batch-answer-question`;
+      const path = `systematic-study/${id}/study-review/${studiesContext.selectedArticleReview}/batch-answer-question`;
       await Axios.patch(path, {
         answers,
       });

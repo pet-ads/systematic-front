@@ -1,12 +1,4 @@
 import {
-  Table,
-  TableContainer,
-  Thead,
-  Tr,
-  Td,
-  Tbody,
-  Tfoot,
-  Th,
   Text,
 } from "@chakra-ui/react";
 import { useEffect, useMemo, useState } from "react";
@@ -14,11 +6,11 @@ import { useEffect, useMemo, useState } from "react";
 import { fetchStudiesBySource, HttpResponse } from "@features/review/summarization-graphics/services/fetchStudiesBySources";
 import useGetAllReviewArticles from "@features/review/shared/services/useGetAllReviewArticles";
 import useFetchDataBases from "@features/review/shared/services/useFetchDataBases";
+import { ColumnDef, GenericExpandedTable } from "../ChartTable/GenericExpandedTable";
 
-type Column = {
-  label: string;
-};
-type Descripition = {
+
+type SearchSourceRow = {
+  source: string;
   included: number;
   excluded: number;
   total: number;
@@ -26,27 +18,24 @@ type Descripition = {
   precisionRate: number;
 };
 
+type Description = {
+  included: number;
+  excluded: number;
+  total: number;
+};
+
 export const SearchSorcesTable = () => {
   const { databases } = useFetchDataBases();
-  const [isLoading, setIsLoading] = useState(true);
   const { articles } = useGetAllReviewArticles();
   const [studiesData, setStudiesData] = useState<HttpResponse[]>([]);
-  const [dataStatistics, setDataStatistics] = useState<Descripition>({
+  const [isLoading, setIsLoading] = useState(true);
+  const [dataStatistics, setDataStatistics] = useState<Description>({
     included: 0,
     excluded: 0,
     total: 0,
-    indexingRate: 0,
-    precisionRate: 0,
   });
 
-  const columns: Column[] = [
-    { label: "Source" },
-    { label: "Included" },
-    { label: "Excluded" },
-    { label: "Total" },
-    { label: "Indexing Rate" },
-    { label: "Precision Rate" },
-  ];
+
   useEffect(() => {
     const loadData = async () => {
       setIsLoading(true);
@@ -58,11 +47,11 @@ export const SearchSorcesTable = () => {
       setStudiesData(data);
       setIsLoading(false);
     };
-
-    loadData(); 
+    loadData();
   }, [databases]);
 
-    const { includedStudiesBySource,totalIncludedFromSources} = useMemo(() => {
+
+  const { includedStudiesBySource} = useMemo(() => {
     const includedArticles = articles.filter((a) => a.selectionStatus === "INCLUDED");
     const counts: Record<string, number> = {};
 
@@ -72,74 +61,48 @@ export const SearchSorcesTable = () => {
       });
     });
 
-    const total = Object.values(counts).reduce((sum, data) => sum + data, 0);
+    const total = Object.values(counts).reduce((sum, val) => sum + val, 0);
 
-    return {
-        includedStudiesBySource: counts,
-      totalIncludedFromSources: total,
-    };
+    return { includedStudiesBySource: counts, totalIncludedFromSources: total };
   }, [articles]);
 
   useEffect(() => {
-    const includedTotal = studiesData.reduce((sum, data) => sum + data.included.length,0);
-    const excludedTotal = studiesData.reduce((sum, data) => sum + data.excluded.length,0);
-    const total = studiesData.reduce((sum, data) => sum + data.totalOfStudies,0);
-    const indexingRate =includedTotal > 0? (totalIncludedFromSources / includedTotal) * 100: 0
-    const precisionRate = total > 0 ? ((includedTotal / total) * 100): 0;
+    const includedTotal = studiesData.reduce((sum, data) => sum + data.included.length, 0);
+    const excludedTotal = studiesData.reduce((sum, data) => sum + data.excluded.length, 0);
+    const total = studiesData.reduce((sum, data) => sum + data.totalOfStudies, 0);
 
     setDataStatistics({
       included: includedTotal,
       excluded: excludedTotal,
-      total: total,
-      indexingRate: indexingRate,
-      precisionRate: precisionRate,
+      total,
     });
   }, [studiesData]);
 
+  if (isLoading) return <Text>Loading table...</Text>;
 
+  const rows: SearchSourceRow[] = studiesData.map((data) => {
+    const includedCount = includedStudiesBySource[data.source] ?? 0;
+    const indexingRate = dataStatistics.included > 0 ? (includedCount / dataStatistics.included) * 100 : 0;
+    const precisionRate = data.totalOfStudies > 0 ? (data.included.length / data.totalOfStudies) * 100 : 0;
 
-  if(isLoading) return <Text>Loading table...</Text>
+    return {
+      source: data.source,
+      included: includedCount,
+      excluded: data.excluded.length,
+      total: data.totalOfStudies,
+      indexingRate,
+      precisionRate,
+    };
+  });
 
+  const columns: ColumnDef<SearchSourceRow>[] = [
+    { key: "source", label: "Source", width: 200, sortable: true },
+    { key: "included", label: "Included", width: 100, isNumeric: true, sortable: true },
+    { key: "excluded", label: "Excluded", width: 100, isNumeric: true, sortable: true },
+    { key: "total", label: "Total", width: 100, isNumeric: true, sortable: true },
+    { key: "indexingRate", label: "Indexing Rate", width: 120, isNumeric: true, sortable: true, render: (row) => row.indexingRate.toFixed(2) + "%" },
+    { key: "precisionRate", label: "Precision Rate", width: 120, isNumeric: true, sortable: true, render: (row) => row.precisionRate.toFixed(2) + "%" },
+  ];
 
-  return (
-    <TableContainer>
-      <Table variant="simple">
-        <Thead>
-          <Tr>
-            {columns.map((column) => (
-              <Th key={column.label}>{column.label} </Th>
-            ))}
-          </Tr>
-        </Thead>
-        <Tbody>
-          {studiesData.map((data) => {
-            const indexingRate = totalIncludedFromSources > 0 ? ( includedStudiesBySource[data.source] ?? 0) / dataStatistics.included * 100: 0;
-            const precisionRate=  data.totalOfStudies > 0 ? ((data.included.length / data.totalOfStudies) * 100): 0;
-
-            return (
-              <Tr key={data.source} _hover={{ bg: "gray.300" }}>
-                <Td>{data.source}</Td>
-                <Td isNumeric>{includedStudiesBySource[data.source] ?? 0}</Td>
-                <Td isNumeric>{data.excluded.length}</Td>
-                <Td isNumeric>{data.totalOfStudies}</Td>
-                <Td isNumeric>{indexingRate.toFixed(2)}%</Td>
-                <Td isNumeric>{precisionRate.toFixed(2)}%</Td>
-              </Tr>
-            );
-          })}
-        </Tbody>
-<Tfoot bg="gray.300" fontWeight="bold">
-  <Tr>
-    <Td>All Studies</Td>
-    <Td isNumeric>{dataStatistics.included}</Td>
-    <Td isNumeric>{dataStatistics.excluded}</Td>
-    <Td isNumeric>{dataStatistics.total}</Td>
-    <Td isNumeric>{dataStatistics.indexingRate.toFixed(2)}%</Td>
-    <Td isNumeric>{dataStatistics.precisionRate.toFixed(2)}%</Td>
-  </Tr>
-</Tfoot>
-      </Table>
-    </TableContainer>
-  );
+  return <GenericExpandedTable<SearchSourceRow> data={rows} columns={columns}/>;
 };
-

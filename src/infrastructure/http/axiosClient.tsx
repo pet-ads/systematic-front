@@ -46,12 +46,19 @@ Axios.interceptors.response.use(
     };
 
     if (!error.response) {
-      return Promise.reject(error); 
+      return Promise.reject(error);
     }
 
     const { status } = error.response;
-
     const authCodes = [ERROR_CODE.unauthorized, ERROR_CODE.forbidden];
+
+    if (error.config?.url?.includes("auth/refresh")) {
+      useAuthStore.getState().logout();
+      if (window.location.pathname !== "/login") {
+        window.location.href = "/login";
+      }
+      return Promise.reject(error);
+    }
 
     if (authCodes.every((code) => code !== status) || originalRequest._retry) {
       return Promise.reject(error);
@@ -64,6 +71,9 @@ Axios.interceptors.response.use(
 
       if (isLeft(result)) {
         useAuthStore.getState().logout();
+        if (window.location.pathname !== "/login") {
+          window.location.href = "/login";
+        }
         return Promise.reject(result.value);
       }
 
@@ -76,6 +86,9 @@ Axios.interceptors.response.use(
       return Axios(originalRequest);
     } catch (err) {
       useAuthStore.getState().logout();
+      if (window.location.pathname !== "/login") {
+        window.location.href = "/login";
+      }
       return Promise.reject(err);
     }
   }

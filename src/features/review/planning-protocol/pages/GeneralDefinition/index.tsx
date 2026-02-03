@@ -19,22 +19,34 @@ export default function GeneralDefinition() {
     handlePut,
     isReturn,
     isTitleValid,
+    isDescriptionValid,
+    isObjectivesValid,
   } = useCreateReview();
 
   const { title, description, objectives } = generalDefinition;
 
+  const isFormComplete = isTitleValid && isDescriptionValid && isObjectivesValid;
+
   return (
     <ProtocolFormLayout
       headerText="Protocol: General Definition"
-      navButtons={(
+      navButtons={
         <>
           {!isReturn ? (
-            <NavButton event={handlePost} text="Create new Review" />
+            <NavButton
+              event={handlePost}
+              text="Create new Review"
+              isDisabled={!isFormComplete}
+            />
           ) : (
-            <NavButton event={handlePut} text="Next" />
+            <NavButton
+              event={handlePut}
+              text="Next"
+              isDisabled={!isFormComplete}
+            />
           )}
         </>
-      )}
+      }
     >
       {isTitleValid ? (
         <InputText
@@ -63,23 +75,56 @@ export default function GeneralDefinition() {
         />
       )}
 
-      <InputTextArea
-        value={description}
-        label="Description"
-        placeholder="Enter review description"
-        onChange={(event) =>
-          handleChangeGeneralDefinition("description", event.target.value)
-        }
-      />
+      {/* CAMPO: DESCRIPTION */}
+      {isDescriptionValid ? (
+        <InputTextArea
+          value={description}
+          label="Description"
+          placeholder="Enter review description"
+          onChange={(event) =>
+            handleChangeGeneralDefinition("description", event.target.value)
+          }
+        />
+      ) : (
+        <AlertInputText
+          border="red"
+          value={description}
+          label="Description is required"
+          placeholder="Enter review description"
+          type="text"
+          nome="text"
+          onChange={(event) =>
+            handleChangeGeneralDefinition("description", event.target.value)
+          }
+          labelAbove={true}
+        />
+      )}
 
-      <InputTextArea
-        value={objectives}
-        label="Objectives"
-        placeholder="What are your goals?"
-        onChange={(event) =>
-          handleChangeGeneralDefinition("objectives", event.target.value)
-        }
-      />
+      {/* CAMPO: OBJECTIVES */}
+      {isObjectivesValid ? (
+        <InputTextArea
+          value={objectives}
+          label="Objectives"
+          placeholder="What are your goals?"
+          onChange={(event) =>
+            handleChangeGeneralDefinition("objectives", event.target.value)
+          }
+        />
+      ) : (
+        <AlertInputText
+          border="red"
+          value={objectives}
+          label="Objectives are required"
+          placeholder="What are your goals?"
+          type="text"
+          nome="text"
+          onChange={(event) =>
+            handleChangeGeneralDefinition("objectives", event.target.value)
+          }
+          labelAbove={true}
+        />
+      )}
+
       <ResearcherFilter />
     </ProtocolFormLayout>
   );

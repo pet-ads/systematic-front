@@ -3,7 +3,6 @@ import PieChart from "../../../../components/charts/PieChart";
 import BarChart from "../../../../components/charts/BarChart";
 import { QuestionsTable } from "../../../../components/tables/QuestionsTable";
 import useFetchQuestionAnswers from "../../../../services/useFetchQuestionAnwers";
-import { barchartBox } from "../../styles";
 import ArticleInterface from "@features/review/shared/types/ArticleInterface";
 
 type Props = {
@@ -17,11 +16,11 @@ type Question = {
   code: string;
   description: string;
   questionType:
-  | "TEXTUAL"
-  | "LABELED_SCALE"
-  | "NUMBERED_SCALE"
-  | "PICK_LIST"
-  | "PICK_MANY";
+    | "TEXTUAL"
+    | "LABELED_SCALE"
+    | "NUMBERED_SCALE"
+    | "PICK_LIST"
+    | "PICK_MANY";
   scales: Record<string, number> | null;
   higher: number | null;
   lower: number | null;
@@ -61,7 +60,7 @@ function updateData(
   return labels.map((label) =>
     entries.find(([entryLabel]) => entryLabel === label.toString())
       ? entries.find(([entryLabel]) => entryLabel === label.toString())![1]
-        .length
+          .length
       : 0
   );
 }
@@ -91,11 +90,11 @@ export const QuestionsCharts = ({
 
   const filteredAnswers = selectedQuestionId
     ? extractionAnswers.filter(
-      (q) => q.question.questionId === selectedQuestionId
-    )
+        (q) => q.question.questionId === selectedQuestionId
+      )
     : extractionAnswers.length
-      ? [extractionAnswers[0]]
-      : [];
+    ? [extractionAnswers[0]]
+    : [];
 
   if (filteredAnswers.length === 0)
     return (
@@ -113,17 +112,18 @@ export const QuestionsCharts = ({
         const code = question.code;
         const description = question.description;
 
-const filteredEntries = Object.entries(q.answer ?? {}).map(([label, ids]) => {
-  const idsArray = Array.isArray(ids) ? ids : [];
-  const filteredIds = idsArray
-    .map((id) => Number(id)) // 🔹 converte tudo para número
-    .filter((id) => filteredStudyIds.has(id));
-  return [label, filteredIds] as [string, number[]];
-});
+        const filteredEntries = Object.entries(q.answer ?? {}).map(
+          ([label, ids]) => {
+            const idsArray = Array.isArray(ids) ? ids : [];
+            const filteredIds = idsArray
+              .map((id) => Number(id)) // 🔹 converte tudo para número
+              .filter((id) => filteredStudyIds.has(id));
+            return [label, filteredIds] as [string, number[]];
+          }
+        );
 
-const filteredAnswer: Record<string, number[]> = Object.fromEntries(filteredEntries);
-
-
+        const filteredAnswer: Record<string, number[]> =
+          Object.fromEntries(filteredEntries);
 
         const labels = updateLabel(question);
         const data = updateData(labels, filteredEntries, question.questionType);
@@ -144,15 +144,11 @@ const filteredAnswer: Record<string, number[]> = Object.fromEntries(filteredEntr
             />
           );
         } else {
-
           chartContent = <QuestionsTable data={filteredAnswer} />;
         }
 
         return (
-          <Box
-            key={question.questionId}
-            sx={type === "Bar Chart" ? barchartBox : undefined}
-          >
+          <Box key={question.questionId}>
             <Text mb={2} fontWeight="bold">
               {description}
             </Text>

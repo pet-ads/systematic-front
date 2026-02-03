@@ -2,17 +2,18 @@ import { FormControl, Menu, MenuButton, MenuList, MenuItem, Button, HStack, Text
 import { CheckCircleIcon, ChevronDownIcon, QuestionIcon, WarningIcon } from "@chakra-ui/icons";
 import { useEffect, useRef, useState, ReactNode } from "react";
 import { FaRegCircle } from "react-icons/fa";
-import type ArticleInterface from "@features/review/shared/types/ArticleInterface";
 import { IoIosCloseCircle } from "react-icons/io";
+import type ArticleInterface from "@features/review/shared/types/ArticleInterface";
 
 type StatusKey = "INCLUDED" | "DUPLICATED" | "EXCLUDED" | "UNCLASSIFIED";
 
 interface StatusSelectProps {
-  articles: ArticleInterface[];
+  articles?: ArticleInterface[]; 
   selectedValue: string | null;
   onSelect: (value: string | null) => void;
   page: "Selection" | "Extraction";
   placeholder?: string;
+  totalCount?: number; 
 }
 
 const colors = {
@@ -34,62 +35,67 @@ const getIcon = (status: string) => {
   const cfg = iconConfig[status.toLowerCase() as Lowercase<StatusKey>];
   if (!cfg) return <FaRegCircle color="gray" />;
   return (
-    <Box
-      display="flex"
-      alignItems="center"
-      justifyContent="center"
-      w="20px"
-      h="20px"
-      borderRadius="50%"
-      bg={cfg.bg}
-    >
+    <Box display="flex" alignItems="center" justifyContent="center" w="20px" h="20px" borderRadius="50%" bg={cfg.bg}>
       {cfg.icon}
     </Box>
   );
 };
 
 export default function StatusSelect({
-  articles,
+  articles = [],
   selectedValue,
   onSelect,
   page,
   placeholder = "Select status",
+  totalCount,
 }: StatusSelectProps) {
   const btnRef = useRef<HTMLButtonElement | null>(null);
   const [menuWidth, setMenuWidth] = useState<number>(0);
 
+  const isClientSide = articles.length > 0;
+
   const counts: Record<StatusKey, number> = {
-    INCLUDED: 0,
-    DUPLICATED: 0,
-    EXCLUDED: 0,
-    UNCLASSIFIED: 0,
+    INCLUDED: 0, DUPLICATED: 0, EXCLUDED: 0, UNCLASSIFIED: 0,
   };
 
-  articles.forEach((a) => {
-    const status =
-      page === "Selection" ? a.selectionStatus : a.extractionStatus;
-    if (status && counts[status as StatusKey] !== undefined) {
-      counts[status as StatusKey] += 1;
-    }
-  });
+  if (isClientSide) {
+    articles.forEach((a) => {
+      const status = page === "Selection" ? a.selectionStatus : a.extractionStatus;
+      if (status && counts[status as StatusKey] !== undefined) {
+        counts[status as StatusKey] += 1;
+      }
+    });
+  }
 
   const options = [
-    { value: "INCLUDED", label: `Included (${counts.INCLUDED})` },
-    { value: "DUPLICATED", label: `Duplicated (${counts.DUPLICATED})` },
-    { value: "EXCLUDED", label: `Excluded (${counts.EXCLUDED})` },
-    { value: "UNCLASSIFIED", label: `Unclassified (${counts.UNCLASSIFIED})` },
+    { value: "INCLUDED", label: "Included" },
+    { value: "DUPLICATED", label: "Duplicated" },
+    { value: "EXCLUDED", label: "Excluded" },
+    { value: "UNCLASSIFIED", label: "Unclassified" },
   ];
 
-  const selectedLabel = selectedValue
-    ? options.find((o) => o.value === selectedValue)?.label
-    : placeholder;
+  const getLabel = (optionLabel: string, optionValue: string) => {
+    if (isClientSide) {
+      return `${optionLabel} (${counts[optionValue as StatusKey]})`;
+    }
+    if (selectedValue === optionValue && totalCount !== undefined) {
+      return `${optionLabel} (${totalCount})`;
+    }
+    return optionLabel;
+  };
+
+  const selectedOption = options.find((o) => o.value === selectedValue);
+  let buttonLabel = placeholder;
+  if (selectedOption) {
+    buttonLabel = getLabel(selectedOption.label, selectedOption.value);
+  }
 
   useEffect(() => {
     const update = () => setMenuWidth(btnRef.current?.offsetWidth ?? 0);
     update();
     window.addEventListener("resize", update);
     return () => window.removeEventListener("resize", update);
-  }, [selectedLabel]);
+  }, [buttonLabel]);
 
   return (
     <FormControl w="20rem">
@@ -104,7 +110,7 @@ export default function StatusSelect({
           textAlign="left"
           fontWeight="normal"
         >
-          {selectedLabel}
+          {buttonLabel}
         </MenuButton>
         <Portal>
           <MenuList
@@ -118,6 +124,8 @@ export default function StatusSelect({
           >
             {options.map((opt) => {
               const isSelected = opt.value === selectedValue;
+              const displayLabel = getLabel(opt.label, opt.value);
+              
               return (
                 <MenuItem
                   key={opt.value}
@@ -129,23 +137,15 @@ export default function StatusSelect({
                   <HStack w="100%" spacing={3}>
                     {getIcon(opt.value)}
                     <Text flex="1" textAlign="left" color={colors.text}>
-                      {opt.label.replace(/\s*\(\d+\)/, "")}
+                      {displayLabel}
                     </Text>
-                    <Box minW="2rem" textAlign="right" color={colors.text}>
-                      {opt.label.match(/\((\d+)\)/)?.[1]}
-                    </Box>
                   </HStack>
                 </MenuItem>
               );
             })}
             <Divider borderColor="gray.300" />
             <MenuItem onClick={() => onSelect(null)} w="100%">
-              <Text
-                flex={1}
-                textAlign="center"
-                fontWeight="semibold"
-                color={colors.clearFilters}
-              >
+              <Text flex={1} textAlign="center" fontWeight="semibold" color={colors.clearFilters}>
                 Clear filters
               </Text>
             </MenuItem>

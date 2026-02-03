@@ -3,12 +3,11 @@ import { useContext, useMemo, useState } from "react";
 import { Box, Flex } from "@chakra-ui/react";
 
 // Context
-import StudySelectionContext from "@features/review/shared/context/StudiesSelectionContext";
+import StudySelectionContext from "@features/review/shared/context/StudiesContext";
 
 // Hooks
 import useInputState from "@features/review/shared/hooks/useInputState";
 import useLayoutPage from "../../../shared/hooks/useLayoutPage";
-import { useFilterReviewArticles } from "../../../shared/hooks/useFilterReviewArticles";
 import useVisibiltyColumns from "@features/review/shared/hooks/useVisibilityColumns";
 
 // Components
@@ -33,8 +32,10 @@ export default function Extraction() {
   const [showSelected, setShowSelected] = useState<boolean>(false);
   const [fetchedTotalPages, setFetchedTotalPages] = useState<number>(1);
   const selectionContext = useContext(StudySelectionContext);
+
   const { value: selectedStatus, handleChange: handleSelectChange } =
     useInputState<string | null>(null);
+
   const { layout, handleChangeLayout } = useLayoutPage();
   const { columnsVisible, toggleColumnVisibility } = useVisibiltyColumns({
     page: "Extraction",
@@ -54,6 +55,8 @@ export default function Extraction() {
     useFetchExtractionArticles({
       page: currentPage - 1,
       size: itensPerPage,
+      search: searchString,
+      status: selectedStatus,
     });
 
   if (totalPages && totalPages !== fetchedTotalPages) {
@@ -62,22 +65,15 @@ export default function Extraction() {
 
   const safeSelectedArticles = selectionContext?.selectedArticles ?? {};
 
-  const startFilteredArticles = useFilterReviewArticles(
-    searchString,
-    selectedStatus,
-    articles,
-    "Extraction"
-  );
-
   const finalFilteredArticles = useMemo(() => {
     if (showSelected && Object.keys(safeSelectedArticles).length > 0) {
       const selectedIds = Object.keys(safeSelectedArticles).map(Number);
-      return startFilteredArticles.filter((article) =>
-        selectedIds.includes(article.studyReviewId)
+      return articles.filter((article) =>
+        selectedIds.includes(article.studyReviewId),
       );
     }
-    return startFilteredArticles;
-  }, [showSelected, startFilteredArticles, safeSelectedArticles]);
+    return articles;
+  }, [showSelected, articles, safeSelectedArticles]);
 
   return (
     <FlexLayout navigationType="Accordion">
@@ -90,13 +86,16 @@ export default function Extraction() {
           mb="2rem"
         >
           <Header text="Extraction" />
-          <SelectLayout handleChangeLayout={handleChangeLayout} />
+          <SelectLayout
+            handleChangeLayout={handleChangeLayout}
+            layout={layout}
+          />
         </Flex>
         <Box sx={inputconteiner}>
           <Flex gap="1rem" w="1rem" justifyContent="space-between">
             <InputText
               type="search"
-              placeholder="Insert article atribute"
+              placeholder="Insert article attribute"
               nome="search"
               onChange={(e) => setSearchString(e.target.value)}
               value={searchString}
@@ -119,11 +118,11 @@ export default function Extraction() {
               toggleColumnVisibility={toggleColumnVisibility}
             />
             <StatusSelect
-              articles={articles}
               selectedValue={selectedStatus}
               onSelect={handleSelectChange}
               page="Extraction"
               placeholder="Extraction status"
+              totalCount={totalElements}
             />
           </Box>
         </Box>
@@ -138,6 +137,7 @@ export default function Extraction() {
           articles={finalFilteredArticles}
           columnsVisible={columnsVisible}
           layout={layout}
+          handleChangeLayout={handleChangeLayout}
           isLoading={isLoading}
           pagination={{
             currentPage,

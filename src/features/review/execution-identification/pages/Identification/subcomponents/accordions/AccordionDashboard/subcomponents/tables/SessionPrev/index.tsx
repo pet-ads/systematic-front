@@ -2,8 +2,6 @@ import { Link } from "react-router-dom";
 import useToaster from "@components/feedback/Toaster";
 import { motion } from "framer-motion";
 
-import { InvalidEntry } from "@features/review/shared/context/StudiesSelectionContext";
-
 import {
   createFileToInvalidEntries,
   downloadFile,
@@ -14,6 +12,7 @@ import { Flex, Button, Text, Tr, Td } from "@chakra-ui/react";
 import { FaRegEye } from "react-icons/fa6";
 import { IoEyeOffOutline } from "react-icons/io5";
 import { MdOutlineSdCardAlert } from "react-icons/md";
+import { InvalidEntry } from "@features/review/shared/types/StudiesContextInterface";
 
 interface actionsModal {
   action: "create" | "update";
@@ -89,7 +88,7 @@ const SessionPrev = ({
           {numberOfStudies && numberOfStudies > 0 ? (
             <Button
               as={Link}
-              to={`/review/execution/identification/${sessionId}`}
+              to={`/review/execution/identification/${sessionId}?totalItems=${numberOfStudies}`}
               colorScheme="gray"
               height="35px"
               flex={1}

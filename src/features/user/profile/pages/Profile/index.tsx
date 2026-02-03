@@ -176,7 +176,7 @@ export default function Profile() {
   return (
     <FlexLayout navigationType="Default">
       <Header text="My Profile" />
-      <CardDefault backgroundColor="white" borderRadius="1rem" withShadow>
+      <CardDefault backgroundColor="white" borderRadius="1rem" withShadow={false}>
         {isLoading ? (
           <SkeletonLoader width="100%" height="100%" />
         ) : (
@@ -221,31 +221,41 @@ export default function Profile() {
                 {isActiveUpdateMode ? (
                   <Button
                     onClick={handleSetModeScreen}
-                    bg={"gray.800"}
-                    color={"white"}
-                    variant={"solid"}
+                    leftIcon={<CloseIcon fontSize=".75rem" />}
+                    bgColor="transparent"
+                    color="red.500"
+                    border="1px solid"
+                    borderColor="red.500"
+                    borderRadius="8px"
+                    boxShadow="0 2px 4px rgba(0, 0, 0, 0.05)"
                     _hover={{
-                      bg: "black",
+                      bgColor: "red.500",
+                      color: "white",
+                      boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
                     }}
-                    gap=".5rem"
+                    transition="all 0.3s ease"
                     width="6.5rem"
+                    gap=".5rem"
                   >
-                    <CloseIcon fontSize=".75rem" />
                     Cancel
                   </Button>
                 ) : (
                   <Button
                     onClick={handleSetModeScreen}
-                    bg={"transparent"}
-                    color={"gray.800"}
-                    variant={"outline"}
+                    leftIcon={<FaPen fontSize=".85rem" />}
+                    bgColor="gray.100"
+                    color="black.100"
+                    borderRadius="8px"
+                    boxShadow="0 4px 6px rgba(0, 0, 0, 0.1)"
                     _hover={{
-                      bg: "gray.100",
+                      bgColor: "#000000",
+                      color: "#ffffff",
+                      boxShadow: "0 6px 8px rgba(0, 0, 0, 0.15)",
                     }}
-                    gap=".5rem"
+                    transition="all 0.3s ease"
                     width="6.5rem"
+                    gap=".5rem"
                   >
-                    <FaPen fontSize=".85rem" />
                     Edit
                   </Button>
                 )}
@@ -311,13 +321,18 @@ export default function Profile() {
               {isActiveUpdateMode && (
                 <Flex justifyContent="flex-end" mt="2rem">
                   <Button
-                    leftIcon={<FaCheckCircle fontSize="1rem" />}
                     onClick={handleSubmitUpdate}
-                    variant="outline"
-                    borderStyle="dashed"
-                    borderColor="gray.400"
-                    color="black"
-                    _hover={{ bg: "gray.100" }}
+                    leftIcon={<FaCheckCircle fontSize="1rem" />}
+                    bgColor="#263C56"
+                    color="#FFFFFF"
+                    borderRadius="8px"
+                    boxShadow="0 4px 6px rgba(0, 0, 0, 0.1)"
+                    _hover={{
+                      bgColor: "#C9D9E5",
+                      color: "#263C56",
+                      boxShadow: "0 6px 8px rgba(0, 0, 0, 0.15)",
+                    }}
+                    transition="all 0.3s ease"
                     width="6.5rem"
                     gap=".5rem"
                   >

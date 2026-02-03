@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 
 // Components
 import SkeletonLoader from "@components/feedback/Skeleton";
@@ -22,6 +22,7 @@ export type PageLayout = "Selection" | "Extraction" | "Identification";
 
 interface LayoutFactoryProps {
   layout: ViewModel;
+  handleChangeLayout: (newLayout: ViewModel) => void;
   articles: ArticleInterface[] | [];
   page: PageLayout;
   isLoading: boolean;
@@ -32,6 +33,7 @@ interface LayoutFactoryProps {
 
 export default function LayoutFactory({
   layout,
+  handleChangeLayout,
   articles,
   page,
   isLoading,
@@ -39,19 +41,9 @@ export default function LayoutFactory({
   pagination,
   reloadArticles,
 }: LayoutFactoryProps) {
-  const [currentLayout, setCurrentLayout] = useState<ViewModel>(layout);
-  const [selectedArticle, setSelectedArticle] =
-    useState<ArticleInterface | null>(null);
-
-  useEffect(() => {
-    setCurrentLayout(layout);
-  }, [layout]);
-
-  const handleRowClick = (article: ArticleInterface) => {
-    if (!selectedArticle) {
-      setSelectedArticle(article);
-      setCurrentLayout("vertical");
-    }
+  const handleRowClick = () => {
+      handleChangeLayout("vertical");
+    
   };
 
   const layoutMap: Record<ViewModel, React.ReactNode> = {
@@ -117,7 +109,7 @@ export default function LayoutFactory({
   return isLoading ? (
     <SkeletonLoader width="100%" height="100%" />
   ) : articles && articles.length > 0 ? (
-    layoutMap[currentLayout]
+    layoutMap[layout]
   ) : (
     <NoDataMessage />
   );

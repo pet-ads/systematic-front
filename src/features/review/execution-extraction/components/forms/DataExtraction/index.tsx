@@ -33,7 +33,7 @@ interface DataExtractionFormProps {
     articleId: number | undefined,
     questionId: string,
     type: FormType,
-    response: AnswerProps
+    response: AnswerProps,
   ) => void;
 }
 
@@ -74,6 +74,9 @@ export default function DataExtraction({
               !Array.isArray(sectionQuestions) ||
               sectionQuestions.length < 1
             ) {
+              if (isRiskOfBiasKey) {
+                return null;
+              }
               return (
                 <Box key={sectionKey}>
                   {index > 0 && <Divider />}
@@ -92,11 +95,7 @@ export default function DataExtraction({
                     <Text fontSize="md" fontWeight="bold" color="gray.800">
                       No questions found
                     </Text>
-                    <Text fontSize="sm" color="gray.600" maxW="90%">
-                      {isRiskOfBiasKey
-                        ? `Create ${formatedFormKey} questions to register your answers.`
-                        : "(Optional) You can create Risk of Bias questions to assess methodological quality."}
-                    </Text>
+
                     <Button
                       leftIcon={<FaPlusCircle />}
                       mt="1rem"
@@ -104,9 +103,7 @@ export default function DataExtraction({
                       colorScheme="gray"
                       onClick={() =>
                         toGo(
-                          typeFormKey === "EXTRACTION"
-                            ? `/review/planning/protocol/selection-and-extraction/${reviewId}`
-                            : `/review/planning/protocol/risk-of-bias-assessment/${reviewId}`
+                          `/review/planning/protocol/selection-and-extraction/${reviewId}`,
                         )
                       }
                     >
@@ -120,7 +117,7 @@ export default function DataExtraction({
             return (
               <Box key={sectionKey}>
                 {index > 0 && <Divider />}
-                <Box mb="1.5rem">
+                <Box mb="1.5rem" px={{ base: "1rem", md: "2rem" }}>
                   <Heading
                     size="md"
                     color="black"
@@ -136,6 +133,7 @@ export default function DataExtraction({
                   <Box
                     key={`${typeFormKey}-${currentId}-${question.questionId}`}
                     mb="1rem"
+                    px={{ base: "1rem", md: "2rem" }}
                   >
                     <CreateResponseComponent
                       articleId={currentId}
@@ -148,11 +146,11 @@ export default function DataExtraction({
                 ))}
               </Box>
             );
-          }
+          },
         )}
       </Box>
       {hasAnyQuestion && (
-        <Flex w="100%" justifyContent="flex-end" p="1.25rem 0" mt="1.5rem">
+        <Flex w="100%" justifyContent="flex-end" p="1.25rem 2rem" mt="1.5rem">
           <Button
             leftIcon={<BsSend fontSize="1rem" />}
             type="submit"

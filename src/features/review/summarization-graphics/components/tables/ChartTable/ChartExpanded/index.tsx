@@ -16,7 +16,7 @@ import {
 import { FaChevronDown, FaChevronUp } from "react-icons/fa6";
 
 // Context
-import StudySelectionContext from "@features/review/shared/context/StudiesSelectionContext";
+import StudyContext from "@features/review/shared/context/StudiesContext";
 
 // Hook
 import usePagination from "@features/review/shared/hooks/usePagination";
@@ -25,7 +25,6 @@ import usePagination from "@features/review/shared/hooks/usePagination";
 import {
   chevronIcon,
   collapsedSpanText,
-  tdSX,
 } from "@features/review/execution-identification/pages/Identification/subcomponents/accordions/styles";
 
 // Type
@@ -35,6 +34,7 @@ import PaginationControl from "@features/review/shared/components/common/tables/
 import { Resizable } from "@features/review/shared/components/common/tables/ArticlesTable/subcomponents/Expanded/subcomponents/Resizable";
 import useFetchInclusionCriteria from "@features/review/shared/services/useFetchInclusionCriteria";
 import { StudyInterface } from "@features/review/shared/types/IStudy";
+import { useExport } from "@features/review/summarization-graphics/context/ExportContext";
 
 export type AllKeys =
   | "studyReviewId"
@@ -66,17 +66,27 @@ export default function ChartExpanded({
   layout,
 }: Props) {
   const [columnWidths, setColumnWidths] = useState({
-    studyReviewId: "62px",
-    title: "150px",
-    authors: "150px",
-    venue: "100px",
-    year: "62px",
-    searchSources: "100px",
-    ic: "100px",
+    studyReviewId: "56px",
+    title: "120px",
+    authors: "120px",
+    venue: "90px",
+    year: "56px",
+    searchSources: "90px",
+    ic: "70px",
   });
 
-  const studyContext = useContext(StudySelectionContext);
+  const studyContext = useContext(StudyContext);
   const inclusionCriterias = useFetchInclusionCriteria();
+  const { isExporting } = useExport();
+
+  const [itensPerPageUI, setItensPerPageUI] = useState(20);
+
+  const handleChangeItensPerPage = (value: number) => {
+  setItensPerPageUI(value);      // UI
+  changeQuantityOfItens(value);  // hook
+};
+
+
 
   if (!studyContext) return null;
 
@@ -178,11 +188,6 @@ export default function ChartExpanded({
     <Box w="100%" maxH="82.5vh">
       <TableContainer
         w="100%"
-        minH={
-          layout == "horizontal" || layout == "horizontal-invert"
-            ? "15rem"
-            : { base: "calc(100vh - 18rem)", md: "calc(100vh - 15rem)" }
-        }
         maxH={
           layout == "horizontal" || layout == "horizontal-invert"
             ? "15rem"
@@ -210,10 +215,16 @@ export default function ChartExpanded({
                   textAlign="center"
                   color="#263C56"
                   fontSize="larger"
-                  p="0"
                   textTransform="capitalize"
-                  cursor="pointer"
-                  w={columnWidths[col.key]}
+                  cursor={isExporting ? "default" : "pointer"}
+                  w={isExporting ? "auto" : columnWidths[col.key]}
+                  minH="56px"
+                  verticalAlign="middle"
+                  whiteSpace={isExporting ? "normal" : "nowrap"}
+                  lineHeight={1.8}
+                  overflow={isExporting ? "visible" : "hidden"}
+                 
+        
                 >
                   <Resizable
                     direction="horizontal"
@@ -250,11 +261,10 @@ export default function ChartExpanded({
                             overflow="hidden"
                             textOverflow="ellipsis"
                             whiteSpace="nowrap"
-                            textAlign="center"
-                            px="0.5rem"
                           >
                             {col.label}
                           </Text>
+
                           {sortConfig?.key === col.key ? (
                             sortConfig.direction === "asc" ? (
                               <Box flexShrink={0}>
@@ -303,8 +313,8 @@ export default function ChartExpanded({
                           const idx = inclusionCriterias.findIndex(
                             (item) => item === cr
                           );
-                          //return `IC${idx + 1} : ${cr}`;
-                          return `IC${idx + 1}`; //verificar depois
+                          
+                          return `IC${idx + 1}`; 
                         })
                         .join(" , ")
                     : "";
@@ -344,10 +354,25 @@ export default function ChartExpanded({
                       }
 
                       return (
-                        <Td key={col.key} sx={tdSX} w={columnWidths[col.key]}>
-                          <Tooltip label={String(value)} hasArrow>
-                            <Text sx={collapsedSpanTextChanged}>{value}</Text>
-                          </Tooltip>
+                        <Td
+                          key={col.key}
+                          w={columnWidths[col.key]}
+                          verticalAlign="top"
+                          whiteSpace={isExporting ? "normal" : "nowrap"}
+                        >
+                          {isExporting ? (
+                            <Box>
+                              <Text wordBreak="break-word">
+                                {String(value)}
+                              </Text>
+                            </Box>
+                          ) : (
+                            <Tooltip label={String(value)} hasArrow>
+                              <Text sx={collapsedSpanTextChanged}>
+                                {String(value)}
+                              </Text>
+                            </Tooltip>
+                          )}
                         </Td>
                       );
                     })}
@@ -366,13 +391,13 @@ export default function ChartExpanded({
       </TableContainer>
       <PaginationControl
         currentPage={currentPage}
-        itensPerPage={20}
+        itensPerPage={itensPerPageUI}
         quantityOfPages={quantityOfPages}
         handleNextPage={handleNextPage}
         handlePrevPage={handlePrevPage}
         handleBackToInitial={handleBackToInitial}
         handleGoToFinal={handleGoToFinal}
-        changeQuantityOfItens={changeQuantityOfItens}
+       changeQuantityOfItens={handleChangeItensPerPage}
       />
     </Box>
   );

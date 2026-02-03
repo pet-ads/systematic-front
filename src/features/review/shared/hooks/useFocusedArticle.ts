@@ -2,10 +2,7 @@
 import { useContext, useMemo } from "react";
 
 // Context
-import StudySelectionContext from "@features/review/shared/context/StudiesSelectionContext";
-
-// Hook
-import useFetchAllClassifiedArticles from "../services/useFetchAllClassifiedArticles";
+import StudyContext from "@features/review/shared/context/StudiesContext";
 
 // Type
 import type ArticleInterface from "../types/ArticleInterface";
@@ -22,20 +19,18 @@ type FocusedArticleInputProps = {
 export default function useFocusedArticle({
   page,
 }: FocusedArticleInputProps): FocusedArticleOutputProps {
-  const selectionContext = useContext(StudySelectionContext);
+  const context = useContext(StudyContext)
 
-  if (!selectionContext) throw new Error("Context not available");
-
-  const { selectedArticleReview, articles } = selectionContext;
-  const { includedArticlesList } = useFetchAllClassifiedArticles();
+  if (!context) throw new Error("Context not available");
+  const { selectedArticleReview, getArticles } = context;
+  const articles = getArticles(page);
 
   const availableArticlesList = useMemo(() => {
     if (!articles) return [];
 
-    if (page === "Selection" || page === "Identification") return articles;
+    return articles;
 
-    return includedArticlesList;
-  }, [includedArticlesList, articles, page]);
+  }, [articles]);
 
   const articleInFocus = useMemo(() => {
     if (selectedArticleReview === undefined || !availableArticlesList.length)

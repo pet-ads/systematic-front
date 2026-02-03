@@ -33,6 +33,8 @@ export default function useStructureReview() {
   );
   const [isReturn, setIsReturn] = useState(false);
   const [isTitleValid, setIsTitleValid] = useState(true);
+  const [isDescriptionValid, setIsDescriptionValid] = useState(true);
+  const [isObjectivesValid, setIsObjectivesValid] = useState(true);
 
   const { title, collaborators, description, objectives } = generalDefinition;
   const id = localStorage.getItem("systematicReviewId") || "";
@@ -47,16 +49,26 @@ export default function useStructureReview() {
     key: keyof typeof generalDefinition,
     value: string
   ) => {
+    if (key === "title") setIsTitleValid(true);
+    if (key === "description") setIsDescriptionValid(true);
+    if (key === "objectives") setIsObjectivesValid(true);
+
     setGeneralDefinition((prev) => ({
       ...prev,
       [key]: key != "collaborators" ? value : value.split(","),
     }));
   };
 
-  const hasValidTitle = () => {
-    if (title !== "") return true;
-    setIsTitleValid(false);
-    return false;
+  const hasValidInputs = () => {
+    const titleOk = title.trim() !== "";
+    const descriptionOk = description.trim() !== "";
+    const objectivesOk = objectives.trim() !== "";
+
+    setIsTitleValid(titleOk);
+    setIsDescriptionValid(descriptionOk);
+    setIsObjectivesValid(objectivesOk);
+
+    return titleOk && descriptionOk && objectivesOk;
   };
 
   const navigateToNextSection = (id: string) => {
@@ -85,7 +97,8 @@ export default function useStructureReview() {
   }, []);
 
   const handlePost = async () => {
-    if (!hasValidTitle()) return;
+    if (!hasValidInputs()) return;
+    
     if(!(validator({value: title}) && validator({value: description}) && validator({value: objectives}))) return;
 
     for(let i = 0; i < collaborators.length; i++){
@@ -114,7 +127,7 @@ export default function useStructureReview() {
   };
 
   const handlePut = async () => {
-    if (!hasValidTitle()) return;
+    if (!hasValidInputs()) return;
     if(!(validator({value: title}) && validator({value: description}) && validator({value: objectives}))) return;
 
     for(let i = 0; i < collaborators.length; i++){
@@ -145,6 +158,8 @@ export default function useStructureReview() {
     handleChangeGeneralDefinition,
     isReturn,
     isTitleValid,
+    isDescriptionValid,
+    isObjectivesValid,
     setIsTitleValid,
     handlePost,
     handlePut,

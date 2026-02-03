@@ -9,6 +9,11 @@ import ProtocolFormLayout from "../../components/common/protocolForm";
 import useCreateProtocol from "../../services/useCreateProtocol";
 import { Box } from "@chakra-ui/react";
 
+const Languages = ["Arabic", "Bengali", "Chinese", "Czech", "Danish", "Dutch", "English",
+  "Finnish", "French", "German", "Greek", "Hebrew", "Hindi", "Hungarian", "Indonesian",
+  "Italian", "Japanese", "Korean", "Norwegian", "Persian", "Polish", "Portuguese",
+  "Romanian", "Russian", "Spanish", "Swedish", "Thai", "Turkish", "Ukrainian", "Vietnamese"].sort();
+
 export default function EligibilityCriteria() {
   const {
     eligibilityCriteria,
@@ -19,14 +24,6 @@ export default function EligibilityCriteria() {
   const { studyTypeDefinition } = eligibilityCriteria;
   const id = localStorage.getItem("systematicReviewId");
 
-  const languageOptions = [
-    "ENGLISH",
-    "PORTUGUESE",
-    "FRENCH",
-    "SPANISH",
-    "GERMAN",
-  ];
-
   return (
     <ProtocolFormLayout
       headerText="Protocol: Eligibility Criteria"
@@ -35,7 +32,7 @@ export default function EligibilityCriteria() {
           <NavButton
             event={() =>
               syncAndNavigate(
-                `/review/planning/protocol/research-questions/${id}`
+                `/review/planning/protocol/research-questions/${id}`,
               )
             }
             text="Back"
@@ -43,7 +40,7 @@ export default function EligibilityCriteria() {
           <NavButton
             event={() =>
               syncAndNavigate(
-                `/review/planning/protocol/information-sources-and-search-strategy/${id}`
+                `/review/planning/protocol/information-sources-and-search-strategy/${id}`,
               )
             }
             text="Next"
@@ -69,7 +66,7 @@ export default function EligibilityCriteria() {
           onChange={(event) => {
             handleChangeEligibilityCriteria(
               "studyTypeDefinition",
-              event.target.value
+              event.target.value,
             );
           }}
           label="Study Type Definition"
@@ -77,8 +74,8 @@ export default function EligibilityCriteria() {
         />
         <AddSelectionTable
           label="Languages"
-          options={languageOptions}
-          placeholder={"Select language"}
+          options={Languages}
+          placeholder="Select language"
           typeField="select"
         />
       </Box>

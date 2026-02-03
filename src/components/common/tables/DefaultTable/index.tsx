@@ -126,7 +126,7 @@ export default function DefaultTable<T extends object>({
               ))
             ) : (
               <tr className={styles.emptyRow}>
-                <td colSpan={columns.length}>Nenhum dado encontrado.</td>
+                <td colSpan={columns.length}>No data found.</td>
               </tr>
             )}
           </tbody>

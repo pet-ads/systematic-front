@@ -6,6 +6,7 @@ import { tbConteiner } from "./styles";
 import { Table, Tbody, Tr, Td, TableContainer, Input, Flex, Thead, Th } from "@chakra-ui/react";
 import useCreateProtocol from "@features/review/planning-protocol/services/useCreateProtocol";
 import EventButton from "@components/common/buttons/EventButton";
+import useToaster from "@components/feedback/Toaster";
 
 interface InfosTableProps {
   AddTexts: string[];
@@ -29,6 +30,7 @@ export default function InfosTable({
   enableReferenceCode = true,
 }: InfosTableProps) {
   const { sendAddText } = useCreateProtocol();
+  const toaster = useToaster();
 
   const [newText, setNewText] = useState("");
   const [referenceCode, setReferenceCode] = useState("");
@@ -60,8 +62,12 @@ export default function InfosTable({
     const codeToSave = editedCode.trim().toUpperCase();
     const codes = getAllCodes(editIdx);
     if (codeToSave && codes.includes(codeToSave)) {
-      alert("Esse código de referência já está em uso!");
-      return;
+      toaster({
+        title: `The reference code '${codeToSave}' is already in use.`,
+        description: "Please choose another one.",
+        status: "error",
+      });
+      return false;
     }
 
     const parsed = parseEntry(editedValueParam);
@@ -83,7 +89,8 @@ export default function InfosTable({
 
   const handleSaveEditWrapper = () => {
     if (editIndex !== null && editIndex !== undefined) {
-      onSaveEdit(editedValue, editIndex);
+      const result = onSaveEdit(editedValue, editIndex);
+      if (result === false) return;
     }
     handleSaveEdit();
   };
@@ -102,8 +109,12 @@ export default function InfosTable({
     const existingCodes = getAllCodes();
 
     if (code && existingCodes.includes(code)) {
-      alert("Esse código de referência já está em uso!");
-      return;
+      toaster({
+        title: `The reference code '${code}' is already in use.`,
+        description: "Please choose another one.",
+        status: "error",
+      });
+      return true;
     }
 
     const entry = code ? `${code}: ${trimmedText}` : trimmedText;

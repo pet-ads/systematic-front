@@ -26,7 +26,7 @@ export default function CreateResponseComponent({
     type: typeform,
   });
 
-  if (!question) return;
+  if (!question) return null;
 
   const questionTypesMap: Record<TypeOfQuestions, ReactNode> = {
     TEXTUAL: (
