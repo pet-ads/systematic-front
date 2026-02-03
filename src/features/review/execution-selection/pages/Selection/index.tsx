@@ -3,13 +3,14 @@ import { useContext, useMemo, useState } from "react";
 import { Box, Flex } from "@chakra-ui/react";
 
 // Context
-import StudyContext from "@features/review/shared/context/StudiesContext";
+import StudySelectionContext from "@features/review/shared/context/StudiesContext";
 
 // Hooks
 import useInputState from "@features/review/shared/hooks/useInputState";
 import useLayoutPage from "../../../shared/hooks/useLayoutPage";
-import { useFilterReviewArticles } from "../../../shared/hooks/useFilterReviewArticles";
 import useVisibiltyColumns from "@features/review/shared/hooks/useVisibilityColumns";
+import useFetchSelectionArticles from "../../services/useFetchSelectionArticles";
+import usePaginationState from "@features/shared/hooks/usePaginationState";
 
 // Components
 import Header from "../../../../../components/structure/Header/Header";
@@ -24,17 +25,15 @@ import ButtonsForMultipleSelection from "@features/review/shared/components/comm
 // Styles
 import { inputconteiner } from "../../../shared/styles/executionStyles";
 
-// Types
-import useFetchSelectionArticles from "../../services/useFetchSelectionArticles";
-import usePaginationState from "@features/shared/hooks/usePaginationState";
-
 export default function Selection() {
   const [searchString, setSearchString] = useState<string>("");
   const [showSelected, setShowSelected] = useState<boolean>(false);
   const [fetchedTotalPages, setFetchedTotalPages] = useState<number>(1);
-  const studiesContext = useContext(StudyContext);
+  const selectionContext = useContext(StudySelectionContext);
+  
   const { value: selectedStatus, handleChange: handleSelectChange } =
     useInputState<string | null>(null);
+    
   const { layout, handleChangeLayout } = useLayoutPage();
   const { columnsVisible, toggleColumnVisibility } = useVisibiltyColumns({
     page: "Selection",
@@ -48,37 +47,32 @@ export default function Selection() {
     handleBackToInitial,
     handleGoToFinal,
     changeQuantityOfItens,
-  } = usePaginationState({ totalPages: fetchedTotalPages, initialSize: 20, setPage: studiesContext?.setPage, setSize: studiesContext?.setSize });
+  } = usePaginationState({ totalPages: fetchedTotalPages, initialSize: 20, setPage: selectionContext?.setPage, setSize: selectionContext?.setSize });
 
 
   const { articles, isLoading, totalElements, totalPages, mutate } =
     useFetchSelectionArticles({
       page: currentPage - 1,
       size: itensPerPage,
+      search: searchString,
+      status: selectedStatus, 
     });
 
   if (totalPages && totalPages !== fetchedTotalPages) {
     setFetchedTotalPages(totalPages);
   }
 
-  const safeSelectedArticles = studiesContext?.selectedArticles ?? {};
-
-  const startFilteredArticles = useFilterReviewArticles(
-    searchString,
-    selectedStatus,
-    articles,
-    "Selection"
-  );
+  const safeSelectedArticles = selectionContext?.selectedArticles ?? {};
 
   const finalFilteredArticles = useMemo(() => {
     if (showSelected && Object.keys(safeSelectedArticles).length > 0) {
       const selectedIds = Object.keys(safeSelectedArticles).map(Number);
-      return startFilteredArticles.filter((article) =>
+      return articles.filter((article) =>
         selectedIds.includes(article.studyReviewId)
       );
     }
-    return startFilteredArticles;
-  }, [showSelected, startFilteredArticles, safeSelectedArticles]);
+    return articles;
+  }, [showSelected, articles, safeSelectedArticles]);
 
   return (
     <FlexLayout navigationType="Accordion">
@@ -97,7 +91,7 @@ export default function Selection() {
           <Flex gap="1rem" w="1rem" justifyContent="space-between">
             <InputText
               type="search"
-              placeholder="Insert article atribute"
+              placeholder="Insert article attribute"
               nome="search"
               onChange={(e) => setSearchString(e.target.value)}
               value={searchString}
@@ -120,11 +114,11 @@ export default function Selection() {
               toggleColumnVisibility={toggleColumnVisibility}
             />
             <StatusSelect
-              articles={articles}
               selectedValue={selectedStatus}
               onSelect={handleSelectChange}
               page="Selection"
               placeholder="Selection status"
+              totalCount={totalElements}
             />
           </Box>
         </Box>

@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { AddIcon } from "@chakra-ui/icons";
-import { Button, Input, Select, FormLabel, Textarea } from "@chakra-ui/react";
+import { Input, Select, FormLabel, Textarea } from "@chakra-ui/react";
 import Axios from "../../../../../../../infrastructure/http/axiosClient";
+import EventButton from "@components/common/buttons/EventButton";
+
 
 import DefaultTable from "@components/common/tables/DefaultTable";
 import { Column, SortConfig } from "@components/common/tables/DefaultTable/types";
@@ -383,7 +384,7 @@ export default function InteractiveTable({ id, url, label }: Props) {
 
   return (
     <div>
-      <FormLabel color={"#2E4B6C"} mb={4} fontSize="lg" fontWeight="bold">
+      <FormLabel mb={4} fontSize="lg">
         {label}
       </FormLabel>
 
@@ -395,11 +396,14 @@ export default function InteractiveTable({ id, url, label }: Props) {
         onExternalSort={setSortConfig}
       />
 
-      <div style={{ marginTop: "1rem", display: "flex", gap: "0.5rem" }}>
-        <Button size="sm" onClick={addNewRow}>
-          <AddIcon />
-        </Button>
-        
+      <div style={{ marginTop: "1rem", marginBottom: "1rem", display: "flex", gap: "0.5rem", justifyContent: "end" }}>
+        <EventButton
+          text="Add"
+          w={"40px"}
+          h={"40px"}
+          size="sm"
+          event={addNewRow}
+        />
       </div>
 
       {showModal == true && modalType == "pick list" && (
