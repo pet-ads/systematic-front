@@ -19,9 +19,11 @@ export interface SelectionArticles {
   totalPages: number;
 }
 
-interface FetchParams extends Params {}
+interface FetchParams extends Params {
+  search?: string;
+  status?: string | null;
+}
 
-// Constants
 const EMPTY_PAGINATION_DATA: SelectionArticles = {
   studyReviews: [],
   totalElements: 0,
@@ -31,24 +33,39 @@ const EMPTY_PAGINATION_DATA: SelectionArticles = {
   page: 0,
 };
 
-const useFetchSelectionArticles = ({ page = 0, size = 20 }: FetchParams) => {
+const useFetchSelectionArticles = ({
+  page = 0,
+  size = 20,
+  search = "",
+  status = null,
+}: FetchParams) => {
   const id = localStorage.getItem("systematicReviewId");
-  const endpoint = `systematic-study/${id}/study-review`;
+  const endpoint = `systematic-study/${id}/study-review/search`;
+
+  const queryParams: Record<string, any> = {
+    page,
+    size,
+  };
+
+  if (search) {
+    queryParams.title = search;
+  }
+
+  if (status) {
+    queryParams.selectionStatus = status;
+  }
 
   const swrKey = useMemo(() => {
     if (!id) return null;
-    return [endpoint, page, size, "selection-page"];
-  }, [id, page, size, endpoint]);
+    return [endpoint, queryParams];
+  }, [id, endpoint, JSON.stringify(queryParams)]);
 
   const fetcher = async () => {
     if (!id) return EMPTY_PAGINATION_DATA;
 
     try {
       const response = await Axios.get<SelectionArticles>(endpoint, {
-        params: {
-          page,
-          size,
-        },
+        params: queryParams,
       });
 
       return response.data;
@@ -68,7 +85,9 @@ const useFetchSelectionArticles = ({ page = 0, size = 20 }: FetchParams) => {
 
   const articles = data?.studyReviews || [];
   const totalElements = data?.totalElements || 0;
-  const totalPages = data?.totalPages || 0;
+
+  const calculatedPages = size > 0 ? Math.ceil(totalElements / size) : 0;
+  const totalPages = calculatedPages > 0 ? calculatedPages : (data?.totalPages || 0);
 
   return {
     articles: articles.filter(
