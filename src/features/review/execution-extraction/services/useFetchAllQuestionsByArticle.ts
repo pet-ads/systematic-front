@@ -23,9 +23,7 @@ export default function useFetchAllQuestionsByArticle() {
 
   const studiesContext = useContext(StudyContext);
 
-  const articleId = studiesContext
-    ? studiesContext.selectedArticleReview
-    : -1;
+  const articleId = studiesContext ? studiesContext.selectedArticleReview : -1;
 
   const { question, mutate, isLoading } = useFetchIncludedStudiesAnswers({
     articleId,
@@ -35,7 +33,7 @@ export default function useFetchAllQuestionsByArticle() {
     articleId: number = Number(studiesContext?.selectedArticleReview) || -1,
     questionId: string,
     type: FormType,
-    response: AnswerProps
+    response: AnswerProps,
   ) => {
     const key = type === "EXTRACTION" ? "extractionQuestions" : "robQuestions";
 
@@ -43,7 +41,7 @@ export default function useFetchAllQuestionsByArticle() {
     if (!article) return;
 
     const updatedQuestions = article[key].map((quest) =>
-      quest.questionId === questionId ? { ...quest, answer: response } : quest
+      quest.questionId === questionId ? { ...quest, answer: response } : quest,
     );
 
     const updatedArticle: ArticleAnswerStrucuture = {
@@ -86,7 +84,7 @@ export default function useFetchAllQuestionsByArticle() {
       if (prev[articleId]) return prev;
 
       const mapToStructure = (
-        questions: QuestionAnswer[]
+        questions: QuestionAnswer[],
       ): AnswerStrucuture[] =>
         questions.map((quest) => {
           let formattedAnswer = quest.answer;
@@ -124,7 +122,7 @@ export default function useFetchAllQuestionsByArticle() {
         [articleId]: structuredAnswers,
       };
     });
-  }, [question, articleId, articlesStructureAnswers]);
+  }, [question, articleId]);
 
   return {
     question: articlesStructureAnswers,
