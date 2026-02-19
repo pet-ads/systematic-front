@@ -17,7 +17,10 @@ export default function AddTextTable({ text, placeholder, referencePrefix = "", 
   return (
     <FormControl sx={label}>
       <FormControl sx={formcontrol}>
-        <FormLabel mt={"30px"} fontWeight={500} fontSize={"large"}> {text} </FormLabel>
+        <FormLabel mt={"30px"} fontWeight={500} fontSize={"large"}>
+          {" "}
+          {text}{" "}
+        </FormLabel>
         <InfosTable
           typeField={""}
           onAddText={(value) => handleAddText(value)}
@@ -27,6 +30,7 @@ export default function AddTextTable({ text, placeholder, referencePrefix = "", 
           placeholder={placeholder}
           referencePrefix={referencePrefix}
           enableReferenceCode={enableReferenceCode}
+          maxLength={7}
         />
       </FormControl>
     </FormControl>
