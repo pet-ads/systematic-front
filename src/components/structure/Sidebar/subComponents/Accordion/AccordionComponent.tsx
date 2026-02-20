@@ -7,6 +7,7 @@ import {
   AccordionIcon,
   AccordionPanel,
 } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
 import { MdRule } from "react-icons/md";
 import { LuFileSearch, LuFileCheck2 } from "react-icons/lu";
 
@@ -50,7 +51,7 @@ const AccordionComponent = () => {
       },
       {
         path: `/review/planning/protocol/picoc/${id}`,
-        label: "PICOC"
+        label: "PICOC",
       },
       {
         path: `/review/planning/protocol/research-questions/${id}`,
@@ -99,10 +100,25 @@ const AccordionComponent = () => {
     ],
   };
 
+  const sectionToIndex: Record<string, number> = {
+    Planning: 0,
+    Execution: 1,
+    Summarization: 2,
+  };
+
+  const [localIndex, setLocalIndex] = useState<number | number[]>(
+    sectionToIndex[activeSection as string] ?? -1,
+  );
+
+  useEffect(() => {
+    const newIndex = sectionToIndex[activeSection as string] ?? -1;
+    setLocalIndex(newIndex);
+  }, [activeSection]);
+
   return (
-    <Accordion w="80%" allowToggle>
+    <Accordion w="80%" allowToggle index={localIndex} onChange={(expandedIndex) => setLocalIndex(expandedIndex)}>
       {Object.entries(sections).map(([section, children]) => (
-        <AccordionItem key={section}>
+        <AccordionItem key={section} border="none">
           <h2>
             <AccordionButton
               p=".5rem"
