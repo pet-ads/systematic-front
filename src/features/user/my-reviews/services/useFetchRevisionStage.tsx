@@ -54,7 +54,7 @@ export default function useFetchRevisionStage({
     PICOC: "PICOC",
     ELIGIBILITY_CRITERIA: "Eligibility Criteria",
     INFORMATION_SOURCES_AND_SEARCH_STRATEGY:
-      "Information Sources And Search Strategy",
+      "Information Sources",
     SELECTION_AND_EXTRACTION: "Selection And Extraction",
     RISK_OF_BIAS: "Risk Of Bias",
     ANALYSIS_AND_SYNTHESIS_METHOD: "Analysis And Synthesis Method",
