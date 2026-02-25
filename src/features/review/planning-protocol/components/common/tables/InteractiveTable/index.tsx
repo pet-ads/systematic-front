@@ -244,8 +244,9 @@ export default function InteractiveTable({ id, url, label }: Props) {
   }
 
   const handleIdChange = (index: number, newId: string) => {
+    const limitedId = newId.slice(0, 7);
     setRows((prevRows) =>
-      prevRows.map((row, i) => (i === index ? { ...row, id: newId } : row))
+      prevRows.map((row, i) => (i === index ? { ...row, id: limitedId } : row))
     );
   };
 
@@ -268,14 +269,12 @@ export default function InteractiveTable({ id, url, label }: Props) {
           <Input
             value={row.id}
             onChange={(e) => handleIdChange(index, e.target.value)}
-            
+            maxLength={7}
             isReadOnly={!isEditing} 
-            
             border={isEditing ? "solid 1px #303D50" : "transparent"} 
             bg={isEditing ? "white" : "transparent"} 
             cursor={isEditing ? "text" : "default"}
             _focus={{ boxShadow: isEditing ? "outline" : "none" }}
-            
             borderRadius="md"
             size="sm"
           />
