@@ -38,9 +38,10 @@ interface IComboBoxProps {
   handlerUpdateCriteriasStructure: (
     key: OptionType,
     optionText: string,
-    newValue: boolean
+    newValue: boolean,
   ) => void;
   reloadArticles: KeyedMutator<SelectionArticles>;
+  selectedCriteria?: string[];
 }
 
 export default function ComboBox({
@@ -53,6 +54,7 @@ export default function ComboBox({
   groupKey,
   handlerUpdateCriteriasStructure,
   reloadArticles,
+  selectedCriteria = [], // Adicionado aqui com valor default vazio
 }: IComboBoxProps) {
   const { handleIncludeItemClick, handleExcludeItemClick } =
     useComboBoxSelection({ page, reloadArticles });
@@ -90,106 +92,128 @@ export default function ComboBox({
       </MenuButton>
 
       <MenuList maxH="10rem" overflowY="auto">
-        {options.map((option, index) => (
-          <MenuItem key={index} maxW="25rem" overflow="auto">
-            {text === "Include" ? (
-              <Checkbox
-                isDisabled={isDisabled}
-                isChecked={option.isChecked}
-                onChange={(e) => {
-                  if (hasInvalidStatus) {
-                    showDuplicatedWarning();
-                    return;
-                  }
+        {options.map((option, index) => {
+          // Lógica para verificar se deve ficar em negrito
+          const isHighlighted =
+            page === "Extraction" && selectedCriteria.includes(option.text);
 
-                  const newValue = e.target.checked;
+          return (
+            <MenuItem key={index} maxW="25rem" overflow="auto">
+              {text === "Include" ? (
+                <Checkbox
+                  isDisabled={isDisabled}
+                  isChecked={option.isChecked}
+                  onChange={(e) => {
+                    if (hasInvalidStatus) {
+                      showDuplicatedWarning();
+                      return;
+                    }
 
-                  handlerUpdateCriteriasStructure(
-                    groupKey,
-                    option.text,
-                    newValue
-                  );
+                    const newValue = e.target.checked;
 
-                  const updatedList = options.map((item) =>
-                    item.text === option.text
-                      ? { ...item, isChecked: newValue }
-                      : item
-                  );
+                    handlerUpdateCriteriasStructure(
+                      groupKey,
+                      option.text,
+                      newValue,
+                    );
 
-                  handleIncludeItemClick(
-                    updatedList
-                      .filter((data) => data.isChecked == true)
-                      .map((item) => item.text)
-                  );
-                }}
-              >
-                <Tooltip
-                  label={option.text}
-                  aria-label="Full criteria"
-                  p="1rem"
-                  hasArrow
+                    const updatedList = options.map((item) =>
+                      item.text === option.text
+                        ? { ...item, isChecked: newValue }
+                        : item,
+                    );
+
+                    handleIncludeItemClick(
+                      updatedList
+                        .filter((data) => data.isChecked == true)
+                        .map((item) => item.text),
+                    );
+                  }}
                 >
-                  <Text isTruncated maxW="20rem">
+                  <Tooltip
+                    label={option.text}
+                    aria-label="Full criteria"
+                    p="1rem"
+                    hasArrow
+                  >
+                    <Text
+                      isTruncated
+                      maxW="20rem"
+                      fontWeight={isHighlighted ? "bold" : "normal"}
+                      color={isHighlighted ? "black" : "inherit"}
+                    >
+                      {option.text}
+                    </Text>
+                  </Tooltip>
+                </Checkbox>
+              ) : text === "Exclude" ? (
+                <Checkbox
+                  isDisabled={isDisabled}
+                  isChecked={option.isChecked}
+                  onChange={(e) => {
+                    if (hasInvalidStatus) {
+                      showDuplicatedWarning();
+                      return;
+                    }
+
+                    const newValue = e.target.checked;
+
+                    handlerUpdateCriteriasStructure(
+                      groupKey,
+                      option.text,
+                      newValue,
+                    );
+
+                    const updatedList = options.map((item) =>
+                      item.text === option.text
+                        ? { ...item, isChecked: newValue }
+                        : item,
+                    );
+
+                    handleExcludeItemClick(
+                      updatedList
+                        .filter((data) => data.isChecked == true)
+                        .map((item) => item.text),
+                    );
+                  }}
+                >
+                  <Tooltip
+                    label={option.text}
+                    aria-label="Full criteria"
+                    p="1rem"
+                    hasArrow
+                  >
+                    <Text
+                      isTruncated
+                      maxW="20rem"
+                      fontWeight={isHighlighted ? "bold" : "normal"}
+                      color={isHighlighted ? "black" : "inherit"}
+                    >
+                      {option.text}
+                    </Text>
+                  </Tooltip>
+                </Checkbox>
+              ) : text === "filter options" && onOptionchange ? (
+                <Checkbox
+                  isDisabled={isDisabled}
+                  onChange={(e) =>
+                    onOptionchange?.(option.text, e.target.checked)
+                  }
+                >
+                  <Text fontWeight={isHighlighted ? "bold" : "normal"}>
                     {option.text}
                   </Text>
-                </Tooltip>
-              </Checkbox>
-            ) : text === "Exclude" ? (
-              <Checkbox
-                isDisabled={isDisabled}
-                isChecked={option.isChecked}
-                onChange={(e) => {
-                  if (hasInvalidStatus) {
-                    showDuplicatedWarning();
-                    return;
-                  }
-
-                  const newValue = e.target.checked;
-
-                  handlerUpdateCriteriasStructure(
-                    groupKey,
-                    option.text,
-                    newValue
-                  );
-
-                  const updatedList = options.map((item) =>
-                    item.text === option.text
-                      ? { ...item, isChecked: newValue }
-                      : item
-                  );
-
-                  handleExcludeItemClick(
-                    updatedList
-                      .filter((data) => data.isChecked == true)
-                      .map((item) => item.text)
-                  );
-                }}
-              >
-                <Tooltip
-                  label={option.text}
-                  aria-label="Full criteria"
-                  p="1rem"
-                  hasArrow
-                >
-                  <Text isTruncated maxW="20rem">
+                </Checkbox>
+              ) : (
+                <Checkbox isDisabled={isDisabled}>
+                  <Text fontWeight={isHighlighted ? "bold" : "normal"}>
                     {option.text}
                   </Text>
-                </Tooltip>
-              </Checkbox>
-            ) : text === "filter options" && onOptionchange ? (
-              <Checkbox
-                isDisabled={isDisabled}
-                onChange={(e) =>
-                  onOptionchange?.(option.text, e.target.checked)
-                }
-              >
-                {option.text}
-              </Checkbox>
-            ) : (
-              <Checkbox isDisabled={isDisabled}>{option.text}</Checkbox>
-            )}
-          </MenuItem>
-        ))}
+                </Checkbox>
+              )}
+            </MenuItem>
+          );
+        })}
       </MenuList>
     </Menu>
   );

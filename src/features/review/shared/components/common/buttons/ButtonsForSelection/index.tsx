@@ -4,6 +4,7 @@ import { MdOutlineLowPriority } from "react-icons/md";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { RiResetLeftLine } from "react-icons/ri";
 import { Tooltip } from "@chakra-ui/react";
+import { useState, useEffect } from "react"; // <-- IMPORTAMOS AQUI
 
 // Hooks
 import useFetchAllCriteriasByArticle from "../../../../services/useFetchAllCriteriasByArticle";
@@ -52,10 +53,25 @@ export default function ButtonsForSelection({
   const { criterias: fetchedCriterias, handlerUpdateCriteriasStructure } =
     useFetchAllCriteriasByArticle({ page });
 
-  console.log("Criterios aqui nos botões", fetchedCriterias);
-  if (!fetchedCriterias) return;
-
   const currentArticle = articles[articleIndex];
+
+  // ==========================================
+  // CORREÇÃO DOS BUGS DO NEGRITO:
+  // Congelamos os critérios históricos assim que o artigo carrega.
+  // ==========================================
+  const [historicalCriteria, setHistoricalCriteria] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (currentArticle) {
+      setHistoricalCriteria(currentArticle.criteria || []);
+    }
+    // O array de dependências usa o ID do artigo.
+    // Assim, se você clicar num checkbox, essa lista NÃO atualiza.
+    // Ela só atualiza quando você muda de artigo (Next/Previous).
+  }, [currentArticle?.studyReviewId]);
+  // ==========================================
+
+  if (!fetchedCriterias) return null;
 
   const currentArticleStatus = {
     selectionStatus: currentArticle.selectionStatus,
@@ -79,9 +95,7 @@ export default function ButtonsForSelection({
   };
 
   if (!criteriaGroupDataMap["INCLUSION"] || !criteriaGroupDataMap["EXCLUSION"])
-    return;
-
-  console.log("Não retornou");
+    return null;
 
   const isInclusionActive = criteriaOptions.INCLUSION.isActive;
   const isExclusionActive = criteriaOptions.EXCLUSION.isActive;
@@ -141,11 +155,14 @@ export default function ButtonsForSelection({
             p=".5rem"
             borderRadius=".25rem"
           >
-            <IoIosArrowBack
-              color="black"
-              size="1.5rem"
-              onClick={goToPreviousArticle}
-            />
+            <Box style={{ display: "inline-block" }}>
+              <IoIosArrowBack
+                color="black"
+                size="1.5rem"
+                onClick={goToPreviousArticle}
+                cursor="pointer"
+              />
+            </Box>
           </Tooltip>
         </Flex>
       )}
@@ -171,6 +188,8 @@ export default function ButtonsForSelection({
                   handlerUpdateCriteriasStructure
                 }
                 reloadArticles={reloadArticles}
+                // Passamos a lista congelada em vez da lista viva
+                selectedCriteria={historicalCriteria}
               />
             </Box>
           </Tooltip>
@@ -220,11 +239,14 @@ export default function ButtonsForSelection({
             p=".5rem"
             borderRadius=".25rem"
           >
-            <IoIosArrowForward
-              color="black"
-              size="1.5rem"
-              onClick={goToNextArticle}
-            />
+            <Box style={{ display: "inline-block" }}>
+              <IoIosArrowForward
+                color="black"
+                size="1.5rem"
+                onClick={goToNextArticle}
+                cursor="pointer"
+              />
+            </Box>
           </Tooltip>
         </Flex>
       )}
