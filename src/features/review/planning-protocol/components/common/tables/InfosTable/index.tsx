@@ -17,6 +17,7 @@ interface InfosTableProps {
   placeholder: string;
   referencePrefix?: string;
   enableReferenceCode?: boolean;
+  maxLength?: number;
 }
 
 export default function InfosTable({
@@ -28,6 +29,7 @@ export default function InfosTable({
   placeholder,
   referencePrefix = "",
   enableReferenceCode = true,
+  maxLength,
 }: InfosTableProps) {
   const { sendAddText } = useCreateProtocol();
   const toaster = useToaster();
@@ -145,6 +147,7 @@ export default function InfosTable({
                     placeholder={`${referencePrefix}-01`}
                     value={referenceCode}
                     onChange={(e) => setReferenceCode(e.target.value)}
+                    maxLength={maxLength}
                     onBlur={() =>
                       setReferenceCode((s) => s.trim().toUpperCase())
                     }
@@ -184,6 +187,7 @@ export default function InfosTable({
                       <Input
                         value={editedCode}
                         onChange={(e) => setEditedCode(e.target.value)}
+                        maxLength={maxLength}
                         onBlur={() =>
                           setEditedCode((c) => c.trim().toUpperCase())
                         }
