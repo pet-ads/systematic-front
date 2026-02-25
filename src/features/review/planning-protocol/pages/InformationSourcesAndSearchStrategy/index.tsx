@@ -28,7 +28,7 @@ export default function InformationSourcesAndSearchStrategy() {
           <NavButton
             event={() =>
               syncAndNavigate(
-                `/review/planning/protocol/eligibility-criteria/${id}`
+                `/review/planning/protocol/eligibility-criteria/${id}`,
               )
             }
             text="Back"
@@ -36,7 +36,7 @@ export default function InformationSourcesAndSearchStrategy() {
           <NavButton
             event={() =>
               syncAndNavigate(
-                `/review/planning/protocol/selection-and-extraction/${id}`
+                `/review/planning/protocol/selection-and-extraction/${id}`,
               )
             }
             text="Next"
@@ -50,7 +50,7 @@ export default function InformationSourcesAndSearchStrategy() {
           onChange={(event) => {
             handleChangeInformationSourcesAndSearchStrategy(
               "sourcesSelectionCriteria",
-              event.target.value
+              event.target.value,
             );
           }}
           label="Sources Selection Criteria"
@@ -59,15 +59,23 @@ export default function InformationSourcesAndSearchStrategy() {
         <AddSelectionTable
           label="Databases and Information Source"
           options={[
-            "Google Scholar",
-            "Scopus",
-            "Scielo",
-            "BDTD",
-            "PubMed",
-            "Expert Suggestion",
+            "ACM Digital Library",
             "Backward Snowballing",
+            "BDTD",
+            "Cochrane Library",
+            "Expert Suggestion",
             "Forward Snowballing",
+            "Google Scholar",
             "Grey Literature Sources",
+            "IEEE Xplore",
+            "LILACS",
+            "MEDLINE",
+            "PubMed",
+            "SciELO",
+            "ScienceDirect",
+            "Scopus",
+            "SpringerLink",
+            "Web of Science",
           ]}
           placeholder={"Select Database"}
           typeField="select"
@@ -77,7 +85,7 @@ export default function InformationSourcesAndSearchStrategy() {
           onChange={(event) => {
             handleChangeInformationSourcesAndSearchStrategy(
               "searchMethod",
-              event.target.value
+              event.target.value,
             );
           }}
           label="Search Strategy"
@@ -93,7 +101,7 @@ export default function InformationSourcesAndSearchStrategy() {
           onChange={(event) => {
             handleChangeInformationSourcesAndSearchStrategy(
               "searchString",
-              event.target.value
+              event.target.value,
             );
           }}
           label="Search String"
