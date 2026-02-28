@@ -22,11 +22,9 @@ export default function DownloadFunnelButton({ selector, fileName }: Props) {
     fitView();
 
     setTimeout(() => {
-      const element = document.querySelector(
-        selector
-      ) as HTMLElement | null;
+      const element = document.querySelector(selector) as HTMLElement | null;
       if (!element) {
-        console.warn( selector + " not found.");
+        console.warn(selector + " not found.");
         return;
       }
 
@@ -47,6 +45,15 @@ export default function DownloadFunnelButton({ selector, fileName }: Props) {
           pixelRatio: 2,
           skipFonts: true,
           cacheBust: true,
+          filter: (node) => {
+            if (
+              node instanceof HTMLElement &&
+              node.classList.contains("react-flow__panel")
+            ) {
+              return false;
+            }
+            return true;
+          },
         })
           .then(downloadImage)
           .catch(console.error);
@@ -58,7 +65,7 @@ export default function DownloadFunnelButton({ selector, fileName }: Props) {
     <Panel position="bottom-right">
       <Button
         onClick={handleClick}
-        leftIcon={<FiDownload/>}
+        leftIcon={<FiDownload />}
         size="sm"
         colorScheme="blue"
       >
