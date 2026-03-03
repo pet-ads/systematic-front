@@ -16,21 +16,33 @@ interface ResetButtonProps {
 const useResetStatus = ({ page, reloadArticles }: ResetButtonProps) => {
   const { articleInFocus } = useFocusedArticle({ page });
 
-  const handleResetStatusToUnclassified = () => {
+  const handleResetStatusToUnclassified = async () => {
     const articleId = articleInFocus ? articleInFocus?.studyReviewId : -1;
 
-    page === "Selection"
-      ? UseChangeStudySelectionStatus({
-          studyReviewId: [articleId],
-          status: "UNCLASSIFIED",
-          criterias: [],
-        })
-      : UseChangeStudyExtractionStatus({
+    if (articleId === -1) return;
+
+    try {
+      if (page === "Selection") {
+        await UseChangeStudySelectionStatus({
           studyReviewId: [articleId],
           status: "UNCLASSIFIED",
           criterias: [],
         });
-    reloadArticles();
+      } else {
+        // EXTRAÇÃO:
+        // Voltamos a enviar os critérios existentes para proteger a Seleção.
+        // O reset visual será garantido pelo "resetLocalCriterias" no frontend.
+        await UseChangeStudyExtractionStatus({
+          studyReviewId: [articleId],
+          status: "UNCLASSIFIED",
+          criterias: articleInFocus?.criteria || [],
+        });
+      }
+      
+      await reloadArticles();
+    } catch (error) {
+      console.error("Erro ao resetar o artigo:", error);
+    }
   };
 
   return { handleResetStatusToUnclassified };

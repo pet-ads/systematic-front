@@ -4,7 +4,7 @@ import { MdOutlineLowPriority } from "react-icons/md";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { RiResetLeftLine } from "react-icons/ri";
 import { Tooltip } from "@chakra-ui/react";
-import { useState, useEffect } from "react"; // <-- IMPORTAMOS AQUI
+import { useState, useEffect } from "react";
 
 // Hooks
 import useFetchAllCriteriasByArticle from "../../../../services/useFetchAllCriteriasByArticle";
@@ -50,29 +50,52 @@ export default function ButtonsForSelection({
     reloadArticles,
   });
   const { handleChangePriority } = useChangePriority({ reloadArticles });
-  const { criterias: fetchedCriterias, handlerUpdateCriteriasStructure } =
-    useFetchAllCriteriasByArticle({ page });
+
+  // Pegando a nova função resetLocalCriterias do hook
+  const {
+    criterias: fetchedCriterias,
+    handlerUpdateCriteriasStructure,
+    resetLocalCriterias,
+  } = useFetchAllCriteriasByArticle({ page });
 
   const currentArticle = articles[articleIndex];
 
-  // ==========================================
-  // CORREÇÃO DOS BUGS DO NEGRITO:
-  // Congelamos os critérios históricos assim que o artigo carrega.
-  // ==========================================
+  const getArticleId = (article: ArticleInterface | StudyInterface) => {
+    if (!article) return undefined;
+    return "studyReviewId" in article ? article.studyReviewId : article.studyId;
+  };
+
+  const currentArticleId = getArticleId(currentArticle);
+
   const [historicalCriteria, setHistoricalCriteria] = useState<string[]>([]);
 
   useEffect(() => {
     if (currentArticle) {
       setHistoricalCriteria(currentArticle.criteria || []);
     }
-    // O array de dependências usa o ID do artigo.
-    // Assim, se você clicar num checkbox, essa lista NÃO atualiza.
-    // Ela só atualiza quando você muda de artigo (Next/Previous).
-  }, [currentArticle?.studyReviewId]);
-  // ==========================================
+    // ADICIONAMOS O `page` AQUI:
+    // Agora, se você trocar da aba Selection para Extraction,
+    // ele tira uma "foto" atualizada de quais critérios estão salvos.
+  }, [currentArticleId, page]);
+
+  const handleFullReset = async () => {
+    // 1. Reseta no backend (seu hook useResetStatus)
+    await handleResetStatusToUnclassified();
+
+    // 2. Limpa os checkboxes visualmente (AGORA RODA SEMPRE, EM SELECTION E EXTRACTION)
+    resetLocalCriterias();
+
+    // 3. Regra específica para a página de Seleção
+    if (page === "Selection") {
+      // Se estiver na seleção, apagamos também o histórico (negrito)
+      setHistoricalCriteria([]);
+    }
+    // Se estiver na Extração, NÃO limpamos o historicalCriteria,
+    // para manter o negrito mostrando o que veio da etapa anterior.
+  };
 
   if (!fetchedCriterias) return null;
-
+  
   const currentArticleStatus = {
     selectionStatus: currentArticle.selectionStatus,
     extractionStatus: currentArticle.extractionStatus,
@@ -104,14 +127,16 @@ export default function ButtonsForSelection({
 
   function goToNextArticle() {
     const nextIndex = (articleIndex + 1) % articles.length;
-    const nextArticle = articles[nextIndex] as ArticleInterface;
-    setSelectedArticleReview(nextArticle.studyReviewId);
+    const nextArticle = articles[nextIndex];
+    const nextId = getArticleId(nextArticle) as number;
+    setSelectedArticleReview(nextId);
   }
 
   function goToPreviousArticle() {
     const prevIndex = (articleIndex - 1 + articles.length) % articles.length;
-    const prevArticle = articles[prevIndex] as ArticleInterface;
-    setSelectedArticleReview(prevArticle.studyReviewId);
+    const prevArticle = articles[prevIndex];
+    const prevId = getArticleId(prevArticle) as number;
+    setSelectedArticleReview(prevId);
   }
 
   const comboBoxGroups: Record<
@@ -188,7 +213,6 @@ export default function ButtonsForSelection({
                   handlerUpdateCriteriasStructure
                 }
                 reloadArticles={reloadArticles}
-                // Passamos a lista congelada em vez da lista viva
                 selectedCriteria={historicalCriteria}
               />
             </Box>
@@ -205,7 +229,7 @@ export default function ButtonsForSelection({
             color="black"
             bg="white"
             p="1rem"
-            onClick={handleResetStatusToUnclassified}
+            onClick={handleFullReset} // CHAMANDO A NOVA FUNÇÃO AQUI
           >
             <RiResetLeftLine color="black" size="1.5rem" />
           </Button>

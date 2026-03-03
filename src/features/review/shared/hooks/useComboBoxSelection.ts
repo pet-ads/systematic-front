@@ -12,6 +12,7 @@ import { UseChangeStudyExtractionStatus } from "../services/useChangeStudyExtrac
 import type { PageLayout } from "../components/structure/LayoutFactory";
 import { SelectionArticles } from "@features/review/execution-selection/services/useFetchSelectionArticles";
 import { KeyedMutator } from "swr";
+
 interface ComboBoxSelectionProps {
   page: PageLayout;
   reloadArticles: KeyedMutator<SelectionArticles>;
@@ -28,34 +29,53 @@ const useComboBoxSelection = ({
   const { selectedArticleReview } = studiesContext;
 
   const changeStatus = useCallback(
-    (status: "INCLUDED" | "EXCLUDED", criterias: string[]) => {
-      const getFunction =
+    // 1. Transformamos em async
+    async (
+      status: "INCLUDED" | "EXCLUDED" | "UNCLASSIFIED",
+      criterias: string[],
+    ) => {
+      const updateFunction =
         page === "Selection"
           ? UseChangeStudySelectionStatus
           : UseChangeStudyExtractionStatus;
 
-      getFunction({
-        studyReviewId: [selectedArticleReview],
-        criterias,
-        status,
-      });
-      reloadArticles();
+      try {
+        // 2. Esperamos (await) o backend salvar os dados
+        await updateFunction({
+          studyReviewId: [selectedArticleReview],
+          criterias,
+          status,
+        });
+
+        // 3. Só DEPOIS pedimos pro SWR atualizar a lista
+        await reloadArticles();
+      } catch (error) {
+        console.error("Erro ao atualizar o status:", error);
+      }
     },
-    [page, selectedArticleReview, reloadArticles]
+    [page, selectedArticleReview, reloadArticles],
   );
 
   const handleIncludeItemClick = useCallback(
     (criterias: string[]) => {
-      changeStatus("INCLUDED", criterias);
+      const newStatus = criterias.length === 0 ? "UNCLASSIFIED" : "INCLUDED";
+      console.log(
+        "Enviando pro backend -> Status:",
+        newStatus,
+        "Critérios:",
+        criterias,
+      ); // <-- ADICIONE ISSO
+      changeStatus(newStatus, criterias);
     },
-    [changeStatus]
+    [changeStatus],
   );
 
   const handleExcludeItemClick = useCallback(
     (criterias: string[]) => {
-      changeStatus("EXCLUDED", criterias);
+      const newStatus = criterias.length === 0 ? "UNCLASSIFIED" : "EXCLUDED";
+      changeStatus(newStatus, criterias);
     },
-    [changeStatus]
+    [changeStatus],
   );
 
   return { handleIncludeItemClick, handleExcludeItemClick };

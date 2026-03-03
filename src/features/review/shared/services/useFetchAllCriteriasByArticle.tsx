@@ -36,24 +36,12 @@ export default function useFetchAllCriteriasByArticle({
   page,
 }: AllCriteriasByArticleProps) {
   const [criterias, setCriterias] = useState<Record<number, CriteiriaProps>>(
-    {}
+    {},
   );
 
   const studiesContext = useContext(StudyContext);
 
-  if (!studiesContext) {
-    return {
-      criterias: {
-        options: {
-          INCLUSION: { content: [], isActive: false },
-          EXCLUSION: { content: [], isActive: false },
-        },
-      },
-      handlerUpdateCriteriasStructure: () => {},
-    };
-  }
-
-  const { selectedArticleReview } = studiesContext;
+  const selectedArticleReview = studiesContext?.selectedArticleReview ?? -1;
 
   const { criteria } = useFetchCriteriaForFocusedArticle({
     articleId: selectedArticleReview,
@@ -63,19 +51,12 @@ export default function useFetchAllCriteriasByArticle({
   const { revertCriterionState } = useRevertCriterionState({ page });
 
   useEffect(() => {
-    if (!inclusion || !exclusion || !selectedArticleReview) return;
+    if (!inclusion || !exclusion || selectedArticleReview === -1) return;
 
     const groupOfCriteria: Record<OptionType, string[]> = {
       INCLUSION: criteria?.inclusionCriteria || [],
       EXCLUSION: criteria?.exclusionCriteria || [],
     };
-
-    if (
-      criterias[selectedArticleReview] &&
-      criteria?.inclusionCriteria.length === 0 &&
-      criteria?.exclusionCriteria.length === 0
-    )
-      return;
 
     const inclusionMapped = inclusion.map((content) => ({
       text: content,
@@ -110,16 +91,14 @@ export default function useFetchAllCriteriasByArticle({
 
   const captureGroupOfCriteria = (current: CriteiriaProps, key: OptionType) => {
     const groupCriteria = current.options;
-
     const oppositeKey: OptionType =
       key === "INCLUSION" ? "EXCLUSION" : "INCLUSION";
-
     return { groupCriteria, oppositeKey };
   };
 
   function hasConflictWithOppositeGroup(
     groupCriteria: CriteiriaProps["options"],
-    oppositeKey: OptionType
+    oppositeKey: OptionType,
   ) {
     return groupCriteria[oppositeKey].content.some((crit) => crit.isChecked);
   }
@@ -127,10 +106,10 @@ export default function useFetchAllCriteriasByArticle({
   function updateCriteriaContent(
     content: OptionProps[],
     optionText: string,
-    newValue: boolean
+    newValue: boolean,
   ): { updatedContent: OptionProps[]; isNowActive: boolean } {
     const updated = content.map((crit) =>
-      crit.text === optionText ? { ...crit, isChecked: newValue } : crit
+      crit.text === optionText ? { ...crit, isChecked: newValue } : crit,
     );
     const isActive = updated.some((crit) => crit.isChecked);
     return { updatedContent: updated, isNowActive: isActive };
@@ -139,7 +118,7 @@ export default function useFetchAllCriteriasByArticle({
   const shouldRevertState = (
     currentContent: OptionProps[],
     optionText: string,
-    newValue: boolean
+    newValue: boolean,
   ) => {
     const criteria = currentContent.find((crit) => crit.text === optionText);
     if (!criteria) return;
@@ -149,9 +128,9 @@ export default function useFetchAllCriteriasByArticle({
   const handlerUpdateCriteriasStructure = (
     key: OptionType,
     optionText: string,
-    newValue: boolean
+    newValue: boolean,
   ) => {
-    if (!selectedArticleReview) return;
+    if (selectedArticleReview === -1) return;
 
     setCriterias((prev) => {
       const current = prev[selectedArticleReview];
@@ -159,7 +138,7 @@ export default function useFetchAllCriteriasByArticle({
 
       const { groupCriteria, oppositeKey } = captureGroupOfCriteria(
         current,
-        key
+        key,
       );
       if (!groupCriteria) return prev;
 
@@ -173,7 +152,7 @@ export default function useFetchAllCriteriasByArticle({
       const { updatedContent, isNowActive } = updateCriteriaContent(
         groupCriteria[key].content,
         optionText,
-        newValue
+        newValue,
       );
 
       if (shouldRevertState(groupCriteria[key].content, optionText, newValue)) {
@@ -196,6 +175,35 @@ export default function useFetchAllCriteriasByArticle({
     });
   };
 
+  const resetLocalCriterias = () => {
+    if (selectedArticleReview === -1) return;
+
+    setCriterias((prev) => {
+      const current = prev[selectedArticleReview];
+      if (!current) return prev;
+
+      const resetContent = (content: OptionProps[]) =>
+        content.map((c) => ({ ...c, isChecked: false }));
+
+      return {
+        ...prev,
+        [selectedArticleReview]: {
+          ...current,
+          options: {
+            INCLUSION: {
+              content: resetContent(current.options.INCLUSION.content),
+              isActive: false,
+            },
+            EXCLUSION: {
+              content: resetContent(current.options.EXCLUSION.content),
+              isActive: false,
+            },
+          },
+        },
+      };
+    });
+  };
+
   const CRITERIA_FALLBACK: CriteiriaProps = {
     options: {
       INCLUSION: { content: [], isActive: false },
@@ -206,5 +214,6 @@ export default function useFetchAllCriteriasByArticle({
   return {
     criterias: criterias[selectedArticleReview] || CRITERIA_FALLBACK,
     handlerUpdateCriteriasStructure,
+    resetLocalCriterias, 
   };
 }
