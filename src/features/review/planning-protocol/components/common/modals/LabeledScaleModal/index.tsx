@@ -29,7 +29,7 @@ import {
   formcontrol,
   label,
 } from "@features/review/planning-protocol/components/common/inputs/text/AddTextTable/styles";
-import { tbConteiner } from "@features/review/planning-protocol/components/common/tables/InfosTable/styles"; 
+import { tbConteiner } from "@features/review/planning-protocol/components/common/tables/InfosTable/styles";
 
 interface Props {
   show: Dispatch<SetStateAction<boolean>>;
@@ -41,7 +41,7 @@ export default function LabeledScaleModal({ show, questionHolder, questions }: P
   const { isOpen, onClose, onOpen } = useDisclosure();
 
   const [localQuestions, setLocalQuestions] = useState<Record<string, number>>({});
-  
+
   const [newLabel, setNewLabel] = useState("");
   const [newValue, setNewValue] = useState<number | "">("");
 
@@ -113,22 +113,28 @@ export default function LabeledScaleModal({ show, questionHolder, questions }: P
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={close} size="xl">
+    <Modal isOpen={isOpen} onClose={close} size="2xl">
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent minH="60vh" display="flex" flexDirection="column">
         <ModalHeader>
           Insert options and values
           <ModalCloseButton onClick={close} />
         </ModalHeader>
 
-        <ModalBody>
-          <FormControl sx={label}>
-            <FormControl sx={formcontrol}>
+        <ModalBody pb={6} display="flex" flexDirection="column">
+          <FormControl sx={label} flex="1" display="flex" flexDirection="column">
+            <FormControl sx={formcontrol} flex="1" display="flex" flexDirection="column">
               <FormLabel mt={"30px"} fontWeight={500} fontSize={"large"}>
                 Labeled Scale
               </FormLabel>
 
-              <TableContainer sx={tbConteiner}>
+              <TableContainer
+                sx={tbConteiner}
+                minH={{ base: "250px", md: "400px" }}
+                maxH="60vh"
+                overflowY="auto"
+                flex="1"
+              >
                 <Table variant="simple" size="md">
                   <Thead>
                     <Tr>
@@ -161,7 +167,7 @@ export default function LabeledScaleModal({ show, questionHolder, questions }: P
                   <Tbody>
                     {Object.entries(localQuestions).map(([key, val], index) => (
                       <Tr key={index}>
-                        <Td whiteSpace={"normal"} wordBreak={"break-word"} py={"1"}>
+                        <Td whiteSpace={"normal"} wordBreak={"break-word"} py={3}>
                           {editKey === key ? (
                             <Input
                               value={editedLabel}
@@ -173,7 +179,7 @@ export default function LabeledScaleModal({ show, questionHolder, questions }: P
                           )}
                         </Td>
 
-                        <Td w="120px" py={"1"}>
+                        <Td w="120px" py={3}>
                           {editKey === key ? (
                             <Input
                               type="number"
@@ -188,7 +194,7 @@ export default function LabeledScaleModal({ show, questionHolder, questions }: P
                           )}
                         </Td>
 
-                        <Td textAlign={"right"} py={"1"} w="100px">
+                        <Td textAlign={"right"} py={3} w="100px">
                           <Flex gap="2" justify="flex-end">
                             <DeleteButton index={index} handleDelete={() => handleDelete(key)} />
                             <EditButton
@@ -207,7 +213,6 @@ export default function LabeledScaleModal({ show, questionHolder, questions }: P
             </FormControl>
           </FormControl>
         </ModalBody>
-
         <ModalFooter>
           <Button onClick={close}>Close</Button>
         </ModalFooter>

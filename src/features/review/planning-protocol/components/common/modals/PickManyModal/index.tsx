@@ -10,13 +10,26 @@ import {
   useDisclosure,
   FormControl,
   FormLabel,
+  Table,
+  Tbody,
+  Tr,
+  Td,
+  TableContainer,
+  Input,
+  Flex,
+  Thead,
+  Th,
 } from "@chakra-ui/react";
-import { useEffect, Dispatch, SetStateAction } from "react";
-import InfosTable from "@features/review/planning-protocol/components/common/tables/InfosTable";
+import { useEffect, useState, Dispatch, SetStateAction } from "react";
+import EventButton from "@components/common/buttons/EventButton";
+import DeleteButton from "@components/common/buttons/DeleteButton";
+import EditButton from "@components/common/buttons/EditButton";
+
 import {
   formcontrol,
   label,
 } from "@features/review/planning-protocol/components/common/inputs/text/AddTextTable/styles";
+import { tbConteiner } from "@features/review/planning-protocol/components/common/tables/InfosTable/styles";
 
 interface Props {
   show: Dispatch<SetStateAction<boolean>>;
@@ -27,6 +40,11 @@ interface Props {
 export default function PickManyModal({ show, optionHolder, options }: Props) {
   const { isOpen, onClose, onOpen } = useDisclosure();
 
+  const [newOption, setNewOption] = useState("");
+
+  const [editIndex, setEditIndex] = useState<number | null>(null);
+  const [editedValue, setEditedValue] = useState("");
+
   useEffect(() => {
     onOpen();
   }, [onOpen]);
@@ -36,41 +54,121 @@ export default function PickManyModal({ show, optionHolder, options }: Props) {
     onClose();
   }
 
-  const handleAddText = (value: string) => {
-    optionHolder((prev) => [...prev, value]);
+  const handleAdd = () => {
+    const trimmed = newOption.trim();
+    if (!trimmed) return;
+
+    if (options.includes(trimmed)) {
+      alert("This option already exists!");
+      return;
+    }
+
+    optionHolder((prev) => [...prev, trimmed]);
+    setNewOption("");
   };
 
-  const handleDeleteText = (index: number) => {
-    optionHolder((prev) => prev.filter((_, i) => i !== index));
+  const handleDelete = (indexToDelete: number) => {
+    optionHolder((prev) => prev.filter((_, i) => i !== indexToDelete));
+  };
+
+  const handleEditStart = (index: number, val: string) => {
+    setEditIndex(index);
+    setEditedValue(val);
+  };
+
+  const handleSaveEdit = () => {
+    const trimmed = editedValue.trim();
+    if (editIndex === null || !trimmed) return;
+
+    if (options.includes(trimmed) && options.indexOf(trimmed) !== editIndex) {
+      alert("This option already exists!");
+      return;
+    }
+
+    optionHolder((prev) => {
+      const updated = [...prev];
+      updated[editIndex] = trimmed;
+      return updated;
+    });
+    setEditIndex(null);
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={close} size="xl">
+    <Modal isOpen={isOpen} onClose={close} size="2xl">
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent minH="60vh" display="flex" flexDirection="column">
         <ModalHeader>
           Insert multiple options
           <ModalCloseButton onClick={close} />
         </ModalHeader>
-        <ModalBody>
-          <FormControl sx={label}>
-            <FormControl sx={formcontrol}>
+
+        <ModalBody pb={6} display="flex" flexDirection="column">
+          <FormControl sx={label} flex="1" display="flex" flexDirection="column">
+            <FormControl sx={formcontrol} flex="1" display="flex" flexDirection="column">
               <FormLabel mt={"30px"} fontWeight={500} fontSize={"large"}>
                 Multiple Options
               </FormLabel>
-              <InfosTable
-                typeField=""
-                onAddText={handleAddText}
-                onDeleteAddedText={handleDeleteText}
-                AddTexts={options}
-                context="Multiple Options"
-                placeholder="Type an option"
-                referencePrefix=""
-                enableReferenceCode={false}
-              />
+
+              <TableContainer
+                sx={tbConteiner}
+                minH={{ base: "250px", md: "400px" }}
+                maxH="60vh"
+                overflowY="auto"
+                flex="1"
+              >
+                <Table variant="simple" size="md">
+                  <Thead>
+                    <Tr>
+                      <Th colSpan={2} padding="1rem">
+                        <Flex gap="4" align="center">
+                          <Input
+                            placeholder="Type an option"
+                            value={newOption}
+                            onChange={(e) => setNewOption(e.target.value)}
+                            onKeyDown={(e) => e.key === "Enter" && handleAdd()}
+                            flex="1"
+                            size="md"
+                          />
+                          <EventButton text="Add" event={handleAdd} w={"40px"} />
+                        </Flex>
+                      </Th>
+                    </Tr>
+                  </Thead>
+                  <Tbody>
+                    {options.map((opt, index) => (
+                      <Tr key={index}>
+                        <Td whiteSpace={"normal"} wordBreak={"break-word"} py={3}>
+                          {editIndex === index ? (
+                            <Input
+                              value={editedValue}
+                              onChange={(e) => setEditedValue(e.target.value)}
+                              size="md"
+                            />
+                          ) : (
+                            opt
+                          )}
+                        </Td>
+
+                        <Td textAlign={"right"} py={3} w="100px">
+                          <Flex gap="2" justify="flex-end">
+                            <DeleteButton index={index} handleDelete={() => handleDelete(index)} />
+                            <EditButton
+                              index={index}
+                              editIndex={editIndex === index ? index : null}
+                              handleEdit={() => handleEditStart(index, opt)}
+                              handleSaveEdit={handleSaveEdit}
+                            />
+                          </Flex>
+                        </Td>
+                      </Tr>
+                    ))}
+                  </Tbody>
+                </Table>
+              </TableContainer>
             </FormControl>
           </FormControl>
         </ModalBody>
+
         <ModalFooter>
           <Button onClick={close}>Close</Button>
         </ModalFooter>
