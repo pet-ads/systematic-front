@@ -5,10 +5,10 @@ import { useContext, useEffect, useState } from "react";
 import useFetchCriteriaForFocusedArticle from "./useCriteriaForFocusedArticle";
 import useFetchInclusionCriteria from "./useFetchInclusionCriteria";
 import useFetchExclusionCriteria from "./useFetchExclusionCriterias";
+import useRevertCriterionState from "./useRevertCriterionState";
 
 // Types
 import { PageLayout } from "../components/structure/LayoutFactory";
-import useRevertCriterionState from "./useRevertCriterionState";
 import StudyContext from "../context/StudiesContext";
 
 export type OptionType = "INCLUSION" | "EXCLUSION";
@@ -32,62 +32,80 @@ type AllCriteriasByArticleProps = {
   page: PageLayout;
 };
 
+const criteriaStateCache: Record<string, CriteiriaProps> = {};
+
 export default function useFetchAllCriteriasByArticle({
   page,
 }: AllCriteriasByArticleProps) {
-  const [criterias, setCriterias] = useState<Record<number, CriteiriaProps>>(
-    {},
-  );
+  const [criterias, setCriterias] =
+    useState<Record<string, CriteiriaProps>>(criteriaStateCache);
 
   const studiesContext = useContext(StudyContext);
-
   const selectedArticleReview = studiesContext?.selectedArticleReview ?? -1;
+
+  const stateKey = `${selectedArticleReview}_${page}`;
 
   const { criteria } = useFetchCriteriaForFocusedArticle({
     articleId: selectedArticleReview,
   });
+
   const inclusion = useFetchInclusionCriteria() || [];
   const exclusion = useFetchExclusionCriteria() || [];
   const { revertCriterionState } = useRevertCriterionState({ page });
 
   useEffect(() => {
+    Object.assign(criteriaStateCache, criterias);
+  }, [criterias]);
+
+  useEffect(() => {
     if (!inclusion || !exclusion || selectedArticleReview === -1) return;
 
-    const groupOfCriteria: Record<OptionType, string[]> = {
-      INCLUSION: criteria?.inclusionCriteria || [],
-      EXCLUSION: criteria?.exclusionCriteria || [],
-    };
+    if (inclusion.length === 0 && exclusion.length === 0) return;
 
-    const inclusionMapped = inclusion.map((content) => ({
-      text: content,
-      isChecked: groupOfCriteria["INCLUSION"].includes(content),
-    }));
+    setCriterias((prev) => {
+      if (
+        prev[stateKey] &&
+        prev[stateKey].options.INCLUSION.content.length > 0
+      ) {
+        return prev;
+      }
 
-    const inclusionStatus = inclusionMapped.some((crit) => crit.isChecked);
+      const groupOfCriteria: Record<OptionType, string[]> = {
+        INCLUSION: criteria?.inclusionCriteria || [],
+        EXCLUSION: criteria?.exclusionCriteria || [],
+      };
 
-    const exclusionMapped = exclusion.map((content) => ({
-      text: content,
-      isChecked: groupOfCriteria["EXCLUSION"].includes(content),
-    }));
+      const inclusionMapped = inclusion.map((content) => ({
+        text: content,
+        isChecked: groupOfCriteria["INCLUSION"].includes(content),
+      }));
 
-    const exclusionStatus = exclusionMapped.some((crit) => crit.isChecked);
+      const inclusionStatus = inclusionMapped.some((crit) => crit.isChecked);
 
-    setCriterias((prev) => ({
-      ...prev,
-      [selectedArticleReview]: {
-        options: {
-          INCLUSION: {
-            content: inclusionMapped,
-            isActive: inclusionStatus,
-          },
-          EXCLUSION: {
-            content: exclusionMapped,
-            isActive: exclusionStatus,
+      const exclusionMapped = exclusion.map((content) => ({
+        text: content,
+        isChecked: groupOfCriteria["EXCLUSION"].includes(content),
+      }));
+
+      const exclusionStatus = exclusionMapped.some((crit) => crit.isChecked);
+
+      return {
+        ...prev,
+        [stateKey]: {
+          options: {
+            INCLUSION: {
+              content: inclusionMapped,
+              isActive: inclusionStatus,
+            },
+            EXCLUSION: {
+              content: exclusionMapped,
+              isActive: exclusionStatus,
+            },
           },
         },
-      },
-    }));
-  }, [inclusion, exclusion, selectedArticleReview, criteria]);
+      };
+    });
+  }, [inclusion, exclusion, selectedArticleReview, criteria, stateKey]);
 
   const captureGroupOfCriteria = (current: CriteiriaProps, key: OptionType) => {
     const groupCriteria = current.options;
@@ -133,7 +151,7 @@ export default function useFetchAllCriteriasByArticle({
     if (selectedArticleReview === -1) return;
 
     setCriterias((prev) => {
-      const current = prev[selectedArticleReview];
+      const current = prev[stateKey];
       if (!current) return prev;
 
       const { groupCriteria, oppositeKey } = captureGroupOfCriteria(
@@ -161,7 +179,7 @@ export default function useFetchAllCriteriasByArticle({
 
       return {
         ...prev,
-        [selectedArticleReview]: {
+        [stateKey]: {
           ...current,
           options: {
             ...groupCriteria,
@@ -179,7 +197,7 @@ export default function useFetchAllCriteriasByArticle({
     if (selectedArticleReview === -1) return;
 
     setCriterias((prev) => {
-      const current = prev[selectedArticleReview];
+      const current = prev[stateKey];
       if (!current) return prev;
 
       const resetContent = (content: OptionProps[]) =>
@@ -187,7 +205,7 @@ export default function useFetchAllCriteriasByArticle({
 
       return {
         ...prev,
-        [selectedArticleReview]: {
+        [stateKey]: {
           ...current,
           options: {
             INCLUSION: {
@@ -212,8 +230,8 @@ export default function useFetchAllCriteriasByArticle({
   };
 
   return {
-    criterias: criterias[selectedArticleReview] || CRITERIA_FALLBACK,
+    criterias: criterias[stateKey] || CRITERIA_FALLBACK,
     handlerUpdateCriteriasStructure,
-    resetLocalCriterias, 
+    resetLocalCriterias,
   };
 }

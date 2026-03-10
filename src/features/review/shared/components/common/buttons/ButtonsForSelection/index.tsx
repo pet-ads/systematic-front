@@ -51,13 +51,6 @@ export default function ButtonsForSelection({
   });
   const { handleChangePriority } = useChangePriority({ reloadArticles });
 
-  // Pegando a nova função resetLocalCriterias do hook
-  const {
-    criterias: fetchedCriterias,
-    handlerUpdateCriteriasStructure,
-    resetLocalCriterias,
-  } = useFetchAllCriteriasByArticle({ page });
-
   const currentArticle = articles[articleIndex];
 
   const getArticleId = (article: ArticleInterface | StudyInterface) => {
@@ -67,35 +60,34 @@ export default function ButtonsForSelection({
 
   const currentArticleId = getArticleId(currentArticle);
 
+  const {
+    criterias: fetchedCriterias,
+    handlerUpdateCriteriasStructure,
+    resetLocalCriterias,
+  } = useFetchAllCriteriasByArticle({ page });
+
   const [historicalCriteria, setHistoricalCriteria] = useState<string[]>([]);
 
   useEffect(() => {
     if (currentArticle) {
       setHistoricalCriteria(currentArticle.criteria || []);
     }
-    // ADICIONAMOS O `page` AQUI:
-    // Agora, se você trocar da aba Selection para Extraction,
-    // ele tira uma "foto" atualizada de quais critérios estão salvos.
   }, [currentArticleId, page]);
 
   const handleFullReset = async () => {
-    // 1. Reseta no backend (seu hook useResetStatus)
-    await handleResetStatusToUnclassified();
+    if (!currentArticleId) return;
 
-    // 2. Limpa os checkboxes visualmente (AGORA RODA SEMPRE, EM SELECTION E EXTRACTION)
+    await handleResetStatusToUnclassified(currentArticleId, historicalCriteria);
+
     resetLocalCriterias();
 
-    // 3. Regra específica para a página de Seleção
     if (page === "Selection") {
-      // Se estiver na seleção, apagamos também o histórico (negrito)
       setHistoricalCriteria([]);
     }
-    // Se estiver na Extração, NÃO limpamos o historicalCriteria,
-    // para manter o negrito mostrando o que veio da etapa anterior.
   };
 
   if (!fetchedCriterias) return null;
-  
+
   const currentArticleStatus = {
     selectionStatus: currentArticle.selectionStatus,
     extractionStatus: currentArticle.extractionStatus,
@@ -225,12 +217,7 @@ export default function ButtonsForSelection({
           p=".5rem"
           borderRadius=".25rem"
         >
-          <Button
-            color="black"
-            bg="white"
-            p="1rem"
-            onClick={handleFullReset} // CHAMANDO A NOVA FUNÇÃO AQUI
-          >
+          <Button color="black" bg="white" p="1rem" onClick={handleFullReset}>
             <RiResetLeftLine color="black" size="1.5rem" />
           </Button>
         </Tooltip>

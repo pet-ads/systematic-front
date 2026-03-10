@@ -54,10 +54,11 @@ export default function ComboBox({
   groupKey,
   handlerUpdateCriteriasStructure,
   reloadArticles,
-  selectedCriteria = [], // Adicionado aqui com valor default vazio
+  selectedCriteria = [],
 }: IComboBoxProps) {
   const { handleIncludeItemClick, handleExcludeItemClick } =
     useComboBoxSelection({ page, reloadArticles });
+
   const toast = useToaster();
 
   const { selectionStatus, extractionStatus } = status;
@@ -93,7 +94,6 @@ export default function ComboBox({
 
       <MenuList maxH="10rem" overflowY="auto">
         {options.map((option, index) => {
-          // Lógica para verificar se deve ficar em negrito
           const isHighlighted =
             page === "Extraction" && selectedCriteria.includes(option.text);
 

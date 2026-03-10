@@ -4,7 +4,6 @@ import { UseChangeStudyExtractionStatus } from "../services/useChangeStudyExtrac
 
 //Types
 import { PageLayout } from "../components/structure/LayoutFactory";
-import useFocusedArticle from "./useFocusedArticle";
 import { SelectionArticles } from "@features/review/execution-selection/services/useFetchSelectionArticles";
 import { KeyedMutator } from "swr";
 
@@ -14,12 +13,11 @@ interface ResetButtonProps {
 }
 
 const useResetStatus = ({ page, reloadArticles }: ResetButtonProps) => {
-  const { articleInFocus } = useFocusedArticle({ page });
-
-  const handleResetStatusToUnclassified = async () => {
-    const articleId = articleInFocus ? articleInFocus?.studyReviewId : -1;
-
-    if (articleId === -1) return;
+  const handleResetStatusToUnclassified = async (
+    articleId: number,
+    historicalCriteria: string[] = [],
+  ) => {
+    if (!articleId || articleId === -1) return;
 
     try {
       if (page === "Selection") {
@@ -29,16 +27,13 @@ const useResetStatus = ({ page, reloadArticles }: ResetButtonProps) => {
           criterias: [],
         });
       } else {
-        // EXTRAÇÃO:
-        // Voltamos a enviar os critérios existentes para proteger a Seleção.
-        // O reset visual será garantido pelo "resetLocalCriterias" no frontend.
         await UseChangeStudyExtractionStatus({
           studyReviewId: [articleId],
           status: "UNCLASSIFIED",
-          criterias: articleInFocus?.criteria || [],
+          criterias: historicalCriteria,
         });
       }
-      
+
       await reloadArticles();
     } catch (error) {
       console.error("Erro ao resetar o artigo:", error);

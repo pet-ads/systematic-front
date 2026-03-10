@@ -1,5 +1,5 @@
 // External library
-import { useCallback, useContext } from "react";
+import { useCallback, useContext, useRef } from "react";
 
 // Context
 import StudyContext from "@features/review/shared/context/StudiesContext";
@@ -24,34 +24,34 @@ const useComboBoxSelection = ({
 }: ComboBoxSelectionProps) => {
   const studiesContext = useContext(StudyContext);
 
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  
   if (!studiesContext) throw new Error("Context not available");
 
   const { selectedArticleReview } = studiesContext;
 
   const changeStatus = useCallback(
-    // 1. Transformamos em async
-    async (
-      status: "INCLUDED" | "EXCLUDED" | "UNCLASSIFIED",
-      criterias: string[],
-    ) => {
-      const updateFunction =
-        page === "Selection"
-          ? UseChangeStudySelectionStatus
-          : UseChangeStudyExtractionStatus;
+    (status: "INCLUDED" | "EXCLUDED" | "UNCLASSIFIED", criterias: string[]) => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
 
-      try {
-        // 2. Esperamos (await) o backend salvar os dados
-        await updateFunction({
-          studyReviewId: [selectedArticleReview],
-          criterias,
-          status,
-        });
+      timeoutRef.current = setTimeout(async () => {
+        const updateFunction =
+          page === "Selection"
+            ? UseChangeStudySelectionStatus
+            : UseChangeStudyExtractionStatus;
 
-        // 3. Só DEPOIS pedimos pro SWR atualizar a lista
-        await reloadArticles();
-      } catch (error) {
-        console.error("Erro ao atualizar o status:", error);
-      }
+        try {
+          await updateFunction({
+            studyReviewId: [selectedArticleReview],
+            criterias,
+            status,
+          });
+
+          await reloadArticles();
+        } catch (error) {
+          console.error("Erro ao atualizar o status:", error);
+        }
+      }, 400);
     },
     [page, selectedArticleReview, reloadArticles],
   );
@@ -59,12 +59,6 @@ const useComboBoxSelection = ({
   const handleIncludeItemClick = useCallback(
     (criterias: string[]) => {
       const newStatus = criterias.length === 0 ? "UNCLASSIFIED" : "INCLUDED";
-      console.log(
-        "Enviando pro backend -> Status:",
-        newStatus,
-        "Critérios:",
-        criterias,
-      ); // <-- ADICIONE ISSO
       changeStatus(newStatus, criterias);
     },
     [changeStatus],
