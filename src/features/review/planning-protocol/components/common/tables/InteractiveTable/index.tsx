@@ -3,7 +3,6 @@ import { Input, Select, FormLabel, Textarea } from "@chakra-ui/react";
 import Axios from "../../../../../../../infrastructure/http/axiosClient";
 import EventButton from "@components/common/buttons/EventButton";
 
-
 import DefaultTable from "@components/common/tables/DefaultTable";
 import { Column, SortConfig } from "@components/common/tables/DefaultTable/types";
 
@@ -17,6 +16,7 @@ import PickListModal from "../../modals/PickListModal";
 import PickManyModal from "../../modals/PickManyModal";
 import LabeledScaleModal from "../../modals/LabeledScaleModal";
 import useValidatorSQLInjection from "@features/shared/hooks/useValidatorSQLInjection";
+import useToaster from "@components/feedback/Toaster";
 
 interface Props {
   id: string;
@@ -28,6 +28,9 @@ export default function InteractiveTable({ id, url, label }: Props) {
   let adress = "";
   if (label == "Extraction Questions") adress = "extraction-question";
   if (label == "Risk of Bias Questions") adress = "rob-question";
+
+  const toaster = useToaster();
+  const validator = useValidatorSQLInjection();
 
   const {
     setRows,
@@ -70,7 +73,17 @@ export default function InteractiveTable({ id, url, label }: Props) {
 
   const [sortConfig, setSortConfig] = useState<SortConfig<Row>>(null);
 
-  const validator = useValidatorSQLInjection();
+  function normalizeCode(code: string) {
+    return code.trim().toUpperCase();
+  }
+
+  function isDuplicateCode(rows: Row[], index: number, code: string) {
+    const normalized = normalizeCode(code);
+
+    return rows.some(
+      (row, i) => i !== index && normalizeCode(String(row.id)) === normalized,
+    );
+  }
 
   useEffect(() => {
     setQuestions([]);
@@ -99,14 +112,26 @@ export default function InteractiveTable({ id, url, label }: Props) {
             let type;
             let questions;
             switch (item.questionType) {
-              case "TEXTUAL": type = "textual"; break;
-              case "PICK_LIST": type = "pick list"; questions = item.options; break;
-              case "NUMBERED_SCALE": type = "number scale"; break;
-              case "LABELED_SCALE": type = "labeled list"; break;
-              case "PICK_MANY": type = "pick many"; questions = item.options; break;
+              case "TEXTUAL":
+                type = "textual";
+                break;
+              case "PICK_LIST":
+                type = "pick list";
+                questions = item.options;
+                break;
+              case "NUMBERED_SCALE":
+                type = "number scale";
+                break;
+              case "LABELED_SCALE":
+                type = "labeled list";
+                break;
+              case "PICK_MANY":
+                type = "pick many";
+                questions = item.options;
+                break;
             }
             return {
-              id: item.code,
+              id: String(item.code),
               question: item.description,
               type: type,
               questionId: item.questionId,
@@ -116,7 +141,7 @@ export default function InteractiveTable({ id, url, label }: Props) {
               lower: item.lower,
               scale: item.scales,
             };
-          }
+          },
         );
         setRows(fetchedRows);
       } catch (error) {
@@ -124,7 +149,7 @@ export default function InteractiveTable({ id, url, label }: Props) {
       }
     };
     fetch();
-  }, [id, url, adress, setRows]); // Added dependencies
+  }, [id, url, adress, setRows]);
 
   function handleSelect(index: number, newValue: string) {
     handleTypeChange(index, newValue);
@@ -135,12 +160,29 @@ export default function InteractiveTable({ id, url, label }: Props) {
   }
 
   async function handleSaveEdit(index: number) {
-    if(!validator({value: rows[index].question})){
-      return
+    if (!validator({ value: rows[index].question })) {
+      return;
     }
+    const currentCode = String(rows[index].id).trim().toUpperCase();
+    const isDuplicate = rows.some(
+      (row, i) =>
+        i !== index && String(row.id).trim().toUpperCase() === currentCode,
+    );
+
+    if (currentCode !== "" && isDuplicate) {
+      {
+        toaster({
+          title: `The reference code '${currentCode}' is already in use.`,
+          description: "Please choose another one.",
+          status: "error",
+        });
+        return;
+      }
+    }
+
     const row = rows[index];
     const { question, id: questionId, type, isNew, questionId: serverId } = row;
-    const reviewId = id; // From props
+    const reviewId = id;
 
     let data: any;
     let questionType: string | null = null;
@@ -150,24 +192,14 @@ export default function InteractiveTable({ id, url, label }: Props) {
       if (type === "textual") {
         questionType = "TEXTUAL";
         data = { question, questionId, reviewId };
-        
-        if (isNew) {
-          newQuestionId = await sendTextualQuestion(data);
-        } else {
-          await updateTextualQuestion(data, serverId, questionType);
-        }
-
+        if (isNew) newQuestionId = await sendTextualQuestion(data);
+        else await updateTextualQuestion(data, serverId, questionType);
       } else if (type === "pick list") {
         questionType = "PICK_LIST";
         data = { question, questionId, reviewId, options: questions };
         handleAddQuestions(index, questions);
-
-        if (isNew) {
-          newQuestionId = await sendPickListQuestion(data);
-        } else {
-          await updatePickListQuestion(data, serverId, questionType);
-        }
-
+        if (isNew) newQuestionId = await sendPickListQuestion(data);
+        else await updatePickListQuestion(data, serverId, questionType);
       } else if (type === "number scale") {
         questionType = "NUMBERED_SCALE";
         data = {
@@ -178,84 +210,79 @@ export default function InteractiveTable({ id, url, label }: Props) {
           higher: numberScale[1],
         };
         handleNumberScale(index, numberScale[0], numberScale[1]);
-
-        if (isNew) {
-          newQuestionId = await sendNumberScaleQuestion(data);
-        } else {
-          await updateNumberScaleQuestion(data, serverId);
-        }
-
+        if (isNew) newQuestionId = await sendNumberScaleQuestion(data);
+        else await updateNumberScaleQuestion(data, serverId);
       } else if (type === "labeled list") {
         questionType = "LABELED_SCALE";
         data = { question, questionId, reviewId, scales: labeledQuestions };
         handleLabeledList(index, labeledQuestions);
-
-        if (isNew) {
-          newQuestionId = await sendLabeledListQuestion(data);
-        } else {
-          await updateLabeledListQuestion(data, serverId);
-        }
-
+        if (isNew) newQuestionId = await sendLabeledListQuestion(data);
+        else await updateLabeledListQuestion(data, serverId);
       } else if (type === "pick many") {
         questionType = "PICK_MANY";
         data = { question, questionId, reviewId, options: pickManyQuestions };
         handlePickMany(index, pickManyQuestions);
-
-        if (isNew) {
-          newQuestionId = await sendPickManyQuestion(data);
-        } else {
-          await updatePickManyQuestion(data, serverId, questionType);
-        }
+        if (isNew) newQuestionId = await sendPickManyQuestion(data);
+        else await updatePickManyQuestion(data, serverId, questionType);
       }
 
       if (isNew && newQuestionId) {
         handleServerSend(index, newQuestionId);
       }
-
+      setEditIndex(null);
     } catch (error) {
       console.error("Failed to save question:", error);
     }
-
-    setEditIndex(null);
-
-    const accessToken = localStorage.getItem("accessToken");
-    let options = { headers: { Authorization: `Bearer ${accessToken}` } };
-    await Axios.get(`systematic-study/${id}/protocol/extraction-question`, options);
   }
 
   async function handleSaveDelete(index: number) {
-    if(!validator({value: rows[index].question})){
-      return
+    if (!validator({ value: rows[index].question })) {
+      return;
     }
     const row = rows[index];
     const { questionId: serverId } = row;
     const reviewId = id;
 
-    let data: any;
-
     try {
-      data = { reviewId };
-      await deleteQuestion(data, serverId);
-      handleDelete(index)
-      
+      const data = {
+        reviewId,
+        question: row.question,
+        questionId: String(row.id),
+        options: row.questions || [],
+      };
+
+      await deleteQuestion(data as any, serverId);
+      handleDelete(index);
     } catch (error) {
       console.error("Failed to delete question:", error);
-    } 
+    }
   }
 
   const handleIdChange = (index: number, newId: string) => {
-    const limitedId = newId.slice(0, 7);
+    const limitedId = normalizeCode(newId).slice(0, 7);
     setRows((prevRows) =>
-      prevRows.map((row, i) => (i === index ? { ...row, id: limitedId } : row))
+      prevRows.map((row, i) => (i === index ? { ...row, id: limitedId } : row)),
     );
   };
 
   function addNewRow() {
     addRow(setEditIndex, setQuestions);
     setPickManyQuestions([]);
-  }
 
-  
+    setRows((prevRows) => {
+      const newRows = [...prevRows];
+      const lastIndex = newRows.length - 1;
+
+      if (newRows[lastIndex]) {
+        newRows[lastIndex] = {
+          ...newRows[lastIndex],
+          id: "",
+        };
+      }
+
+      return newRows;
+    });
+  }
 
   const columns: Column<Row>[] = [
     {
@@ -263,20 +290,20 @@ export default function InteractiveTable({ id, url, label }: Props) {
       label: "ID",
       width: "10%",
       render: (row, index) => {
-        const isEditing = editIndex === index; 
-
+        const isEditing = editIndex === index;
         return (
           <Input
             value={row.id}
             onChange={(e) => handleIdChange(index, e.target.value)}
             maxLength={7}
-            isReadOnly={!isEditing} 
-            border={isEditing ? "solid 1px #303D50" : "transparent"} 
-            bg={isEditing ? "white" : "transparent"} 
+            isReadOnly={!isEditing}
+            border={isEditing ? "solid 1px #303D50" : "transparent"}
+            bg={isEditing ? "white" : "transparent"}
             cursor={isEditing ? "text" : "default"}
             _focus={{ boxShadow: isEditing ? "outline" : "none" }}
             borderRadius="md"
             size="sm"
+            sx={{ textTransform: "uppercase" }}
           />
         );
       },
@@ -287,28 +314,22 @@ export default function InteractiveTable({ id, url, label }: Props) {
       width: "40%",
       render: (row, index) => {
         const isEditing = editIndex === index;
-
         return (
           <Textarea
-            as={TextareaAutosize} 
+            as={TextareaAutosize}
             minRows={1}
             minH="unset"
-            
             value={row.question}
             onChange={(e) => handleQuestionChange(index, e.target.value)}
-            
             isReadOnly={!isEditing}
-            
             border={isEditing ? "solid 1px #303D50" : "transparent"}
             bg={isEditing ? "white" : "transparent"}
             cursor={isEditing ? "text" : "default"}
             _focus={{ boxShadow: isEditing ? "outline" : "none" }}
-            
             resize="none"
             overflow="hidden"
             whiteSpace="pre-wrap"
             w="100%"
-            
             borderRadius="md"
             size="sm"
             py={2}
@@ -323,19 +344,15 @@ export default function InteractiveTable({ id, url, label }: Props) {
       width: "25%",
       render: (row, index) => {
         const isEditing = editIndex === index;
-
         return (
           <Select
             onChange={(e) => handleSelect(index, e.target.value)}
             value={row.type}
-            
-            isDisabled={!isEditing} 
-            
+            isDisabled={!isEditing}
             border={isEditing ? "solid 1px #303D50" : "transparent"}
             bg={isEditing ? "white" : "transparent"}
-            color="black" 
-            _disabled={{ opacity: 1, cursor: "default" }} 
-            
+            color="black"
+            _disabled={{ opacity: 1, cursor: "default" }}
             borderRadius="md"
             size="sm"
           >
@@ -350,10 +367,12 @@ export default function InteractiveTable({ id, url, label }: Props) {
     },
     {
       key: "questionId",
-      label: "", 
+      label: "",
       width: "15%",
       render: (row, index) => (
-        <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center' }}>
+        <div
+          style={{ display: "flex", gap: "0.5rem", justifyContent: "center" }}
+        >
           <DeleteButton
             index={index}
             handleDelete={() => handleSaveDelete(index)}
@@ -364,8 +383,8 @@ export default function InteractiveTable({ id, url, label }: Props) {
             index={index}
             editIndex={editIndex}
             handleEdit={() => {
-              setnumberScale([row.lower || 1, row.higher || 5]); 
-              setQuestions(row.questions || []); 
+              setnumberScale([row.lower || 1, row.higher || 5]);
+              setQuestions(row.questions || []);
               setLabeledQuestions(row.scale || {});
               setEditIndex(index);
               setPickManyQuestions(row.questions || []);
@@ -378,7 +397,7 @@ export default function InteractiveTable({ id, url, label }: Props) {
           />
         </div>
       ),
-    }
+    },
   ];
 
   return (
@@ -390,12 +409,20 @@ export default function InteractiveTable({ id, url, label }: Props) {
       <DefaultTable<Row>
         columns={columns}
         data={rows}
-        enableSorting={true} 
-        externalSortConfig={sortConfig} 
+        enableSorting={true}
+        externalSortConfig={sortConfig}
         onExternalSort={setSortConfig}
       />
 
-      <div style={{ marginTop: "1rem", marginBottom: "1rem", display: "flex", gap: "0.5rem", justifyContent: "end" }}>
+      <div
+        style={{
+          marginTop: "1rem",
+          marginBottom: "1rem",
+          display: "flex",
+          gap: "0.5rem",
+          justifyContent: "end",
+        }}
+      >
         <EventButton
           text="Add"
           w={"40px"}
@@ -405,7 +432,7 @@ export default function InteractiveTable({ id, url, label }: Props) {
         />
       </div>
 
-      {showModal == true && modalType == "pick list" && (
+      {showModal && modalType === "pick list" && (
         <PickListModal
           show={setShowModal}
           questionHolder={setQuestions}
@@ -413,7 +440,7 @@ export default function InteractiveTable({ id, url, label }: Props) {
         />
       )}
 
-      {showModal == true && modalType == "number scale" && (
+      {showModal && modalType === "number scale" && (
         <NumberScaleModal
           show={setShowModal}
           scaleHolder={setnumberScale}
@@ -421,7 +448,7 @@ export default function InteractiveTable({ id, url, label }: Props) {
         />
       )}
 
-      {showModal == true && modalType == "labeled list" && (
+      {showModal && modalType === "labeled list" && (
         <LabeledScaleModal
           show={setShowModal}
           questionHolder={setLabeledQuestions}
@@ -429,7 +456,7 @@ export default function InteractiveTable({ id, url, label }: Props) {
         />
       )}
 
-      {showModal == true && modalType == "pick many" && (
+      {showModal && modalType === "pick many" && (
         <PickManyModal
           show={setShowModal}
           optionHolder={setPickManyQuestions}
