@@ -77,14 +77,6 @@ export default function InteractiveTable({ id, url, label }: Props) {
     return code.trim().toUpperCase();
   }
 
-  function isDuplicateCode(rows: Row[], index: number, code: string) {
-    const normalized = normalizeCode(code);
-
-    return rows.some(
-      (row, i) => i !== index && normalizeCode(String(row.id)) === normalized,
-    );
-  }
-
   useEffect(() => {
     setQuestions([]);
     const fetch = async () => {
