@@ -52,7 +52,7 @@ const SessionPrev = ({
         ? `0${date.getMonth() + 1}`
         : `${date.getMonth() + 1}`;
     const year = `${date.getFullYear()}`;
-    return `${day}/${month}/${year}`;
+    return `${month}/${day}/${year}`;
   };
 
   const hasErrorsBySessionId = (id: string) => {
