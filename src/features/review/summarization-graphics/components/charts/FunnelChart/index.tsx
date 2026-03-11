@@ -16,7 +16,7 @@ export default function FlowChart({ baseNodes, edges}: Props) {
       proOptions={{ hideAttribution: true }}
     >
       <Controls />
-      <DownloadFunnelButton selector={".react-flow__viewport"} fileName="StudiesFunnel"/>
+      <DownloadFunnelButton selector={".react-flow"} fileName="StudiesFunnel"/>
     </ReactFlow>
   );
 } 
