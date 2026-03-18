@@ -21,7 +21,7 @@ import Picoc from "@features/review/planning-protocol/pages/Picoc";
 import EligibilityCriteria from "@features/review/planning-protocol/pages/EligibilityCriteria";
 import InformationSourcesAndSearchStrategy from "@features/review/planning-protocol/pages/InformationSourcesAndSearchStrategy";
 import SelectionAndExtraction from "@features/review/planning-protocol/pages/SelectionAndExtraction";
-import RiskOfBiasAssessment from "@features/review/planning-protocol/pages/RiskOfBiasAssessment ";
+import RiskOfBiasAssessment from "@features/review/planning-protocol/pages/RiskOfBiasAssessment";
 import AnalysisAndSynthesisOfResults from "@features/review/planning-protocol/pages/AnalysisAndSynthesisOfResults";
 
 // Execution
@@ -92,7 +92,7 @@ const routesList: RouteObject[] = [
   },
   {
     path: "/review/planning/protocol/risk-of-bias-assessment/:id",
-    element: <ProtectedRoute element={<RiskOfBiasAssessment />} />,
+    element: <ProtectedRoute element={<RiskOfBiasAssessment/>} />,
   },
   {
     path: "/review/planning/protocol/analysis-and-synthesis-of-results/:id",

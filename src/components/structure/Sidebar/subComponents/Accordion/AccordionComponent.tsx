@@ -24,10 +24,11 @@ type AccordionSection = "Planning" | "Execution" | "Summarization";
 // Constants
 const hasShowOcultScreens = false;
 
+
 const sectionIcons: Record<AccordionSection, React.ReactNode> = {
-  Planning: <MdRule size="1.25rem" color="black" />,
-  Execution: <LuFileSearch size="1.1rem" color="black" />,
-  Summarization: <LuFileCheck2 size="1rem" color="black" />,
+  Planning: <MdRule size="20px" />,
+  Execution: <LuFileSearch size="20px" />,
+  Summarization: <LuFileCheck2 size="20px" />,
 };
 
 const AccordionComponent = () => {
@@ -45,38 +46,14 @@ const AccordionComponent = () => {
     }[]
   > = {
     Planning: [
-      {
-        path: `/review/planning/protocol/general-definition`,
-        label: "Definition",
-      },
-      {
-        path: `/review/planning/protocol/picoc/${id}`,
-        label: "PICOC",
-      },
-      {
-        path: `/review/planning/protocol/research-questions/${id}`,
-        label: "Research",
-      },
-      {
-        path: `/review/planning/protocol/eligibility-criteria/${id}`,
-        label: "Criteria",
-      },
-      {
-        path: `/review/planning/protocol/information-sources-and-search-strategy/${id}`,
-        label: "Sources",
-      },
-      {
-        path: `/review/planning/protocol/selection-and-extraction/${id}`,
-        label: "Selection",
-      },
-      {
-        path: `/review/planning/protocol/risk-of-bias-assessment/${id}`,
-        label: "Risk of Bias",
-      },
-      {
-        path: `/review/planning/protocol/analysis-and-synthesis-of-results/${id}`,
-        label: "Analysis",
-      },
+      { path: `/review/planning/protocol/general-definition`, label: "Definition" },
+      { path: `/review/planning/protocol/picoc/${id}`, label: "PICOC" },
+      { path: `/review/planning/protocol/research-questions/${id}`, label: "Research" },
+      { path: `/review/planning/protocol/eligibility-criteria/${id}`, label: "Criteria" },
+      { path: `/review/planning/protocol/information-sources-and-search-strategy/${id}`, label: "Sources" },
+      { path: `/review/planning/protocol/selection-and-extraction/${id}`, label: "Selection" },
+      { path: `/review/planning/protocol/risk-of-bias-assessment/${id}`, label: "Risk of Bias" },
+      { path: `/review/planning/protocol/analysis-and-synthesis-of-results/${id}`, label: "Analysis" },
     ],
     Execution: [
       { path: `/review/execution/identification`, label: "Identification" },
@@ -87,14 +64,8 @@ const AccordionComponent = () => {
       { path: `/review/summarization/graphics`, label: "Graphics" },
       ...(hasShowOcultScreens
         ? [
-            {
-              path: `/review/summarization/visualization`,
-              label: "Visualization",
-            },
-            {
-              path: `/review/summarization/finalization`,
-              label: "Finalization",
-            },
+            { path: `/review/summarization/visualization`, label: "Visualization" },
+            { path: `/review/summarization/finalization`, label: "Finalization" },
           ]
         : []),
     ],
@@ -116,23 +87,27 @@ const AccordionComponent = () => {
   }, [activeSection]);
 
   return (
-    <Accordion w="80%" allowToggle index={localIndex} onChange={(expandedIndex) => setLocalIndex(expandedIndex)}>
+    
+    <Accordion w="100%" allowToggle index={localIndex} onChange={(expandedIndex) => setLocalIndex(expandedIndex)}>
       {Object.entries(sections).map(([section, children]) => (
         <AccordionItem key={section} border="none">
           <h2>
             <AccordionButton
-              p=".5rem"
-              fontWeight={activeSection === section ? "bold" : "light"}
-              bg={activeSection === section ? "#dadada" : "transparent"}
-              borderRadius=".25rem"
+              padding="10px 16px"
+              paddingLeft="36px" 
+              _hover={{ bg: "#f7fafc" }}
+              _focus={{ boxShadow: "none", outline: "none" }} 
+              bg="transparent" 
+              color={activeSection === section ? "#3182CE" : "#4A4A4A"} 
+              fontWeight={activeSection === section ? "600" : "500"}
             >
               <Box
-                color="black"
                 as="span"
                 flex="1"
                 textAlign="left"
                 display="flex"
-                gap=".5rem"
+                alignItems="center"
+                gap="12px" 
               >
                 {sectionIcons[section as AccordionSection]}
                 {section}
@@ -140,7 +115,9 @@ const AccordionComponent = () => {
               <AccordionIcon />
             </AccordionButton>
           </h2>
-          <AccordionPanel paddingInlineEnd={0}>
+          
+         
+          <AccordionPanel paddingInlineEnd={0} paddingLeft="48px" pb={2} pt={1}>
             {children.map((child) => (
               <ProtocolAccordionSubItem
                 key={child.path}
