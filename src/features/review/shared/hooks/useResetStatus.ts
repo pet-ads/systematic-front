@@ -4,7 +4,6 @@ import { UseChangeStudyExtractionStatus } from "../services/useChangeStudyExtrac
 
 //Types
 import { PageLayout } from "../components/structure/LayoutFactory";
-import useFocusedArticle from "./useFocusedArticle";
 import { SelectionArticles } from "@features/review/execution-selection/services/useFetchSelectionArticles";
 import { KeyedMutator } from "swr";
 
@@ -14,23 +13,31 @@ interface ResetButtonProps {
 }
 
 const useResetStatus = ({ page, reloadArticles }: ResetButtonProps) => {
-  const { articleInFocus } = useFocusedArticle({ page });
+  const handleResetStatusToUnclassified = async (
+    articleId: number,
+    historicalCriteria: string[] = [],
+  ) => {
+    if (!articleId || articleId === -1) return;
 
-  const handleResetStatusToUnclassified = () => {
-    const articleId = articleInFocus ? articleInFocus?.studyReviewId : -1;
-
-    page === "Selection"
-      ? UseChangeStudySelectionStatus({
-          studyReviewId: [articleId],
-          status: "UNCLASSIFIED",
-          criterias: [],
-        })
-      : UseChangeStudyExtractionStatus({
+    try {
+      if (page === "Selection") {
+        await UseChangeStudySelectionStatus({
           studyReviewId: [articleId],
           status: "UNCLASSIFIED",
           criterias: [],
         });
-    reloadArticles();
+      } else {
+        await UseChangeStudyExtractionStatus({
+          studyReviewId: [articleId],
+          status: "UNCLASSIFIED",
+          criterias: historicalCriteria,
+        });
+      }
+
+      await reloadArticles();
+    } catch (error) {
+      console.error("Erro ao resetar o artigo:", error);
+    }
   };
 
   return { handleResetStatusToUnclassified };

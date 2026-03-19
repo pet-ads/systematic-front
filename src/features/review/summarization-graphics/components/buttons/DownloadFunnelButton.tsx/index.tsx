@@ -3,21 +3,18 @@ import { Panel, useReactFlow } from "@xyflow/react";
 import { toPng } from "html-to-image";
 import { FiDownload } from "react-icons/fi";
 
+type Props = {
+  selector: string;
+  fileName: string;
+};
 
-type Props={
-  selector:string
-  fileName:string
-}
-
-export default function DownloadFunnelButton({selector,fileName}: Props) {
-
-
+export default function DownloadFunnelButton({ selector, fileName }: Props) {
   function downloadImage(dataUrl: string) {
-  const a = document.createElement("a");
-  a.setAttribute("download", fileName);
-  a.setAttribute("href", dataUrl);
-  a.click();
-}
+    const a = document.createElement("a");
+    a.setAttribute("download", `${fileName}.png`);
+    a.setAttribute("href", dataUrl);
+    a.click();
+  }
 
   const { fitView } = useReactFlow();
 
@@ -25,33 +22,50 @@ export default function DownloadFunnelButton({selector,fileName}: Props) {
     fitView();
 
     setTimeout(() => {
-      const element = document.querySelector(
-        selector
-      ) as HTMLElement | null;
+      const element = document.querySelector(selector) as HTMLElement | null;
       if (!element) {
-        console.warn( selector + " not found.");
+        console.warn(selector + " not found.");
         return;
       }
 
-      toPng(element, {
-        backgroundColor: "#ececec",
-        pixelRatio: 2,
-        skipFonts: true,
-      })
-        .then((dataUrl) => {
-          downloadImage(dataUrl);
+      // Força estilos inline no SVG antes de capturar para renderizar as edges
+      const svgElements = element.querySelectorAll(
+        "svg, path, line, polyline, marker"
+      );
+      svgElements.forEach((el) => {
+        const computed = window.getComputedStyle(el);
+        (el as HTMLElement).style.stroke = computed.stroke;
+        (el as HTMLElement).style.strokeWidth = computed.strokeWidth;
+        (el as HTMLElement).style.fill = computed.fill;
+      });
+
+      requestAnimationFrame(() => {
+        toPng(element, {
+          backgroundColor: "#ececec",
+          pixelRatio: 2,
+          skipFonts: true,
+          cacheBust: true,
+          filter: (node) => {
+            if (
+              node instanceof HTMLElement &&
+              node.classList.contains("react-flow__panel")
+            ) {
+              return false;
+            }
+            return true;
+          },
         })
-        .catch((err) => {
-          console.error(err);
-        });
-    }, 300);
+          .then(downloadImage)
+          .catch(console.error);
+      });
+    }, 500);
   };
 
   return (
     <Panel position="bottom-right">
       <Button
         onClick={handleClick}
-        leftIcon={<FiDownload/>}
+        leftIcon={<FiDownload />}
         size="sm"
         colorScheme="blue"
       >

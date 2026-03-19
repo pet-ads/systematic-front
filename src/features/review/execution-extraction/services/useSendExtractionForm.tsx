@@ -261,7 +261,6 @@ const useSendExtractionForm = (adress: string) => {
       const response = await Axios.delete(url, { withCredentials: true });
       return response
     } catch (err) {
-      alert('erro')
       console.log(err);
     }
   }

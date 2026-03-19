@@ -7,7 +7,7 @@ import {
   AccordionIcon,
   AccordionPanel,
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import { MdRule } from "react-icons/md";
 import { LuFileSearch, LuFileCheck2 } from "react-icons/lu";
 
@@ -34,42 +34,7 @@ const sectionIcons: Record<AccordionSection, React.ReactNode> = {
 const AccordionComponent = () => {
   const id = localStorage.getItem("systematicReviewId");
   const { activeSection } = useActiveSection();
-
-  const { generalDefinition } = useStructureReview();
-  const titleIsFilled = generalDefinition.title && generalDefinition.title.trim() !== "";
-
-  const sections: Record<
-    AccordionSection,
-    {
-      path: string;
-      label: string;
-    }[]
-  > = {
-    Planning: [
-      { path: `/review/planning/protocol/general-definition`, label: "Definition" },
-      { path: `/review/planning/protocol/picoc/${id}`, label: "PICOC" },
-      { path: `/review/planning/protocol/research-questions/${id}`, label: "Research" },
-      { path: `/review/planning/protocol/eligibility-criteria/${id}`, label: "Criteria" },
-      { path: `/review/planning/protocol/information-sources-and-search-strategy/${id}`, label: "Sources" },
-      { path: `/review/planning/protocol/selection-and-extraction/${id}`, label: "Selection" },
-      { path: `/review/planning/protocol/risk-of-bias-assessment/${id}`, label: "Risk of Bias" },
-      { path: `/review/planning/protocol/analysis-and-synthesis-of-results/${id}`, label: "Analysis" },
-    ],
-    Execution: [
-      { path: `/review/execution/identification`, label: "Identification" },
-      { path: `/review/execution/selection`, label: "Selection" },
-      { path: `/review/execution/extraction`, label: "Extraction" },
-    ],
-    Summarization: [
-      { path: `/review/summarization/graphics`, label: "Graphics" },
-      ...(hasShowOcultScreens
-        ? [
-            { path: `/review/summarization/visualization`, label: "Visualization" },
-            { path: `/review/summarization/finalization`, label: "Finalization" },
-          ]
-        : []),
-    ],
-  };
+  const { generalDefinition, isLoading } = useStructureReview();
 
   const sectionToIndex: Record<string, number> = {
     Planning: 0,
@@ -81,25 +46,82 @@ const AccordionComponent = () => {
     sectionToIndex[activeSection as string] ?? -1,
   );
 
-  useEffect(() => {
-    const newIndex = sectionToIndex[activeSection as string] ?? -1;
-    setLocalIndex(newIndex);
-  }, [activeSection]);
+  const [prevSection, setPrevSection] = useState(activeSection);
+  if (activeSection !== prevSection) {
+    setPrevSection(activeSection);
+    setLocalIndex(sectionToIndex[activeSection as string] ?? -1);
+  }
+
+  const titleIsFilled = !!generalDefinition?.title?.trim();
+
+  const sections = useMemo(
+    () => ({
+      Planning: [
+        {
+          path: `/review/planning/protocol/general-definition`,
+          label: "Definition",
+        },
+        { path: `/review/planning/protocol/picoc/${id}`, label: "PICOC" },
+        {
+          path: `/review/planning/protocol/research-questions/${id}`,
+          label: "Research",
+        },
+        {
+          path: `/review/planning/protocol/eligibility-criteria/${id}`,
+          label: "Criteria",
+        },
+        {
+          path: `/review/planning/protocol/information-sources-and-search-strategy/${id}`,
+          label: "Sources",
+        },
+        {
+          path: `/review/planning/protocol/selection-and-extraction/${id}`,
+          label: "Selection",
+        },
+        {
+          path: `/review/planning/protocol/risk-of-bias-assessment/${id}`,
+          label: "Risk of Bias",
+        },
+        {
+          path: `/review/planning/protocol/analysis-and-synthesis-of-results/${id}`,
+          label: "Analysis",
+        },
+      ],
+      Execution: [
+        { path: `/review/execution/identification`, label: "Identification" },
+        { path: `/review/execution/selection`, label: "Selection" },
+        { path: `/review/execution/extraction`, label: "Extraction" },
+      ],
+      Summarization: [
+        { path: `/review/summarization/graphics`, label: "Graphics" },
+        ...(hasShowOcultScreens
+          ? [
+              {
+                path: `/review/summarization/visualization`,
+                label: "Visualization",
+              },
+              {
+                path: `/review/summarization/finalization`,
+                label: "Finalization",
+              },
+            ]
+          : []),
+      ],
+    }),
+    [id],
+  );
 
   return (
-    
-    <Accordion w="100%" allowToggle index={localIndex} onChange={(expandedIndex) => setLocalIndex(expandedIndex)}>
+    <Accordion w="80%" allowToggle index={localIndex} onChange={(newIndex) => setLocalIndex(newIndex)}>
       {Object.entries(sections).map(([section, children]) => (
         <AccordionItem key={section} border="none">
           <h2>
             <AccordionButton
-              padding="10px 16px"
-              paddingLeft="36px" 
-              _hover={{ bg: "#f7fafc" }}
-              _focus={{ boxShadow: "none", outline: "none" }} 
-              bg="transparent" 
-              color={activeSection === section ? "#3182CE" : "#4A4A4A"} 
-              fontWeight={activeSection === section ? "600" : "500"}
+              p=".5rem"
+              fontWeight={activeSection === section ? "bold" : "light"}
+              bg={activeSection === section ? "#dadada" : "transparent"}
+              borderRadius=".25rem"
+              _hover={{ bg: "#eeeeee" }}
             >
               <Box
                 as="span"
@@ -123,7 +145,7 @@ const AccordionComponent = () => {
                 key={child.path}
                 to={child.path}
                 text={child.label}
-                disabled={!titleIsFilled && child.label !== "Definition"}
+                disabled={!isLoading && !titleIsFilled && child.label !== "Definition"}
               />
             ))}
           </AccordionPanel>
