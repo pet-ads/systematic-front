@@ -25,6 +25,7 @@ import { DeleteIcon } from "@chakra-ui/icons";
 import { KeyedMutator } from "swr";
 import StudyContext from "@features/review/shared/context/StudiesContext";
 import useHandleExportedFiles from "@features/review/execution-identification/services/useHandleExportedFiles";
+import useCreateProtocol from "@features/review/planning-protocol/services/useCreateProtocol";
 import DragAndDrop from "@components/common/inputs/DragAndDropInput";
 
 interface IdentificationModalProps {
@@ -51,6 +52,7 @@ function IdentificationModal({
   type,
   mutate,
 }: IdentificationModalProps) {
+  const { informationSourcesAndSearchStrategy } = useCreateProtocol();
   const [searchString, setSearchString] = useState<string>("");
   const [comment, setComment] = useState<string>("");
   const [isError, setIsError] = useState(false);
@@ -76,8 +78,9 @@ function IdentificationModal({
 
   useEffect(() => {
     setSource(type);
+    setSearchString(informationSourcesAndSearchStrategy.searchString ?? "");
     onOpen();
-  }, []);
+  }, [informationSourcesAndSearchStrategy]);
 
   const handleSearchStringChange = (
     e: React.ChangeEvent<HTMLTextAreaElement>
