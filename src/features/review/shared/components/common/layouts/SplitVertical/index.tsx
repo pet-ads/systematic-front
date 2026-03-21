@@ -63,6 +63,9 @@ export const SplitVertical: React.FC<VerticalProps> = ({
               articles={articles}
               page={page}
               reloadArticles={reloadArticles}
+              currentPage={pagination.currentPage - 1}
+              totalPages={pagination.quantityOfPages}
+              pageSize={pagination.itensPerPage}
             />
           </motion.div>
           <motion.div
@@ -108,6 +111,9 @@ export const SplitVertical: React.FC<VerticalProps> = ({
               articles={articles}
               page={page}
               reloadArticles={reloadArticles}
+              currentPage={pagination.currentPage - 1}
+              totalPages={pagination.quantityOfPages}
+              pageSize={pagination.itensPerPage}
             />
           </motion.div>
         </AnimatePresence>

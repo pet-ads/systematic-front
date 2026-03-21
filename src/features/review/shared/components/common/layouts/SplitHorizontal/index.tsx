@@ -72,6 +72,9 @@ export const SplitHorizontal: React.FC<HorizontalProps> = ({
                 articles={articles}
                 page={page}
                 reloadArticles={reloadArticles}
+                currentPage={pagination.currentPage - 1}
+                totalPages={pagination.quantityOfPages}
+                pageSize={pagination.itensPerPage}
               />
             </Box>
           </motion.div>
@@ -140,6 +143,9 @@ export const SplitHorizontal: React.FC<HorizontalProps> = ({
                 articles={articles}
                 page={page}
                 reloadArticles={reloadArticles}
+                currentPage={pagination.currentPage - 1}
+                totalPages={pagination.quantityOfPages}
+                pageSize={pagination.itensPerPage}
               />
             </Box>
           </motion.div>
