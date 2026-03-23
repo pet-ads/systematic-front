@@ -35,9 +35,10 @@ interface Props {
   show: Dispatch<SetStateAction<boolean>>;
   questionHolder: React.Dispatch<React.SetStateAction<string[]>>;
   questions: string[];
+  onSave: () => void;
 }
 
-export default function PickListModal({ show, questionHolder, questions }: Props) {
+export default function PickListModal({ show, questionHolder, questions, onSave }: Props) {
   const { isOpen, onClose, onOpen } = useDisclosure();
 
   const [newOption, setNewOption] = useState("");
@@ -50,6 +51,7 @@ export default function PickListModal({ show, questionHolder, questions }: Props
   }, [onOpen]);
 
   function close() {
+    onSave();
     show(false);
     onClose();
   }

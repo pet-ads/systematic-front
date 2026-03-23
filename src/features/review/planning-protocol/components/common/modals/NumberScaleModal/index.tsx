@@ -18,9 +18,10 @@ interface Props {
   show: Dispatch<SetStateAction<boolean>>;
   scaleHolder: React.Dispatch<React.SetStateAction<number[]>>;
   values: number[];
+  onSave: () => void;
 }
 
-function NumberScaleModal({ show, scaleHolder, values }: Props) {
+function NumberScaleModal({ show, scaleHolder, values, onSave }: Props) {
   const { handleMinimalValue, handleMaximalValue, minimalValue, maximalValue } =
     useNumberScale();
   const { isOpen, onClose, onOpen } = useDisclosure();
@@ -37,6 +38,9 @@ function NumberScaleModal({ show, scaleHolder, values }: Props) {
       let array: number[] = [minimalValue, maximalValue];
       scaleHolder(array);
     }
+    setTimeout(() => {
+      onSave();
+    }, 0);
     onClose();
     show(false);
   }
