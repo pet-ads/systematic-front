@@ -32,12 +32,15 @@ export default function Graphics() {
           </Flex>
             <Flex flexDirection="column" gap="0.5rem">
               <SectionMenu onSelect={handleSectionChange} selected={section} />
-              <SelectMenu
-                options={currentAllowedTypes}
-                selected={type}
-                onSelect={setType}
-                placeholder="Choose Layout"
-              />
+              {section !== "Studies Funnel" && 
+              (
+                <SelectMenu
+                  options={currentAllowedTypes}
+                  selected={type}
+                  onSelect={setType}
+                  placeholder="Choose Layout"
+                />
+              )}
               {section === "Form Questions" && (
                 <SelectMenu
                   options={allQuestions.filter((q) => q.questionId !== null)}
