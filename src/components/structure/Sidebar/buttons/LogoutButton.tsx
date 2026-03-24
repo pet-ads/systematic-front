@@ -5,8 +5,6 @@ import { ImExit } from "react-icons/im";
 import { useAuthStore } from "@features/auth/store/useAuthStore";
 import { useNavigation } from "@features/shared/hooks/useNavigation";
 
-// Guards
-
 // Styles
 import style from "./LogouButton.module.css";
 
@@ -22,16 +20,22 @@ const LogoutButton = () => {
   return (
     <div
       className={style.linkBox}
+      onClick={handleLogout}
       style={{
         display: "flex",
-        width: "120px",
         alignItems: "center",
+        width: "100%",           
+        padding: "10px 16px",    
+        boxSizing: "border-box",
+        cursor: "pointer",       
+        color: "#4A4A4A"         
       }}
     >
-      <ImExit size={20} style={{ marginRight: "1rem", color: "#272927" }} />
-      <button className={style.link} onClick={handleLogout}>
+      <ImExit size={20} style={{ marginRight: "12px", color: "inherit" }} />
+      
+      <span className={style.link} style={{ fontWeight: "500", fontSize: "16px" }}>
         Logout
-      </button>
+      </span>
     </div>
   );
 };

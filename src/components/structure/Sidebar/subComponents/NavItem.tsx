@@ -1,9 +1,8 @@
-import { Box, Icon } from "@chakra-ui/react";
-import { Link } from "react-router-dom";
+import { Icon } from "@chakra-ui/react";
+import { NavLink } from "react-router-dom";
 import Styles from "./NavItem.module.css";
-import { ImExit } from "react-icons/im";
+import { ImExit, ImBooks } from "react-icons/im";
 import { FiPlusCircle } from "react-icons/fi";
-import { ImBooks } from "react-icons/im";
 import { CgProfile } from "react-icons/cg";
 
 interface Props {
@@ -13,27 +12,36 @@ interface Props {
 
 const NavItem = ({ to, text }: Props) => {
   return (
-    <Box
-      w="116px"
-      display="flex"
-      className={Styles.linksBox}
+    <NavLink
+      to={to}
+      className={({ isActive }) =>
+        isActive ? `${Styles.linksBox} ${Styles.active}` : Styles.linksBox
+      }
+      style={{
+        display: "flex",
+        alignItems: "center",
+        width: "100%",
+        padding: "10px 16px", 
+        textDecoration: "none",
+        boxSizing: "border-box"
+      }}
     >
-      {to == "/review/planning/protocol/general-definition" && (
-        <Icon boxSize="20px" mr="7px" as={FiPlusCircle} color="#272927" />
+      
+      {to === "/home" && (
+        <Icon boxSize="20px" mr="12px" as={ImBooks} color="inherit" />
       )}
-      {to == "/home" && (
-        <Icon boxSize="21" mr="7px" as={ImBooks} color="#272927" />
+      {to === "/review/planning/protocol/general-definition" && (
+        <Icon boxSize="20px" mr="12px" as={FiPlusCircle} color="inherit" />
       )}
-      {to == "/profile" && (
-        <Icon boxSize="21px" mr="7px" as={CgProfile} color="#272927" />
+      {to === "/profile" && (
+        <Icon boxSize="20px" mr="12px" as={CgProfile} color="inherit" />
       )}
-      {to == "/" && (
-        <Icon boxSize="21px" mr="7px" as={ImExit} color="#272927" />
+      {to === "/" && (
+        <Icon boxSize="20px" mr="12px" as={ImExit} color="inherit" />
       )}
-      <Link className={Styles.link} to={to}>
-        {text}
-      </Link>
-    </Box>
+      
+      <span>{text}</span>
+    </NavLink>
   );
 };
 
