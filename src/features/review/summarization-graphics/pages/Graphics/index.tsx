@@ -32,7 +32,7 @@ export default function Graphics() {
           </Flex>
             <Flex flexDirection="column" gap="0.5rem">
               <SectionMenu onSelect={handleSectionChange} selected={section} />
-              {section !== "Studies Funnel" && 
+              {!(section === "Studies Funnel" || section === "Form Questions" || section === "Protocol") && 
               (
                 <SelectMenu
                   options={currentAllowedTypes}
