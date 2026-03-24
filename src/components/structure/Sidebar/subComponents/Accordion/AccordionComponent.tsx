@@ -24,10 +24,11 @@ type AccordionSection = "Planning" | "Execution" | "Summarization";
 // Constants
 const hasShowOcultScreens = false;
 
+
 const sectionIcons: Record<AccordionSection, React.ReactNode> = {
-  Planning: <MdRule size="1.25rem" color="black" />,
-  Execution: <LuFileSearch size="1.1rem" color="black" />,
-  Summarization: <LuFileCheck2 size="1rem" color="black" />,
+  Planning: <MdRule size="20px" />,
+  Execution: <LuFileSearch size="20px" />,
+  Summarization: <LuFileCheck2 size="20px" />,
 };
 
 const AccordionComponent = () => {
@@ -123,12 +124,12 @@ const AccordionComponent = () => {
               _hover={{ bg: "#eeeeee" }}
             >
               <Box
-                color="black"
                 as="span"
                 flex="1"
                 textAlign="left"
                 display="flex"
-                gap=".5rem"
+                alignItems="center"
+                gap="12px" 
               >
                 {sectionIcons[section as AccordionSection]}
                 {section}
@@ -136,7 +137,9 @@ const AccordionComponent = () => {
               <AccordionIcon />
             </AccordionButton>
           </h2>
-          <AccordionPanel paddingInlineEnd={0}>
+          
+         
+          <AccordionPanel paddingInlineEnd={0} paddingLeft="48px" pb={2} pt={1}>
             {children.map((child) => (
               <ProtocolAccordionSubItem
                 key={child.path}
