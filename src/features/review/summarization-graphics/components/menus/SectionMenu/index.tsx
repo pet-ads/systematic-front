@@ -31,7 +31,7 @@ const sections: Section[] = [
   { label: "Studies Funnel", value: "Studies Funnel" },
   { label: "Included Studies", value: "Included Studies" },
   { label: "Form Questions", value: "Form Questions" },
-   { label: "Donwload Protocolo", value: "Protocol" }
+   { label: "Download Protocolo", value: "Protocol" }
 ];
 
 export default function SectionMenu({ onSelect, selected }: MenuProps) {
@@ -66,7 +66,7 @@ export default function SectionMenu({ onSelect, selected }: MenuProps) {
 
           return (
             <Box key={groupName}>
-              {!isUngrouped && <MenuGroup title={groupName} bg="#EBF0F3" ml="3" />}
+              {!isUngrouped && <MenuGroup title={groupName} bg="#EBF0F3" ml="3" fontSize="md" fontWeight="bold" />}
               {items.map((item) => (
                 <MenuItem
                   key={item.value}
