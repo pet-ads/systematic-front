@@ -25,7 +25,7 @@ export default function Graphics() {
 
   return (
     <FlexLayout navigationType="Accordion">
-      <Box w="100%" px="1rem" py=".75rem" h="fit-content">
+    <Box w="100%" ml="-0.5rem" pl="0" pr="1rem" py=".75rem" h="fit-content">
         <Flex justifyContent={"space-between"} w={"100%"}>
           <Flex w="100%" h="2.5rem" alignItems="center" mb="1rem">
             <Header text="Graphics" />
