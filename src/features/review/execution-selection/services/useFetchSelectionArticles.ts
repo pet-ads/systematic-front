@@ -22,6 +22,11 @@ export interface SelectionArticles {
 interface FetchParams extends Params {
   search?: string;
   status?: string | null;
+  // NOVO: Adicionado o sortConfig na tipagem dos parâmetros
+  sortConfig?: {
+    key: keyof ArticleInterface | string;
+    direction: "asc" | "desc";
+  } | null;
 }
 
 const EMPTY_PAGINATION_DATA: SelectionArticles = {
@@ -38,6 +43,7 @@ const useFetchSelectionArticles = ({
   size = 20,
   search = "",
   status = null,
+  sortConfig = null, // NOVO: Desestruturando o sortConfig
 }: FetchParams) => {
   const id = localStorage.getItem("systematicReviewId");
   const endpoint = `systematic-study/${id}/study-review/search`;
@@ -55,6 +61,20 @@ const useFetchSelectionArticles = ({
     queryParams.selectionStatus = status;
   }
 
+  // NOVO: Lógica de ordenação formatada para o Spring Boot (Kotlin)
+  if (sortConfig) {
+    let backendKey = String(sortConfig.key);
+
+    // Tratando a diferença de nome da coluna entre o Front e o Banco de Dados
+    if (backendKey === "studyReviewId") {
+      backendKey = "id";
+    }
+
+    queryParams.sort = `${backendKey},${sortConfig.direction}`;
+  }
+
+  // Como o JSON.stringify(queryParams) está aqui embaixo,
+  // o SWR já vai saber que precisa atualizar sozinho quando o sort mudar!
   const swrKey = useMemo(() => {
     if (!id) return null;
     return [endpoint, queryParams];
@@ -87,11 +107,12 @@ const useFetchSelectionArticles = ({
   const totalElements = data?.totalElements || 0;
 
   const calculatedPages = size > 0 ? Math.ceil(totalElements / size) : 0;
-  const totalPages = calculatedPages > 0 ? calculatedPages : (data?.totalPages || 0);
+  const totalPages =
+    calculatedPages > 0 ? calculatedPages : data?.totalPages || 0;
 
   return {
     articles: articles.filter(
-      (art): art is ArticleInterface => "studyReviewId" in art
+      (art): art is ArticleInterface => "studyReviewId" in art,
     ),
     totalElements,
     totalPages,
