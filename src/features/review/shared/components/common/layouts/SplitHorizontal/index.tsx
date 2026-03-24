@@ -31,6 +31,8 @@ interface HorizontalProps {
   layout: ViewModel;
   columnsVisible: ColumnVisibility;
   pagination: PaginationControls;
+  sortConfig: { key: keyof ArticleInterface; direction: "asc" | "desc" } | null;
+  handleHeaderClick: (key: keyof ArticleInterface) => void;
   reloadArticles: KeyedMutator<SelectionArticles>;
 }
 
@@ -41,6 +43,8 @@ export const SplitHorizontal: React.FC<HorizontalProps> = ({
   layout,
   columnsVisible,
   pagination,
+  sortConfig,
+  handleHeaderClick,
   reloadArticles,
 }) => {
   return (
@@ -60,11 +64,11 @@ export const SplitHorizontal: React.FC<HorizontalProps> = ({
             initial="initial"
             animate="animate"
             exit="exit"
-            style={{ 
-              width: "100%", 
+            style={{
+              width: "100%",
               height: "48%",
               display: "flex",
-              flexDirection: "column"
+              flexDirection: "column",
             }}
           >
             <Box w="100%" h="100%" overflowY="auto" overflowX="hidden">
@@ -81,11 +85,11 @@ export const SplitHorizontal: React.FC<HorizontalProps> = ({
             initial="initial"
             animate="animate"
             exit="exit"
-            style={{ 
-              width: "100%", 
-              height: "48%", 
+            style={{
+              width: "100%",
+              height: "48%",
               display: "flex",
-              flexDirection: "column"
+              flexDirection: "column",
             }}
           >
             <Box w="100%" h="100%" overflowY="auto" overflowX="hidden">
@@ -94,6 +98,8 @@ export const SplitHorizontal: React.FC<HorizontalProps> = ({
                 layout={layout}
                 columnsVisible={columnsVisible}
                 pagination={pagination}
+                sortConfig={sortConfig}
+                handleHeaderClick={handleHeaderClick}
               />
             </Box>
           </motion.div>
@@ -106,11 +112,11 @@ export const SplitHorizontal: React.FC<HorizontalProps> = ({
             initial="initial"
             animate="animate"
             exit="exit"
-            style={{ 
-              width: "100%", 
-              height: "48%", 
+            style={{
+              width: "100%",
+              height: "48%",
               display: "flex",
-              flexDirection: "column"
+              flexDirection: "column",
             }}
           >
             <Box w="100%" h="100%" overflowY="auto" overflowX="hidden">
@@ -119,6 +125,8 @@ export const SplitHorizontal: React.FC<HorizontalProps> = ({
                 layout={layout}
                 columnsVisible={columnsVisible}
                 pagination={pagination}
+                sortConfig={sortConfig}
+                handleHeaderClick={handleHeaderClick}
               />
             </Box>
           </motion.div>
@@ -128,11 +136,11 @@ export const SplitHorizontal: React.FC<HorizontalProps> = ({
             initial="initial"
             animate="animate"
             exit="exit"
-            style={{ 
-              width: "100%", 
-              height: "48%", 
+            style={{
+              width: "100%",
+              height: "48%",
               display: "flex",
-              flexDirection: "column"
+              flexDirection: "column",
             }}
           >
             <Box w="100%" h="100%" overflowY="auto" overflowX="hidden">
