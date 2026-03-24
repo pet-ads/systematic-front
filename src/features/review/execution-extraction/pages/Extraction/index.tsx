@@ -26,6 +26,7 @@ import { inputconteiner } from "../../../shared/styles/executionStyles";
 // Types
 import usePaginationState from "@features/shared/hooks/usePaginationState";
 import useFetchExtractionArticles from "../../services/useFetchExtractionArticles";
+import type ArticleInterface from "@features/review/shared/types/ArticleInterface"; // NOVO: Import da interface
 
 export default function Extraction() {
   const [searchString, setSearchString] = useState<string>("");
@@ -41,9 +42,16 @@ export default function Extraction() {
     page: "Extraction",
   });
 
+  // NOVO: 1. Criar o estado de ordenação
+  const [sortConfig, setSortConfig] = useState<{
+    key: keyof ArticleInterface;
+    direction: "asc" | "desc";
+  } | null>(null);
+
   const {
     currentPage,
     itensPerPage,
+    setCurrentPage, // NOVO: 2. Extrair o setCurrentPage para voltar pra página 1
     handleNextPage,
     handlePrevPage,
     handleBackToInitial,
@@ -51,12 +59,25 @@ export default function Extraction() {
     changeQuantityOfItens,
   } = usePaginationState({ totalPages: fetchedTotalPages, initialSize: 20 });
 
+  // NOVO: 3. Criar a função de clique na coluna
+  const handleHeaderClick = (key: keyof ArticleInterface) => {
+    setSortConfig((prev) => {
+      if (prev?.key === key) {
+        return { key, direction: prev.direction === "asc" ? "desc" : "asc" };
+      }
+      return { key, direction: "asc" };
+    });
+    setCurrentPage(1); // Voltar para a página 1 ao ordenar
+  };
+
+  // NOVO: 4. Passar o sortConfig para a API
   const { articles, isLoading, totalElements, totalPages, mutate } =
     useFetchExtractionArticles({
       page: currentPage - 1,
       size: itensPerPage,
       search: searchString,
       status: selectedStatus,
+      sortConfig, // <-- Injetado aqui!
     });
 
   if (totalPages && totalPages !== fetchedTotalPages) {
@@ -151,6 +172,9 @@ export default function Extraction() {
             changeQuantityOfItens,
           }}
           reloadArticles={mutate}
+          // NOVO: 5. Passar as props de ordenação para o LayoutFactory
+          sortConfig={sortConfig}
+          handleHeaderClick={handleHeaderClick}
         />
       </Box>
     </FlexLayout>

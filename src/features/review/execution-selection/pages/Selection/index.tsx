@@ -22,6 +22,8 @@ import ColumnVisibilityMenu from "@features/review/shared/components/common/menu
 import StatusSelect from "@features/review/shared/components/common/inputs/StatusSelect";
 import ButtonsForMultipleSelection from "@features/review/shared/components/common/buttons/ButtonsForMultipleSelection";
 
+import ArticleInterface from "@features/review/shared/types/ArticleInterface";
+
 // Styles
 import { inputconteiner } from "../../../shared/styles/executionStyles";
 
@@ -39,23 +41,46 @@ export default function Selection() {
     page: "Selection",
   });
 
+  const [sortConfig, setSortConfig] = useState<{
+    key: keyof ArticleInterface;
+    direction: "asc" | "desc";
+  } | null>(null);
+
   const {
     currentPage,
     itensPerPage,
+    setCurrentPage,
     handleNextPage,
     handlePrevPage,
     handleBackToInitial,
     handleGoToFinal,
     changeQuantityOfItens,
-  } = usePaginationState({ totalPages: fetchedTotalPages, initialSize: 20, setPage: selectionContext?.setPage, setSize: selectionContext?.setSize });
+  } = usePaginationState({
+    totalPages: fetchedTotalPages,
+    initialSize: 20,
+    setPage: selectionContext?.setPage,
+    setSize: selectionContext?.setSize,
+  });
 
 
+  const handleHeaderClick = (key: keyof ArticleInterface) => {
+    setSortConfig((prev) => {
+      if (prev?.key === key) {
+        return { key, direction: prev.direction === "asc" ? "desc" : "asc" };
+      }
+      return { key, direction: "asc" };
+    });
+    setCurrentPage(1); // Voltar para a página 1 ao ordenar
+  };
+
+  // 👇 3. Passar o sortConfig para a API (precisaremos atualizar o useFetchSelectionArticles)
   const { articles, isLoading, totalElements, totalPages, mutate } =
     useFetchSelectionArticles({
       page: currentPage - 1,
       size: itensPerPage,
       search: searchString,
-      status: selectedStatus, 
+      status: selectedStatus,
+      sortConfig, // <-- Novo parâmetro
     });
 
   if (totalPages && totalPages !== fetchedTotalPages) {
@@ -85,7 +110,10 @@ export default function Selection() {
           mb="2rem"
         >
           <Header text="Selection" />
-          <SelectLayout handleChangeLayout={handleChangeLayout} layout={layout}/>
+          <SelectLayout
+            handleChangeLayout={handleChangeLayout}
+            layout={layout}
+          />
         </Flex>
         <Box sx={inputconteiner}>
           <Flex gap="1rem" w="1rem" justifyContent="space-between">
@@ -136,6 +164,8 @@ export default function Selection() {
           handleChangeLayout={handleChangeLayout}
           isLoading={isLoading}
           reloadArticles={mutate}
+          sortConfig={sortConfig}
+          handleHeaderClick={handleHeaderClick}
           pagination={{
             currentPage,
             itensPerPage,

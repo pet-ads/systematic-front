@@ -22,6 +22,11 @@ interface HttpResponse {
 interface FetchParams extends Params {
   search?: string;
   status?: string | null;
+  // NOVO: Adicionado o sortConfig
+  sortConfig?: {
+    key: keyof ArticleInterface | string;
+    direction: "asc" | "desc";
+  } | null;
 }
 
 const EMPTY_PAGINATION_DATA: HttpResponse = {
@@ -38,9 +43,10 @@ const useFetchExtractionArticles = ({
   size = 20,
   search = "",
   status = null,
+  sortConfig = null, // NOVO: Recebendo o sortConfig
 }: FetchParams) => {
   const id = localStorage.getItem("systematicReviewId");
-  
+
   const endpoint = `systematic-study/${id}/study-review/search`;
 
   const queryParams: Record<string, any> = {
@@ -55,6 +61,18 @@ const useFetchExtractionArticles = ({
 
   if (status) {
     queryParams.extractionStatus = status;
+  }
+
+  // NOVO: Lógica de ordenação formatada para o Spring Boot (Kotlin)
+  if (sortConfig) {
+    let backendKey = String(sortConfig.key);
+
+    // Tratando a diferença de nome da coluna entre o Front e o Banco de Dados
+    if (backendKey === "studyReviewId") {
+      backendKey = "id";
+    }
+
+    queryParams.sort = `${backendKey},${sortConfig.direction}`;
   }
 
   const swrKey = useMemo(() => {
@@ -87,13 +105,14 @@ const useFetchExtractionArticles = ({
 
   const articles = data?.studyReviews || [];
   const totalElements = data?.totalElements || 0;
-  
+
   const calculatedPages = size > 0 ? Math.ceil(totalElements / size) : 0;
-  const totalPages = calculatedPages > 0 ? calculatedPages : (data?.totalPages || 0);
+  const totalPages =
+    calculatedPages > 0 ? calculatedPages : data?.totalPages || 0;
 
   return {
     articles: articles.filter(
-      (art): art is ArticleInterface => "studyReviewId" in art
+      (art): art is ArticleInterface => "studyReviewId" in art,
     ),
     totalElements,
     totalPages,
