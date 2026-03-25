@@ -30,10 +30,13 @@ export default function SelectInput({
       <Select
         bgColor={"#ffffffff"}
         color="#2E4B6C"
-        placeholder={placeholder}
         value={selectedValue || ""}
         onChange={handleSelectChange}
-      >
+      >{placeholder && (
+          <option value="" disabled hidden>
+            {placeholder}
+          </option>
+        )}
         {names.map((optionName, index) => (
           <option key={index} value={values[index]}>
             {capitalize(optionName.toString())}
