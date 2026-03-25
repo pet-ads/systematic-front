@@ -22,7 +22,6 @@ interface HttpResponse {
 interface FetchParams extends Params {
   search?: string;
   status?: string | null;
-  // NOVO: Adicionado o sortConfig
   sortConfig?: {
     key: keyof ArticleInterface | string;
     direction: "asc" | "desc";
@@ -43,7 +42,7 @@ const useFetchExtractionArticles = ({
   size = 20,
   search = "",
   status = null,
-  sortConfig = null, // NOVO: Recebendo o sortConfig
+  sortConfig = null,
 }: FetchParams) => {
   const id = localStorage.getItem("systematicReviewId");
 
@@ -63,11 +62,9 @@ const useFetchExtractionArticles = ({
     queryParams.extractionStatus = status;
   }
 
-  // NOVO: Lógica de ordenação formatada para o Spring Boot (Kotlin)
   if (sortConfig) {
     let backendKey = String(sortConfig.key);
 
-    // Tratando a diferença de nome da coluna entre o Front e o Banco de Dados
     if (backendKey === "studyReviewId") {
       backendKey = "id";
     }

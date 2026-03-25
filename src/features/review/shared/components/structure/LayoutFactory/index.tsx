@@ -56,8 +56,8 @@ export default function LayoutFactory({
         columnsVisible={columnsVisible}
         onRowClick={handleRowClick}
         pagination={pagination}
-        sortConfig={sortConfig} // Novo
-        handleHeaderClick={handleHeaderClick} // Novo
+        sortConfig={sortConfig} 
+        handleHeaderClick={handleHeaderClick} 
       />
     ),
     vertical: (
@@ -68,8 +68,8 @@ export default function LayoutFactory({
         columnsVisible={columnsVisible}
         pagination={pagination}
         reloadArticles={reloadArticles}
-        sortConfig={sortConfig} // Novo
-        handleHeaderClick={handleHeaderClick} // Novo
+        sortConfig={sortConfig} 
+        handleHeaderClick={handleHeaderClick} 
       />
     ),
     "vertical-invert": (
@@ -80,8 +80,8 @@ export default function LayoutFactory({
         columnsVisible={columnsVisible}
         pagination={pagination}
         reloadArticles={reloadArticles}
-        sortConfig={sortConfig} // Novo
-        handleHeaderClick={handleHeaderClick} // Novo
+        sortConfig={sortConfig} 
+        handleHeaderClick={handleHeaderClick} 
       />
     ),
     horizontal: (
@@ -93,8 +93,8 @@ export default function LayoutFactory({
         columnsVisible={columnsVisible}
         pagination={pagination}
         reloadArticles={reloadArticles}
-        sortConfig={sortConfig} // Novo
-        handleHeaderClick={handleHeaderClick} // Novo
+        sortConfig={sortConfig} 
+        handleHeaderClick={handleHeaderClick} 
       />
     ),
     "horizontal-invert": (
@@ -106,8 +106,8 @@ export default function LayoutFactory({
         columnsVisible={columnsVisible}
         pagination={pagination}
         reloadArticles={reloadArticles}
-        sortConfig={sortConfig} // Novo
-        handleHeaderClick={handleHeaderClick} // Novo
+        sortConfig={sortConfig} 
+        handleHeaderClick={handleHeaderClick} 
       />
     ),
     article: (

@@ -43,7 +43,7 @@ const useFetchSelectionArticles = ({
   size = 20,
   search = "",
   status = null,
-  sortConfig = null, // NOVO: Desestruturando o sortConfig
+  sortConfig = null,
 }: FetchParams) => {
   const id = localStorage.getItem("systematicReviewId");
   const endpoint = `systematic-study/${id}/study-review/search`;
@@ -61,20 +61,16 @@ const useFetchSelectionArticles = ({
     queryParams.selectionStatus = status;
   }
 
-  // NOVO: Lógica de ordenação formatada para o Spring Boot (Kotlin)
   if (sortConfig) {
     let backendKey = String(sortConfig.key);
 
-    // Tratando a diferença de nome da coluna entre o Front e o Banco de Dados
     if (backendKey === "studyReviewId") {
       backendKey = "id";
     }
 
     queryParams.sort = `${backendKey},${sortConfig.direction}`;
   }
-
-  // Como o JSON.stringify(queryParams) está aqui embaixo,
-  // o SWR já vai saber que precisa atualizar sozinho quando o sort mudar!
+  
   const swrKey = useMemo(() => {
     if (!id) return null;
     return [endpoint, queryParams];
