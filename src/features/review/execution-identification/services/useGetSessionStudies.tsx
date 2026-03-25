@@ -1,30 +1,22 @@
 import useSWR from "swr";
 import Axios from "../../../../infrastructure/http/axiosClient";
-import ArticleInterface from "../../shared/types/ArticleInterface";
-import { useMemo } from "react";
 
 interface HttpResponse {
   studyReviews: ArticleInterface[];
   totalPages: number;
 }
 
-const useGetSessionStudies = (
-  sessionId: string,
-  page: number,
-  size: number,
-  sortConfig?: {
-    key: keyof ArticleInterface | string;
-    direction: "asc" | "desc";
-  } | null,
-) => {
+import ArticleInterface from "../../shared/types/ArticleInterface";
+import { useMemo } from "react";
+
+const useGetSessionStudies = (sessionId: string, page: number, size: number) => {
   const reviewId = localStorage.getItem("systematicReviewId");
   const path = `systematic-study/${reviewId}/find-by-search-session/${sessionId}`;
 
-  // 1. Adicionado o sortConfig na chave do SWR para forçar o refetch ao ordenar
   const swrKey = useMemo(() => {
     if (!sessionId) return null;
-    return [path, page, size, sortConfig?.key, sortConfig?.direction];
-  }, [sessionId, path, page, size, sortConfig?.key, sortConfig?.direction]);
+    return [path, page, size];
+  }, [sessionId, path, page, size]);
 
   const { data, error, isLoading } = useSWR(swrKey, fetchArticlesSession, {
     revalidateOnFocus: true,
@@ -33,35 +25,14 @@ const useGetSessionStudies = (
     refreshInterval: 30000,
     keepPreviousData: true,
   });
-
+ 
   async function fetchArticlesSession() {
     try {
-      // 1. Atualizamos a interface para bater com o back-end
-      interface FetchParams {
-        page: number;
-        size: number;
-        sort?: string; // <-- O Kotlin espera exatamente isso
-      }
-
-      const params: FetchParams = {
-        page,
-        size,
-      };
-
-      if (sortConfig) {
-        // 2. Formatamos do jeito que o Kotlin quer: "campo,direção"
-        let backendKey = String(sortConfig.key);
-
-        // Ajuste opcional: se o front usa "studyReviewId" mas o banco de dados/entidade usa "id"
-        if (backendKey === "studyReviewId") {
-          backendKey = "id";
-        }
-
-        params.sort = `${backendKey},${sortConfig.direction}`;
-      }
-
       const response = await Axios.get<HttpResponse>(path, {
-        params,
+        params: {
+          page,
+          size,
+        },
       });
       return response.data;
     } catch (error) {
@@ -70,12 +41,7 @@ const useGetSessionStudies = (
     }
   }
 
-  return {
-    articles: data?.studyReviews || [],
-    totalPages: data?.totalPages || 0,
-    isLoading,
-    error,
-  };
+  return { articles: data?.studyReviews || [], totalPages: data?.totalPages || 0 ,isLoading, error };
 };
 
 export default useGetSessionStudies;

@@ -19,7 +19,7 @@ interface actionsModal {
 }
 
 interface SessionPrevProps {
-  handleOpenModal: (action: actionsModal, id: string) => void;
+  handleOpenModal: (action: actionsModal) => void;
   handleDelete: (id: string) => void;
   timestamp: string;
   numberOfStudies: number;
@@ -109,7 +109,7 @@ const SessionPrev = ({
             flex={1}
             colorScheme="gray"
             height="35px"
-            onClick={() => handleOpenModal({ action: "update" }, sessionId)}
+            onClick={() => handleOpenModal({ action: "update" })}
           >
             <EditIcon />
           </Button>

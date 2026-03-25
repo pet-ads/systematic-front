@@ -36,7 +36,6 @@ export default function AccordionDashboard({
 }: IAccordionDashBoard) {
   const [isAccordionOpen, setIsAccordionOpen] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [sessionId, setSessionId] = useState("");
   const [actionModal, setActionModal] = useState<"create" | "update">("create");
 
   const studiesContext = useContext(StudyContext);
@@ -56,8 +55,7 @@ export default function AccordionDashboard({
     return totalStudies;
   };
 
-  const handleOpenModal = ({ action }: actionsModal, id: string) => {
-    setSessionId(id);
+  const handleOpenModal = ({ action }: actionsModal) => {
     setActionModal(action);
     setShowModal(true);
   };
@@ -74,7 +72,6 @@ export default function AccordionDashboard({
     <Accordion allowToggle sx={accordion} onChange={handleAccordionToggle}>
       {showModal == true && (
         <IdentificationModal
-          sessionId={sessionId}
           show={setShowModal}
           action={actionModal}
           type={type}

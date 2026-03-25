@@ -30,8 +30,6 @@ interface VerticalProps {
   page: PageLayout;
   columnsVisible: ColumnVisibility;
   pagination: PaginationControls;
-  sortConfig: { key: keyof ArticleInterface; direction: "asc" | "desc" } | null;
-  handleHeaderClick: (key: keyof ArticleInterface) => void;
   reloadArticles: KeyedMutator<SelectionArticles>;
 }
 
@@ -41,8 +39,6 @@ export const SplitVertical: React.FC<VerticalProps> = ({
   page,
   columnsVisible,
   pagination,
-  sortConfig,
-  handleHeaderClick,
   reloadArticles,
 }) => {
   return (
@@ -81,8 +77,6 @@ export const SplitVertical: React.FC<VerticalProps> = ({
               articles={articles}
               columnsVisible={columnsVisible}
               pagination={pagination}
-              sortConfig={sortConfig}
-              handleHeaderClick={handleHeaderClick}
             />
           </motion.div>
         </AnimatePresence>
@@ -100,8 +94,6 @@ export const SplitVertical: React.FC<VerticalProps> = ({
               articles={articles}
               columnsVisible={columnsVisible}
               pagination={pagination}
-              sortConfig={sortConfig}
-              handleHeaderClick={handleHeaderClick}
             />
           </motion.div>
           <motion.div

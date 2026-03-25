@@ -155,16 +155,6 @@ export default function InteractiveTable({ id, url, label }: Props) {
     if (!validator({ value: rows[index].question })) {
       return;
     }
-
-    if (String(rows[index].id).trim() === "") {
-      toaster({
-        title: "A reference code is required.",
-        description: "Please fill in the Code field before saving.",
-        status: "warning",
-      });
-      return;
-    }
-
     const currentCode = String(rows[index].id).trim().toUpperCase();
     const isDuplicate = rows.some(
       (row, i) =>
@@ -183,8 +173,7 @@ export default function InteractiveTable({ id, url, label }: Props) {
     }
 
     const row = rows[index];
-    const { question, id: code, type, isNew, questionId: serverId } = row;
-    const questionId = code;
+    const { question, id: questionId, type, isNew, questionId: serverId } = row;
     const reviewId = id;
 
     let data: any;
@@ -269,14 +258,6 @@ export default function InteractiveTable({ id, url, label }: Props) {
   };
 
   function addNewRow() {
-    if (editIndex !== null) {
-      toaster({
-        title: "Finish editing the current row before adding a new one.",
-        status: "warning",
-      });
-      return;
-    }
-
     addRow(setEditIndex, setQuestions);
     setPickManyQuestions([]);
 

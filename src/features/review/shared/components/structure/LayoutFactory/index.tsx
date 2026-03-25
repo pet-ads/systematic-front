@@ -28,8 +28,6 @@ interface LayoutFactoryProps {
   isLoading: boolean;
   columnsVisible: ColumnVisibility;
   pagination: PaginationControls;
-  sortConfig: { key: keyof ArticleInterface; direction: "asc" | "desc" } | null;
-  handleHeaderClick: (key: keyof ArticleInterface) => void;
   reloadArticles: KeyedMutator<SelectionArticles>;
 }
 
@@ -42,11 +40,10 @@ export default function LayoutFactory({
   columnsVisible,
   pagination,
   reloadArticles,
-  sortConfig,
-  handleHeaderClick,
 }: LayoutFactoryProps) {
   const handleRowClick = () => {
-    handleChangeLayout("vertical");
+      handleChangeLayout("vertical");
+    
   };
 
   const layoutMap: Record<ViewModel, React.ReactNode> = {
@@ -56,8 +53,6 @@ export default function LayoutFactory({
         columnsVisible={columnsVisible}
         onRowClick={handleRowClick}
         pagination={pagination}
-        sortConfig={sortConfig} // Novo
-        handleHeaderClick={handleHeaderClick} // Novo
       />
     ),
     vertical: (
@@ -68,8 +63,6 @@ export default function LayoutFactory({
         columnsVisible={columnsVisible}
         pagination={pagination}
         reloadArticles={reloadArticles}
-        sortConfig={sortConfig} // Novo
-        handleHeaderClick={handleHeaderClick} // Novo
       />
     ),
     "vertical-invert": (
@@ -80,8 +73,6 @@ export default function LayoutFactory({
         columnsVisible={columnsVisible}
         pagination={pagination}
         reloadArticles={reloadArticles}
-        sortConfig={sortConfig} // Novo
-        handleHeaderClick={handleHeaderClick} // Novo
       />
     ),
     horizontal: (
@@ -93,8 +84,6 @@ export default function LayoutFactory({
         columnsVisible={columnsVisible}
         pagination={pagination}
         reloadArticles={reloadArticles}
-        sortConfig={sortConfig} // Novo
-        handleHeaderClick={handleHeaderClick} // Novo
       />
     ),
     "horizontal-invert": (
@@ -106,8 +95,6 @@ export default function LayoutFactory({
         columnsVisible={columnsVisible}
         pagination={pagination}
         reloadArticles={reloadArticles}
-        sortConfig={sortConfig} // Novo
-        handleHeaderClick={handleHeaderClick} // Novo
       />
     ),
     article: (

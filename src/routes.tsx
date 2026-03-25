@@ -92,7 +92,7 @@ const routesList: RouteObject[] = [
   },
   {
     path: "/review/planning/protocol/risk-of-bias-assessment/:id",
-    element: <ProtectedRoute element={<RiskOfBiasAssessment />} />,
+    element: <ProtectedRoute element={<RiskOfBiasAssessment/>} />,
   },
   {
     path: "/review/planning/protocol/analysis-and-synthesis-of-results/:id",

@@ -25,22 +25,19 @@ export default function Graphics() {
 
   return (
     <FlexLayout navigationType="Accordion">
-    <Box w="100%" ml="-0.5rem" pl="0" pr="1rem" py=".75rem" h="fit-content">
+      <Box w="100%" px="1rem" py=".75rem" h="fit-content">
         <Flex justifyContent={"space-between"} w={"100%"}>
           <Flex w="100%" h="2.5rem" alignItems="center" mb="1rem">
             <Header text="Graphics" />
           </Flex>
             <Flex flexDirection="column" gap="0.5rem">
               <SectionMenu onSelect={handleSectionChange} selected={section} />
-              {!(section === "Studies Funnel" || section === "Form Questions" || section === "Protocol") && 
-              (
-                <SelectMenu
-                  options={currentAllowedTypes}
-                  selected={type}
-                  onSelect={setType}
-                  placeholder="Choose Layout"
-                />
-              )}
+              <SelectMenu
+                options={currentAllowedTypes}
+                selected={type}
+                onSelect={setType}
+                placeholder="Choose Layout"
+              />
               {section === "Form Questions" && (
                 <SelectMenu
                   options={allQuestions.filter((q) => q.questionId !== null)}
