@@ -70,17 +70,16 @@ export default function Selection() {
       }
       return { key, direction: "asc" };
     });
-    setCurrentPage(1); // Voltar para a página 1 ao ordenar
+    setCurrentPage(1); 
   };
 
-  // 👇 3. Passar o sortConfig para a API (precisaremos atualizar o useFetchSelectionArticles)
   const { articles, isLoading, totalElements, totalPages, mutate } =
     useFetchSelectionArticles({
       page: currentPage - 1,
       size: itensPerPage,
       search: searchString,
       status: selectedStatus,
-      sortConfig, // <-- Novo parâmetro
+      sortConfig, 
     });
 
   if (totalPages && totalPages !== fetchedTotalPages) {

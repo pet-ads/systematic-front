@@ -35,13 +35,11 @@ export default function IdentificationSession() {
     changeQuantityOfItens,
   } = usePaginationState({ totalPages: fetchedTotalPages, initialSize: 20 });
 
-  // 1. ADICIONAR ESTADO DE ORDENAÇÃO
   const [sortConfig, setSortConfig] = useState<{
     key: keyof ArticleInterface;
     direction: "asc" | "desc";
   } | null>(null);
 
-  // 2. FUNÇÃO DE CLIQUE NO HEADER
   const handleHeaderClick = (key: keyof ArticleInterface) => {
     setSortConfig((prev) => {
       if (prev?.key === key) {
@@ -49,16 +47,14 @@ export default function IdentificationSession() {
       }
       return { key, direction: "asc" };
     });
-    // Reseta para a página 1 ao ordenar!
     setCurrentPage(1);
   };
 
-  // 3. ATUALIZAR A CHAMADA DA API (Ainda vamos precisar mexer nesse hook)
   const { articles, totalPages } = useGetSessionStudies(
     session,
     currentPage - 1,
     itensPerPage,
-    sortConfig, // <-- Passando a ordenação para a API
+    sortConfig,
   );
 
   if (totalPages && totalPages !== fetchedTotalPages) {

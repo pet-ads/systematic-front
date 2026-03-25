@@ -20,7 +20,6 @@ const useGetSessionStudies = (
   const reviewId = localStorage.getItem("systematicReviewId");
   const path = `systematic-study/${reviewId}/find-by-search-session/${sessionId}`;
 
-  // 1. Adicionado o sortConfig na chave do SWR para forçar o refetch ao ordenar
   const swrKey = useMemo(() => {
     if (!sessionId) return null;
     return [path, page, size, sortConfig?.key, sortConfig?.direction];
@@ -36,11 +35,10 @@ const useGetSessionStudies = (
 
   async function fetchArticlesSession() {
     try {
-      // 1. Atualizamos a interface para bater com o back-end
       interface FetchParams {
         page: number;
         size: number;
-        sort?: string; // <-- O Kotlin espera exatamente isso
+        sort?: string;
       }
 
       const params: FetchParams = {
@@ -49,10 +47,8 @@ const useGetSessionStudies = (
       };
 
       if (sortConfig) {
-        // 2. Formatamos do jeito que o Kotlin quer: "campo,direção"
         let backendKey = String(sortConfig.key);
 
-        // Ajuste opcional: se o front usa "studyReviewId" mas o banco de dados/entidade usa "id"
         if (backendKey === "studyReviewId") {
           backendKey = "id";
         }
