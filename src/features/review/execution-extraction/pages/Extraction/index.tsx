@@ -151,6 +151,7 @@ export default function Extraction() {
             changeQuantityOfItens,
           }}
           reloadArticles={mutate}
+          extraParams={{ selectionStatus: "INCLUDED" }}
         />
       </Box>
     </FlexLayout>

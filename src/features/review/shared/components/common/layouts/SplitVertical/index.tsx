@@ -6,24 +6,20 @@ import { Flex } from "@chakra-ui/react";
 import StudySelectionArea from "../../../structure/StudySelectionArea";
 import ArticlesTable from "../../tables/ArticlesTable";
 
-// Hooks
+// Types
 import ArticleInterface from "../../../../types/ArticleInterface";
-
-// Hooks
 import { ColumnVisibility } from "@features/review/shared/hooks/useVisibilityColumns";
+import type { PageLayout } from "../../../structure/LayoutFactory";
+import { PaginationControls } from "@features/shared/types/pagination";
+import { KeyedMutator } from "swr";
+import { SelectionArticles } from "@features/review/execution-selection/services/useFetchSelectionArticles";
 
-// Animations
 const verticalTransitionVariants = {
   initial: { opacity: 0, x: 5 },
   animate: { opacity: 1, x: 0, transition: { duration: 0.5 } },
   exit: { opacity: 0, x: -5, transition: { duration: 0.5 } },
 };
 
-// Types
-import type { PageLayout } from "../../../structure/LayoutFactory";
-import { PaginationControls } from "@features/shared/types/pagination";
-import { KeyedMutator } from "swr";
-import { SelectionArticles } from "@features/review/execution-selection/services/useFetchSelectionArticles";
 interface VerticalProps {
   isInverted: boolean;
   articles: ArticleInterface[];
@@ -31,6 +27,7 @@ interface VerticalProps {
   columnsVisible: ColumnVisibility;
   pagination: PaginationControls;
   reloadArticles: KeyedMutator<SelectionArticles>;
+  extraParams?: Record<string, any>;
 }
 
 export const SplitVertical: React.FC<VerticalProps> = ({
@@ -40,7 +37,28 @@ export const SplitVertical: React.FC<VerticalProps> = ({
   columnsVisible,
   pagination,
   reloadArticles,
+  extraParams = {},
 }) => {
+  const selectionArea = (
+    <StudySelectionArea
+      articles={articles}
+      page={page}
+      reloadArticles={reloadArticles}
+      currentPage={pagination.currentPage - 1}
+      totalPages={pagination.quantityOfPages}
+      pageSize={pagination.itensPerPage}
+      extraParams={extraParams}
+    />
+  );
+
+  const table = (
+    <ArticlesTable
+      articles={articles}
+      columnsVisible={columnsVisible}
+      pagination={pagination}
+    />
+  );
+
   return (
     <Flex
       w="100%"
@@ -49,75 +67,34 @@ export const SplitVertical: React.FC<VerticalProps> = ({
       justifyContent="space-between"
       pr=".5rem"
     >
-      {isInverted ? (
-        <AnimatePresence mode="wait">
-          <motion.div
-            key="top"
-            variants={verticalTransitionVariants}
-            initial="initial"
-            animate="animate"
-            exit="exit"
-            style={{ minWidth: "35%", maxHeight: "100%" }}
-          >
-            <StudySelectionArea
-              articles={articles}
-              page={page}
-              reloadArticles={reloadArticles}
-              currentPage={pagination.currentPage - 1}
-              totalPages={pagination.quantityOfPages}
-              pageSize={pagination.itensPerPage}
-            />
-          </motion.div>
-          <motion.div
-            key="bottom"
-            variants={verticalTransitionVariants}
-            initial="initial"
-            animate="animate"
-            exit="exit"
-            style={{ maxWidth: "65%", maxHeight: "100%" }}
-          >
-            <ArticlesTable
-              articles={articles}
-              columnsVisible={columnsVisible}
-              pagination={pagination}
-            />
-          </motion.div>
-        </AnimatePresence>
-      ) : (
-        <AnimatePresence mode="wait">
-          <motion.div
-            key="bottom"
-            variants={verticalTransitionVariants}
-            initial="initial"
-            animate="animate"
-            exit="exit"
-            style={{ maxWidth: "65%", maxHeight: "100%" }}
-          >
-            <ArticlesTable
-              articles={articles}
-              columnsVisible={columnsVisible}
-              pagination={pagination}
-            />
-          </motion.div>
-          <motion.div
-            key="top"
-            variants={verticalTransitionVariants}
-            initial="initial"
-            animate="animate"
-            exit="exit"
-            style={{ minWidth: "35%", maxHeight: "100%" }}
-          >
-            <StudySelectionArea
-              articles={articles}
-              page={page}
-              reloadArticles={reloadArticles}
-              currentPage={pagination.currentPage - 1}
-              totalPages={pagination.quantityOfPages}
-              pageSize={pagination.itensPerPage}
-            />
-          </motion.div>
-        </AnimatePresence>
-      )}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key="first"
+          variants={verticalTransitionVariants}
+          initial="initial"
+          animate="animate"
+          exit="exit"
+          style={isInverted
+            ? { minWidth: "35%", maxHeight: "100%" }
+            : { maxWidth: "65%", maxHeight: "100%" }
+          }
+        >
+          {isInverted ? selectionArea : table}
+        </motion.div>
+        <motion.div
+          key="second"
+          variants={verticalTransitionVariants}
+          initial="initial"
+          animate="animate"
+          exit="exit"
+          style={isInverted
+            ? { maxWidth: "65%", maxHeight: "100%" }
+            : { minWidth: "35%", maxHeight: "100%" }
+          }
+        >
+          {isInverted ? table : selectionArea}
+        </motion.div>
+      </AnimatePresence>
     </Flex>
   );
 };

@@ -6,23 +6,20 @@ import { Flex, Box } from "@chakra-ui/react";
 import ArticlesTable from "../../tables/ArticlesTable";
 import StudySelectionArea from "../../../structure/StudySelectionArea";
 
-// Hooks
-import { ColumnVisibility } from "@features/review/shared/hooks/useVisibilityColumns";
-
-// Animations
-const horizontalTransitionVariants = {
-  initial: { opacity: 0, y: 5 },
-  animate: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-  exit: { opacity: 0, y: -5, transition: { duration: 0.5 } },
-};
-
 // Types
+import { ColumnVisibility } from "@features/review/shared/hooks/useVisibilityColumns";
 import type { PageLayout } from "../../../structure/LayoutFactory";
 import type { ViewModel } from "../../../../hooks/useLayoutPage";
 import type ArticleInterface from "../../../../types/ArticleInterface";
 import { PaginationControls } from "@features/shared/types/pagination";
 import { SelectionArticles } from "@features/review/execution-selection/services/useFetchSelectionArticles";
 import { KeyedMutator } from "swr";
+
+const horizontalTransitionVariants = {
+  initial: { opacity: 0, y: 5 },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+  exit: { opacity: 0, y: -5, transition: { duration: 0.5 } },
+};
 
 interface HorizontalProps {
   isInverted: boolean;
@@ -32,6 +29,7 @@ interface HorizontalProps {
   columnsVisible: ColumnVisibility;
   pagination: PaginationControls;
   reloadArticles: KeyedMutator<SelectionArticles>;
+  extraParams?: Record<string, any>;
 }
 
 export const SplitHorizontal: React.FC<HorizontalProps> = ({
@@ -42,7 +40,40 @@ export const SplitHorizontal: React.FC<HorizontalProps> = ({
   columnsVisible,
   pagination,
   reloadArticles,
+  extraParams = {},
 }) => {
+  const motionStyle = {
+    width: "100%",
+    height: "48%",
+    display: "flex",
+    flexDirection: "column" as const,
+  };
+
+  const selectionArea = (
+    <Box w="100%" h="100%" overflowY="auto" overflowX="hidden">
+      <StudySelectionArea
+        articles={articles}
+        page={page}
+        reloadArticles={reloadArticles}
+        currentPage={pagination.currentPage - 1}
+        totalPages={pagination.quantityOfPages}
+        pageSize={pagination.itensPerPage}
+        extraParams={extraParams}
+      />
+    </Box>
+  );
+
+  const table = (
+    <Box w="100%" h="100%" overflowY="auto" overflowX="hidden">
+      <ArticlesTable
+        articles={articles}
+        layout={layout}
+        columnsVisible={columnsVisible}
+        pagination={pagination}
+      />
+    </Box>
+  );
+
   return (
     <Flex
       w="100%"
@@ -52,105 +83,28 @@ export const SplitHorizontal: React.FC<HorizontalProps> = ({
       justifyContent="space-between"
       overflow="hidden"
     >
-      {isInverted ? (
-        <AnimatePresence mode="wait">
-          <motion.div
-            key="top"
-            variants={horizontalTransitionVariants}
-            initial="initial"
-            animate="animate"
-            exit="exit"
-            style={{ 
-              width: "100%", 
-              height: "48%",
-              display: "flex",
-              flexDirection: "column"
-            }}
-          >
-            <Box w="100%" h="100%" overflowY="auto" overflowX="hidden">
-              <StudySelectionArea
-                articles={articles}
-                page={page}
-                reloadArticles={reloadArticles}
-                currentPage={pagination.currentPage - 1}
-                totalPages={pagination.quantityOfPages}
-                pageSize={pagination.itensPerPage}
-              />
-            </Box>
-          </motion.div>
-          <motion.div
-            key="bottom"
-            variants={horizontalTransitionVariants}
-            initial="initial"
-            animate="animate"
-            exit="exit"
-            style={{ 
-              width: "100%", 
-              height: "48%", 
-              display: "flex",
-              flexDirection: "column"
-            }}
-          >
-            <Box w="100%" h="100%" overflowY="auto" overflowX="hidden">
-              <ArticlesTable
-                articles={articles}
-                layout={layout}
-                columnsVisible={columnsVisible}
-                pagination={pagination}
-              />
-            </Box>
-          </motion.div>
-        </AnimatePresence>
-      ) : (
-        <AnimatePresence mode="wait">
-          <motion.div
-            key="bottom"
-            variants={horizontalTransitionVariants}
-            initial="initial"
-            animate="animate"
-            exit="exit"
-            style={{ 
-              width: "100%", 
-              height: "48%", 
-              display: "flex",
-              flexDirection: "column"
-            }}
-          >
-            <Box w="100%" h="100%" overflowY="auto" overflowX="hidden">
-              <ArticlesTable
-                articles={articles}
-                layout={layout}
-                columnsVisible={columnsVisible}
-                pagination={pagination}
-              />
-            </Box>
-          </motion.div>
-          <motion.div
-            key="top"
-            variants={horizontalTransitionVariants}
-            initial="initial"
-            animate="animate"
-            exit="exit"
-            style={{ 
-              width: "100%", 
-              height: "48%", 
-              display: "flex",
-              flexDirection: "column"
-            }}
-          >
-            <Box w="100%" h="100%" overflowY="auto" overflowX="hidden">
-              <StudySelectionArea
-                articles={articles}
-                page={page}
-                reloadArticles={reloadArticles}
-                currentPage={pagination.currentPage - 1}
-                totalPages={pagination.quantityOfPages}
-                pageSize={pagination.itensPerPage}
-              />
-            </Box>
-          </motion.div>
-        </AnimatePresence>
-      )}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key="first"
+          variants={horizontalTransitionVariants}
+          initial="initial"
+          animate="animate"
+          exit="exit"
+          style={motionStyle}
+        >
+          {isInverted ? selectionArea : table}
+        </motion.div>
+        <motion.div
+          key="second"
+          variants={horizontalTransitionVariants}
+          initial="initial"
+          animate="animate"
+          exit="exit"
+          style={motionStyle}
+        >
+          {isInverted ? table : selectionArea}
+        </motion.div>
+      </AnimatePresence>
     </Flex>
   );
 };

@@ -29,6 +29,7 @@ interface LayoutFactoryProps {
   columnsVisible: ColumnVisibility;
   pagination: PaginationControls;
   reloadArticles: KeyedMutator<SelectionArticles>;
+  extraParams?: Record<string, any>;
 }
 
 export default function LayoutFactory({
@@ -40,10 +41,10 @@ export default function LayoutFactory({
   columnsVisible,
   pagination,
   reloadArticles,
+  extraParams = {},
 }: LayoutFactoryProps) {
   const handleRowClick = () => {
-      handleChangeLayout("vertical");
-    
+    handleChangeLayout("vertical");
   };
 
   const layoutMap: Record<ViewModel, React.ReactNode> = {
@@ -63,6 +64,7 @@ export default function LayoutFactory({
         columnsVisible={columnsVisible}
         pagination={pagination}
         reloadArticles={reloadArticles}
+        extraParams={extraParams}
       />
     ),
     "vertical-invert": (
@@ -73,6 +75,7 @@ export default function LayoutFactory({
         columnsVisible={columnsVisible}
         pagination={pagination}
         reloadArticles={reloadArticles}
+        extraParams={extraParams}
       />
     ),
     horizontal: (
@@ -84,6 +87,7 @@ export default function LayoutFactory({
         columnsVisible={columnsVisible}
         pagination={pagination}
         reloadArticles={reloadArticles}
+        extraParams={extraParams}
       />
     ),
     "horizontal-invert": (
@@ -95,6 +99,7 @@ export default function LayoutFactory({
         columnsVisible={columnsVisible}
         pagination={pagination}
         reloadArticles={reloadArticles}
+        extraParams={extraParams}
       />
     ),
     article: (

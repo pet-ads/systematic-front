@@ -1,5 +1,5 @@
 // External library
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { Box, Flex } from "@chakra-ui/react";
 
 // Components
@@ -26,6 +26,7 @@ interface StudySelectionAreaProps {
   currentPage: number;
   totalPages: number;
   pageSize: number;
+  extraParams?: Record<string, any>;
 }
 
 export default function StudySelectionArea({
@@ -35,6 +36,7 @@ export default function StudySelectionArea({
   currentPage,
   totalPages,
   pageSize,
+  extraParams = {},
 }: StudySelectionAreaProps) {
   const studiesContext = useContext(StudyContext);
 
@@ -48,30 +50,75 @@ export default function StudySelectionArea({
 
   const id = localStorage.getItem("systematicReviewId");
 
+  const firstArticleId = (articles[0] as ArticleInterface)?.studyReviewId ?? null;
+
+  useEffect(() => {
+    setNavPage(currentPage);
+    setNavArticles(null);
+  }, [currentPage]);
+
+  useEffect(() => {
+    setNavPage(currentPage);
+    setNavArticles(null);
+  }, [firstArticleId]);
+
   const fetchPageSilently = async (targetPage: number): Promise<ArticleInterface[]> => {
-    const response = await Axios.get<SelectionArticles>(
-      `systematic-study/${id}/study-review/search`,
-      { params: { page: targetPage, size: pageSize } }
-    );
-    return response.data.studyReviews.filter(
-      (art): art is ArticleInterface => "studyReviewId" in art
-    );
+    try {
+      const response = await Axios.get<SelectionArticles>(
+        `systematic-study/${id}/study-review/search`,
+        {
+          params: {
+            page: targetPage,
+            size: pageSize,
+            ...extraParams,
+          },
+        }
+      );
+      return response.data.studyReviews.filter(
+        (art): art is ArticleInterface => "studyReviewId" in art
+      );
+    } catch (error) {
+      console.error(`Failed to fetch page ${targetPage}:`, error);
+      return [];
+    }
   };
 
   const onFetchNextPage = async (): Promise<ArticleInterface[]> => {
     const next = navPage + 1;
     const fetched = await fetchPageSilently(next);
-    setNavPage(next);
-    setNavArticles(fetched);
+    if (fetched.length > 0) {
+      setNavPage(next);
+      setNavArticles(fetched);
+    }
     return fetched;
   };
 
   const onFetchPrevPage = async (): Promise<ArticleInterface[]> => {
     const prev = navPage - 1;
     const fetched = await fetchPageSilently(prev);
-    setNavPage(prev);
-    setNavArticles(fetched);
+    if (fetched.length > 0) {
+      setNavPage(prev);
+      setNavArticles(fetched);
+    }
     return fetched;
+  };
+
+  const onWrapToLast = async (): Promise<ArticleInterface[]> => {
+    const lastPage = totalPages - 1;
+    const fetched = await fetchPageSilently(lastPage);
+    if (fetched.length > 0) {
+      setNavPage(lastPage);
+      setNavArticles(fetched);
+    }
+    return fetched;
+  };
+
+  const onWrapToFirst = (): ArticleInterface[] => {
+    setNavPage(currentPage);
+    setNavArticles(null);
+    return articles.filter(
+      (art): art is ArticleInterface => "studyReviewId" in art
+    );
   };
 
   const activeArticles: ArticleInterface[] | StudyInterface[] =
@@ -89,9 +136,11 @@ export default function StudySelectionArea({
 
   const studyIndex = findSelectedArticle >= 0 ? findSelectedArticle : 0;
 
-  if (studyIndex === 0 && typedArticles[0]) {
-    setSelectedArticleReview(typedArticles[0].studyReviewId);
-  }
+  useEffect(() => {
+    if (studyIndex === 0 && typedArticles[0]) {
+      setSelectedArticleReview(typedArticles[0].studyReviewId);
+    }
+  }, [typedArticles[0]?.studyReviewId]);
 
   return (
     <Flex
@@ -115,6 +164,8 @@ export default function StudySelectionArea({
           isFirstPage={navPage <= 0}
           onFetchNextPage={onFetchNextPage}
           onFetchPrevPage={onFetchPrevPage}
+          onWrapToLast={onWrapToLast}
+          onWrapToFirst={onWrapToFirst}
         />
       </Flex>
       <Box w="100%" h="80%">

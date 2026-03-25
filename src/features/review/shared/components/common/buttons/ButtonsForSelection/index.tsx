@@ -36,6 +36,8 @@ interface ButtonsForSelectionProps {
   isFirstPage: boolean;
   onFetchNextPage: () => Promise<ArticleInterface[]>;
   onFetchPrevPage: () => Promise<ArticleInterface[]>;
+  onWrapToLast: () => Promise<ArticleInterface[]>;
+  onWrapToFirst: () => ArticleInterface[];
 }
 
 type ComboBoxGroup = {
@@ -55,6 +57,8 @@ export default function ButtonsForSelection({
   isFirstPage,
   onFetchNextPage,
   onFetchPrevPage,
+  onWrapToLast,
+  onWrapToFirst,
 }: ButtonsForSelectionProps) {
   const { handleResetStatusToUnclassified } = useResetStatus({ page, reloadArticles });
   const { handleChangePriority } = useChangePriority({ reloadArticles });
@@ -128,6 +132,14 @@ export default function ButtonsForSelection({
       return;
     }
 
+    if (isLastArticleOnPage && isLastPage) {
+      const firstPageArticles = onWrapToFirst();
+      if (firstPageArticles.length > 0) {
+        setSelectedArticleReview(getArticleId(firstPageArticles[0]) as number);
+      }
+      return;
+    }
+
     const nextIndex = (articleIndex + 1) % articles.length;
     setSelectedArticleReview(getArticleId(articles[nextIndex]) as number);
   }
@@ -139,6 +151,15 @@ export default function ButtonsForSelection({
       const prevPageArticles = await onFetchPrevPage();
       if (prevPageArticles.length > 0) {
         const last = prevPageArticles[prevPageArticles.length - 1];
+        setSelectedArticleReview(getArticleId(last) as number);
+      }
+      return;
+    }
+
+    if (isFirstArticleOnPage && isFirstPage) {
+      const lastPageArticles = await onWrapToLast();
+      if (lastPageArticles.length > 0) {
+        const last = lastPageArticles[lastPageArticles.length - 1];
         setSelectedArticleReview(getArticleId(last) as number);
       }
       return;
@@ -179,6 +200,7 @@ export default function ButtonsForSelection({
           </Tooltip>
         </Flex>
       )}
+
       <Flex sx={boxconteiner}>
         {(Object.entries(comboBoxGroups) as [OptionType, ComboBoxGroup][]).map(([groupKey, group]) => (
           <Tooltip
