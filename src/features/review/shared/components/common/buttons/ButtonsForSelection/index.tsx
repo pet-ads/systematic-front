@@ -4,6 +4,7 @@ import { MdOutlineLowPriority } from "react-icons/md";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { RiResetLeftLine } from "react-icons/ri";
 import { Tooltip } from "@chakra-ui/react";
+import { useState, useEffect } from "react";
 
 // Hooks
 import useFetchAllCriteriasByArticle from "../../../../services/useFetchAllCriteriasByArticle";
@@ -49,13 +50,43 @@ export default function ButtonsForSelection({
     reloadArticles,
   });
   const { handleChangePriority } = useChangePriority({ reloadArticles });
-  const { criterias: fetchedCriterias, handlerUpdateCriteriasStructure } =
-    useFetchAllCriteriasByArticle({ page });
-
-  console.log("Criterios aqui nos botões", fetchedCriterias);
-  if (!fetchedCriterias) return;
 
   const currentArticle = articles[articleIndex];
+
+  const getArticleId = (article: ArticleInterface | StudyInterface) => {
+    if (!article) return undefined;
+    return "studyReviewId" in article ? article.studyReviewId : article.studyId;
+  };
+
+  const currentArticleId = getArticleId(currentArticle);
+
+  const {
+    criterias: fetchedCriterias,
+    handlerUpdateCriteriasStructure,
+    resetLocalCriterias,
+  } = useFetchAllCriteriasByArticle({ page });
+
+  const [historicalCriteria, setHistoricalCriteria] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (currentArticle) {
+      setHistoricalCriteria(currentArticle.criteria || []);
+    }
+  }, [currentArticleId, page]);
+
+  const handleFullReset = async () => {
+    if (!currentArticleId) return;
+
+    await handleResetStatusToUnclassified(currentArticleId, historicalCriteria);
+
+    resetLocalCriterias();
+
+    if (page === "Selection") {
+      setHistoricalCriteria([]);
+    }
+  };
+
+  if (!fetchedCriterias) return null;
 
   const currentArticleStatus = {
     selectionStatus: currentArticle.selectionStatus,
@@ -79,9 +110,7 @@ export default function ButtonsForSelection({
   };
 
   if (!criteriaGroupDataMap["INCLUSION"] || !criteriaGroupDataMap["EXCLUSION"])
-    return;
-
-  console.log("Não retornou");
+    return null;
 
   const isInclusionActive = criteriaOptions.INCLUSION.isActive;
   const isExclusionActive = criteriaOptions.EXCLUSION.isActive;
@@ -90,14 +119,16 @@ export default function ButtonsForSelection({
 
   function goToNextArticle() {
     const nextIndex = (articleIndex + 1) % articles.length;
-    const nextArticle = articles[nextIndex] as ArticleInterface;
-    setSelectedArticleReview(nextArticle.studyReviewId);
+    const nextArticle = articles[nextIndex];
+    const nextId = getArticleId(nextArticle) as number;
+    setSelectedArticleReview(nextId);
   }
 
   function goToPreviousArticle() {
     const prevIndex = (articleIndex - 1 + articles.length) % articles.length;
-    const prevArticle = articles[prevIndex] as ArticleInterface;
-    setSelectedArticleReview(prevArticle.studyReviewId);
+    const prevArticle = articles[prevIndex];
+    const prevId = getArticleId(prevArticle) as number;
+    setSelectedArticleReview(prevId);
   }
 
   const comboBoxGroups: Record<
@@ -141,11 +172,14 @@ export default function ButtonsForSelection({
             p=".5rem"
             borderRadius=".25rem"
           >
-            <IoIosArrowBack
-              color="black"
-              size="1.5rem"
-              onClick={goToPreviousArticle}
-            />
+            <Box style={{ display: "inline-block" }}>
+              <IoIosArrowBack
+                color="black"
+                size="1.5rem"
+                onClick={goToPreviousArticle}
+                cursor="pointer"
+              />
+            </Box>
           </Tooltip>
         </Flex>
       )}
@@ -171,6 +205,7 @@ export default function ButtonsForSelection({
                   handlerUpdateCriteriasStructure
                 }
                 reloadArticles={reloadArticles}
+                selectedCriteria={historicalCriteria}
               />
             </Box>
           </Tooltip>
@@ -182,12 +217,7 @@ export default function ButtonsForSelection({
           p=".5rem"
           borderRadius=".25rem"
         >
-          <Button
-            color="black"
-            bg="white"
-            p="1rem"
-            onClick={handleResetStatusToUnclassified}
-          >
+          <Button color="black" bg="white" p="1rem" onClick={handleFullReset}>
             <RiResetLeftLine color="black" size="1.5rem" />
           </Button>
         </Tooltip>
@@ -220,11 +250,14 @@ export default function ButtonsForSelection({
             p=".5rem"
             borderRadius=".25rem"
           >
-            <IoIosArrowForward
-              color="black"
-              size="1.5rem"
-              onClick={goToNextArticle}
-            />
+            <Box style={{ display: "inline-block" }}>
+              <IoIosArrowForward
+                color="black"
+                size="1.5rem"
+                onClick={goToNextArticle}
+                cursor="pointer"
+              />
+            </Box>
           </Tooltip>
         </Flex>
       )}

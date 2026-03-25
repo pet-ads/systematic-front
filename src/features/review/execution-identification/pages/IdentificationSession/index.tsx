@@ -4,7 +4,7 @@ import { Link, useParams, useSearchParams } from "react-router-dom";
 import Header from "../../../../../components/structure/Header/Header";
 
 import useGetSessionStudies from "../../services/useGetSessionStudies";
-
+import ArticleInterface from "@features/review/shared/types/ArticleInterface";
 import FlexLayout from "../../../../../components/structure/Flex/Flex";
 import { Box, Button } from "@chakra-ui/react";
 import ArticlesTable from "@features/review/shared/components/common/tables/ArticlesTable";
@@ -15,18 +15,19 @@ import usePaginationState from "@features/shared/hooks/usePaginationState";
 export default function IdentificationSession() {
   const [fetchedTotalPages, setFetchedTotalPages] = useState<number>(1);
   const { session = "" } = useParams();
-  
+
   const [searchParams] = useSearchParams();
-  
+
   const totalItems = Number(searchParams.get("totalItems")) || 0;
-  
+
   const { columnsVisible, toggleColumnVisibility } = useVisibiltyColumns({
-    page: "Identification", 
+    page: "Identification",
   });
-  
+
   const {
     currentPage,
     itensPerPage,
+    setCurrentPage,
     handleNextPage,
     handlePrevPage,
     handleBackToInitial,
@@ -34,7 +35,27 @@ export default function IdentificationSession() {
     changeQuantityOfItens,
   } = usePaginationState({ totalPages: fetchedTotalPages, initialSize: 20 });
 
-  const { articles, totalPages } = useGetSessionStudies(session, currentPage - 1, itensPerPage);
+  const [sortConfig, setSortConfig] = useState<{
+    key: keyof ArticleInterface;
+    direction: "asc" | "desc";
+  } | null>(null);
+
+  const handleHeaderClick = (key: keyof ArticleInterface) => {
+    setSortConfig((prev) => {
+      if (prev?.key === key) {
+        return { key, direction: prev.direction === "asc" ? "desc" : "asc" };
+      }
+      return { key, direction: "asc" };
+    });
+    setCurrentPage(1);
+  };
+
+  const { articles, totalPages } = useGetSessionStudies(
+    session,
+    currentPage - 1,
+    itensPerPage,
+    sortConfig,
+  );
 
   if (totalPages && totalPages !== fetchedTotalPages) {
     setFetchedTotalPages(totalPages);
@@ -76,6 +97,8 @@ export default function IdentificationSession() {
         <ArticlesTable
           articles={articles}
           columnsVisible={columnsVisible}
+          sortConfig={sortConfig}
+          handleHeaderClick={handleHeaderClick}
           pagination={{
             currentPage,
             itensPerPage,

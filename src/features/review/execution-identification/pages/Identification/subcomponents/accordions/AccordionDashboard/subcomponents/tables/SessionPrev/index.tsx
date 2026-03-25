@@ -19,7 +19,7 @@ interface actionsModal {
 }
 
 interface SessionPrevProps {
-  handleOpenModal: (action: actionsModal) => void;
+  handleOpenModal: (action: actionsModal, id: string) => void;
   handleDelete: (id: string) => void;
   timestamp: string;
   numberOfStudies: number;
@@ -52,7 +52,7 @@ const SessionPrev = ({
         ? `0${date.getMonth() + 1}`
         : `${date.getMonth() + 1}`;
     const year = `${date.getFullYear()}`;
-    return `${day}/${month}/${year}`;
+    return `${month}/${day}/${year}`;
   };
 
   const hasErrorsBySessionId = (id: string) => {
@@ -109,7 +109,7 @@ const SessionPrev = ({
             flex={1}
             colorScheme="gray"
             height="35px"
-            onClick={() => handleOpenModal({ action: "update" })}
+            onClick={() => handleOpenModal({ action: "update" }, sessionId)}
           >
             <EditIcon />
           </Button>

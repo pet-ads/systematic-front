@@ -45,7 +45,15 @@ export default function AddSelectTable({
           placeholder={placeholder}
           page={"protocol"}
         />
-        <EventButton text="Add" event={handleSelectAddButtonClick} w={"2%"} mr={"17px"} />
+        <EventButton
+          text="Add" event={() => {
+            if (selectedValue && selectedValue.trim() !== "") {
+              handleSelectAddButtonClick();
+            }
+          }}
+          w={"2%"}
+          mr={"17px"}
+        />
       </FormControl>
 
       <SelectInfosTable

@@ -1,5 +1,6 @@
 import { useDisclosure } from "@chakra-ui/react";
 import { useContext, useEffect, useState } from "react";
+import useToaster from "@components/feedback/Toaster";
 
 import {
   Button,
@@ -26,8 +27,10 @@ import { KeyedMutator } from "swr";
 import StudyContext from "@features/review/shared/context/StudiesContext";
 import useHandleExportedFiles from "@features/review/execution-identification/services/useHandleExportedFiles";
 import DragAndDrop from "@components/common/inputs/DragAndDropInput";
+import Axios from "../../../../../../../../infrastructure/http/axiosClient";
 
 interface IdentificationModalProps {
+  sessionId?: string,
   show: (value: boolean) => void;
   action: "create" | "update";
   type: string;
@@ -46,6 +49,7 @@ interface IdentificationModalProps {
 }
 
 function IdentificationModal({
+  sessionId,
   show,
   action,
   type,
@@ -75,8 +79,30 @@ function IdentificationModal({
   });
 
   useEffect(() => {
-    setSource(type);
-    onOpen();
+    const fetchSession = async () => {  
+      setSource(type);
+      onOpen();
+
+      if(action === "update") {
+        const id = localStorage.getItem("systematicReviewId");
+        try {
+          const response = await Axios.get(`/systematic-study/${id}/search-session`);
+          const selectedSession = response.data.searchSessions.find((session : any) => session.id === sessionId);
+          if(selectedSession) {
+            setSearchString(selectedSession.searchString);
+          }
+        } catch(error) {
+          const toast = useToaster();
+          toast({
+            title: "Failed to load session",
+            description: "We couldn’t retrieve the session data. Please check your connection or try again later.",
+            status: "error",
+          });
+        }
+      } 
+    };
+
+    fetchSession();
   }, []);
 
   const handleSearchStringChange = (

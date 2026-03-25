@@ -26,6 +26,7 @@ import { inputconteiner } from "../../../shared/styles/executionStyles";
 // Types
 import usePaginationState from "@features/shared/hooks/usePaginationState";
 import useFetchExtractionArticles from "../../services/useFetchExtractionArticles";
+import type ArticleInterface from "@features/review/shared/types/ArticleInterface";
 
 export default function Extraction() {
   const [searchString, setSearchString] = useState<string>("");
@@ -41,9 +42,15 @@ export default function Extraction() {
     page: "Extraction",
   });
 
+  const [sortConfig, setSortConfig] = useState<{
+    key: keyof ArticleInterface;
+    direction: "asc" | "desc";
+  } | null>(null);
+
   const {
     currentPage,
     itensPerPage,
+    setCurrentPage, 
     handleNextPage,
     handlePrevPage,
     handleBackToInitial,
@@ -51,12 +58,23 @@ export default function Extraction() {
     changeQuantityOfItens,
   } = usePaginationState({ totalPages: fetchedTotalPages, initialSize: 20 });
 
+  const handleHeaderClick = (key: keyof ArticleInterface) => {
+    setSortConfig((prev) => {
+      if (prev?.key === key) {
+        return { key, direction: prev.direction === "asc" ? "desc" : "asc" };
+      }
+      return { key, direction: "asc" };
+    });
+    setCurrentPage(1); 
+  };
+
   const { articles, isLoading, totalElements, totalPages, mutate } =
     useFetchExtractionArticles({
       page: currentPage - 1,
       size: itensPerPage,
       search: searchString,
       status: selectedStatus,
+      sortConfig,
     });
 
   if (totalPages && totalPages !== fetchedTotalPages) {
@@ -151,6 +169,8 @@ export default function Extraction() {
             changeQuantityOfItens,
           }}
           reloadArticles={mutate}
+          sortConfig={sortConfig}
+          handleHeaderClick={handleHeaderClick}
         />
       </Box>
     </FlexLayout>

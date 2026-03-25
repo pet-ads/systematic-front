@@ -15,6 +15,8 @@ interface TableProps {
   columnsVisible: ColumnVisibility;
   onRowClick?: (article: ArticleInterface) => void;
   pagination: PaginationControls;
+  sortConfig: { key: keyof ArticleInterface; direction: "asc" | "desc" } | null;
+  handleHeaderClick: (key: keyof ArticleInterface) => void;
 }
 
 export const FullTable: React.FC<TableProps> = ({
@@ -22,6 +24,8 @@ export const FullTable: React.FC<TableProps> = ({
   columnsVisible,
   onRowClick,
   pagination,
+  sortConfig,
+  handleHeaderClick,
 }) => {
   return (
     <Box w="100%" h="100%">
@@ -30,6 +34,8 @@ export const FullTable: React.FC<TableProps> = ({
         columnsVisible={columnsVisible}
         onRowClick={onRowClick}
         pagination={pagination}
+        sortConfig={sortConfig}
+        handleHeaderClick={handleHeaderClick}
       />
     </Box>
   );

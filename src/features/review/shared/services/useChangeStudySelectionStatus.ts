@@ -14,5 +14,6 @@ export const UseChangeStudySelectionStatus = ({
   const id = localStorage.getItem("systematicReviewId");
   const path = `systematic-study/${id}/study-review/selection-status`;
 
-  Axios.patch(path, { status, criteria: criterias, studyReviewId });
+  // Adicionamos o "return" aqui
+  return Axios.patch(path, { status, criteria: criterias, studyReviewId });
 };
