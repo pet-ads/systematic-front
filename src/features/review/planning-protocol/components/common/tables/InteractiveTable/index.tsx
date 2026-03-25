@@ -3,7 +3,6 @@ import { Input, Select, FormLabel, Textarea } from "@chakra-ui/react";
 import Axios from "../../../../../../../infrastructure/http/axiosClient";
 import EventButton from "@components/common/buttons/EventButton";
 
-
 import DefaultTable from "@components/common/tables/DefaultTable";
 import { Column, SortConfig } from "@components/common/tables/DefaultTable/types";
 
@@ -123,7 +122,7 @@ export default function InteractiveTable({ id, url, label }: Props) {
       }
     };
     fetch();
-  }, [id, url, adress, setRows]); // Added dependencies
+  }, [id, url, adress, setRows]); 
 
   function handleSelect(index: number, newValue: string) {
     handleTypeChange(index, newValue);
@@ -133,13 +132,13 @@ export default function InteractiveTable({ id, url, label }: Props) {
     }
   }
 
-  async function handleSaveEdit(index: number) {
+  async function handleSaveEdit(index: number, closeEditMode: boolean = true) {
     if(!validator({value: rows[index].question})){
       return
     }
     const row = rows[index];
     const { question, id: questionId, type, isNew, questionId: serverId } = row;
-    const reviewId = id; // From props
+    const reviewId = id; 
 
     let data: any;
     let questionType: string | null = null;
@@ -215,7 +214,9 @@ export default function InteractiveTable({ id, url, label }: Props) {
       console.error("Failed to save question:", error);
     }
 
-    setEditIndex(null);
+    if (closeEditMode) {
+      setEditIndex(null);
+    }
 
     const accessToken = localStorage.getItem("accessToken");
     let options = { headers: { Authorization: `Bearer ${accessToken}` } };
@@ -228,12 +229,13 @@ export default function InteractiveTable({ id, url, label }: Props) {
     );
   };
 
-  function addNewRow() {
+  async function addNewRow() {
+    if (editIndex !== null) {
+      await handleSaveEdit(editIndex);
+    }
     addRow(setEditIndex, setQuestions);
     setPickManyQuestions([]);
   }
-
-  
 
   const columns: Column<Row>[] = [
     {
@@ -249,12 +251,10 @@ export default function InteractiveTable({ id, url, label }: Props) {
             onChange={(e) => handleIdChange(index, e.target.value)}
             
             isReadOnly={!isEditing} 
-            
             border={isEditing ? "solid 1px #303D50" : "transparent"} 
             bg={isEditing ? "white" : "transparent"} 
             cursor={isEditing ? "text" : "default"}
             _focus={{ boxShadow: isEditing ? "outline" : "none" }}
-            
             borderRadius="md"
             size="sm"
           />
@@ -273,22 +273,22 @@ export default function InteractiveTable({ id, url, label }: Props) {
             as={TextareaAutosize} 
             minRows={1}
             minH="unset"
-            
+
             value={row.question}
             onChange={(e) => handleQuestionChange(index, e.target.value)}
             
             isReadOnly={!isEditing}
-            
+
             border={isEditing ? "solid 1px #303D50" : "transparent"}
             bg={isEditing ? "white" : "transparent"}
             cursor={isEditing ? "text" : "default"}
             _focus={{ boxShadow: isEditing ? "outline" : "none" }}
-            
+
             resize="none"
             overflow="hidden"
             whiteSpace="pre-wrap"
             w="100%"
-            
+
             borderRadius="md"
             size="sm"
             py={2}
@@ -308,14 +308,14 @@ export default function InteractiveTable({ id, url, label }: Props) {
           <Select
             onChange={(e) => handleSelect(index, e.target.value)}
             value={row.type}
-            
+
             isDisabled={!isEditing} 
-            
+
             border={isEditing ? "solid 1px #303D50" : "transparent"}
             bg={isEditing ? "white" : "transparent"}
             color="black" 
             _disabled={{ opacity: 1, cursor: "default" }} 
-            
+
             borderRadius="md"
             size="sm"
           >
@@ -343,7 +343,10 @@ export default function InteractiveTable({ id, url, label }: Props) {
             itemType={row.type}
             index={index}
             editIndex={editIndex}
-            handleEdit={() => {
+            handleEdit={async () => {
+              if (editIndex !== null && editIndex !== index) {
+                await handleSaveEdit(editIndex);
+              }
               setnumberScale([row.lower || 1, row.higher || 5]); 
               setQuestions(row.questions || []); 
               setLabeledQuestions(row.scale || {});
@@ -353,7 +356,7 @@ export default function InteractiveTable({ id, url, label }: Props) {
               setModalType(row.type);
             }}
             handleSaveEdit={async () => {
-              handleSaveEdit(index);
+              handleSaveEdit(index, true);
             }}
           />
         </div>
@@ -390,6 +393,9 @@ export default function InteractiveTable({ id, url, label }: Props) {
           show={setShowModal}
           questionHolder={setQuestions}
           questions={questions}
+          onSave={() => {
+            if (editIndex !== null) handleSaveEdit(editIndex, false);
+          }}
         />
       )}
 
@@ -398,6 +404,9 @@ export default function InteractiveTable({ id, url, label }: Props) {
           show={setShowModal}
           scaleHolder={setnumberScale}
           values={numberScale}
+          onSave={() => {
+            if (editIndex !== null) handleSaveEdit(editIndex, false);
+          }}
         />
       )}
 
@@ -406,6 +415,9 @@ export default function InteractiveTable({ id, url, label }: Props) {
           show={setShowModal}
           questionHolder={setLabeledQuestions}
           questions={labeledQuestions}
+          onSave={() => {
+            if (editIndex !== null) handleSaveEdit(editIndex, false);
+          }}
         />
       )}
 
@@ -414,6 +426,9 @@ export default function InteractiveTable({ id, url, label }: Props) {
           show={setShowModal}
           optionHolder={setPickManyQuestions}
           options={pickManyQuestions}
+          onSave={() => {
+            if (editIndex !== null) handleSaveEdit(editIndex, false);
+          }}
         />
       )}
     </div>
