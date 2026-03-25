@@ -7,7 +7,7 @@ import {
   AccordionIcon,
   AccordionPanel,
 } from "@chakra-ui/react";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { MdRule } from "react-icons/md";
 import { LuFileSearch, LuFileCheck2 } from "react-icons/lu";
 
@@ -42,15 +42,34 @@ const AccordionComponent = () => {
     Summarization: 2,
   };
 
-  const [localIndex, setLocalIndex] = useState<number | number[]>(
-    sectionToIndex[activeSection as string] ?? -1,
-  );
+  const [localIndex, setLocalIndex] = useState<number[]>(() => {
+    const saved = localStorage.getItem("sidebarOpenIndexes");
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        return [];
+      }
+    }
+    const initial = sectionToIndex[activeSection as string];
+    return initial !== undefined ? [initial] : [];
+  });
 
-  const [prevSection, setPrevSection] = useState(activeSection);
-  if (activeSection !== prevSection) {
-    setPrevSection(activeSection);
-    setLocalIndex(sectionToIndex[activeSection as string] ?? -1);
-  }
+  useEffect(() => {
+    localStorage.setItem("sidebarOpenIndexes", JSON.stringify(localIndex));
+  }, [localIndex]);
+
+  useEffect(() => {
+    const newIndex = sectionToIndex[activeSection as string];
+    if (newIndex !== undefined) {
+      setLocalIndex((prev) => {
+        if (!prev.includes(newIndex)) {
+          return [...prev, newIndex];
+        }
+        return prev;
+      });
+    }
+  }, [activeSection]);
 
   const titleIsFilled = !!generalDefinition?.title?.trim();
 
@@ -112,7 +131,7 @@ const AccordionComponent = () => {
   );
 
   return (
-    <Accordion w="80%" allowToggle index={localIndex} onChange={(newIndex) => setLocalIndex(newIndex)}>
+    <Accordion w="80%" allowMultiple index={localIndex} onChange={(newIndex) => setLocalIndex(newIndex as number[])}>
       {Object.entries(sections).map(([section, children]) => (
         <AccordionItem key={section} border="none">
           <h2>
@@ -138,7 +157,6 @@ const AccordionComponent = () => {
             </AccordionButton>
           </h2>
           
-         
           <AccordionPanel paddingInlineEnd={0} paddingLeft="48px" pb={2} pt={1}>
             {children.map((child) => (
               <ProtocolAccordionSubItem
