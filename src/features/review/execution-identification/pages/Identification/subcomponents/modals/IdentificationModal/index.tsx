@@ -90,6 +90,7 @@ function IdentificationModal({
           const selectedSession = response.data.searchSessions.find((session : any) => session.id === sessionId);
           if(selectedSession) {
             setSearchString(selectedSession.searchString);
+            setComment(selectedSession.additionalInfo);
           }
         } catch(error) {
           const toast = useToaster();
@@ -169,6 +170,7 @@ function IdentificationModal({
             <FormLabel>Comments</FormLabel>
             <Textarea
               placeholder="Add comments"
+              value={comment}
               onChange={(event) => setComment(event.target.value)}
             />
           </FormControl>
