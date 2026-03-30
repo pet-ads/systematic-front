@@ -26,6 +26,7 @@ import { DeleteIcon } from "@chakra-ui/icons";
 import { KeyedMutator } from "swr";
 import StudyContext from "@features/review/shared/context/StudiesContext";
 import useHandleExportedFiles from "@features/review/execution-identification/services/useHandleExportedFiles";
+import useUpdateSession from "@features/review/execution-identification/services/useUpdateSession";
 import DragAndDrop from "@components/common/inputs/DragAndDropInput";
 import Axios from "../../../../../../../../infrastructure/http/axiosClient";
 
@@ -78,6 +79,15 @@ function IdentificationModal({
     comment,
   });
 
+  const { updateSession } = useUpdateSession({ 
+    sessionId, 
+    mutate, 
+    searchString, 
+    comment, 
+    type
+  });
+
+
   useEffect(() => {
     const fetchSession = async () => {  
       setSource(type);
@@ -119,7 +129,11 @@ function IdentificationModal({
       return;
     }
 
-    sendFilesToServer();
+    if(action === "create") {
+      sendFilesToServer();
+    } else {
+      updateSession();
+    }
     reloadArticles("Selection");
     show(false);
     onClose();
