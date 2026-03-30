@@ -30,7 +30,7 @@ const Navigation = () => {
   const navigate = useNavigate();
   const { logout } = useAuthStore();
   const { toGo } = useNavigation();
-
+  const isExistingReview = location.pathname.includes("/review") && !!localStorage.getItem("systematicReviewId");
   const [openIndex, setOpenIndex] = useState(
     location.pathname.includes("/review") ? 0 : -1
   );
@@ -73,10 +73,15 @@ const Navigation = () => {
               display="flex"
               alignItems="center"
               width="100%"
+              onClick={() => {
+                if (!location.pathname.includes("/review/planning/protocol/general-definition")) {
+                  navigate("/review/planning/protocol/general-definition");
+                }
+              }}
             >
               <Icon as={FiPlusCircle} boxSize="20px" mr="12px" color="#4A4A4A" />
               <Text fontWeight="500" color="#4A4A4A" flex="1" textAlign="left" m="0">
-                New Review
+                {isExistingReview ? "Review" : "New Review"}
               </Text>
               <AccordionIcon color="#4A4A4A" />
             </AccordionButton>

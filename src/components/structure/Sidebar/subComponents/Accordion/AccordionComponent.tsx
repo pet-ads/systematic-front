@@ -112,6 +112,7 @@ const AccordionComponent = () => {
       ],
       Summarization: [
         { path: `/review/summarization/graphics`, label: "Graphics" },
+        { path: `/review/summarization/download`, label: "Download" },
         ...(hasShowOcultScreens
           ? [
               {
@@ -135,7 +136,8 @@ const AccordionComponent = () => {
         <AccordionItem key={section} border="none">
           <h2>
             <AccordionButton
-              p=".5rem"
+              py="5px" 
+              px="30px"
               fontWeight={activeSection === section ? "bold" : "light"}
               bg={activeSection === section ? "#dadada" : "transparent"}
               borderRadius=".25rem"
