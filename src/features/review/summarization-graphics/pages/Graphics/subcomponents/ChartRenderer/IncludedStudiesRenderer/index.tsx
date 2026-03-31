@@ -25,8 +25,16 @@ export default function IncludedStudiesRenderer({ filteredStudies, type, chartId
     const items: BubbleItem[] = includedStudies.flatMap(study => 
       study.searchSources.map(src => ({ x: Number(study.year), group: src, y: 1 }))
     );
-    const bubbleData = useBubbleDataGeneric(items);
-    content = <BubbleChart title="Distribution of Included Studies by Year" data={bubbleData} yaxisText="Number of Studies" />;
+       const { series, yCategories } = useBubbleDataGeneric(items);
+       content = (
+   <BubbleChart
+     title="Search Sources Evolution"
+     series={series}            
+     yCategories={yCategories}  
+     yaxisText="Número de estudos"
+   />
+    
+       );
   } else content = <div>Tipo de gráfico não suportado</div>;
 
   return <Box id={chartId}>{content}</Box>;

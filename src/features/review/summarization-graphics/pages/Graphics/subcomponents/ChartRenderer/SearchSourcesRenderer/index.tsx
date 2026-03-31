@@ -59,11 +59,13 @@ export default function SearchSourcesRenderer({
         y: 1,
       }))
     );
-    const bubbleData = useBubbleDataGeneric(items);
+
+    const { series, yCategories } = useBubbleDataGeneric(items);
     content = (
       <BubbleChart
         title="Search Sources Evolution"
-        data={bubbleData}
+        series={series}
+        yCategories={yCategories}
         yaxisText="Número de estudos"
       />
     );
@@ -73,7 +75,12 @@ export default function SearchSourcesRenderer({
     content = <div>Tipo de gráfico não suportado</div>;
   }
   return (
-    <Box id={chartId} sx={type == "Bar Chart" ? barchartBox : undefined}>
+
+    <Box
+      id={chartId}
+      w={type === "Bubble Chart" ? "100%" : undefined}
+      sx={type === "Bar Chart" ? barchartBox : undefined}
+    >
       {content}
     </Box>
   );
