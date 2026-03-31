@@ -6,9 +6,19 @@
 .linksBox {
   display: flex;
   align-items: center;
-  margin-bottom: 6vh;
+  margin-bottom: 8px;
+  border-left: 4px solid transparent; 
 }
 
 .navDiv {
   margin-top: 50vh;
+}
+
+.active {
+  color: #3182CE;
+  font-weight: bold;
+  background-color: #EBF8FF;
+  border-left: 4px solid #3182CE; 
+  border-radius: 0 4px 4px 0;
+
 }

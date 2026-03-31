@@ -13,11 +13,7 @@ import Navigation from "./Navigation";
 // Styles
 import Style from "./Sidebar.module.css";
 
-interface SidebarProps {
-  type: string;
-}
-
-const Sidebar = ({ type }: SidebarProps) => {
+const Sidebar = () => {
   const context = useContext(AppContext);
 
   if (!context) {
@@ -54,7 +50,7 @@ const Sidebar = ({ type }: SidebarProps) => {
             }}
             className={Style.contentWrapper}
           >
-            <Navigation type={type} />
+            <Navigation />
           </motion.div>
         )}
       </AnimatePresence>
