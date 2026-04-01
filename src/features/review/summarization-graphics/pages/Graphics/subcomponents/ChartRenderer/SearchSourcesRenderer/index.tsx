@@ -66,7 +66,7 @@ export default function SearchSourcesRenderer({
         title="Search Sources Evolution"
         series={series}
         yCategories={yCategories}
-        yaxisText="Número de estudos"
+        yaxisText="Search Sources"
       />
     );
   } else if (type === "Table") {

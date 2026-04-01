@@ -31,7 +31,7 @@ export default function IncludedStudiesRenderer({ filteredStudies, type, chartId
      title="Search Sources Evolution"
      series={series}            
      yCategories={yCategories}  
-     yaxisText="Número de estudos"
+     yaxisText="Search Sources"
    />
     
        );
