@@ -31,6 +31,8 @@ interface LayoutFactoryProps {
   sortConfig: { key: keyof ArticleInterface; direction: "asc" | "desc" } | null;
   handleHeaderClick: (key: keyof ArticleInterface) => void;
   reloadArticles: KeyedMutator<SelectionArticles>;
+  onTablePageChange: (page: number) => void;
+  extraParams?: Record<string, any>;
 }
 
 export default function LayoutFactory({
@@ -44,6 +46,8 @@ export default function LayoutFactory({
   reloadArticles,
   sortConfig,
   handleHeaderClick,
+  onTablePageChange,
+  extraParams = {},
 }: LayoutFactoryProps) {
   const handleRowClick = () => {
     handleChangeLayout("vertical");
@@ -56,8 +60,8 @@ export default function LayoutFactory({
         columnsVisible={columnsVisible}
         onRowClick={handleRowClick}
         pagination={pagination}
-        sortConfig={sortConfig} 
-        handleHeaderClick={handleHeaderClick} 
+        sortConfig={sortConfig}
+        handleHeaderClick={handleHeaderClick}
       />
     ),
     vertical: (
@@ -68,8 +72,10 @@ export default function LayoutFactory({
         columnsVisible={columnsVisible}
         pagination={pagination}
         reloadArticles={reloadArticles}
-        sortConfig={sortConfig} 
-        handleHeaderClick={handleHeaderClick} 
+        sortConfig={sortConfig}
+        handleHeaderClick={handleHeaderClick}
+        onTablePageChange={onTablePageChange}
+        extraParams={extraParams}
       />
     ),
     "vertical-invert": (
@@ -80,8 +86,10 @@ export default function LayoutFactory({
         columnsVisible={columnsVisible}
         pagination={pagination}
         reloadArticles={reloadArticles}
-        sortConfig={sortConfig} 
-        handleHeaderClick={handleHeaderClick} 
+        sortConfig={sortConfig}
+        handleHeaderClick={handleHeaderClick}
+        onTablePageChange={onTablePageChange}
+        extraParams={extraParams}
       />
     ),
     horizontal: (
@@ -93,8 +101,10 @@ export default function LayoutFactory({
         columnsVisible={columnsVisible}
         pagination={pagination}
         reloadArticles={reloadArticles}
-        sortConfig={sortConfig} 
-        handleHeaderClick={handleHeaderClick} 
+        sortConfig={sortConfig}
+        handleHeaderClick={handleHeaderClick}
+        onTablePageChange={onTablePageChange}
+        extraParams={extraParams}
       />
     ),
     "horizontal-invert": (
@@ -106,8 +116,10 @@ export default function LayoutFactory({
         columnsVisible={columnsVisible}
         pagination={pagination}
         reloadArticles={reloadArticles}
-        sortConfig={sortConfig} 
-        handleHeaderClick={handleHeaderClick} 
+        sortConfig={sortConfig}
+        handleHeaderClick={handleHeaderClick}
+        onTablePageChange={onTablePageChange}
+        extraParams={extraParams}
       />
     ),
     article: (
