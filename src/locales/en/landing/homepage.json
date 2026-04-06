@@ -1,0 +1,53 @@
+{
+  "header": {
+    "about": "About",
+    "tutorials": "Tutorials",
+    "collaborators": "Collaborators",
+    "contact": "Contact",
+    "community": "Community",
+    "signUp": "Sign Up",
+    "login": "Login",
+    "welcome": "Welcome, {{name}}"
+  },
+  "herosection": {
+    "heading": "Search more, from anywhere!",
+    "text": "Boost your research! Try our free tool for systematic reviews – easy to use and perfect for researchers and students.",
+    "signUp": "Sign Up Now",
+    "alt": "Photo of different electronic devices connected to the StArt tool – desktop computer, smartphone, and tablet."
+  },
+  "about": {
+    "title": "About the tool",
+    "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi purus sem, porta a tellus eleifend, vehicula egestas quam. Quisque commodo ipsum at tortor semper, at vulputate velit fringilla. Nam tincidunt vestibulum lectus. Mauris lacinia ipsum pulvinar dui pellentesque fringilla."
+  },
+  "tutorials": {
+    "title": "Get started with StArt",
+    "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi purus sem, porta a tellus eleifend, vehicula egestas quam. Quisque commodo ipsum at tortor semper, at vulputate velit fringilla. Nam tincidunt vestibulum lectus. Mauris lacinia ipsum pulvinar dui pellentesque fringilla."
+  },
+  "collaborators": {
+    "title": "Collaborators",
+    "button": "View all collaborators"
+  },
+  "contact": {
+    "title": "Contact",
+    "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi purus sem, porta a tellus eleifend, vehicula egestas quam. Quisque commodo ipsum at tortor semper, at vulputate velit fringilla. Nam tincidunt vestibulum lectus. Mauris lacinia ipsum pulvinar dui pellentesque fringilla."
+  },
+  "community": {
+    "title": "Community",
+    "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi purus sem, porta a tellus eleifend, vehicula egestas quam. Quisque commodo ipsum at tortor semper, at vulputate velit fringilla. Nam tincidunt vestibulum lectus. Mauris lacinia ipsum pulvinar dui pellentesque fringilla."
+  },
+  "articleButton": "Learn more",
+  "affiliations": {
+    "ads_ifsp": "ADS – IFSP São Carlos",
+    "software_unb": "Software Engineering – UNB",
+    "msc_usp": "Master’s in Computer Science – USP"
+  },
+  "footer": {
+    "documents": "Documents",
+    "resources": "Resources",
+    "community": "Community",
+    "contacts": "Contacts",
+    "about": "About",
+    "suggestions": "Suggestions",
+    "socialMedia": "Social Media"
+  }
+}

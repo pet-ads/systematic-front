@@ -1,0 +1,53 @@
+{
+  "header": {
+    "about": "Sobre",
+    "tutorials": "Tutorias",
+    "collaborators": "Colaboradores",
+    "contact": "Contato",
+    "community": "Comunidade",
+    "signUp": "Cadastrar",
+    "login": "Entrar",
+    "welcome": "Bem-vindo, {{name}}"
+  },
+  "herosection": {
+    "heading": "Pesquise mais, de qualquer lugar!",
+    "text": "Potencialize suas pesquisas! Experimente nossa ferramenta gratuita para revisões sistemáticas - fácil de usar e ideal para pesquisadores e estudantes.",
+    "signUp": "Cadastre-se já",
+    "alt": "Foto de diferentes dispositivos eletronicos conectados a ferramenta StArt - computador deskot, smart phone e tablet."
+  },
+  "about": {
+    "title": "Sobre a ferramenta",
+    "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi purus sem, porta a tellus eleifend, vehicula egestas quam. Quisque commodo ipsum at tortor semper, at vulputate velit fringilla. Nam tincidunt vestibulum lectus. Mauris lacinia ipsum pulvinar dui pellentesque fringilla."
+  },
+  "tutorials": {
+    "title": "Comece a usar a StArt",
+    "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi purus sem, porta a tellus eleifend, vehicula egestas quam. Quisque commodo ipsum at tortor semper, at vulputate velit fringilla. Nam tincidunt vestibulum lectus. Mauris lacinia ipsum pulvinar dui pellentesque fringilla."
+  },
+  "collaborators": {
+    "title": "Colaboradores",
+    "button": "Veja todos os colaboradores"
+  },
+  "contact": {
+    "title": "Contato",
+    "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi purus sem, porta a tellus eleifend, vehicula egestas quam. Quisque commodo ipsum at tortor semper, at vulputate velit fringilla. Nam tincidunt vestibulum lectus. Mauris lacinia ipsum pulvinar dui pellentesque fringilla."
+  },
+  "community": {
+    "title": "Comunidade",
+    "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi purus sem, porta a tellus eleifend, vehicula egestas quam. Quisque commodo ipsum at tortor semper, at vulputate velit fringilla. Nam tincidunt vestibulum lectus. Mauris lacinia ipsum pulvinar dui pellentesque fringilla."
+  },
+  "articleButton": "Saiba mais",
+  "affiliations": {
+    "ads_ifsp": "ADS – IFSP São Carlos",
+    "software_unb": "Engenharia de Software - UNB",
+    "msc_usp": "Mestrado Ciência da Computação - USP"
+  },
+  "footer": {
+    "documents": "Documentos",
+    "resources": "Recursos",
+    "community": "Comunidade",
+    "contacts": "Contatos",
+    "about": "Sobre",
+    "suggestions": "Sugestões",
+    "socialMedia": "Redes Sociais"
+  }
+}
