@@ -142,7 +142,7 @@ export default function ComboBox({
                       fontWeight={isHighlighted ? "bold" : "normal"}
                       color={isHighlighted ? "black" : "inherit"}
                     >
-                      {option.text}
+                      {`IC-${(index + 1).toString().padStart(2, '0')}`}
                     </Text>
                   </Tooltip>
                 </Checkbox>
@@ -189,7 +189,7 @@ export default function ComboBox({
                       fontWeight={isHighlighted ? "bold" : "normal"}
                       color={isHighlighted ? "black" : "inherit"}
                     >
-                      {option.text}
+                      {`EC-${(index + 1).toString().padStart(2, '0')}`}
                     </Text>
                   </Tooltip>
                 </Checkbox>
