@@ -2,7 +2,10 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Image } from "@chakra-ui/react";
+import { Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
 import { Box, Button, Flex } from "@chakra-ui/react";
+import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 // Components
 import HomepageModal from "@features/landing/components/modals/HomepageModal/Index";
@@ -31,6 +34,7 @@ interface IHeaderProps {
 type IModal = "" | "login" | "signup" | "forgotPassword";
 
 export default function Header({ show }: IHeaderProps) {
+  const { t } = useTranslation("landing/homepage");
   enum LinkTypeEnum {
     GoToOtherPage = "GoToOtherPage",
     StayInSamePage = "StayInSamePage",
@@ -88,27 +92,27 @@ export default function Header({ show }: IHeaderProps) {
           {showLinks && (
             <Flex>
               <HeaderLink
-                text="Sobre"
+                text={t("header.about")}
                 id={"sobre"}
                 type={LinkTypeEnum.StayInSamePage}
               />
               <HeaderLink
-                text="Tutorias"
+                text={t("header.tutorials")}
                 id={"tutoriais"}
                 type={LinkTypeEnum.StayInSamePage}
               />
               <HeaderLink
-                text="Colaboradores"
+                text={t("header.collaborators")}
                 id={"colaboradores"}
                 type={LinkTypeEnum.StayInSamePage}
               />
               <HeaderLink
-                text="Contato"
+                text={t("header.contact")}
                 id={"contato"}
                 type={LinkTypeEnum.StayInSamePage}
               />
               <HeaderLink
-                text="Comunidade"
+                text={t("header.community")}
                 id={"comuinidade"}
                 type={LinkTypeEnum.StayInSamePage}
               />
@@ -118,6 +122,27 @@ export default function Header({ show }: IHeaderProps) {
         <Flex gap="5%">
           {_hasHydrated && (
             <>
+              <Menu>
+                <MenuButton
+                  as={Button}
+                  color="white"
+                  bg="#301E1A"
+                  _hover={{ bg: "white", color: "black" }}
+                  w="70px"
+                  minW="70px"
+                >
+                  🌐{i18n.language.toLowerCase()}
+                </MenuButton>
+                <MenuList w="70px" minW="70px">
+                  <MenuItem onClick={() => i18n.changeLanguage("pt")}>
+                    pt
+                  </MenuItem>
+                  <MenuItem onClick={() => i18n.changeLanguage("en")}>
+                    en
+                  </MenuItem>
+                </MenuList>
+              </Menu>
+
               {user ? (
                 <Button
                   _hover={{ color: "black", backgroundColor: "white" }}
@@ -127,7 +152,7 @@ export default function Header({ show }: IHeaderProps) {
                   }
                   onClick={() => toGo("/home")}
                 >
-                  Welcome, {user.sub}
+                  {t("header.welcome", { name: user.sub })}
                 </Button>
               ) : (
                 <>
@@ -143,7 +168,7 @@ export default function Header({ show }: IHeaderProps) {
                     }
                     onClick={handleSignUpModal}
                   >
-                    Sign Up
+                    {t("header.signUp")}
                   </Button>
                   <Button
                     _hover={{ color: "black", backgroundColor: "white" }}
@@ -157,7 +182,7 @@ export default function Header({ show }: IHeaderProps) {
                     }
                     onClick={handleLoginModal}
                   >
-                    Login
+                    {t("header.login")}
                   </Button>
                 </>
               )}

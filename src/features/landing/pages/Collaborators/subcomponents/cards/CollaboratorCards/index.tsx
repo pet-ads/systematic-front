@@ -2,6 +2,7 @@ import { Box, Flex, Image, Link, Text } from "@chakra-ui/react";
 import { Collaborator } from "mocks/collaborators";
 import { useState } from "react";
 import { FaGithub } from "react-icons/fa6";
+import { useTranslation } from "react-i18next";
 
 interface CollaboratorCardProps {
   collaborator: Collaborator;
@@ -10,6 +11,7 @@ interface CollaboratorCardProps {
 export default function CollaboratorCard({
   collaborator,
 }: CollaboratorCardProps) {
+  const { t } = useTranslation("landing/homepage")
   const withBlur = {
     filter: "blur(2px) grayscale(70%) brightness(0.5)",
     transition: "0.3s",
@@ -82,7 +84,7 @@ export default function CollaboratorCard({
 
         <Flex mt="0.5em" direction={"column"} textAlign={"center"}>
           <Text fontWeight={"bold"}>{name}</Text>
-          <Text>{filiacao}</Text>
+          <Text>{t(filiacao)}</Text>
         </Flex>
       </Flex>
     </>

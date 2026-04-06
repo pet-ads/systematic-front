@@ -1,4 +1,5 @@
 import { Flex, Text, Image, Button, Heading, Box } from "@chakra-ui/react";
+import { useTranslation } from "react-i18next";
 
 interface IArticle {
   header: string;
@@ -11,6 +12,8 @@ interface IArticle {
 }
 
 export default function Article({ header, bodyText, src, alt, imgPosition, style, id }: IArticle) {
+  const { t } = useTranslation("landing/homepage")
+
   interface CustomStyles {
     textColor: string;
     background: string;
@@ -98,7 +101,7 @@ export default function Article({ header, bodyText, src, alt, imgPosition, style
                 <Text color={styles.textColor}>{bodyText}</Text>
 
                 <Button borderRadius={"3px"} w="30%" colorScheme={styles.buttonColor}>
-                  Saiba mais
+                  {t("articleButton")}
                 </Button>
 
               </Flex>
@@ -115,7 +118,7 @@ export default function Article({ header, bodyText, src, alt, imgPosition, style
                 <Text color={styles.textColor}>{bodyText}</Text>
 
                 <Button w="30%" borderRadius={"3px"} colorScheme={styles.buttonColor}>
-                  Saiba mais
+                  {t("articleButton")}
                 </Button>
 
               </Flex>
