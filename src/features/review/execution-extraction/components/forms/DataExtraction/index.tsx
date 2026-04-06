@@ -1,4 +1,5 @@
 // External library
+import { useState, useEffect } from "react";
 import {
   Box,
   Button,
@@ -49,7 +50,29 @@ export default function DataExtraction({
     responses: questions ?? {},
     onQuestionsMutated: mutateQuestion,
   });
+  
   const hasAnyQuestion = questions && questions.extractionQuestions.length > 0;
+
+  
+  const [initialQuestions, setInitialQuestions] = useState(questions);
+
+  
+  useEffect(() => {
+    setInitialQuestions(questions);
+  }, [currentId]);
+
+  
+  const isModified = JSON.stringify(initialQuestions) !== JSON.stringify(questions);
+
+  
+  const handleFormSubmit = async () => {
+    if (!isModified) return; 
+    
+    await submitResponses();
+    
+    
+    setInitialQuestions(questions);
+  };
 
   return (
     <FormControl
@@ -153,8 +176,9 @@ export default function DataExtraction({
         <Flex w="100%" justifyContent="flex-end" p="1.25rem 2rem" mt="1.5rem">
           <Button
             leftIcon={<BsSend fontSize="1rem" />}
-            type="submit"
-            onClick={submitResponses}
+            type="button" 
+            onClick={handleFormSubmit}
+            isDisabled={!isModified} 
             bg="black"
             color="white"
             _hover={{ bg: "gray.800" }}
