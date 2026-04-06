@@ -14,12 +14,11 @@ import { flexStyles, contentGridStyles } from "./styles";
 
 // Types
 interface iFlexLayout {
-  navigationType?: string; 
+  navigationType: string;
   children: React.ReactNode;
 }
 
-
-export default function FlexLayout({ children }: iFlexLayout) {
+export default function FlexLayout({ navigationType, children }: iFlexLayout) {
   const context = useContext(AppContext);
 
   if (!context) {
@@ -44,7 +43,7 @@ export default function FlexLayout({ children }: iFlexLayout) {
         overflow: "hidden", 
       }}
     >
-      <Sidebar/>
+      <Sidebar type={navigationType} />
       <Box
         sx={{
           ...contentGridStyles,

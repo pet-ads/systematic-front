@@ -1,21 +1,10 @@
 // External library
-import { useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom"; 
-import { 
-  Box, 
-  Flex, 
-  Accordion, 
-  AccordionItem, 
-  AccordionButton, 
-  AccordionPanel, 
-  AccordionIcon, 
-  Icon, 
-  Text,
-  Tooltip
-} from "@chakra-ui/react";
-import { FiPlusCircle, FiHome, FiUser, FiLogOut } from "react-icons/fi"; 
+import { useNavigate } from "react-router-dom";
+import { Box, Flex, Icon, Tooltip } from "@chakra-ui/react";
+import { FiHome, FiUser, FiLogOut } from "react-icons/fi";
 
 // Components
+import NavItem from "./subComponents/NavItem";
 import AccordionComponent from "./subComponents/Accordion/AccordionComponent";
 
 // Hooks
@@ -25,23 +14,15 @@ import { useNavigation } from "@features/shared/hooks/useNavigation";
 // Styles
 import Styles from "./Sidebar.module.css";
 
-const Navigation = () => {
-  const location = useLocation();
+// Types
+interface Props {
+  type: string;
+}
+
+const Navigation = ({ type }: Props) => {
   const navigate = useNavigate();
   const { logout } = useAuthStore();
   const { toGo } = useNavigation();
-  const isExistingReview = location.pathname.includes("/review") && !!localStorage.getItem("systematicReviewId");
-  const [openIndex, setOpenIndex] = useState(
-    location.pathname.includes("/review") ? 0 : -1
-  );
-
-  useEffect(() => {
-    if (location.pathname.includes("/review")) {
-      setOpenIndex(0);
-    } else {
-      setOpenIndex(-1); 
-    }
-  }, [location.pathname]);
 
   const handleLogout = async () => {
     await logout();
@@ -49,50 +30,25 @@ const Navigation = () => {
   };
 
   return (
-    <Flex 
-      direction="column" 
-      h="calc(100vh - 80px)"
-      w="100%" 
-      className={Styles.navDiv}
-    >
-      <Box w="100%" flex="1" overflowY="auto">
-        <Accordion 
-          allowToggle 
-          border="none" 
-          mt={0} 
-          w="100%"
-          index={openIndex} 
-          onChange={(index) => setOpenIndex(index as number)}
-        >
-          <AccordionItem border="none">
-            <AccordionButton 
-              _hover={{ bg: "#f7fafc" }}
-              _focus={{ boxShadow: "none", outline: "none" }}
-              padding="10px 16px"
-              borderLeft="4px solid transparent" 
-              display="flex"
-              alignItems="center"
-              width="100%"
-              onClick={() => {
-                if (!location.pathname.includes("/review/planning/protocol/general-definition")) {
-                  navigate("/review/planning/protocol/general-definition");
-                }
-              }}
-            >
-              <Icon as={FiPlusCircle} boxSize="20px" mr="12px" color="#4A4A4A" />
-              <Text fontWeight="500" color="#4A4A4A" flex="1" textAlign="left" m="0">
-                {isExistingReview ? "Review" : "New Review"}
-              </Text>
-              <AccordionIcon color="#4A4A4A" />
-            </AccordionButton>
-
-            <AccordionPanel pb={4} px={0} pt={0}>
-              <AccordionComponent />
-            </AccordionPanel>
-          </AccordionItem>
-        </Accordion>
+    <Flex direction="column" justifyContent="space-between" height="calc(100vh - 80px)">
+      
+     
+      <Box flex="1" overflowY="auto">
+        {type === "Default" ? (
+          <Box className={Styles.navDiv}>
+            <NavItem
+              to="/review/planning/protocol/general-definition"
+              text="New Review"
+            />
+          </Box>
+        ) : (
+          <Box className={Styles.accordionNavDiv}>
+            <AccordionComponent />
+          </Box>
+        )}
       </Box>
 
+      
       <Flex 
         mt="auto"
         direction="row" 
@@ -121,6 +77,7 @@ const Navigation = () => {
           </Box>
         </Tooltip>
       </Flex>
+      
     </Flex>
   );
 };

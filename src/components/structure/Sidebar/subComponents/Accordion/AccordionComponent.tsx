@@ -158,7 +158,7 @@ const AccordionComponent = () => {
             </AccordionButton>
           </h2>
           
-          <AccordionPanel paddingInlineEnd={0} paddingLeft="48px" pb={2} pt={1}>
+          <AccordionPanel paddingInlineEnd={0} paddingLeft="24px" pb={2} pt={1}>
             {children.map((child) => (
               <ProtocolAccordionSubItem
                 key={child.path}
