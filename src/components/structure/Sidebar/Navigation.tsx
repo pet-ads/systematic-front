@@ -1,19 +1,8 @@
 // External library
-import { useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom"; 
-import { 
-  Box, 
-  Flex, 
-  Accordion, 
-  AccordionItem, 
-  AccordionButton, 
-  AccordionPanel, 
-  AccordionIcon, 
-  Icon, 
-  Text,
-  Tooltip
-} from "@chakra-ui/react";
-import { FiPlusCircle, FiHome, FiUser, FiLogOut } from "react-icons/fi"; 
+import { useNavigate } from "react-router-dom";
+import { Box, Flex, Icon, Tooltip } from "@chakra-ui/react";
+// Adicionei o FiPlusCircle para manter o mesmo padrão de ícones da linha de baixo
+import { FiHome, FiUser, FiLogOut, FiPlusCircle } from "react-icons/fi";
 
 // Components
 import AccordionComponent from "./subComponents/Accordion/AccordionComponent";
@@ -25,23 +14,15 @@ import { useNavigation } from "@features/shared/hooks/useNavigation";
 // Styles
 import Styles from "./Sidebar.module.css";
 
-const Navigation = () => {
-  const location = useLocation();
+// Types
+interface Props {
+  type: string;
+}
+
+const Navigation = ({ type }: Props) => {
   const navigate = useNavigate();
   const { logout } = useAuthStore();
   const { toGo } = useNavigation();
-  const isExistingReview = location.pathname.includes("/review") && !!localStorage.getItem("systematicReviewId");
-  const [openIndex, setOpenIndex] = useState(
-    location.pathname.includes("/review") ? 0 : -1
-  );
-
-  useEffect(() => {
-    if (location.pathname.includes("/review")) {
-      setOpenIndex(0);
-    } else {
-      setOpenIndex(-1); 
-    }
-  }, [location.pathname]);
 
   const handleLogout = async () => {
     await logout();
@@ -49,75 +30,81 @@ const Navigation = () => {
   };
 
   return (
-    <Flex 
-      direction="column" 
-      h="calc(100vh - 80px)"
-      w="100%" 
-      className={Styles.navDiv}
+    <Flex
+      direction="column"
+      justifyContent="space-between"
+      height="calc(100vh - 80px)"
     >
-      <Box w="100%" flex="1" overflowY="auto">
-        <Accordion 
-          allowToggle 
-          border="none" 
-          mt={0} 
-          w="100%"
-          index={openIndex} 
-          onChange={(index) => setOpenIndex(index as number)}
-        >
-          <AccordionItem border="none">
-            <AccordionButton 
-              _hover={{ bg: "#f7fafc" }}
-              _focus={{ boxShadow: "none", outline: "none" }}
-              padding="10px 16px"
-              borderLeft="4px solid transparent" 
-              display="flex"
+      <Box flex="1" overflowY="auto">
+        {type === "Default" ? (
+          <Box className={Styles.accordionNavDiv}>
+            <Flex
+              onClick={() =>
+                navigate("/review/planning/protocol/general-definition")
+              }
+              cursor="pointer"
+              w="80%"
+              p=".5rem"
               alignItems="center"
-              width="100%"
-              onClick={() => {
-                if (!location.pathname.includes("/review/planning/protocol/general-definition")) {
-                  navigate("/review/planning/protocol/general-definition");
-                }
-              }}
+              gap=".5rem"
+              borderRadius=".25rem"
+              color="black"
+              fontWeight="light"
+              _hover={{ bg: "#eeeeee" }}
             >
-              <Icon as={FiPlusCircle} boxSize="20px" mr="12px" color="#4A4A4A" />
-              <Text fontWeight="500" color="#4A4A4A" flex="1" textAlign="left" m="0">
-                {isExistingReview ? "Review" : "New Review"}
-              </Text>
-              <AccordionIcon color="#4A4A4A" />
-            </AccordionButton>
-
-            <AccordionPanel pb={4} px={0} pt={0}>
-              <AccordionComponent />
-            </AccordionPanel>
-          </AccordionItem>
-        </Accordion>
+              <Icon as={FiPlusCircle} boxSize="1.25rem" />
+              <Box as="span" fontSize="1rem">
+                New Review
+              </Box>
+            </Flex>
+          </Box>
+        ) : (
+          <Box className={Styles.accordionNavDiv}>
+            <AccordionComponent />
+          </Box>
+        )}
       </Box>
 
-      <Flex 
+      <Flex
         mt="auto"
-        direction="row" 
-        justifyContent="space-evenly" 
-        alignItems="center" 
-        pb={6} 
+        direction="row"
+        justifyContent="space-evenly"
+        alignItems="center"
+        pb={6}
         pt={4}
         w="100%"
         borderTop="1px solid #E2E8F0"
       >
         <Tooltip label="Home" placement="top">
           <Box cursor="pointer" onClick={() => navigate("/home")}>
-            <Icon as={FiHome} boxSize="24px" color="#4A4A4A" _hover={{ color: "#3182ce" }} />
+            <Icon
+              as={FiHome}
+              boxSize="24px"
+              color="#4A4A4A"
+              _hover={{ color: "#3182ce" }}
+            />
           </Box>
         </Tooltip>
 
         <Tooltip label="Profile" placement="top">
           <Box cursor="pointer" onClick={() => navigate("/profile")}>
-            <Icon as={FiUser} boxSize="24px" color="#4A4A4A" _hover={{ color: "#3182ce" }} />
+            <Icon
+              as={FiUser}
+              boxSize="24px"
+              color="#4A4A4A"
+              _hover={{ color: "#3182ce" }}
+            />
           </Box>
         </Tooltip>
 
         <Tooltip label="Logout" placement="top">
           <Box cursor="pointer" onClick={handleLogout}>
-            <Icon as={FiLogOut} boxSize="24px" color="red.500" _hover={{ color: "red.700" }} />
+            <Icon
+              as={FiLogOut}
+              boxSize="24px"
+              color="red.500"
+              _hover={{ color: "red.700" }}
+            />
           </Box>
         </Tooltip>
       </Flex>
