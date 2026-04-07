@@ -35,9 +35,10 @@ interface Props {
   show: Dispatch<SetStateAction<boolean>>;
   questionHolder: React.Dispatch<React.SetStateAction<Record<string, number>>>;
   questions: Record<string, number>;
+  onSave: () => void;
 }
 
-export default function LabeledScaleModal({ show, questionHolder, questions }: Props) {
+export default function LabeledScaleModal({ show, questionHolder, questions, onSave }: Props) {
   const { isOpen, onClose, onOpen } = useDisclosure();
 
   const [localQuestions, setLocalQuestions] = useState<Record<string, number>>({});
@@ -57,6 +58,7 @@ export default function LabeledScaleModal({ show, questionHolder, questions }: P
   }, [onOpen, questions]);
 
   function close() {
+    onSave();
     show(false);
     onClose();
   }

@@ -143,6 +143,7 @@ export default function InteractiveTable({ id, url, label }: Props) {
     fetch();
   }, [id, url, adress, setRows]);
 
+
   function handleSelect(index: number, newValue: string) {
     handleTypeChange(index, newValue);
     if (newValue !== "") {
@@ -151,9 +152,11 @@ export default function InteractiveTable({ id, url, label }: Props) {
     }
   }
 
-  async function handleSaveEdit(index: number) {
+  async function handleSaveEdit(index: number, closeEditMode: boolean = true) {
     if (!validator({ value: rows[index].question })) {
       return;
+
+
     }
 
     if (String(rows[index].id).trim() === "") {
@@ -232,7 +235,15 @@ export default function InteractiveTable({ id, url, label }: Props) {
       if (isNew && newQuestionId) {
         handleServerSend(index, newQuestionId);
       }
-      setEditIndex(null);
+
+      const accessToken = localStorage.getItem("accessToken");
+      let optionsReq = { headers: { Authorization: `Bearer ${accessToken}` } };
+      await Axios.get(`systematic-study/${id}/protocol/extraction-question`, optionsReq);
+
+      if (closeEditMode) {
+        setEditIndex(null);
+      }
+      
     } catch (error) {
       console.error("Failed to save question:", error);
     }
@@ -279,6 +290,7 @@ export default function InteractiveTable({ id, url, label }: Props) {
 
     addRow(setEditIndex, setQuestions);
     setPickManyQuestions([]);
+
 
     setRows((prevRows) => {
       const newRows = [...prevRows];
@@ -393,9 +405,13 @@ export default function InteractiveTable({ id, url, label }: Props) {
             itemType={row.type}
             index={index}
             editIndex={editIndex}
-            handleEdit={() => {
-              setnumberScale([row.lower || 1, row.higher || 5]);
-              setQuestions(row.questions || []);
+
+            handleEdit={async () => {
+              if (editIndex !== null && editIndex !== index) {
+                await handleSaveEdit(editIndex, true);
+              }
+              setnumberScale([row.lower || 1, row.higher || 5]); 
+              setQuestions(row.questions || []); 
               setLabeledQuestions(row.scale || {});
               setEditIndex(index);
               setPickManyQuestions(row.questions || []);
@@ -403,7 +419,7 @@ export default function InteractiveTable({ id, url, label }: Props) {
               setModalType(row.type);
             }}
             handleSaveEdit={async () => {
-              handleSaveEdit(index);
+              handleSaveEdit(index, true);
             }}
           />
         </div>
@@ -448,6 +464,9 @@ export default function InteractiveTable({ id, url, label }: Props) {
           show={setShowModal}
           questionHolder={setQuestions}
           questions={questions}
+          onSave={() => {
+            if (editIndex !== null) handleSaveEdit(editIndex, false);
+          }}
         />
       )}
 
@@ -456,6 +475,9 @@ export default function InteractiveTable({ id, url, label }: Props) {
           show={setShowModal}
           scaleHolder={setnumberScale}
           values={numberScale}
+          onSave={() => {
+            if (editIndex !== null) handleSaveEdit(editIndex, false);
+          }}
         />
       )}
 
@@ -464,6 +486,9 @@ export default function InteractiveTable({ id, url, label }: Props) {
           show={setShowModal}
           questionHolder={setLabeledQuestions}
           questions={labeledQuestions}
+          onSave={() => {
+            if (editIndex !== null) handleSaveEdit(editIndex, false);
+          }}
         />
       )}
 
@@ -472,6 +497,9 @@ export default function InteractiveTable({ id, url, label }: Props) {
           show={setShowModal}
           optionHolder={setPickManyQuestions}
           options={pickManyQuestions}
+          onSave={() => {
+            if (editIndex !== null) handleSaveEdit(editIndex, false);
+          }}
         />
       )}
     </div>

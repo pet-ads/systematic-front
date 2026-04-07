@@ -46,13 +46,7 @@ const SessionPrev = ({
 
   const getDataCurrent = (): string => {
     const date = new Date(timestamp);
-    const day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate();
-    const month =
-      date.getMonth() < 9
-        ? `0${date.getMonth() + 1}`
-        : `${date.getMonth() + 1}`;
-    const year = `${date.getFullYear()}`;
-    return `${month}/${day}/${year}`;
+    return date.toLocaleDateString();
   };
 
   const hasErrorsBySessionId = (id: string) => {

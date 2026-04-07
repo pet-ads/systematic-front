@@ -35,9 +35,10 @@ interface Props {
   show: Dispatch<SetStateAction<boolean>>;
   optionHolder: React.Dispatch<React.SetStateAction<string[]>>;
   options: string[];
+  onSave: () => void;
 }
 
-export default function PickManyModal({ show, optionHolder, options }: Props) {
+export default function PickManyModal({ show, optionHolder, options, onSave }: Props) {
   const { isOpen, onClose, onOpen } = useDisclosure();
 
   const [newOption, setNewOption] = useState("");
@@ -50,6 +51,7 @@ export default function PickManyModal({ show, optionHolder, options }: Props) {
   }, [onOpen]);
 
   function close() {
+    onSave();
     show(false);
     onClose();
   }
