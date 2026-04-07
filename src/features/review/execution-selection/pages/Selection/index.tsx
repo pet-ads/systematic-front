@@ -32,10 +32,10 @@ export default function Selection() {
   const [showSelected, setShowSelected] = useState<boolean>(false);
   const [fetchedTotalPages, setFetchedTotalPages] = useState<number>(1);
   const selectionContext = useContext(StudySelectionContext);
-  
+
   const { value: selectedStatus, handleChange: handleSelectChange } =
     useInputState<string | null>(null);
-    
+
   const { layout, handleChangeLayout } = useLayoutPage();
   const { columnsVisible, toggleColumnVisibility } = useVisibiltyColumns({
     page: "Selection",
@@ -62,7 +62,6 @@ export default function Selection() {
     setSize: selectionContext?.setSize,
   });
 
-
   const handleHeaderClick = (key: keyof ArticleInterface) => {
     setSortConfig((prev) => {
       if (prev?.key === key) {
@@ -70,7 +69,7 @@ export default function Selection() {
       }
       return { key, direction: "asc" };
     });
-    setCurrentPage(1); 
+    setCurrentPage(1);
   };
 
   const { articles, isLoading, totalElements, totalPages, mutate } =
@@ -79,7 +78,7 @@ export default function Selection() {
       size: itensPerPage,
       search: searchString,
       status: selectedStatus,
-      sortConfig, 
+      sortConfig,
     });
 
   if (totalPages && totalPages !== fetchedTotalPages) {
@@ -97,6 +96,10 @@ export default function Selection() {
     }
     return articles;
   }, [showSelected, articles, safeSelectedArticles]);
+
+  const handleTablePageChange = (page: number) => {
+    setCurrentPage(page + 1);
+  };
 
   return (
     <FlexLayout navigationType="Accordion">
@@ -165,6 +168,7 @@ export default function Selection() {
           reloadArticles={mutate}
           sortConfig={sortConfig}
           handleHeaderClick={handleHeaderClick}
+          onTablePageChange={handleTablePageChange}
           pagination={{
             currentPage,
             itensPerPage,

@@ -50,7 +50,7 @@ export default function Extraction() {
   const {
     currentPage,
     itensPerPage,
-    setCurrentPage, 
+    setCurrentPage,
     handleNextPage,
     handlePrevPage,
     handleBackToInitial,
@@ -65,7 +65,7 @@ export default function Extraction() {
       }
       return { key, direction: "asc" };
     });
-    setCurrentPage(1); 
+    setCurrentPage(1);
   };
 
   const { articles, isLoading, totalElements, totalPages, mutate } =
@@ -92,6 +92,10 @@ export default function Extraction() {
     }
     return articles;
   }, [showSelected, articles, safeSelectedArticles]);
+
+  const handleTablePageChange = (page: number) => {
+    setCurrentPage(page + 1);
+  };
 
   return (
     <FlexLayout navigationType="Accordion">
@@ -171,6 +175,8 @@ export default function Extraction() {
           reloadArticles={mutate}
           sortConfig={sortConfig}
           handleHeaderClick={handleHeaderClick}
+          onTablePageChange={handleTablePageChange}
+          extraParams={{ selectionStatus: "INCLUDED" }}
         />
       </Box>
     </FlexLayout>

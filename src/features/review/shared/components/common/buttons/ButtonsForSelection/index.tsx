@@ -22,11 +22,7 @@ import { boxconteiner, buttonconteiner, conteiner } from "./styles";
 import ArticleInterface from "../../../../types/ArticleInterface";
 import { StudyInterface } from "../../../../types/IStudy";
 import { PageLayout } from "../../../structure/LayoutFactory";
-
-import type {
-  OptionProps,
-  OptionType,
-} from "../../../../services/useFetchAllCriteriasByArticle";
+import type { OptionProps, OptionType } from "../../../../services/useFetchAllCriteriasByArticle";
 import { SelectionArticles } from "@features/review/execution-selection/services/useFetchSelectionArticles";
 import { KeyedMutator } from "swr";
 
@@ -36,7 +32,20 @@ interface ButtonsForSelectionProps {
   articleIndex: number;
   setSelectedArticleReview: React.Dispatch<React.SetStateAction<number>>;
   reloadArticles: KeyedMutator<SelectionArticles>;
+  isLastPage: boolean;
+  isFirstPage: boolean;
+  onFetchNextPage: () => Promise<ArticleInterface[]>;
+  onFetchPrevPage: () => Promise<ArticleInterface[]>;
+  onWrapToLast: () => Promise<ArticleInterface[]>;
+  onWrapToFirst: () => ArticleInterface[];
 }
+
+type ComboBoxGroup = {
+  label: string;
+  description: string;
+  options: OptionProps[];
+  isDisabled: boolean;
+};
 
 export default function ButtonsForSelection({
   page,
@@ -44,11 +53,14 @@ export default function ButtonsForSelection({
   articleIndex,
   setSelectedArticleReview,
   reloadArticles,
+  isLastPage,
+  isFirstPage,
+  onFetchNextPage,
+  onFetchPrevPage,
+  onWrapToLast,
+  onWrapToFirst,
 }: ButtonsForSelectionProps) {
-  const { handleResetStatusToUnclassified } = useResetStatus({
-    page,
-    reloadArticles,
-  });
+  const { handleResetStatusToUnclassified } = useResetStatus({ page, reloadArticles });
   const { handleChangePriority } = useChangePriority({ reloadArticles });
 
   const currentArticle = articles[articleIndex];
@@ -76,11 +88,8 @@ export default function ButtonsForSelection({
 
   const handleFullReset = async () => {
     if (!currentArticleId) return;
-
     await handleResetStatusToUnclassified(currentArticleId, historicalCriteria);
-
     resetLocalCriterias();
-
     if (page === "Selection") {
       setHistoricalCriteria([]);
     }
@@ -95,10 +104,7 @@ export default function ButtonsForSelection({
 
   const criteriaOptions = fetchedCriterias.options;
 
-  const criteriaGroupDataMap: Record<
-    OptionType,
-    { data: OptionProps[]; isActive: boolean }
-  > = {
+  const criteriaGroupDataMap: Record<OptionType, { data: OptionProps[]; isActive: boolean }> = {
     INCLUSION: {
       data: criteriaOptions.INCLUSION.content,
       isActive: criteriaOptions.INCLUSION.isActive,
@@ -109,69 +115,80 @@ export default function ButtonsForSelection({
     },
   };
 
-  if (!criteriaGroupDataMap["INCLUSION"] || !criteriaGroupDataMap["EXCLUSION"])
-    return null;
+  if (!criteriaGroupDataMap["INCLUSION"] || !criteriaGroupDataMap["EXCLUSION"]) return null;
 
   const isInclusionActive = criteriaOptions.INCLUSION.isActive;
   const isExclusionActive = criteriaOptions.EXCLUSION.isActive;
+  const isUniqueArticle = articles.length === 1;
 
-  const isUniqueArticle = articles.length == 1 ? true : false;
+  async function goToNextArticle() {
+    const isLastArticleOnPage = articleIndex === articles.length - 1;
 
-  function goToNextArticle() {
-    const nextIndex = (articleIndex + 1) % articles.length;
-    const nextArticle = articles[nextIndex];
-    const nextId = getArticleId(nextArticle) as number;
-    setSelectedArticleReview(nextId);
-  }
-
-  function goToPreviousArticle() {
-    const prevIndex = (articleIndex - 1 + articles.length) % articles.length;
-    const prevArticle = articles[prevIndex];
-    const prevId = getArticleId(prevArticle) as number;
-    setSelectedArticleReview(prevId);
-  }
-
-  const comboBoxGroups: Record<
-    OptionType,
-    {
-      label: string;
-      description: string;
-      options: OptionProps[];
-      isDisabled: boolean;
+    if (isLastArticleOnPage && !isLastPage) {
+      const nextPageArticles = await onFetchNextPage();
+      if (nextPageArticles.length > 0) {
+        setSelectedArticleReview(getArticleId(nextPageArticles[0]) as number);
+      }
+      return;
     }
-  > = {
+
+    if (isLastArticleOnPage && isLastPage) {
+      const firstPageArticles = onWrapToFirst();
+      if (firstPageArticles.length > 0) {
+        setSelectedArticleReview(getArticleId(firstPageArticles[0]) as number);
+      }
+      return;
+    }
+
+    const nextIndex = (articleIndex + 1) % articles.length;
+    setSelectedArticleReview(getArticleId(articles[nextIndex]) as number);
+  }
+
+  async function goToPreviousArticle() {
+    const isFirstArticleOnPage = articleIndex === 0;
+
+    if (isFirstArticleOnPage && !isFirstPage) {
+      const prevPageArticles = await onFetchPrevPage();
+      if (prevPageArticles.length > 0) {
+        const last = prevPageArticles[prevPageArticles.length - 1];
+        setSelectedArticleReview(getArticleId(last) as number);
+      }
+      return;
+    }
+
+    if (isFirstArticleOnPage && isFirstPage) {
+      const lastPageArticles = await onWrapToLast();
+      if (lastPageArticles.length > 0) {
+        const last = lastPageArticles[lastPageArticles.length - 1];
+        setSelectedArticleReview(getArticleId(last) as number);
+      }
+      return;
+    }
+
+    const prevIndex = (articleIndex - 1 + articles.length) % articles.length;
+    setSelectedArticleReview(getArticleId(articles[prevIndex]) as number);
+  }
+
+  const comboBoxGroups: Record<OptionType, ComboBoxGroup> = {
     INCLUSION: {
       label: "Include",
       description: "Add inclusion criteria",
-      isDisabled:
-        criteriaGroupDataMap["INCLUSION"].data.length === 0 ||
-        isExclusionActive,
-      options: criteriaGroupDataMap["INCLUSION"].data || [],
+      isDisabled: criteriaGroupDataMap["INCLUSION"].data.length === 0 || isExclusionActive,
+      options: criteriaGroupDataMap["INCLUSION"].data,
     },
     EXCLUSION: {
       label: "Exclude",
       description: "Add exclusion criteria",
-      isDisabled:
-        criteriaGroupDataMap["EXCLUSION"].data.length === 0 ||
-        isInclusionActive,
-      options: criteriaGroupDataMap["EXCLUSION"].data || [],
+      isDisabled: criteriaGroupDataMap["EXCLUSION"].data.length === 0 || isInclusionActive,
+      options: criteriaGroupDataMap["EXCLUSION"].data,
     },
   };
 
   return (
-    <Flex
-      sx={conteiner}
-      justifyContent={isUniqueArticle ? "center" : "space-between"}
-    >
-      {isUniqueArticle ? null : (
+    <Flex sx={conteiner} justifyContent={isUniqueArticle ? "center" : "space-between"}>
+      {!isUniqueArticle && (
         <Flex sx={buttonconteiner}>
-          <Tooltip
-            label="Previous article"
-            placement="top"
-            hasArrow
-            p=".5rem"
-            borderRadius=".25rem"
-          >
+          <Tooltip label="Previous article" placement="top" hasArrow p=".5rem" borderRadius=".25rem">
             <Box style={{ display: "inline-block" }}>
               <IoIosArrowBack
                 color="black"
@@ -183,8 +200,9 @@ export default function ButtonsForSelection({
           </Tooltip>
         </Flex>
       )}
+
       <Flex sx={boxconteiner}>
-        {Object.entries(comboBoxGroups).map(([groupKey, group]) => (
+        {(Object.entries(comboBoxGroups) as [OptionType, ComboBoxGroup][]).map(([groupKey, group]) => (
           <Tooltip
             key={groupKey}
             label={group.description}
@@ -198,58 +216,37 @@ export default function ButtonsForSelection({
                 page={page}
                 text={group.label}
                 status={currentArticleStatus}
-                groupKey={groupKey as OptionType}
+                groupKey={groupKey}
                 options={group.options}
                 isDisabled={group.isDisabled}
-                handlerUpdateCriteriasStructure={
-                  handlerUpdateCriteriasStructure
-                }
+                handlerUpdateCriteriasStructure={handlerUpdateCriteriasStructure}
                 reloadArticles={reloadArticles}
                 selectedCriteria={historicalCriteria}
               />
             </Box>
           </Tooltip>
         ))}
-        <Tooltip
-          label="Reset article"
-          placement="top"
-          hasArrow
-          p=".5rem"
-          borderRadius=".25rem"
-        >
+
+        <Tooltip label="Reset article" placement="top" hasArrow p=".5rem" borderRadius=".25rem">
           <Button color="black" bg="white" p="1rem" onClick={handleFullReset}>
             <RiResetLeftLine color="black" size="1.5rem" />
           </Button>
         </Tooltip>
 
-        <Tooltip
-          label="Select reading priority"
-          placement="top"
-          hasArrow
-          p=".5rem"
-          borderRadius=".25rem"
-        >
+        <Tooltip label="Select reading priority" placement="top" hasArrow p=".5rem" borderRadius=".25rem">
           <Box style={{ display: "inline-block" }}>
             <MenuOptions
               options={["Very Low", "Low", "High", "Very High"]}
-              onOptionToggle={(option) =>
-                handleChangePriority({ status: option })
-              }
+              onOptionToggle={(option) => handleChangePriority({ status: option })}
               icon={<MdOutlineLowPriority color="black" size="1.75rem" />}
             />
           </Box>
         </Tooltip>
       </Flex>
 
-      {isUniqueArticle ? null : (
+      {!isUniqueArticle && (
         <Flex sx={buttonconteiner}>
-          <Tooltip
-            label="Next article"
-            placement="top"
-            hasArrow
-            p=".5rem"
-            borderRadius=".25rem"
-          >
+          <Tooltip label="Next article" placement="top" hasArrow p=".5rem" borderRadius=".25rem">
             <Box style={{ display: "inline-block" }}>
               <IoIosArrowForward
                 color="black"
