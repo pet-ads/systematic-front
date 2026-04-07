@@ -10,12 +10,12 @@ import {
 import { useMemo, useState, useEffect } from "react";
 import { MdRule } from "react-icons/md";
 import { LuFileSearch, LuFileCheck2 } from "react-icons/lu";
+import { useLocation } from "react-router-dom";
 
 // Components
 import ProtocolAccordionSubItem from "./AccordionNavItem";
 
 // Hooks
-import useActiveSection from "@features/shared/hooks/useActiveSection";
 import useStructureReview from "@features/review/planning-protocol/services/useStructureReview";
 
 // Types
@@ -25,15 +25,25 @@ type AccordionSection = "Planning" | "Execution" | "Summarization";
 const hasShowOcultScreens = false;
 
 const sectionIcons: Record<AccordionSection, React.ReactNode> = {
-  Planning: <MdRule size="20px" />,
-  Execution: <LuFileSearch size="20px" />,
-  Summarization: <LuFileCheck2 size="20px" />,
+  Planning: <MdRule size="1.25rem" color="black" />,
+  Execution: <LuFileSearch size="1.1rem" color="black" />,
+  Summarization: <LuFileCheck2 size="1rem" color="black" />,
 };
 
 const AccordionComponent = () => {
   const id = localStorage.getItem("systematicReviewId");
-  const { activeSection } = useActiveSection();
   const { generalDefinition, isLoading } = useStructureReview();
+
+  const location = useLocation();
+
+  let currentParentSection = "";
+  if (location.pathname.includes("/planning")) {
+    currentParentSection = "Planning";
+  } else if (location.pathname.includes("/execution")) {
+    currentParentSection = "Execution";
+  } else if (location.pathname.includes("/summarization")) {
+    currentParentSection = "Summarization";
+  }
 
   const sectionToIndex: Record<string, number> = {
     Planning: 0,
@@ -50,7 +60,7 @@ const AccordionComponent = () => {
         return [];
       }
     }
-    const initial = sectionToIndex[activeSection as string];
+    const initial = sectionToIndex[currentParentSection];
     return initial !== undefined ? [initial] : [];
   });
 
@@ -59,7 +69,7 @@ const AccordionComponent = () => {
   }, [localIndex]);
 
   useEffect(() => {
-    const newIndex = sectionToIndex[activeSection as string];
+    const newIndex = sectionToIndex[currentParentSection];
     if (newIndex !== undefined) {
       setLocalIndex((prev) => {
         if (!prev.includes(newIndex)) {
@@ -68,7 +78,7 @@ const AccordionComponent = () => {
         return prev;
       });
     }
-  }, [activeSection]);
+  }, [currentParentSection]);
 
   const titleIsFilled = !!generalDefinition?.title?.trim();
 
@@ -131,25 +141,30 @@ const AccordionComponent = () => {
   );
 
   return (
-    <Accordion w="80%" allowMultiple index={localIndex} onChange={(newIndex) => setLocalIndex(newIndex as number[])}>
+    <Accordion
+      w="80%"
+      allowMultiple
+      index={localIndex}
+      onChange={(newIndex) => setLocalIndex(newIndex as number[])}
+    >
       {Object.entries(sections).map(([section, children]) => (
         <AccordionItem key={section} border="none">
           <h2>
             <AccordionButton
-              py="5px" 
-              px="30px"
-              fontWeight={activeSection === section ? "bold" : "light"}
-              bg={activeSection === section ? "#dadada" : "transparent"}
+              p=".5rem"
+              // Usamos a nossa variável baseada na URL para garantir a cor correta
+              fontWeight={currentParentSection === section ? "bold" : "light"}
+              bg={currentParentSection === section ? "#dadada" : "transparent"}
               borderRadius=".25rem"
               _hover={{ bg: "#eeeeee" }}
             >
               <Box
+                color="black"
                 as="span"
                 flex="1"
                 textAlign="left"
                 display="flex"
-                alignItems="center"
-                gap="12px" 
+                gap=".5rem"
               >
                 {sectionIcons[section as AccordionSection]}
                 {section}
@@ -157,14 +172,16 @@ const AccordionComponent = () => {
               <AccordionIcon />
             </AccordionButton>
           </h2>
-          
-          <AccordionPanel paddingInlineEnd={0} paddingLeft="24px" pb={2} pt={1}>
+
+          <AccordionPanel paddingInlineEnd={0}>
             {children.map((child) => (
               <ProtocolAccordionSubItem
                 key={child.path}
                 to={child.path}
                 text={child.label}
-                disabled={!isLoading && !titleIsFilled && child.label !== "Definition"}
+                disabled={
+                  !isLoading && !titleIsFilled && child.label !== "Definition"
+                }
               />
             ))}
           </AccordionPanel>
