@@ -5,8 +5,11 @@ import { FaInstagram } from "react-icons/fa";
 import { FaYoutube } from "react-icons/fa6";
 import { FaWhatsapp } from "react-icons/fa6";
 import Logo from "../../../../../../assets/images/logos/startwhite.png";
+import { useTranslation } from "react-i18next";
 
 export default function Footer() {
+  const { t } = useTranslation("landing/homepage")
+  
   return (
     <Flex
       bg="#301E1A"
@@ -25,9 +28,9 @@ export default function Footer() {
           <Divider orientation="vertical" />
           <Flex flexDir="column" gap={2.5}>
             {" "}
-            <Text>Documentos</Text>
-            <Text>Recursos</Text>
-            <Text>Comunidade</Text>
+            <Text>{t("footer.documents")}</Text>
+            <Text>{t("footer.resources")}</Text>
+            <Text>{t("footer.community")}</Text>
           </Flex>
         </Stack>
       </Box>
@@ -36,9 +39,9 @@ export default function Footer() {
           <Divider orientation="vertical" />
           <Flex flexDir="column" gap={2.5}>
             {" "}
-            <Text>Contatos</Text>
-            <Text>Sobre</Text>
-            <Text>Sugestões</Text>
+            <Text>{t("footer.contacts")}</Text>
+            <Text>{t("footer.about")}</Text>
+            <Text>{t("footer.suggestions")}</Text>
           </Flex>
         </Stack>
       </Box>
@@ -51,7 +54,7 @@ export default function Footer() {
             justifyContent={"space-between"}
             gap={10}
           >
-            <Text>Redes Sociais</Text>
+            <Text>{t("footer.socialMedia")}</Text>
             <Box
               display={"flex"}
               flexDir={"row"}

@@ -1,4 +1,5 @@
 import { Box, Flex } from "@chakra-ui/react";
+import { useTranslation } from "react-i18next";
 
 import Footer from "./subcomponents/Footer";
 import Article from "./subcomponents/Article/Article";
@@ -12,6 +13,8 @@ import Header from "./subcomponents/Header";
 import CollaboratorsCarousel from "./subcomponents/CollaboratorsCaroulse";
 
 export default function Homepage() {
+  const { t } = useTranslation("landing/homepage");
+
   return (
     <Box height={"100vh"} overflow={"auto"}>
       <Header show={true} />
@@ -20,11 +23,8 @@ export default function Homepage() {
         <HeroSection />
 
         <Article
-          header={"Sobre a ferramenta"}
-          bodyText={`Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              Morbi purus sem, porta a tellus eleifend, vehicula egestas quam. Quisque
-              commodo ipsum at tortor semper, at vulputate velit fringilla. Nam tincidunt
-              vestibulum lectus. Mauris lacinia ipsum pulvinar dui pellentesque fringilla.`}
+          header={t("about.title")}
+          bodyText={t("about.text")}
           src={exemple}
           alt={"foto de exemplo"}
           imgPosition={"left"}
@@ -33,11 +33,8 @@ export default function Homepage() {
         />
 
         <Article
-          header={"Comece a usar a StArt"}
-          bodyText={`Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              Morbi purus sem, porta a tellus eleifend, vehicula egestas quam. Quisque
-              commodo ipsum at tortor semper, at vulputate velit fringilla. Nam tincidunt
-              vestibulum lectus. Mauris lacinia ipsum pulvinar dui pellentesque fringilla.`}
+          header={t("tutorials.title")}
+          bodyText={t("tutorials.text")}
           src={img2}
           alt={"foto de exemplo"}
           imgPosition={"right"}
@@ -48,11 +45,8 @@ export default function Homepage() {
         <CollaboratorsCarousel />
 
         <Article
-          header={"Contato"}
-          bodyText={`Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              Morbi purus sem, porta a tellus eleifend, vehicula egestas quam. Quisque
-              commodo ipsum at tortor semper, at vulputate velit fringilla. Nam tincidunt
-              vestibulum lectus. Mauris lacinia ipsum pulvinar dui pellentesque fringilla.`}
+          header={t("contact.title")}
+          bodyText={t("contact.text")}
           src={img1}
           alt={"foto de exemplo"}
           imgPosition={"right"}
@@ -61,11 +55,8 @@ export default function Homepage() {
         />
 
         <Article
-          header={"Comunidade"}
-          bodyText={`Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              Morbi purus sem, porta a tellus eleifend, vehicula egestas quam. Quisque
-              commodo ipsum at tortor semper, at vulputate velit fringilla. Nam tincidunt
-              vestibulum lectus. Mauris lacinia ipsum pulvinar dui pellentesque fringilla.`}
+          header={t("community.title")}
+          bodyText={t("community.text")}
           src={img2}
           alt={"foto de exemplo"}
           imgPosition={"left"}

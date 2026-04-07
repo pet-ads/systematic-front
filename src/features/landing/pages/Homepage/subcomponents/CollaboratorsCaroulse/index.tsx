@@ -3,11 +3,13 @@ import Carousel from "@features/landing/components/carousel/CollaboratorCarousel
 import CollaboratorCard from "@features/landing/pages/Collaborators/subcomponents/cards/CollaboratorCards";
 import shuffleElements from "@features/landing/pages/Collaborators/subcomponents/shuffleElements";
 import collaborators from "../../../../../../mocks/collaborators";
+import { useTranslation } from "react-i18next";
 
 import { Link } from "react-router-dom";
 
 export default function CollaboratorsCarousel() {
   const collabInfosShuffled = shuffleElements(collaborators);
+  const { t } = useTranslation("landing/homepage")
 
   return (
     <Flex
@@ -18,7 +20,7 @@ export default function CollaboratorsCarousel() {
       alignItems={"center"}
     >
       <Flex h="100%" alignItems={"center"} direction={"column"}>
-        <Heading mb={"1.5em"}>Colaboradores</Heading>
+        <Heading mb={"1.5em"}>{t("collaborators.title")}</Heading>
 
         <Flex wrap={"wrap"} h="100%" align="center" justify="center">
           <Carousel>
@@ -30,7 +32,7 @@ export default function CollaboratorsCarousel() {
 
         <Button borderRadius={"3px"} bgColor={"gray"} color={"white"}>
           <Link to={"/collaborators"} target="_blank">
-            Veja todos os colaboradores
+            {t("collaborators.button")}
           </Link>
         </Button>
       </Flex>

@@ -1,6 +1,9 @@
 import { Flex, Image, Heading, Text, Button } from "@chakra-ui/react";
+import { useTranslation } from "react-i18next";
 
 export default function HeroSection() {
+  const { t } = useTranslation("landing/homepage");
+
   return (
     <Flex
       bg="black"
@@ -20,13 +23,11 @@ export default function HeroSection() {
       >
         <Flex direction="column" justifyContent={"flex-start"}>
           <Heading color="white" alignSelf={"center"} fontSize={"60"} pb="50px">
-            Pesquise mais, de qualquer lugar!
+            {t("herosection.heading")}
           </Heading>
 
           <Text color="white" fontSize={"16"}>
-            {`Potencialize suas pesquisas! Experimente nossa 
-                  ferramenta gratuita para revisões sistemáticas - fácil de usar e ideal 
-                  para pesquisadores e estudantes.`}
+            {t("herosection.text")}
           </Text>
 
           <Button
@@ -35,14 +36,13 @@ export default function HeroSection() {
             w="30%"
             colorScheme="whiteAlpha"
           >
-            Cadastre-se já
+            {t("herosection.signUp")}
           </Button>
         </Flex>
 
         <Image
           src="src/assets/images/landing/homepagePhotos/HeroSectionPic.png"
-          alt={`Foto de diferentes dispositivos eletronicos conectados a ferramenta StArt 
-              - computador deskot, smart phone e tablet.`}
+          alt={t("herosection.alt")}
           marginTop={"4em"}
         />
       </Flex>
