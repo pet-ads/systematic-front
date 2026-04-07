@@ -2,18 +2,21 @@ import { useMemo } from "react";
 
 export interface BubbleSeries {
   name: string;
-  data: { x: number; y: number; z: number }[];
+  data: { x: number; y: number; z: number; count: number }[];
 }
 
 export interface BubbleItem {
-  x: number;      
-  group: string;    
-  y: number;        
+  x: number;
+  group: string;
+  y: number;
 }
 
-export default function useBubbleDataGeneric(
-  items: BubbleItem[]
-): BubbleSeries[] {
+export type BubbleChartData = {
+  series: BubbleSeries[];
+  yCategories: string[];
+};
+
+export default function useBubbleDataGeneric(items: BubbleItem[]): BubbleChartData {
   return useMemo(() => {
     const grouped: Record<string, Record<number, number>> = {};
 
@@ -22,34 +25,18 @@ export default function useBubbleDataGeneric(
       grouped[group][x] = (grouped[group][x] || 0) + y;
     });
 
-  
-    const yearMap: Record<number, string[]> = {};
-    Object.entries(grouped).forEach(([group, years]) => {
-      Object.keys(years).forEach((yearStr) => {
-        const year = Number(yearStr);
-        if (!yearMap[year]) yearMap[year] = [];
-        yearMap[year].push(group);
-      });
-    });
+    const yCategories = Object.keys(grouped).sort();
 
- 
-    return Object.entries(grouped).map(([group, years]) => ({
+    const series: BubbleSeries[] = yCategories.map((group, gi) => ({
       name: group,
-      data: Object.entries(years).map(([yearStr, count]) => {
-        const year = Number(yearStr);
-        const groupsAtYear = yearMap[year];
-        const index = groupsAtYear.indexOf(group);
-
-        const offset =
-          (index - (groupsAtYear.length - 1) / 2) * 0.35;
-
-        return {
-          x: year + offset,
-          y: count,
-        
-          z: Math.max(10, count * 12),
-        };
-      }),
+      data: Object.entries(grouped[group]).map(([yearStr, count]) => ({
+        x: Number(yearStr),
+        y: gi,    
+        z: count, 
+        count,     
+      })),
     }));
+
+    return { series, yCategories };
   }, [items]);
 }
