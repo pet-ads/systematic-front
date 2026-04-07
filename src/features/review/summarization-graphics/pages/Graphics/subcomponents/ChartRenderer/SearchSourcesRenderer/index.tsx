@@ -59,12 +59,14 @@ export default function SearchSourcesRenderer({
         y: 1,
       }))
     );
-    const bubbleData = useBubbleDataGeneric(items);
+
+    const { series, yCategories } = useBubbleDataGeneric(items);
     content = (
       <BubbleChart
         title="Search Sources Evolution"
-        data={bubbleData}
-        yaxisText="Número de estudos"
+        series={series}
+        yCategories={yCategories}
+        yaxisText="Search Sources"
       />
     );
   } else if (type === "Table") {
@@ -73,7 +75,12 @@ export default function SearchSourcesRenderer({
     content = <div>Tipo de gráfico não suportado</div>;
   }
   return (
-    <Box id={chartId} sx={type == "Bar Chart" ? barchartBox : undefined}>
+
+    <Box
+      id={chartId}
+      w={type === "Bubble Chart" ? "100%" : undefined}
+      sx={type === "Bar Chart" ? barchartBox : undefined}
+    >
       {content}
     </Box>
   );
