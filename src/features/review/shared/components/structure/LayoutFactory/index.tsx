@@ -127,6 +127,9 @@ export default function LayoutFactory({
         articles={articles}
         page={page}
         reloadArticles={reloadArticles}
+        pagination={pagination}
+        onTablePageChange={onTablePageChange}
+        extraParams={extraParams}
       />
     ),
   };
