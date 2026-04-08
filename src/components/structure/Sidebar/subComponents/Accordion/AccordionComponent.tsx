@@ -85,6 +85,10 @@ const AccordionComponent = () => {
           path: `/review/planning/protocol/analysis-and-synthesis-of-results/${id}`,
           label: "Analysis",
         },
+        {
+          path: `/review/planning/protocol/review-collaborators/${id}`,
+          label: "Collaborators",
+        },
       ],
       Execution: [
         { path: `/review/execution/identification`, label: "Identification" },
