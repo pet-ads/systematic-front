@@ -1,7 +1,7 @@
 // Components
 import NavButton from "@components/common/buttons/NavigationButton";
 import ProtocolFormLayout from "../../components/common/protocolForm";
-import { Text, Button } from "@chakra-ui/react";
+import { Button } from "@chakra-ui/react";
 
 // Service
 import useCreateProtocol from "../../services/useCreateProtocol";
