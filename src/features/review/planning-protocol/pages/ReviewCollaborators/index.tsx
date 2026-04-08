@@ -1,7 +1,7 @@
 // Components
 import NavButton from "@components/common/buttons/NavigationButton";
 import ProtocolFormLayout from "../../components/common/protocolForm";
-import { Button } from "@chakra-ui/react";
+import { Button, Text } from "@chakra-ui/react";
 import { reviewCollaborators } from "../../../../../mocks/reviewCollaborators";
 
 // Service
@@ -18,7 +18,6 @@ export default function ReviewCollaborators() {
 
   const handleAddCollaborator = () => {
     console.log("Add Collaborator");
-    console.log(collaborators);
   };
 
   return (
@@ -42,6 +41,10 @@ export default function ReviewCollaborators() {
       )}
     >
         <Button onClick = {handleAddCollaborator}>Add Collaborator</Button>
+
+        {collaborators.map((collaborator) => (
+          <Text>{collaborator.name}</Text>
+        ))}
     </ProtocolFormLayout>
   );
 }
