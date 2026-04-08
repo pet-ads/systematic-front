@@ -1,5 +1,5 @@
 // External library
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import {
   Box,
   Button,
@@ -46,6 +46,7 @@ export default function DataExtraction({
 }: DataExtractionFormProps) {
   const reviewId = localStorage.getItem("systematicReviewId");
   const { toGo } = useNavigation();
+
   const { submitResponses } = useExtractionFormSubmission({
     responses: questions ?? {},
     onQuestionsMutated: mutateQuestion,
@@ -53,58 +54,91 @@ export default function DataExtraction({
 
   const hasAnyQuestion = questions && questions.extractionQuestions.length > 0;
 
-  
   const [initialQuestions, setInitialQuestions] = useState(questions);
+  const [attemptedSubmit, setAttemptedSubmit] = useState(false);
 
-  
+  const questionRefs = useRef<Map<string, HTMLDivElement>>(new Map());
+
   useEffect(() => {
     setInitialQuestions(questions);
+    setAttemptedSubmit(false);
   }, [currentId]);
 
- 
-  const isModified = JSON.stringify(initialQuestions) !== JSON.stringify(questions);
+  const isModified =
+    JSON.stringify(initialQuestions) !== JSON.stringify(questions);
 
- 
-  const isFormValid = () => {
-    if (!questions) return false;
+  const getInvalidQuestionIds = useCallback((): Set<string> => {
+    if (!questions) return new Set();
 
-    
-    const allQuestions = Object.values(questions).flat();
+    const invalidIds = new Set<string>();
 
-    return allQuestions.every((q) => {
-      
-      const responseValue = q.answer?.value;
+    Object.values(questions)
+      .flat()
+      .forEach((q) => {
+        const responseValue = q.answer?.value;
+        let isValid: boolean;
 
-     
-      if (Array.isArray(responseValue)) {
-        return responseValue.length > 0;
+        if (Array.isArray(responseValue)) {
+          isValid = responseValue.length > 0;
+        } else if (
+          typeof responseValue === "object" &&
+          responseValue !== null
+        ) {
+          isValid = true;
+        } else {
+          isValid =
+            responseValue !== null &&
+            responseValue !== undefined &&
+            String(responseValue).trim() !== "";
+        }
+
+        if (!isValid) {
+          invalidIds.add(q.questionId);
+        }
+      });
+
+    return invalidIds;
+  }, [questions]);
+
+  const scrollToFirstInvalid = useCallback(
+    (invalidIds: Set<string>) => {
+      for (const sectionQuestions of Object.values(questions)) {
+        if (!Array.isArray(sectionQuestions)) continue;
+        for (const q of sectionQuestions) {
+          if (invalidIds.has(q.questionId)) {
+            const el = questionRefs.current.get(q.questionId);
+            el?.scrollIntoView({ behavior: "smooth", block: "center" });
+            return;
+          }
+        }
       }
-
-     
-      if (typeof responseValue === "object" && responseValue !== null) {
-        return true;
-      }
-
-     
-      return (
-        responseValue !== null &&
-        responseValue !== undefined &&
-        String(responseValue).trim() !== ""
-      );
-    });
-  };
-
- 
-  const canSubmit = isModified && isFormValid();
+    },
+    [questions],
+  );
 
   const handleFormSubmit = async () => {
-    if (!canSubmit) return;
+    const invalidIds = getInvalidQuestionIds();
+
+    if (invalidIds.size > 0) {
+      setAttemptedSubmit(true);
+      scrollToFirstInvalid(invalidIds);
+      return;
+    }
+
+    if (!isModified) {
+      const firstRef = questionRefs.current.values().next().value;
+      firstRef?.scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
 
     await submitResponses();
-
-    
     setInitialQuestions(questions);
+    setAttemptedSubmit(false);
   };
+
+  const invalidIds = attemptedSubmit
+    ? getInvalidQuestionIds()
+    : new Set<string>();
 
   return (
     <FormControl
@@ -129,9 +163,7 @@ export default function DataExtraction({
               !Array.isArray(sectionQuestions) ||
               sectionQuestions.length < 1
             ) {
-              if (isRiskOfBiasKey) {
-                return null;
-              }
+              if (isRiskOfBiasKey) return null;
               return (
                 <Box key={sectionKey}>
                   {index > 0 && <Divider />}
@@ -184,33 +216,60 @@ export default function DataExtraction({
                     {formatedFormKey}
                   </Heading>
                 </Box>
-                {sectionQuestions.map((question) => (
-                  <Box
-                    key={`${typeFormKey}-${currentId}-${question.questionId}`}
-                    mb="1rem"
-                    px={{ base: "1rem", md: "2rem" }}
-                  >
-                    <CreateResponseComponent
-                      articleId={currentId}
-                      questionId={question.questionId}
-                      updateResponse={handlerUpdateAnswer}
-                      typeform={typeFormKey}
-                      answer={question.answer}
-                    />
-                  </Box>
-                ))}
+                {sectionQuestions.map((question) => {
+                  const isInvalid = invalidIds.has(question.questionId);
+
+                  return (
+                    <Box
+                      key={`${typeFormKey}-${currentId}-${question.questionId}`}
+                      mb="1rem"
+                      px={{ base: "1rem", md: "2rem" }}
+                      ref={(el: HTMLDivElement | null) => {
+                        if (el)
+                          questionRefs.current.set(question.questionId, el);
+                        else questionRefs.current.delete(question.questionId);
+                      }}
+                      borderRadius="md"
+                      border={
+                        isInvalid ? "1.5px solid" : "1.5px solid transparent"
+                      }
+                      borderColor={isInvalid ? "red.400" : "transparent"}
+                      p={isInvalid ? "0.75rem" : "0"}
+                      transition="border-color 0.2s"
+                    >
+                      {isInvalid && (
+                        <Text
+                          fontSize="xs"
+                          color="red.500"
+                          fontWeight="semibold"
+                          mb="0.4rem"
+                        >
+                          * This field is required
+                        </Text>
+                      )}
+                      <CreateResponseComponent
+                        articleId={currentId}
+                        questionId={question.questionId}
+                        updateResponse={handlerUpdateAnswer}
+                        typeform={typeFormKey}
+                        answer={question.answer}
+                        isInvalid={isInvalid}
+                      />
+                    </Box>
+                  );
+                })}
               </Box>
             );
           },
         )}
       </Box>
+
       {hasAnyQuestion && (
         <Flex w="100%" justifyContent="flex-end" p="1.25rem 2rem" mt="1.5rem">
           <Button
             leftIcon={<BsSend fontSize="1rem" />}
             type="button"
             onClick={handleFormSubmit}
-            isDisabled={!canSubmit} 
             bg="black"
             color="white"
             _hover={{ bg: "gray.800" }}
@@ -218,7 +277,7 @@ export default function DataExtraction({
             px="1.5rem"
             width="6.5rem"
           >
-            Enviar
+            Submit
           </Button>
         </Flex>
       )}

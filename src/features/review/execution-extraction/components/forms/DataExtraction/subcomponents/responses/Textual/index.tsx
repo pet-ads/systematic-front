@@ -13,12 +13,14 @@ import { container, label } from "../styles";
 interface TextualResponseProps {
   question: string;
   answer: string;
+  isInvalid?: boolean;
   onResponse: (response: string) => void;
 }
 
 export default function TextualResponse({
   question,
   answer,
+  isInvalid = false,
   onResponse,
 }: TextualResponseProps) {
   const [response, setResponse] = useState<string>(answer);
@@ -30,12 +32,13 @@ export default function TextualResponse({
   };
 
   return (
-    <FormControl sx={container}>
+    <FormControl sx={container} isInvalid={isInvalid}>
       <FormLabel sx={label}>{capitalize(question)}</FormLabel>
       <Textarea
         value={response}
         onChange={handleChange}
         sx={responseArea}
+        isInvalid={isInvalid}
         _placeholder={{ opacity: 1, color: "gray.500" }}
         placeholder="Your response"
         focusBorderColor="#2E4B6C"

@@ -16,6 +16,7 @@ interface LabeledListProps {
   question: string;
   scales: Record<string, number>;
   answer: string | { name: string; value: number } | null;
+  isInvalid?: boolean;
   onResponse: (response: { name: string; value: number }) => void;
 }
 
@@ -23,18 +24,19 @@ export default function LabeledList({
   question,
   scales,
   answer,
+  isInvalid = false,
   onResponse,
 }: LabeledListProps) {
   const [selected, setSelected] = useState("");
 
   const options = Object.entries(scales).map(
-    ([key, value]) => `${key}: ${value}`
+    ([key, value]) => `${key}: ${value}`,
   );
 
   const handleSelectChange = (value: string) => {
     setSelected(value);
-    const [label, num] = value.split(":");
-    onResponse({ name: label.trim(), value: parseInt(num.trim()) });
+    const [labelKey, num] = value.split(":");
+    onResponse({ name: labelKey.trim(), value: parseInt(num.trim()) });
   };
 
   useEffect(() => {
@@ -50,7 +52,7 @@ export default function LabeledList({
   }, [answer]);
 
   return (
-    <FormControl sx={container}>
+    <FormControl sx={container} isInvalid={isInvalid}>
       <FormLabel sx={label}>{capitalize(question)}</FormLabel>
       <SelectInput
         names={options}
@@ -59,6 +61,7 @@ export default function LabeledList({
         selectedValue={selected}
         page="extraction"
         placeholder="Labels"
+        isInvalid={isInvalid}
       />
     </FormControl>
   );

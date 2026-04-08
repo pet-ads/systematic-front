@@ -1,8 +1,14 @@
+// External library
 import { FormControl, Select } from "@chakra-ui/react";
 import React from "react";
+
+// Styles
 import { formcontrol } from "./styles";
+
+// Utils
 import { capitalize } from "../../../../features/shared/utils/helpers/formatters/CapitalizeText";
 
+// Types
 interface ISelectInputProps {
   values: string[];
   names: string[];
@@ -10,6 +16,7 @@ interface ISelectInputProps {
   selectedValue: string | null;
   placeholder?: string;
   page: string;
+  isInvalid?: boolean;
 }
 
 export default function SelectInput({
@@ -19,20 +26,28 @@ export default function SelectInput({
   selectedValue,
   placeholder,
   page,
+  isInvalid = false,
 }: ISelectInputProps) {
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     onSelect(event.target.value);
   };
 
   const isProtocol = page === "protocol";
+
   return (
-    <FormControl sx={formcontrol} w={isProtocol ? "55%" : "20rem"}>
+    <FormControl
+      sx={formcontrol}
+      w={isProtocol ? "55%" : "20rem"}
+      isInvalid={isInvalid}
+    >
       <Select
-        bgColor={"#ffffffff"}
+        bgColor="#ffffffff"
         color="#2E4B6C"
         value={selectedValue || ""}
         onChange={handleSelectChange}
-      >{placeholder && (
+        isInvalid={isInvalid}
+      >
+        {placeholder && (
           <option value="" disabled hidden>
             {placeholder}
           </option>

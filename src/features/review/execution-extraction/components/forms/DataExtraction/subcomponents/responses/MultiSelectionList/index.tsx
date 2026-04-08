@@ -2,10 +2,10 @@
 import { useEffect, useState } from "react";
 import {
   Box,
-  FormControl,
-  FormLabel,
   Checkbox,
   CheckboxGroup,
+  FormControl,
+  FormLabel,
 } from "@chakra-ui/react";
 
 // Utils
@@ -19,6 +19,7 @@ interface MultiSelectionListProps {
   question: string;
   options: string[];
   answer: string[];
+  isInvalid?: boolean;
   onResponse: (response: string[]) => void;
 }
 
@@ -26,6 +27,7 @@ export default function MultiSelectionList({
   question,
   options,
   answer,
+  isInvalid = false,
   onResponse,
 }: MultiSelectionListProps) {
   const [selected, setSelected] = useState<string[]>([]);
@@ -42,7 +44,7 @@ export default function MultiSelectionList({
   };
 
   return (
-    <FormControl sx={container}>
+    <FormControl sx={container} isInvalid={isInvalid}>
       <FormLabel sx={label}>{capitalize(question)}</FormLabel>
       <CheckboxGroup value={selected} onChange={handleChange}>
         <Box
@@ -55,9 +57,10 @@ export default function MultiSelectionList({
         >
           {options.map((value) => (
             <Checkbox
-              value={value}
               key={value}
+              value={value}
               isChecked={selected.includes(value)}
+              isInvalid={isInvalid}
             >
               {value}
             </Checkbox>

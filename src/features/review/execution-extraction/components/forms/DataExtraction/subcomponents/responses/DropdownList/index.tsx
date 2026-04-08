@@ -16,6 +16,7 @@ interface DropdownListProps {
   question: string;
   options: string[];
   answer: string;
+  isInvalid?: boolean;
   onResponse: (response: string) => void;
 }
 
@@ -23,6 +24,7 @@ export default function DropdownList({
   question,
   options,
   answer,
+  isInvalid = false,
   onResponse,
 }: DropdownListProps) {
   const [selected, setSelected] = useState(answer);
@@ -33,15 +35,16 @@ export default function DropdownList({
   };
 
   return (
-    <FormControl sx={container}>
+    <FormControl sx={container} isInvalid={isInvalid}>
       <FormLabel sx={label}>{capitalize(question)}</FormLabel>
       <SelectInput
         names={[...options]}
         values={[...options]}
-        onSelect={(value) => handleSelectChange(value)}
+        onSelect={handleSelectChange}
         selectedValue={selected}
         page="extraction"
         placeholder="Options"
+        isInvalid={isInvalid}
       />
     </FormControl>
   );

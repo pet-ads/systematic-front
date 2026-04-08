@@ -70,10 +70,11 @@ export interface CreateResponseProps {
   questionId: string;
   answer: Answer;
   typeform: FormType;
+  isInvalid?: boolean;
   updateResponse: (
     articleId: number,
     questionId: string,
     type: FormType,
-    response: AnswerProps
+    response: AnswerProps,
   ) => void;
 }
