@@ -3,9 +3,11 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Image } from "@chakra-ui/react";
 import { Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
-import { Box, Button, Flex } from "@chakra-ui/react";
+import { Box, Button, Flex, Text } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 import i18n from "i18next";
+import ReactCountryFlag from "react-country-flag";
+import { ChevronDownIcon } from "@chakra-ui/icons";
 
 // Components
 import HomepageModal from "@features/landing/components/modals/HomepageModal/Index";
@@ -33,8 +35,15 @@ interface IHeaderProps {
 
 type IModal = "" | "login" | "signup" | "forgotPassword";
 
+// Maps each i18n language code to its country code and label
+const languageOptions = [
+  { lang: "pt", countryCode: "BR", label: "PT" },
+  { lang: "en", countryCode: "US", label: "EN" },
+];
+
 export default function Header({ show }: IHeaderProps) {
   const { t } = useTranslation("landing/homepage");
+
   enum LinkTypeEnum {
     GoToOtherPage = "GoToOtherPage",
     StayInSamePage = "StayInSamePage",
@@ -45,10 +54,11 @@ export default function Header({ show }: IHeaderProps) {
   const [openModal, setOpenModal] = useState<IModal>("");
 
   const { toGo } = useNavigation();
-
   const { user, _hasHydrated } = useAuthStore();
 
-  console.log("dados usuario", user);
+  const currentLanguage =
+    languageOptions.find((opt) => opt.lang === i18n.language) ??
+    languageOptions[0];
 
   function handleSignUpModal() {
     setOpenModal("signup");
@@ -119,27 +129,61 @@ export default function Header({ show }: IHeaderProps) {
             </Flex>
           )}
         </Flex>
-        <Flex gap="5%">
+
+        <Flex gap="5%" alignItems="center">
           {_hasHydrated && (
             <>
               <Menu>
                 <MenuButton
                   as={Button}
                   color="white"
-                  bg="#301E1A"
-                  _hover={{ bg: "white", color: "black" }}
-                  w="70px"
-                  minW="70px"
+                  bg="transparent"
+                  _hover={{ color: "black", backgroundColor: "white" }}
+                  _active={{ color: "black", backgroundColor: "white" }}
+                  _expanded={{ color: "black", backgroundColor: "white" }}
+                  px="0.75rem"
                 >
-                  🌐{i18n.language.toLowerCase()}
+                  <Flex alignItems="center" gap="0.4rem">
+                    <ReactCountryFlag
+                      countryCode={currentLanguage.countryCode}
+                      svg
+                      style={{
+                        width: "1.2em",
+                        height: "1.2em",
+                        borderRadius: "2px",
+                      }}
+                    />
+                    <Text fontSize="sm" fontWeight="semibold">
+                      {currentLanguage.label}
+                    </Text>
+                    <ChevronDownIcon />
+                  </Flex>
                 </MenuButton>
-                <MenuList w="70px" minW="70px">
-                  <MenuItem onClick={() => i18n.changeLanguage("pt")}>
-                    pt
-                  </MenuItem>
-                  <MenuItem onClick={() => i18n.changeLanguage("en")}>
-                    en
-                  </MenuItem>
+
+                <MenuList minW="90px" w="90px">
+                  {languageOptions.map((opt) => (
+                    <MenuItem
+                      key={opt.lang}
+                      onClick={() => i18n.changeLanguage(opt.lang)}
+                      fontWeight={
+                        i18n.language === opt.lang ? "bold" : "normal"
+                      }
+                      color={i18n.language === opt.lang ? "#2E4B6C" : "inherit"}
+                    >
+                      <Flex alignItems="center" gap="0.5rem">
+                        <ReactCountryFlag
+                          countryCode={opt.countryCode}
+                          svg
+                          style={{
+                            width: "1.2em",
+                            height: "1.2em",
+                            borderRadius: "2px",
+                          }}
+                        />
+                        <Text fontSize="sm">{opt.label}</Text>
+                      </Flex>
+                    </MenuItem>
+                  ))}
                 </MenuList>
               </Menu>
 
