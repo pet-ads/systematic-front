@@ -23,6 +23,7 @@ import InformationSourcesAndSearchStrategy from "@features/review/planning-proto
 import SelectionAndExtraction from "@features/review/planning-protocol/pages/SelectionAndExtraction";
 import RiskOfBiasAssessment from "@features/review/planning-protocol/pages/RiskOfBiasAssessment ";
 import AnalysisAndSynthesisOfResults from "@features/review/planning-protocol/pages/AnalysisAndSynthesisOfResults";
+import ReviewCollaborators from "@features/review/planning-protocol/pages/ReviewCollaborators";
 
 // Execution
 import Identification from "@features/review/execution-identification/pages/Identification";
@@ -97,6 +98,10 @@ const routesList: RouteObject[] = [
   {
     path: "/review/planning/protocol/analysis-and-synthesis-of-results/:id",
     element: <ProtectedRoute element={<AnalysisAndSynthesisOfResults />} />,
+  },
+  {
+    path: "/review/planning/protocol/review-collaborators/:id",
+    element: <ProtectedRoute element={<ReviewCollaborators />} />,
   },
   {
     path: "/review/execution/identification",
