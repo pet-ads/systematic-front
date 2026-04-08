@@ -8,6 +8,7 @@ import {
   FormControl,
   Heading,
   Text,
+  useToast,
 } from "@chakra-ui/react";
 import { FaPlusCircle } from "react-icons/fa";
 import { BsSend } from "react-icons/bs";
@@ -116,25 +117,33 @@ export default function DataExtraction({
     [questions],
   );
 
-  const handleFormSubmit = async () => {
-    const invalidIds = getInvalidQuestionIds();
+ const toast = useToast();
 
-    if (invalidIds.size > 0) {
-      setAttemptedSubmit(true);
-      scrollToFirstInvalid(invalidIds);
-      return;
-    }
+ const handleFormSubmit = async () => {
+   const invalidIds = getInvalidQuestionIds();
 
-    if (!isModified) {
-      const firstRef = questionRefs.current.values().next().value;
-      firstRef?.scrollIntoView({ behavior: "smooth", block: "center" });
-      return;
-    }
+   if (invalidIds.size > 0) {
+     setAttemptedSubmit(true);
+     scrollToFirstInvalid(invalidIds);
+     return;
+   }
 
-    await submitResponses();
-    setInitialQuestions(questions);
-    setAttemptedSubmit(false);
-  };
+   if (!isModified) {
+     toast({
+       title: "No changes made",
+       description: "Update at least one answer before submitting.",
+       status: "warning",
+       duration: 4000,
+       isClosable: true,
+       position: "top",
+     });
+     return;
+   }
+
+   await submitResponses();
+   setInitialQuestions(questions);
+   setAttemptedSubmit(false);
+ };
 
   const invalidIds = attemptedSubmit
     ? getInvalidQuestionIds()
