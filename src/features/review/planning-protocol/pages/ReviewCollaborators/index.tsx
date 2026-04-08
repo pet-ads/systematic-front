@@ -1,7 +1,7 @@
 // Components
 import NavButton from "@components/common/buttons/NavigationButton";
 import ProtocolFormLayout from "../../components/common/protocolForm";
-import { Text } from "@chakra-ui/react";
+import { Text, Button } from "@chakra-ui/react";
 
 // Service
 import useCreateProtocol from "../../services/useCreateProtocol";
@@ -12,6 +12,10 @@ export default function ReviewCollaborators() {
   } = useCreateProtocol();
 
   const id = localStorage.getItem("systematicReviewId") || "";
+
+  const handleAddCollaborator = () => {
+    console.log("Add Collaborator");
+  };
 
   return (
     <ProtocolFormLayout
@@ -33,7 +37,7 @@ export default function ReviewCollaborators() {
         </>
       )}
     >
-        <Text>Collaborators</Text>
+        <Button onClick = {handleAddCollaborator}>Add Collaborator</Button>
     </ProtocolFormLayout>
   );
 }
