@@ -57,7 +57,6 @@ export default function DataExtraction({
   const [initialQuestions, setInitialQuestions] = useState(questions);
   const [attemptedSubmit, setAttemptedSubmit] = useState(false);
 
-  // Map of questionId -> DOM element for scroll-to behavior
   const questionRefs = useRef<Map<string, HTMLDivElement>>(new Map());
 
   useEffect(() => {
@@ -68,10 +67,6 @@ export default function DataExtraction({
   const isModified =
     JSON.stringify(initialQuestions) !== JSON.stringify(questions);
 
-  /**
-   * Returns a Set of questionIds that are not yet answered.
-   * Used both to block submission and to highlight invalid fields.
-   */
   const getInvalidQuestionIds = useCallback((): Set<string> => {
     if (!questions) return new Set();
 
@@ -105,10 +100,6 @@ export default function DataExtraction({
     return invalidIds;
   }, [questions]);
 
-  /**
-   * Scrolls to the first unanswered question (in DOM order)
-   * by iterating sections/questions in the same order they render.
-   */
   const scrollToFirstInvalid = useCallback(
     (invalidIds: Set<string>) => {
       for (const sectionQuestions of Object.values(questions)) {
@@ -128,27 +119,23 @@ export default function DataExtraction({
   const handleFormSubmit = async () => {
     const invalidIds = getInvalidQuestionIds();
 
-    // Case 1: has empty fields — highlight them and scroll to the first one
     if (invalidIds.size > 0) {
       setAttemptedSubmit(true);
       scrollToFirstInvalid(invalidIds);
       return;
     }
 
-    // Case 2: all fields filled but nothing was changed — scroll to top silently
     if (!isModified) {
       const firstRef = questionRefs.current.values().next().value;
       firstRef?.scrollIntoView({ behavior: "smooth", block: "center" });
       return;
     }
 
-    // Case 3: all good — submit
     await submitResponses();
     setInitialQuestions(questions);
     setAttemptedSubmit(false);
   };
 
-  // Only highlight invalid fields after the user has attempted to submit
   const invalidIds = attemptedSubmit
     ? getInvalidQuestionIds()
     : new Set<string>();
