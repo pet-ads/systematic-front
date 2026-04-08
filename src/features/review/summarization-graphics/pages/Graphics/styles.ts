@@ -12,15 +12,12 @@ export const conteiner = {
 
 export const graphicsconteiner = {
   maxW: "100%",
-  mt:"5px",
-  borderWidth: "1px",
+  mt: "5px",
+  borderWidth: "0px",
   borderRadius: "lg",
   display: "flex",
-  flexWrap: "wrap",
-  gap: "2em",                 
-  justifyContent: "center",   
-  alignItems:"center",
-  bg: 'white',
+  flexDirection: "column",
+  bg: "white",
 };
 
 export const barchartBox = {
