@@ -4,6 +4,9 @@ import { Link } from "react-router-dom";
 
 // Styles
 import "../styles.css";
+import forgotPassword from "@features/auth/services/forgotPassword";
+import { isLeft } from "@features/shared/errors/pattern/Either";
+import useToaster from "@components/feedback/Toaster";
 
 export default function ForgotPassword({
   redirectFormLogin,
@@ -12,20 +15,38 @@ export default function ForgotPassword({
 }) {
   const [email, setEmail] = useState<string>("");
   const [error, setError] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  
+  const Toaster = useToaster();
 
   const validateEmail = (email: string): boolean => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(String(email).toLowerCase());
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!validateEmail(email)) {
       setError("Invalid email");
       return;
     } else {
-      // lógica de envio do email de recuperação de senha (auth)
-      console.log("Enviar email para:", email); //teste
+      setIsLoading(true)
+      const result = await forgotPassword({email: email})
+      if (isLeft(result)) {
+        const errorMessage = result.value.message;
+        Toaster({
+          title: "Process failed",
+          description: errorMessage,
+          status: "error",
+        });
+      }else{
+        Toaster({
+          title: "Success!",
+          description: "If an account with this email exists, you will receive password reset instructions.",
+          status: "success",
+        });
+      }
+      setIsLoading(false)
     }
   };
 
@@ -47,7 +68,7 @@ export default function ForgotPassword({
           <Link to="#" onClick={redirectFormLogin}>
             Back to Login
           </Link>
-          <button type="submit">Recover Password</button>
+          <button type="submit"> {!isLoading ? "Recover Password" : "Sending email"} </button>
         </div>
       </div>
     </form>
