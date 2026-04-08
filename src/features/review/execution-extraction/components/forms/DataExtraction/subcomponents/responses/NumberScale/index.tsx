@@ -30,6 +30,7 @@ interface NumberScaleProps {
   question: string;
   minValue: number;
   maxValue: number;
+  isInvalid?: boolean;
   onResponse: (response: string) => void;
 }
 
@@ -38,13 +39,14 @@ export default function NumberScale({
   answer,
   minValue,
   maxValue,
+  isInvalid = false,
   onResponse,
 }: NumberScaleProps) {
   const [checkedOption, setCheckedOption] = useState<string>(answer);
 
   const scaleValues = Array.from(
     { length: maxValue - minValue + 1 },
-    (_, i) => minValue + i
+    (_, i) => minValue + i,
   );
 
   const handleClearSelection = () => {
@@ -57,7 +59,7 @@ export default function NumberScale({
   };
 
   return (
-    <FormControl sx={container}>
+    <FormControl sx={container} isInvalid={isInvalid}>
       <FormLabel sx={label}>{capitalize(question)}</FormLabel>
       <Box display="flex" flexDirection="column" gap="1rem">
         <RadioGroup
