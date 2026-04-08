@@ -16,6 +16,7 @@ const sectionsMap: Record<Exclude<Section, null>, string[]> = {
     "/review/planning/protocol/selection-and-extraction",
     "/review/planning/protocol/risk-of-bias-assessment",
     "/review/planning/protocol/analysis-and-synthesis-of-results",
+    "/review/planning/protocol/review-collaborators",
   ],
   Execution: [
     "/review/execution/identification",
