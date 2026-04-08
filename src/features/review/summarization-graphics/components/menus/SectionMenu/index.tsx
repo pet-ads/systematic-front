@@ -31,7 +31,6 @@ const sections: Section[] = [
   { label: "Studies Funnel", value: "Studies Funnel" },
   { label: "Included Studies", value: "Included Studies" },
   { label: "Form Questions", value: "Form Questions" },
-   { label: "Download Protocolo", value: "Protocol" }
 ];
 
 export default function SectionMenu({ onSelect, selected }: MenuProps) {

@@ -10,7 +10,6 @@ import SearchSourcesRenderer from "./SearchSourcesRenderer";
 import IncludedStudiesRenderer from "./IncludedStudiesRenderer";
 import CriteriaRenderer from "./CriteriaRenderer";
 import StudiesFunnelRenderer from "./StudiesFunnelRenderer";
-import ProtocolRenderer from "./ProtocolRenderer";
 import DownloadChartsButton from "@features/review/summarization-graphics/components/buttons/DownloadChatsButton";
 import FormQuestionsRenderer from "./FormQuestionsRenderer";
 import { downloadCSV } from "@features/review/summarization-graphics/components/export/ExportCsv";
@@ -149,62 +148,72 @@ export default function ChartsRenderer({
       />
     ),
     "Studies Funnel": () => <StudiesFunnelRenderer chartId={chartId} />,
-    Protocol: () => <ProtocolRenderer />,
   };
 
   const Renderer = rendererMap[section];
   if (!Renderer) return <Box>Seção não encontrada</Box>;
 
-  return (
+return (
+  <Box
+    sx={{
+      ...graphicsconteiner,
+      minHeight: "calc(100vh - 210px)",
+      justifyContent: "space-between",
+    }}
+  >
     <Box
-      pt={"1rem"}
-      sx={{
-        ...graphicsconteiner,
-        p:
-          section === "Included Studies" ||
-          (section === "Search Sources" && type === "Table")
-            ? undefined
-            : "2rem",
-        boxShadow: "md",
-      }}
+      display="flex"
+      flexWrap="wrap"
+      gap="2em"
+      justifyContent="center"
+      alignItems="center"
+      p={
+        section === "Included Studies" ||
+        (section === "Search Sources" && type === "Table")
+          ? "0"
+          : "2rem"
+      }
+      pt="1rem"
     >
       <Renderer
         filteredStudies={filteredStudies}
         type={type}
         onCsvData={handleCsvData}
       />
-
-      {section !== "Studies Funnel" && section !== "Protocol" && (
-        <Flex w="100%" justifyContent="flex-end" p="1rem">
-          <DownloadChartsButton
-            selector={`#${chartId}`}
-            fileName={section}
-            onDownloadCsv={() => {
-              if (section === "Form Questions") {
-                downloadCSV(
-                  "questions",
-                  buildQuestionsCsv(
-                    extractionAnswers,
-                    filteredStudies as ArticleInterface[],
-                    selectedQuestionId
-                  )
-                );
-              } else {
-                downloadCSV(
-                  section,
-                  getCsvData(
-                    section,
-                    filteredStudies,
-                    type,
-                    filteredStageIds,
-                    studiesByCriteria
-                  )
-                );
-              }
-            }}
-          />
-        </Flex>
-      )}
     </Box>
-  );
+
+    {section !== "Studies Funnel" && (
+      <Flex w="100%" justifyContent="flex-end" p="1rem">
+        <DownloadChartsButton
+          selector={`#${chartId}`}
+          fileName={section}
+          onDownloadCsv={() => {
+            if (section === "Form Questions") 
+              {
+              downloadCSV(
+                "questions",
+                buildQuestionsCsv(
+                  extractionAnswers,
+                  filteredStudies as ArticleInterface[],
+                  selectedQuestionId
+                )
+              );
+            } else {
+              downloadCSV(
+                section,
+                getCsvData(
+                  section,
+                  filteredStudies,
+                  type,
+                  filteredStageIds,
+                  studiesByCriteria
+                )
+              );
+            }
+          }}
+        />
+      </Flex>
+    )}
+  </Box>
+);
 }

@@ -1,6 +1,7 @@
-import { Box, Flex, Text } from "@chakra-ui/react";
+import { Flex, Text } from "@chakra-ui/react";
 import Header from "@components/structure/Header/Header";
 import FlexLayout from "@components/structure/Flex/Flex";
+import CardDefault from "@components/common/cards";
 import ChartsRenderer from "./subcomponents/ChartRenderer";
 import SelectMenu from "../../components/menus/SelectMenu";
 import { useGraphicsState } from "../../hooks/useGraphicsState";
@@ -25,71 +26,71 @@ export default function Graphics() {
 
   return (
     <FlexLayout navigationType="Accordion">
-    <Box w="100%" ml="-0.5rem" pl="0" pr="1rem" py=".75rem" h="fit-content">
-        <Flex justifyContent={"space-between"} w={"100%"}>
-          <Flex w="100%" h="2.5rem" alignItems="center" mb="1rem">
-            <Header text="Graphics" />
-          </Flex>
-            <Flex flexDirection="column" gap="0.5rem">
-              <SectionMenu onSelect={handleSectionChange} selected={section} />
-              {!(section === "Studies Funnel" || section === "Form Questions" || section === "Protocol") && 
-              (
-                <SelectMenu
-                  options={currentAllowedTypes}
-                  selected={type}
-                  onSelect={setType}
-                  placeholder="Choose Layout"
-                />
-              )}
-              {section === "Form Questions" && (
-                <SelectMenu
-                  options={allQuestions.filter((q) => q.questionId !== null)}
-                  selected={allQuestions.find(
-                    (q) => q.questionId === selectedQuestionId
-                  )}
-                  onSelect={(q) =>
-                    setSelectedQuestionId(q.questionId ?? undefined)
-                  }
-                  getLabel={(q) => q.code}
-                  getKey={(q) => q.questionId ?? q.code}
-                  placeholder="Choose Question"
-                />
-              )}
-            </Flex>
+      <Flex justifyContent="space-between" alignItems="flex-start" w="100%" mb="1rem">
         
+        <Flex flexDirection="column" gap="0.75rem">
+          <Header text="Graphics" />
+
+          {filtersBySection[section]?.length > 0 && (
+            <Flex flexDirection="column" gap="0.5rem">
+              <Text fontWeight="semibold" fontSize="lg" color="#263C56">
+                Filters Area
+              </Text>
+              <FiltersMenu
+                availableFilters={filtersBySection[section]}
+                filters={filters}
+                setFilters={setFilters}
+              />
+            </Flex>
+          )}
         </Flex>
-        {/* Filters Area */}
-        {filtersBySection[section]?.length > 0 && (
-          <Box mb="1rem">
-            <Text
-              fontWeight="semibold"
-              fontSize="lg"
-              color="#263C56"
-              mb="0.5rem"
-            >
-              Filters Area
-            </Text>
-            <FiltersMenu
-              availableFilters={filtersBySection[section]}
-              filters={filters}
-              setFilters={setFilters}
+
+        <Flex flexDirection="column" gap="0.5rem" mt="0.75rem">
+          <SectionMenu onSelect={handleSectionChange} selected={section} />
+          {!(
+            section === "Studies Funnel" ||
+            section === "Form Questions" ||
+            section === "Protocol"
+          ) && (
+            <SelectMenu
+              options={currentAllowedTypes}
+              selected={type}
+              onSelect={setType}
+              placeholder="Choose Layout"
             />
-          </Box>
-        )}
+          )}
+          {section === "Form Questions" && (
+            <SelectMenu
+              options={allQuestions.filter((q) => q.questionId !== null)}
+              selected={allQuestions.find(
+                (q) => q.questionId === selectedQuestionId
+              )}
+              onSelect={(q) =>
+                setSelectedQuestionId(q.questionId ?? undefined)
+              }
+              getLabel={(q) => q.code}
+              getKey={(q) => q.questionId ?? q.code}
+              placeholder="Choose Question"
+            />
+          )}
+        </Flex>
+      </Flex>
 
-        {/* Charts */}
-            <ExportProvider>
-                 <ChartsRenderer
-          key={section + type + JSON.stringify(filters) + selectedQuestionId}
-          section={section}
-          type={type}
-          filters={filters}
-          selectedQuestionId={selectedQuestionId}
-        />
-
-            </ExportProvider>
-     
-      </Box>
+      <CardDefault
+        backgroundColor="#fff"
+        borderRadius="1rem"
+        withShadow={false}
+      >
+        <ExportProvider>
+          <ChartsRenderer
+            key={section + type + JSON.stringify(filters) + selectedQuestionId}
+            section={section}
+            type={type}
+            filters={filters}
+            selectedQuestionId={selectedQuestionId}
+          />
+        </ExportProvider>
+      </CardDefault>
     </FlexLayout>
   );
 }

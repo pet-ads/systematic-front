@@ -6,6 +6,9 @@ import Header from "@components/structure/Header/Header";
 import FlexLayout from "@components/structure/Flex/Flex";
 import CardDefault from "@components/common/cards";
 
+// Buttons
+import { DownloadProtocolMenu } from "@features/review/summarization-graphics/components/buttons/DownloadProtocolButton";
+
 export default function Download() {
   return (
     <FlexLayout navigationType="Accordion">
@@ -16,10 +19,10 @@ export default function Download() {
         borderRadius="1rem"
         withShadow={false}
       >
-        <Box w="100%" px="1rem" py="1rem" minH="400px" display="flex" justifyContent="center" alignItems="center">
-          {/* Deixei esse espaço pronto e centralizado! 
-            O seu amigo só vai precisar apagar este comentário e colocar o botão dele aqui. 
-          */}
+        <Box
+          w="100%" px="1rem" py="1rem" minH="calc(100vh - 130px)" display="flex" justifyContent="center" alignItems="center"
+        >
+          <DownloadProtocolMenu />
         </Box>
       </CardDefault>
     </FlexLayout>
