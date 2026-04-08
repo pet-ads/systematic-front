@@ -6,13 +6,13 @@ import TextualResponse from "../../components/forms/DataExtraction/subcomponents
 import DropdownList from "../../components/forms/DataExtraction/subcomponents/responses/DropdownList/index.tsx";
 import LabeledList from "../../components/forms/DataExtraction/subcomponents/responses/LabeledList/index.tsx";
 import NumberScale from "../../components/forms/DataExtraction/subcomponents/responses/NumberScale/index.tsx";
+import MultiSelectionList from "../../components/forms/DataExtraction/subcomponents/responses/MultiSelectionList/index.tsx";
 
 // Hooks
 import { useFetchQuestionById } from "@features/review/shared/hooks/useFetchQuestionById.tsx";
 
 // Types
 import { CreateResponseProps, TypeOfQuestions } from "../../types.ts";
-import MultiSelectionList from "../../components/forms/DataExtraction/subcomponents/responses/MultiSelectionList/index.tsx";
 
 export default function CreateResponseComponent({
   articleId,
@@ -20,6 +20,7 @@ export default function CreateResponseComponent({
   typeform,
   answer,
   updateResponse,
+  isInvalid = false,
 }: CreateResponseProps) {
   const question = useFetchQuestionById({
     questionId,
@@ -34,6 +35,7 @@ export default function CreateResponseComponent({
         key={question.code}
         question={question.description}
         answer={answer.value as string}
+        isInvalid={isInvalid}
         onResponse={(response) =>
           updateResponse(articleId, questionId, typeform, {
             value: response,
@@ -49,6 +51,7 @@ export default function CreateResponseComponent({
         answer={answer.value as string}
         minValue={question.lower}
         maxValue={question.higher}
+        isInvalid={isInvalid}
         onResponse={(response) =>
           updateResponse(articleId, questionId, typeform, {
             value: response,
@@ -63,6 +66,7 @@ export default function CreateResponseComponent({
         question={question.description}
         scales={question.scales}
         answer={answer.value as { name: string; value: number }}
+        isInvalid={isInvalid}
         onResponse={(response) =>
           updateResponse(articleId, questionId, typeform, {
             value: response,
@@ -77,6 +81,7 @@ export default function CreateResponseComponent({
         question={question.description}
         options={question.options || []}
         answer={answer.value as string}
+        isInvalid={isInvalid}
         onResponse={(response) =>
           updateResponse(articleId, questionId, typeform, {
             value: response,
@@ -91,6 +96,7 @@ export default function CreateResponseComponent({
         question={question.description}
         options={question.options || []}
         answer={answer.value as string[]}
+        isInvalid={isInvalid}
         onResponse={(response) =>
           updateResponse(articleId, questionId, typeform, {
             value: response,
