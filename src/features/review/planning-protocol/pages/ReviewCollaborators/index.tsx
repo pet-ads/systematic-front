@@ -1,7 +1,39 @@
+// Components
+import NavButton from "@components/common/buttons/NavigationButton";
+import ProtocolFormLayout from "../../components/common/protocolForm";
+import { Text } from "@chakra-ui/react";
+
+// Service
+import useCreateProtocol from "../../services/useCreateProtocol";
+
 export default function ReviewCollaborators() {
+  const {
+    syncAndNavigate,
+  } = useCreateProtocol();
+
+  const id = localStorage.getItem("systematicReviewId") || "";
+
   return (
-    <div>
-      <h1>Review Collaborators</h1>
-    </div>
+    <ProtocolFormLayout
+      headerText="Protocol: Collaborators"
+      navButtons={(
+        <>
+          <NavButton
+            event={() =>
+              syncAndNavigate(
+                `/review/planning/protocol/risk-of-bias-assessment/${id}`
+              )
+            }
+            text="Back"
+          />
+          <NavButton
+            event={() => syncAndNavigate("/review/execution/identification")}
+            text="Next"
+          />
+        </>
+      )}
+    >
+        <Text>Collaborators</Text>
+    </ProtocolFormLayout>
   );
 }
