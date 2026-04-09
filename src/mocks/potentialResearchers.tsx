@@ -1,4 +1,4 @@
-export const potentialCollaborators = [
+export const potentialResearchers = [
     {
       name: "Unincluded Collaborator 1",
       email: "unincluded1@gmail.com",
