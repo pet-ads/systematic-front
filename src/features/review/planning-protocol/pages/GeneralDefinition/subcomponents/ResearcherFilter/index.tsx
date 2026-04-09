@@ -2,14 +2,15 @@ import { Button, Text } from "@chakra-ui/react";
 import { potentialResearchersMock } from "../../../../../../../mocks/potentialResearchers";
 import { addedResearchersMock } from "../../../../../../../mocks/addedResearchers";
 import { useState } from "react";
+import type { Researcher } from "../../types";
 import ResearcherFilterModal from "./AddResearchersModal";
 
 export default function ResearcherFilter() {
-  const [addedResearchers, setAddedResearchers] = useState(addedResearchersMock);
-  const [potentialResearchers, setPotentialResearchers] = useState(potentialResearchersMock);
+  const [addedResearchers, setAddedResearchers] = useState<Researcher[]>(addedResearchersMock);
+  const [potentialResearchers, setPotentialResearchers] = useState<Researcher[]>(potentialResearchersMock);
   const [showPotentialResearchersModal, setShowPotentialResearchersModal] = useState(false);
 
-  const handleSelectPotentialResearcher = (researcher: any) => {
+  const handleSelectPotentialResearcher = (researcher: Researcher) => {
     setAddedResearchers((prev) => [...prev, researcher]);
     setPotentialResearchers((prev) => prev.filter((r) => r.email !== researcher.email));
   };

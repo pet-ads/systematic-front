@@ -1,10 +1,11 @@
-import { Button, Modal, ModalContent, ModalHeader, ModalOverlay, Text } from "@chakra-ui/react";
+import { Button, Modal, ModalContent, ModalHeader, ModalOverlay } from "@chakra-ui/react";
+import type { Researcher } from "../../types";
 
 type Props = {
   isOpen: boolean;
   onClose: () => void;
-  researchers: any[];
-  onSelectResearcher: (researcher: any) => void;
+  researchers: Researcher[];
+  onSelectResearcher: (researcher: Researcher) => void;
 };
 
 export default function ResearcherFilterModal({ isOpen, onClose, researchers, onSelectResearcher }: Props) {
@@ -14,7 +15,7 @@ export default function ResearcherFilterModal({ isOpen, onClose, researchers, on
       <ModalContent>
         <ModalHeader>Add Researchers</ModalHeader>
         {researchers.map((researcher) => (
-          <Button onClick={() => onSelectResearcher(researcher)}>
+          <Button key={researcher.email} onClick={() => onSelectResearcher(researcher)}>
             {researcher.name} - {researcher.email} - {researcher.photo}
           </Button>
         ))}
