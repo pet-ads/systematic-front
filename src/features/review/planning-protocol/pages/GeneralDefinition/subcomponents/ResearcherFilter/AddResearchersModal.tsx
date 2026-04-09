@@ -8,7 +8,7 @@ export default function ResearcherFilterModal({ isOpen, onClose, researchers }: 
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Potential Researchers</ModalHeader>
+        <ModalHeader>Add Researchers</ModalHeader>
         {researchers.map((researcher) => (
           <Text key={researcher.email}>{researcher.name} - {researcher.email} - {researcher.photo}</Text>
         ))}
