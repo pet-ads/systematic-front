@@ -12,7 +12,7 @@ export default function ResearcherFilter() {
 
   const handleSelectPotentialResearcher = (researcher: Researcher) => {
     setAddedResearchers((prev) => [...prev, researcher]);
-    setPotentialResearchers((prev) => prev.filter((r) => r.email !== researcher.email));
+    setPotentialResearchers((prev) => prev.filter((r) => r.id !== researcher.id));
   };
 
   return (
@@ -31,7 +31,7 @@ export default function ResearcherFilter() {
       />
 
       {addedResearchers.map((researcher) => (
-        <Text key={researcher.email}>{researcher.name} - {researcher.email} - {researcher.photo}</Text>
+        <Text key={researcher.id}>{researcher.name} - {researcher.email} - {researcher.photo}</Text>
       ))}
     </>
   );

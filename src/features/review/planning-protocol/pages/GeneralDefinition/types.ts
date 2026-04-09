@@ -6,6 +6,7 @@ export interface GeneralDefinition {
 }
 
 export interface Researcher {
+  id: string;
   name: string;
   email: string;
   photo: string;

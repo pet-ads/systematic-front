@@ -15,7 +15,7 @@ export default function ResearcherFilterModal({ isOpen, onClose, researchers, on
       <ModalContent>
         <ModalHeader>Add Researchers</ModalHeader>
         {researchers.map((researcher) => (
-          <Button key={researcher.email} onClick={() => onSelectResearcher(researcher)}>
+          <Button key={researcher.id} onClick={() => onSelectResearcher(researcher)}>
             {researcher.name} - {researcher.email} - {researcher.photo}
           </Button>
         ))}
