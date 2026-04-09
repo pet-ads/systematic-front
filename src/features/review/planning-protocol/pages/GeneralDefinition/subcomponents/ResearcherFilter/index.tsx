@@ -1,11 +1,11 @@
 import { Button, Text } from "@chakra-ui/react";
-import { potentialResearchers } from "../../../../../../../mocks/potentialResearchers";
-import { addedResearchers } from "../../../../../../../mocks/addedResearchers";
+import { potentialResearchersMock } from "../../../../../../../mocks/potentialResearchers";
+import { addedResearchersMock } from "../../../../../../../mocks/addedResearchers";
 import { useState } from "react";
 import ResearcherFilterModal from "./AddResearchersModal";
 
 export default function ResearcherFilter() {
-  const researchers = potentialResearchers;
+  const researchers = potentialResearchersMock;
   const [showPotentialResearchersModal, setShowPotentialResearchersModal] = useState(false);
 
   return (
@@ -22,7 +22,7 @@ export default function ResearcherFilter() {
         researchers={researchers}
       />
 
-      {addedResearchers.map((researcher) => (
+      {addedResearchersMock.map((researcher) => (
         <Text key={researcher.email}>{researcher.name} - {researcher.email} - {researcher.photo}</Text>
       ))}
     </>

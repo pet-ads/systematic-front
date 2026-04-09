@@ -1,4 +1,4 @@
-export const addedResearchers = [
+export const addedResearchersMock = [
     {
       name: "Added Researcher 1",
       email: "added1@gmail.com",
