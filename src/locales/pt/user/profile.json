@@ -1,0 +1,28 @@
+{
+    "header": {
+        "title": "Meu Perfil"
+    },
+    "buttons": {
+        "edit": "Editar",
+        "cancel": "Cancelar",
+        "save": "Salvar"
+    },
+    "inputs": {
+        "name": {
+            "label": "Nome Completo",
+            "placeholder": "Seu nome completo"
+        },
+        "email": {
+            "label": "E-mail",
+            "placeholder": "seu.email@exemplo.com"
+        },
+        "affiliation": {
+            "label": "Afilicação",
+            "placeholder": "Sua Afiliação"
+        },
+        "country": {
+            "label": "País",
+            "placeholder": "Seu país"
+        }
+    }
+}
