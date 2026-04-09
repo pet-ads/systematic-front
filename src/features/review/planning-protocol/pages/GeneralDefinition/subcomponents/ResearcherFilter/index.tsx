@@ -1,24 +1,32 @@
 import { Button, Text } from "@chakra-ui/react";
 import { potentialResearchers } from "../../../../../../../mocks/potentialResearchers";
 import { addedResearchers } from "../../../../../../../mocks/addedResearchers";
+import { useState } from "react";
 
 export default function ResearcherFilter() {
   const researchers = potentialResearchers;
-
-  const handleAddCollaborator = () => {
-    researchers.map((researcher) => {
-      console.log(researcher.name);
-    });
-  };
+  const [showPotentialResearchersModal, setShowPotentialResearchersModal] = useState(false);
 
   return (
     <>
       <Text mt={"30px"} fontWeight={500} fontSize={"large"}>Researchers</Text>
 
-      <Button onClick={handleAddCollaborator}>Add Collaborator</Button>
+      <Button onClick={() => setShowPotentialResearchersModal(true)}>Add Collaborator</Button>
 
-      {addedResearchers.map((researcher) => (  
-        <Text>{researcher.name} - {researcher.email} - {researcher.photo}</Text>
+      {showPotentialResearchersModal && (
+        <>
+          <Text>Potential Researchers</Text>
+          {researchers.map((researcher) => (
+            <Text key={researcher.email}>
+              {researcher.name} - {researcher.email} - {researcher.photo}
+            </Text>
+          ))}
+          <Button onClick={() => setShowPotentialResearchersModal(false)}>Close</Button>
+        </>
+      )}
+
+      {addedResearchers.map((researcher) => (
+        <Text key={researcher.email}>{researcher.name} - {researcher.email} - {researcher.photo}</Text>
       ))}
     </>
   );
