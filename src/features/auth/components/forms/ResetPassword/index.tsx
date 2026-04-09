@@ -1,24 +1,57 @@
 // External library
-import { useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 // Styles
 import "../styles.css";
+import resetPassword from "@features/auth/services/resetPassword";
+import { isLeft } from "@features/shared/errors/pattern/Either";
+import useToaster from "@components/feedback/Toaster";
 
 export default function ResetPassword() {
   const [searchParams] = useSearchParams();
-  const token = searchParams.get("token");
 
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [token, setToken] = useState<string | null>(null);
+  const [isValid, setIsValid] = useState<boolean | null>(null);
+
+  const Toaster = useToaster();
+  const navigate = useNavigate();
 
   const passwordsMatch =
     newPassword.length > 0 &&
     confirmPassword.length > 0 &&
     newPassword === confirmPassword;
+
+    useEffect(() => {
+    const tokenParam = searchParams.get("token");
+
+    if (!tokenParam || tokenParam.trim() === "") {
+      setIsValid(false);
+
+      setTimeout(() => {
+        navigate("/");
+      }, 3000);
+
+      return;
+    }
+
+    setToken(tokenParam);
+    setIsValid(true);
+  }, [searchParams, navigate]);
+
+  if (isValid === false) {
+    alert("Invalid or missing token")
+    return <div>Invalid or missing token</div>;
+  }
+
+  if (isValid === null) {
+    return <div>Loading...</div>;
+  }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -28,14 +61,37 @@ export default function ResetPassword() {
       return;
     }
 
+    if(!token){
+      setError("Token empty!");
+      return
+    }
+
     setError("");
     setSuccess("");
     setIsLoading(true);
 
     try {
-      // chamar service do reset aqui
-      console.log({ token, newPassword });
+      const result = await resetPassword({token: token, senha: newPassword})
+      if (isLeft(result)) {
+        const errorMessage = result.value.message;
+        Toaster({
+          title: "Token invalid!",
+          description: errorMessage,
+          status: "error",
+        });
+      }else{
+        Toaster({
+          title: "Success!",
+          description: "Password changed!",
+          status: "success",
+        });
 
+        setTimeout(() => {
+          navigate("/");
+        }, 3000);
+
+      }
+      setIsLoading(false)
       setSuccess("Password updated successfully!");
       setNewPassword("");
       setConfirmPassword("");

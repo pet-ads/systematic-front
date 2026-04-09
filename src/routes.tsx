@@ -40,6 +40,9 @@ import Download from "@features/review/summarization-download/pages/download";
 import Unauthorized from "@features/application/pages/UnauthorizedPage";
 import ServerError from "@features/application/pages/ServerErrorPage";
 
+// Reset password
+import ResetPassword from "@features/auth/components/forms/ResetPassword";
+
 const routesList: RouteObject[] = [
   {
     path: "/",
@@ -64,6 +67,10 @@ const routesList: RouteObject[] = [
   {
     path: "/server-error",
     element: <ServerError />,
+  },
+  {
+    path: "/reset-password",
+    element: <ResetPassword />,
   },
   {
     path: "/review/planning/protocol/general-definition",
@@ -128,9 +135,9 @@ const routesList: RouteObject[] = [
     element: <ProtectedRoute element={<Visualization />} />,
   },
   {
-      path: "/review/summarization/download",
-      element: <ProtectedRoute element={<Download />} />,
-    },
+    path: "/review/summarization/download",
+    element: <ProtectedRoute element={<Download />} />,
+  },  
 ];
 
 export default function AppRoutes() {
