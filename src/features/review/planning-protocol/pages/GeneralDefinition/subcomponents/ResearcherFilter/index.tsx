@@ -12,9 +12,15 @@ export default function ResearcherFilter() {
     <>
       <Text mt={"30px"} fontWeight={500} fontSize={"large"}>Researchers</Text>
 
-      <Button onClick={() => setShowPotentialResearchersModal(true)}>Add Researchers</Button>
+      <Button onClick={() => setShowPotentialResearchersModal(true)}>
+        Add Researchers
+      </Button>
 
-      <ResearcherFilterModal isOpen={showPotentialResearchersModal} onClose={() => setShowPotentialResearchersModal(false)} researchers={researchers} />
+      <ResearcherFilterModal
+        isOpen={showPotentialResearchersModal}
+        onClose={() => setShowPotentialResearchersModal(false)}
+        researchers={researchers}
+      />
 
       {addedResearchers.map((researcher) => (
         <Text key={researcher.email}>{researcher.name} - {researcher.email} - {researcher.photo}</Text>
