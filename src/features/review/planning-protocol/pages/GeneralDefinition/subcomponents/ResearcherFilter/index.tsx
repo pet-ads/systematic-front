@@ -9,6 +9,11 @@ export default function ResearcherFilter() {
   const [potentialResearchers, setPotentialResearchers] = useState(potentialResearchersMock);
   const [showPotentialResearchersModal, setShowPotentialResearchersModal] = useState(false);
 
+  const handleSelectPotentialResearcher = (researcher: any) => {
+    setAddedResearchers((prev) => [...prev, researcher]);
+    setPotentialResearchers((prev) => prev.filter((r) => r.email !== researcher.email));
+  };
+
   return (
     <>
       <Text mt={"30px"} fontWeight={500} fontSize={"large"}>Researchers</Text>
@@ -21,6 +26,7 @@ export default function ResearcherFilter() {
         isOpen={showPotentialResearchersModal}
         onClose={() => setShowPotentialResearchersModal(false)}
         researchers={potentialResearchers}
+        onSelectResearcher={handleSelectPotentialResearcher}
       />
 
       {addedResearchers.map((researcher) => (
