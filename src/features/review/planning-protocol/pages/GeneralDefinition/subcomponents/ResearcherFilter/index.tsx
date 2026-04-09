@@ -2,6 +2,7 @@ import { Button, Text } from "@chakra-ui/react";
 import { potentialResearchers } from "../../../../../../../mocks/potentialResearchers";
 import { addedResearchers } from "../../../../../../../mocks/addedResearchers";
 import { useState } from "react";
+import ResearcherFilterModal from "./AddResearchersModal";
 
 export default function ResearcherFilter() {
   const researchers = potentialResearchers;
@@ -13,17 +14,7 @@ export default function ResearcherFilter() {
 
       <Button onClick={() => setShowPotentialResearchersModal(true)}>Add Collaborator</Button>
 
-      {showPotentialResearchersModal && (
-        <>
-          <Text>Potential Researchers</Text>
-          {researchers.map((researcher) => (
-            <Text key={researcher.email}>
-              {researcher.name} - {researcher.email} - {researcher.photo}
-            </Text>
-          ))}
-          <Button onClick={() => setShowPotentialResearchersModal(false)}>Close</Button>
-        </>
-      )}
+      <ResearcherFilterModal isOpen={showPotentialResearchersModal} onClose={() => setShowPotentialResearchersModal(false)} researchers={researchers} />
 
       {addedResearchers.map((researcher) => (
         <Text key={researcher.email}>{researcher.name} - {researcher.email} - {researcher.photo}</Text>
