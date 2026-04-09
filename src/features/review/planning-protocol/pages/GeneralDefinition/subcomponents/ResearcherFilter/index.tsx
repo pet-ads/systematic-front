@@ -12,7 +12,7 @@ export default function ResearcherFilter() {
     <>
       <Text mt={"30px"} fontWeight={500} fontSize={"large"}>Researchers</Text>
 
-      <Button onClick={() => setShowPotentialResearchersModal(true)}>Add Collaborator</Button>
+      <Button onClick={() => setShowPotentialResearchersModal(true)}>Add Researchers</Button>
 
       <ResearcherFilterModal isOpen={showPotentialResearchersModal} onClose={() => setShowPotentialResearchersModal(false)} researchers={researchers} />
 
