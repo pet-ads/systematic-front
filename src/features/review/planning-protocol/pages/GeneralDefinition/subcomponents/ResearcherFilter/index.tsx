@@ -6,7 +6,7 @@ export default function ResearcherFilter() {
 
   return (
     <>
-      <Text>Researchers</Text>
+      <Text mt={"30px"} fontWeight={500} fontSize={"large"}>Researchers</Text>
       {researchers.map((researcher) => (  
         <Text key={researcher.name}>{researcher.name} - {researcher.email} - {researcher.photo}</Text>
       ))}
