@@ -15,6 +15,11 @@ export default function ResearcherFilter() {
     setPotentialResearchers((prev) => prev.filter((r) => r.id !== researcher.id));
   };
 
+  const handleReturnAddedResearcher = (researcher: Researcher) => {
+    setAddedResearchers((prev) => prev.filter((r) => r.id !== researcher.id));
+    setPotentialResearchers((prev) => [...prev, researcher]);
+  };
+
   return (
     <>
       <Text mt={"30px"} fontWeight={500} fontSize={"large"}>Researchers</Text>
@@ -31,7 +36,9 @@ export default function ResearcherFilter() {
       />
 
       {addedResearchers.map((researcher) => (
-        <Text key={researcher.id}>{researcher.name} - {researcher.email} - {researcher.photo}</Text>
+        <Button key={researcher.id} onClick={() => handleReturnAddedResearcher(researcher)}>
+          {researcher.name} - {researcher.email} - {researcher.photo}
+        </Button>
       ))}
     </>
   );
