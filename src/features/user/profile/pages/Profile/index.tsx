@@ -1,9 +1,11 @@
 // External library
 import { useEffect, useState } from "react";
-import { Box, Button, Circle, Flex, SimpleGrid, Text } from "@chakra-ui/react";
-import { CloseIcon } from "@chakra-ui/icons";
+import { Box, Button, Circle, Flex, Menu, MenuButton, MenuItem, MenuList, SimpleGrid, Text } from "@chakra-ui/react";
+import { ChevronDownIcon, CloseIcon } from "@chakra-ui/icons";
 import { FaCheckCircle } from "react-icons/fa";
 import { FaPen } from "react-icons/fa6";
+import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 // Service
 import useProfile from "@features/user/profile/services/useProfile";
@@ -26,6 +28,7 @@ import type { Profile, UpdateProfileDTO, Mode } from "../../types";
 // Utils
 import { splitInitialCaracter } from "../../utils/helpers/formatters/SplitInitialCarater";
 import useValidatorSQLInjection from "@features/shared/hooks/useValidatorSQLInjection";
+import ReactCountryFlag from "react-country-flag";
 
 // Constants
 const defaultUserProfile: Profile = {
@@ -45,12 +48,22 @@ const defaultUpdateUserProfile: UpdateProfileDTO = {
   country: "",
 };
 
+const languageOptions = [
+  { lang: "pt", countryCode: "BR", label: "PT" },
+  { lang: "en", countryCode: "US", label: "EN" },
+];
+
 export default function Profile() {
+  const { t } = useTranslation("user/profile");
   const [userProfile, setUserProfile] = useState<Profile>(defaultUserProfile);
   const [updateProfile, setUpdateProfile] = useState<UpdateProfileDTO>(
     defaultUpdateUserProfile
   );
   const [isUpdateMode, setIsUpdateMode] = useState<Mode>("DEFAULT");
+
+  const currentLanguage =
+    languageOptions.find((opt) => opt.lang === i18n.language) ??
+    languageOptions[0];
 
   const { profile, isLoading } = useProfile();
   const { update } = useUpdateProfile();
@@ -175,7 +188,61 @@ export default function Profile() {
 
   return (
     <FlexLayout navigationType="Default">
-      <Header text="My Profile" />
+      <Flex alignItems="center" paddingRight="12px">
+        <Header text={t("header.title")}/>
+        <Menu>
+          <MenuButton
+            as={Button}
+            color="white"
+            bg="transparent"
+            _hover={{ color: "black", backgroundColor: "white" }}
+            _active={{ color: "black", backgroundColor: "white" }}
+            _expanded={{ color: "black", backgroundColor: "white" }}
+            px="0.75rem"
+          >
+            <Flex alignItems="center" gap="0.4rem">
+              <ReactCountryFlag
+                countryCode={currentLanguage.countryCode}
+                svg
+                style={{
+                  width: "1.2em",
+                  height: "1.2em",
+                  borderRadius: "2px",
+                }}
+              />
+              <Text fontSize="sm" fontWeight="semibold" color="#263C56">
+                {currentLanguage.label}
+              </Text>
+              <ChevronDownIcon color="#263C56" />
+            </Flex>
+          </MenuButton>
+          <MenuList minW="90px" w="90px">
+            {languageOptions.map((opt) => (
+              <MenuItem
+                key={opt.lang}
+                onClick={() => i18n.changeLanguage(opt.lang)}
+                fontWeight={
+                  i18n.language === opt.lang ? "bold" : "normal"
+                }
+                color={i18n.language === opt.lang ? "#2E4B6C" : "inherit"}
+              >
+                <Flex alignItems="center" gap="0.5rem">
+                  <ReactCountryFlag
+                    countryCode={opt.countryCode}
+                    svg
+                    style={{
+                      width: "1.2em",
+                      height: "1.2em",
+                      borderRadius: "2px",
+                    }}
+                  />
+                  <Text fontSize="sm">{opt.label}</Text>
+                </Flex>
+              </MenuItem>
+            ))}
+          </MenuList>
+        </Menu>
+      </Flex>
       <CardDefault backgroundColor="white" borderRadius="1rem" withShadow={false}>
         {isLoading ? (
           <SkeletonLoader width="100%" height="100%" />
@@ -235,9 +302,9 @@ export default function Profile() {
                     }}
                     transition="all 0.3s ease"
                     width="6.5rem"
-                    gap=".5rem"
+                    gap={i18n.language === "pt" ? ".2rem" : ".5rem"}
                   >
-                    Cancel
+                    {t("buttons.cancel")}
                   </Button>
                 ) : (
                   <Button
@@ -254,9 +321,9 @@ export default function Profile() {
                     }}
                     transition="all 0.3s ease"
                     width="6.5rem"
-                    gap=".5rem"
+                    gap={i18n.language === "pt" ? ".2rem" : ".5rem"}
                   >
-                    Edit
+                    {t("buttons.edit")}
                   </Button>
                 )}
               </Flex>
@@ -268,10 +335,10 @@ export default function Profile() {
               >
                 <InputText
                   width="100%"
-                  label="Full Name"
+                  label={t("inputs.name.label")}
                   nome="name"
                   type="text"
-                  placeholder="Your full name"
+                  placeholder={t("inputs.name.placeholder")}
                   value={isActiveUpdateMode ? updateProfile.name : name}
                   onChange={(event) =>
                     handleChangeUserProfile("name", event.target.value)
@@ -280,10 +347,10 @@ export default function Profile() {
                 />
                 <InputText
                   width="100%"
-                  label="Email"
+                  label={t("inputs.email.label")}
                   nome="email"
                   type="email"
-                  placeholder="your.email@example.com"
+                  placeholder={t("inputs.email.placeholder")}
                   value={isActiveUpdateMode ? updateProfile.email : email}
                   onChange={(event) =>
                     handleChangeUserProfile("email", event.target.value)
@@ -292,10 +359,10 @@ export default function Profile() {
                 />
                 <InputText
                   width="100%"
-                  label="Affiliation"
+                  label={t("inputs.affiliation.label")}
                   nome="affiliation"
                   type="text"
-                  placeholder="Your affiliation"
+                  placeholder={t("inputs.affiliation.placeholder")}
                   value={
                     isActiveUpdateMode ? updateProfile.affiliation : affiliation
                   }
@@ -306,10 +373,10 @@ export default function Profile() {
                 />
                 <InputText
                   width="100%"
-                  label="Country"
+                  label={t("inputs.country.label")}
                   nome="country"
                   type="text"
-                  placeholder="Your country"
+                  placeholder={t("inputs.country.placeholder")}
                   value={isActiveUpdateMode ? updateProfile.country : country}
                   onChange={(event) =>
                     handleChangeUserProfile("country", event.target.value)
@@ -336,7 +403,7 @@ export default function Profile() {
                     width="6.5rem"
                     gap=".5rem"
                   >
-                    Save
+                    {t("buttons.save")}
                   </Button>
                 </Flex>
               )}
