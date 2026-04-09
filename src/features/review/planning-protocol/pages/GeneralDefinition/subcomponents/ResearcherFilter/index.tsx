@@ -1,5 +1,6 @@
 import { Button, Text } from "@chakra-ui/react";
 import { potentialResearchers } from "../../../../../../../mocks/potentialResearchers";
+import { addedResearchers } from "../../../../../../../mocks/addedResearchers";
 
 export default function ResearcherFilter() {
   const researchers = potentialResearchers;
@@ -14,7 +15,7 @@ export default function ResearcherFilter() {
     <>
       <Text mt={"30px"} fontWeight={500} fontSize={"large"}>Researchers</Text>
       <Button onClick={handleAddCollaborator}>Add Collaborator</Button>
-      {researchers.map((researcher) => (  
+      {addedResearchers.map((researcher) => (  
         <Text key={researcher.name}>{researcher.name} - {researcher.email} - {researcher.photo}</Text>
       ))}
     </>
