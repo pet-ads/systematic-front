@@ -16,7 +16,7 @@ export default function ResearcherFilter() {
       <Text mt={"30px"} fontWeight={500} fontSize={"large"}>Researchers</Text>
       <Button onClick={handleAddCollaborator}>Add Collaborator</Button>
       {addedResearchers.map((researcher) => (  
-        <Text key={researcher.name}>{researcher.name} - {researcher.email} - {researcher.photo}</Text>
+        <Text>{researcher.name} - {researcher.email} - {researcher.photo}</Text>
       ))}
     </>
   );
