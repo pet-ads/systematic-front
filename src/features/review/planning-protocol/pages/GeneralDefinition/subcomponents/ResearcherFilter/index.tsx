@@ -5,7 +5,8 @@ import { useState } from "react";
 import ResearcherFilterModal from "./AddResearchersModal";
 
 export default function ResearcherFilter() {
-  const researchers = potentialResearchersMock;
+  const [addedResearchers, setAddedResearchers] = useState(addedResearchersMock);
+  const [potentialResearchers, setPotentialResearchers] = useState(potentialResearchersMock);
   const [showPotentialResearchersModal, setShowPotentialResearchersModal] = useState(false);
 
   return (
@@ -19,10 +20,10 @@ export default function ResearcherFilter() {
       <ResearcherFilterModal
         isOpen={showPotentialResearchersModal}
         onClose={() => setShowPotentialResearchersModal(false)}
-        researchers={researchers}
+        researchers={potentialResearchers}
       />
 
-      {addedResearchersMock.map((researcher) => (
+      {addedResearchers.map((researcher) => (
         <Text key={researcher.email}>{researcher.name} - {researcher.email} - {researcher.photo}</Text>
       ))}
     </>
