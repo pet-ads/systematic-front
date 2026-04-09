@@ -4,6 +4,8 @@ import LanguageDetector from "i18next-browser-languagedetector";
 
 import enHomepage from "../locales/en/landing/homepage.json";
 import ptHomepage from "../locales/pt/landing/homepage.json";
+import enProfile from "../locales/en/user/profile.json";
+import ptProfile from "../locales/pt/user/profile.json";
 
 i18n
   .use(LanguageDetector)
@@ -15,9 +17,11 @@ i18n
     resources: {
       en: {
         "landing/homepage": enHomepage,
+        "user/profile": enProfile,
       },
       pt: {
         "landing/homepage": ptHomepage,
+        "user/profile": ptProfile,
       },
     },
 
