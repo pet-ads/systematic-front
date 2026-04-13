@@ -1,0 +1,34 @@
+{
+    "newReview": "New Review",
+    "tooltips": {
+        "home": "Home",
+        "profile": "Profile",
+        "logout": "Logout"
+    },    
+    "sections": {
+        "Planning": "Planning",
+        "Execution": "Execution",
+        "Summarization": "Summarization"
+    },
+    "planning": {
+        "definition": "Definition",
+        "picoc": "PICOC",
+        "research": "Research",
+        "criteria": "Criteria",
+        "sources": "Sources",
+        "selection": "Selection",
+        "risk": "Risk of Bias",
+        "analysis": "Analysis"
+    },
+    "execution": {
+        "identification": "Identification",
+        "selection": "Selection",
+        "extraction": "Extraction"
+    },
+    "summarization": {
+        "graphics": "Graphics",
+        "download": "Download",
+        "visualization": "Visualization",
+        "finalization": "Finalization"
+    }
+}
