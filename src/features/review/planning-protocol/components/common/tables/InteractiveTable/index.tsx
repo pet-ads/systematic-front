@@ -62,15 +62,13 @@ export default function InteractiveTable({ id, url, label }: Props) {
   } = useSendExtractionForm(adress);
 
   const [editIndex, setEditIndex] = useState<number | null>(null);
+  const [pendingNewIndex, setPendingNewIndex] = useState<number | null>(null);
   const [numberScale, setnumberScale] = useState<number[]>([]);
   const [questions, setQuestions] = useState<string[]>([]);
   const [pickManyQuestions, setPickManyQuestions] = useState<string[]>([]);
-  const [labeledQuestions, setLabeledQuestions] = useState<
-    Record<string, number>
-  >({});
+  const [labeledQuestions, setLabeledQuestions] = useState<Record<string, number>>({});
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState("");
-
   const [sortConfig, setSortConfig] = useState<SortConfig<Row>>(null);
 
   function normalizeCode(code: string) {
@@ -82,9 +80,7 @@ export default function InteractiveTable({ id, url, label }: Props) {
     const fetch = async () => {
       try {
         const accessToken = localStorage.getItem("accessToken");
-        let options = {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        };
+        let options = { headers: { Authorization: `Bearer ${accessToken}` } };
 
         let response = await Axios.get(url, options);
         let link = `systematic-study/${id}/protocol/${adress}`;
@@ -143,7 +139,6 @@ export default function InteractiveTable({ id, url, label }: Props) {
     fetch();
   }, [id, url, adress, setRows]);
 
-
   function handleSelect(index: number, newValue: string) {
     handleTypeChange(index, newValue);
     if (newValue !== "") {
@@ -153,11 +148,7 @@ export default function InteractiveTable({ id, url, label }: Props) {
   }
 
   async function handleSaveEdit(index: number, closeEditMode: boolean = true) {
-    if (!validator({ value: rows[index].question })) {
-      return;
-
-
-    }
+    if (!validator({ value: rows[index].question })) return;
 
     if (String(rows[index].id).trim() === "") {
       toaster({
@@ -170,19 +161,16 @@ export default function InteractiveTable({ id, url, label }: Props) {
 
     const currentCode = String(rows[index].id).trim().toUpperCase();
     const isDuplicate = rows.some(
-      (row, i) =>
-        i !== index && String(row.id).trim().toUpperCase() === currentCode,
+      (row, i) => i !== index && String(row.id).trim().toUpperCase() === currentCode,
     );
 
     if (currentCode !== "" && isDuplicate) {
-      {
-        toaster({
-          title: `The reference code '${currentCode}' is already in use.`,
-          description: "Please choose another one.",
-          status: "error",
-        });
-        return;
-      }
+      toaster({
+        title: `The reference code '${currentCode}' is already in use.`,
+        description: "Please choose another one.",
+        status: "error",
+      });
+      return;
     }
 
     const row = rows[index];
@@ -208,13 +196,7 @@ export default function InteractiveTable({ id, url, label }: Props) {
         else await updatePickListQuestion(data, serverId, questionType);
       } else if (type === "number scale") {
         questionType = "NUMBERED_SCALE";
-        data = {
-          question,
-          questionId,
-          reviewId,
-          lower: numberScale[0],
-          higher: numberScale[1],
-        };
+        data = { question, questionId, reviewId, lower: numberScale[0], higher: numberScale[1] };
         handleNumberScale(index, numberScale[0], numberScale[1]);
         if (isNew) newQuestionId = await sendNumberScaleQuestion(data);
         else await updateNumberScaleQuestion(data, serverId);
@@ -242,17 +224,18 @@ export default function InteractiveTable({ id, url, label }: Props) {
 
       if (closeEditMode) {
         setEditIndex(null);
+        if (pendingNewIndex === index) {
+          setPendingNewIndex(null);
+        }
       }
-      
     } catch (error) {
       console.error("Failed to save question:", error);
     }
   }
 
   async function handleSaveDelete(index: number) {
-    if (!validator({ value: rows[index].question })) {
-      return;
-    }
+    if (!validator({ value: rows[index].question })) return;
+
     const row = rows[index];
     const { questionId: serverId } = row;
     const reviewId = id;
@@ -267,6 +250,11 @@ export default function InteractiveTable({ id, url, label }: Props) {
 
       await deleteQuestion(data as any, serverId);
       handleDelete(index);
+
+      if (pendingNewIndex === index) {
+        setPendingNewIndex(null);
+        setEditIndex(null);
+      }
     } catch (error) {
       console.error("Failed to delete question:", error);
     }
@@ -278,6 +266,14 @@ export default function InteractiveTable({ id, url, label }: Props) {
       prevRows.map((row, i) => (i === index ? { ...row, id: limitedId } : row)),
     );
   };
+
+  function discardPendingNewRow() {
+    if (pendingNewIndex !== null) {
+      setRows((prev) => prev.filter((_, i) => i !== pendingNewIndex));
+      setPendingNewIndex(null);
+      setEditIndex(null);
+    }
+  }
 
   function addNewRow() {
     if (editIndex !== null) {
@@ -291,18 +287,13 @@ export default function InteractiveTable({ id, url, label }: Props) {
     addRow(setEditIndex, setQuestions);
     setPickManyQuestions([]);
 
-
     setRows((prevRows) => {
       const newRows = [...prevRows];
       const lastIndex = newRows.length - 1;
-
       if (newRows[lastIndex]) {
-        newRows[lastIndex] = {
-          ...newRows[lastIndex],
-          id: "",
-        };
+        newRows[lastIndex] = { ...newRows[lastIndex], id: "" };
       }
-
+      setPendingNewIndex(lastIndex);
       return newRows;
     });
   }
@@ -393,25 +384,23 @@ export default function InteractiveTable({ id, url, label }: Props) {
       label: "",
       width: "15%",
       render: (row, index) => (
-        <div
-          style={{ display: "flex", gap: "0.5rem", justifyContent: "center" }}
-        >
+        <div style={{ display: "flex", gap: "0.5rem", justifyContent: "center" }}>
           <DeleteButton
             index={index}
             handleDelete={() => handleSaveDelete(index)}
           />
           <EditButton
-            itemDescription={row.question}
-            itemType={row.type}
             index={index}
             editIndex={editIndex}
-
             handleEdit={async () => {
-              if (editIndex !== null && editIndex !== index) {
+              if (pendingNewIndex !== null && pendingNewIndex !== index) {
+                discardPendingNewRow();
+              } else if (editIndex !== null && editIndex !== index) {
                 await handleSaveEdit(editIndex, true);
               }
-              setnumberScale([row.lower || 1, row.higher || 5]); 
-              setQuestions(row.questions || []); 
+
+              setnumberScale([row.lower || 1, row.higher || 5]);
+              setQuestions(row.questions || []);
               setLabeledQuestions(row.scale || {});
               setEditIndex(index);
               setPickManyQuestions(row.questions || []);
@@ -505,4 +494,3 @@ export default function InteractiveTable({ id, url, label }: Props) {
     </div>
   );
 }
-

@@ -7,8 +7,6 @@ interface editButtonProps {
   index: number;
   handleSaveEdit: () => void;
   handleEdit: (index: number) => void;
-  itemDescription?: string;
-  itemType?: string;
 }
 
 export default function EditButton({
@@ -16,17 +14,12 @@ export default function EditButton({
   index,
   handleSaveEdit,
   handleEdit,
-  itemDescription,
-  itemType,
 }: editButtonProps) {
-  const validation =
-    editIndex === index &&
-    itemDescription?.trim() !== "" &&
-    itemType?.trim() !== "";
+  const isEditing = editIndex === index;
 
   return (
     <>
-      {validation ? (
+      {isEditing ? (
         <Button variant="ghost" onClick={handleSaveEdit}>
           <i className="pi pi-save" style={{ color: "black" }}></i>
         </Button>
