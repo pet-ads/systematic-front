@@ -43,31 +43,25 @@ export default function ResearcherFilter() {
         </Button>
       ))} */}
 
-      <VStack
-        spacing={0}
-        align="stretch"
-        border="2px solid"
-        borderColor="gray.300"
-        borderRadius="md"
-        bgColor={"#ffffffff"}
-        overflow="hidden"
-        px={2} py={2}
-      >
-        <Flex gap="4" align="center" px={4} py={3}>
-          <Input placeholder="Add a researcher" flex="1" size="md" />
-          <EventButton w={"40px"} />
+      {/* Center the add row; inner width caps how wide input+button get on large screens */}
+      <VStack spacing={0} align="stretch" border="2px solid" borderColor="gray.300" borderRadius="md" bgColor="#ffffffff" overflow="hidden" px={2} py={2}>
+        <Flex justify="center" py={2}>
+          <Flex gap={2} align="center" minW="28rem">
+            <Input placeholder="Add a researcher" flex="1" minW={0} size="md" />
+            <EventButton w="40px" flexShrink={0} />
+          </Flex>
         </Flex>
         <Flex borderWidth="1px" borderColor="gray.200" borderRadius="md" px={4} py={2} align="center" justify="space-between">
           <Text>Ana Silva - ana.silva@mock.com</Text>
-          <Icon as={DeleteIcon} w={"15px"} h={"15px"} color="gray.500" />
+          <Icon as={DeleteIcon} w="15px" h="15px" color="gray.500" />
         </Flex>
         <Flex borderWidth="1px" borderColor="gray.200" borderRadius="md" px={4} py={2} align="center" justify="space-between">
           <Text>Carlos Souza - carlos.souza@mock.com</Text>
-          <Icon as={DeleteIcon} w={"15px"} h={"15px"} color="gray.500" />
+          <Icon as={DeleteIcon} w="15px" h="15px" color="gray.500" />
         </Flex>
         <Flex borderWidth="1px" borderColor="gray.200" borderRadius="md" px={4} py={2} align="center" justify="space-between">
           <Text>Marina Costa - marina.costa@mock.com</Text>
-          <Icon as={DeleteIcon} w={"15px"} h={"15px"} color="gray.500" />
+          <Icon as={DeleteIcon} w="15px" h="15px" color="gray.500" />
         </Flex>
       </VStack>
     </>
