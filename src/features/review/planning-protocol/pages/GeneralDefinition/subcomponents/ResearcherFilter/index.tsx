@@ -43,8 +43,17 @@ export default function ResearcherFilter() {
         </Button>
       ))} */}
 
-      <VStack spacing={3} align="stretch">
-        <Flex gap="4" align="center">
+      <VStack
+        spacing={0}
+        align="stretch"
+        border="2px solid"
+        borderColor="gray.300"
+        borderRadius="md"
+        bgColor={"#ffffffff"}
+        overflow="hidden"
+        px={2} py={2}
+      >
+        <Flex gap="4" align="center" px={4} py={3}>
           <Input placeholder="Add a researcher" flex="1" size="md" />
           <EventButton w={"40px"} />
         </Flex>
