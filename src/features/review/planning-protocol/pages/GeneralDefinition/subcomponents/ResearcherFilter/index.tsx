@@ -45,8 +45,7 @@ export default function ResearcherFilter() {
 
       <VStack spacing={3} align="stretch">
         <Flex gap="4" align="center">
-          <Text>Add</Text>
-          <Input placeholder="Enter the researcher name" flex="1" size="md" />
+          <Input placeholder="Add a researcher" flex="1" size="md" />
           <EventButton w={"40px"} />
         </Flex>
         <Flex borderWidth="1px" borderColor="gray.200" borderRadius="md" px={4} py={2} align="center" justify="space-between">
