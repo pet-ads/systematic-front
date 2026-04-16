@@ -1,4 +1,5 @@
-import { Button, Text,  Flex, Input, VStack} from "@chakra-ui/react";
+import { DeleteIcon } from "@chakra-ui/icons";
+import { Text, Flex, Input, VStack, Icon } from "@chakra-ui/react";
 // import { potentialResearchersMock } from "../../../../../../../mocks/potentialResearchers";
 // import { addedResearchersMock } from "../../../../../../../mocks/addedResearchers";
 // import { useState } from "react";
@@ -48,9 +49,18 @@ export default function ResearcherFilter() {
           <Input placeholder="Enter the researcher name" flex="1" size="md" />
           <EventButton w={"40px"} />
         </Flex>
-        <Button variant="outline">Ana Silva - ana.silva@mock.com</Button>
-        <Button variant="outline">Carlos Souza - carlos.souza@mock.com</Button>
-        <Button variant="outline">Marina Costa - marina.costa@mock.com</Button>
+        <Flex borderWidth="1px" borderColor="gray.200" borderRadius="md" px={4} py={2} align="center" justify="space-between">
+          <Text>Ana Silva - ana.silva@mock.com</Text>
+          <Icon as={DeleteIcon} w={"15px"} h={"15px"} color="gray.500" />
+        </Flex>
+        <Flex borderWidth="1px" borderColor="gray.200" borderRadius="md" px={4} py={2} align="center" justify="space-between">
+          <Text>Carlos Souza - carlos.souza@mock.com</Text>
+          <Icon as={DeleteIcon} w={"15px"} h={"15px"} color="gray.500" />
+        </Flex>
+        <Flex borderWidth="1px" borderColor="gray.200" borderRadius="md" px={4} py={2} align="center" justify="space-between">
+          <Text>Marina Costa - marina.costa@mock.com</Text>
+          <Icon as={DeleteIcon} w={"15px"} h={"15px"} color="gray.500" />
+        </Flex>
       </VStack>
     </>
   );
