@@ -1,54 +1,43 @@
 import { DeleteIcon } from "@chakra-ui/icons";
-import { Text, Flex, Input, VStack, Icon } from "@chakra-ui/react";
-// import { potentialResearchersMock } from "../../../../../../../mocks/potentialResearchers";
-// import { addedResearchersMock } from "../../../../../../../mocks/addedResearchers";
-// import { useState } from "react";
-// import type { Researcher } from "../../types";
-// import ResearcherFilterModal from "./AddResearchersModal";
+import { Text, Flex, Input, VStack, Icon, Box, Avatar } from "@chakra-ui/react";
+import { useState } from "react";
 import EventButton from "@components/common/buttons/EventButton";
 
 export default function ResearcherFilter() {
-  // const [addedResearchers, setAddedResearchers] = useState<Researcher[]>(addedResearchersMock);
-  // const [potentialResearchers, setPotentialResearchers] = useState<Researcher[]>(potentialResearchersMock);
-  // const [showPotentialResearchersModal, setShowPotentialResearchersModal] = useState(false);
-
-  // const handleSelectPotentialResearcher = (researcher: Researcher) => {
-  //   setAddedResearchers((prev) => [...prev, researcher]);
-  //   setPotentialResearchers((prev) => prev.filter((r) => r.id !== researcher.id));
-  // };
-
-  // const handleReturnAddedResearcher = (researcher: Researcher) => {
-  //   setAddedResearchers((prev) => prev.filter((r) => r.id !== researcher.id));
-  //   setPotentialResearchers((prev) => [...prev, researcher]);
-  // };
+  const [suggestionsOpen, setSuggestionsOpen] = useState(false);
 
   return (
     <>
       <Text mt={"30px"} fontWeight={500} fontSize={"large"}>Researchers</Text>
 
-      {/* <Button onClick={() => setShowPotentialResearchersModal(true)}>
-        Add Researchers
-      </Button>
-
-      <ResearcherFilterModal
-        isOpen={showPotentialResearchersModal}
-        onClose={() => setShowPotentialResearchersModal(false)}
-        researchers={potentialResearchers}
-        onSelectResearcher={handleSelectPotentialResearcher}
-      />
-
-      {addedResearchers.map((researcher) => (
-        <Button key={researcher.id} onClick={() => handleReturnAddedResearcher(researcher)}>
-          {researcher.name} - {researcher.email} - {researcher.photo}
-        </Button>
-      ))} */}
-
-      {/* Center the add row; inner width caps how wide input+button get on large screens */}
-      <VStack spacing={0} align="stretch" border="2px solid" borderColor="gray.300" borderRadius="md" bgColor="#ffffffff" overflow="hidden" px={2} py={2}>
+      <VStack spacing={0} align="stretch" border="2px solid" borderColor="gray.300" borderRadius="md" bgColor="#ffffffff" px={2} py={2}>
         <Flex justify="center" py={2}>
-          <Flex gap={2} align="center" minW="28rem">
-            <Input placeholder="Add a researcher" flex="1" minW={0} size="md" />
+          <Flex gap={2} align="center" width="28rem" position="relative">
+            <Input
+              placeholder="Add a researcher"
+              flex="1"
+              minW={0}
+              size="md"
+              onFocus={() => setSuggestionsOpen(true)}
+              onBlur={() => setSuggestionsOpen(false)}
+            />
             <EventButton w="40px" flexShrink={0} />
+            {suggestionsOpen && (
+              <Box position="absolute" width = "25rem" top="100%" mt={1} bg="white" border="1px solid" borderColor="gray.300" borderRadius="md">
+                <Flex align="center" gap={3} px={3} py={2} _hover={{ bg: "gray.50" }}>
+                  <Avatar size="sm" name="Potential Researcher 1" />
+                  <Text flex="1" minW={0} fontSize="sm">Potential Researcher 1 - unincluded1@gmail.com</Text>
+                </Flex>
+                <Flex align="center" gap={3} px={3} py={2} _hover={{ bg: "gray.50" }}>
+                  <Avatar size="sm" name="Potential Researcher 2" />
+                  <Text flex="1" minW={0} fontSize="sm">Potential Researcher 2 - unincluded2@gmail.com</Text>
+                </Flex>
+                <Flex align="center" gap={3} px={3} py={2} _hover={{ bg: "gray.50" }}>
+                  <Avatar size="sm" name="Potential Researcher 3" />
+                  <Text flex="1" minW={0} fontSize="sm">Potential Researcher 3 - unincluded3@gmail.com</Text>
+                </Flex>
+              </Box>
+            )}
           </Flex>
         </Flex>
         <Flex borderWidth="1px" borderColor="gray.200" borderRadius="md" px={4} py={2} align="center" justify="space-between">
