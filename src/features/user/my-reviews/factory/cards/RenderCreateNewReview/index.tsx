@@ -31,7 +31,7 @@ const button = {
 };
 
 const RenderCreateNewReview = () => {
-  const { t } = useTranslation("landing/my-reviews");
+  const { t } = useTranslation("user/my-reviews");
 
   return (
     <Flex sx={container}>

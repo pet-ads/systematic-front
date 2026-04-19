@@ -19,7 +19,7 @@ import RenderCreateNewReview from "../../factory/cards/RenderCreateNewReview";
 import { flexStyles } from "./styles";
 
 export default function MyReviews() {
-  const { t } = useTranslation("landing/my-reviews");
+  const { t } = useTranslation("user/my-reviews");
   const { cardData, isLoaded } = useGetReviewCard();
 
   return (
