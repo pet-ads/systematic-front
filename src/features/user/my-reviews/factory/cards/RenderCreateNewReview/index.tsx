@@ -1,4 +1,5 @@
 import { Flex, Icon, Text } from "@chakra-ui/react";
+import { useTranslation } from "react-i18next";
 import { MdSentimentSatisfied } from "react-icons/md";
 import NavButton from "@components/common/buttons/NavigationButton";
 
@@ -30,21 +31,22 @@ const button = {
 };
 
 const RenderCreateNewReview = () => {
+  const { t } = useTranslation("landing/my-reviews");
+
   return (
     <Flex sx={container}>
       <Icon as={MdSentimentSatisfied} boxSize={"4rem"} color="#263C56" />
 
       <Text fontSize="xl" fontWeight="bold" color="gray.600">
-        Welcome to your workspace!
+        {t("createNewReview.welcome")}
       </Text>
 
       <Text fontSize="md" color="gray.500">
-        You don’t have any reviews yet. Let’s start by creating your first one
-        and begin your research journey!
+        {t("createNewReview.message")}
       </Text>
 
       <NavButton
-        text="Create review"
+        text={t("createNewReview.button")}
         path="/review/planning/protocol/general-definition"
         sx={button}
         _hover={{
