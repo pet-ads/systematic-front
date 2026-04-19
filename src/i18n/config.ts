@@ -8,6 +8,8 @@ import enProfile from "../locales/en/user/profile.json";
 import ptProfile from "../locales/pt/user/profile.json";
 import enSidebar from "../locales/en/structure/sidebar.json";
 import ptSidebar from "../locales/pt/structure/sidebar.json";
+import enMyReviews from "../locales/en/landing/my-reviews.json";
+import ptMyReviews from "../locales/pt/landing/my-reviews.json";
 
 i18n
   .use(LanguageDetector)
@@ -19,13 +21,15 @@ i18n
     resources: {
       en: {
         "landing/homepage": enHomepage,
+        "landing/my-reviews": enMyReviews,
         "user/profile": enProfile,
-        "structure/sidebar": enSidebar
+        "structure/sidebar": enSidebar,
       },
       pt: {
         "landing/homepage": ptHomepage,
+        "landing/my-reviews": ptMyReviews,
         "user/profile": ptProfile,
-        "structure/sidebar": ptSidebar
+        "structure/sidebar": ptSidebar,
       },
     },
 
