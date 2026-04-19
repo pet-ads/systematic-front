@@ -1,0 +1,8 @@
+{
+    "header": "Home",
+    "createNewReview": {
+        "welcome": "Welcome to your workspace!",
+        "message": "You don’t have any reviews yet. Let’s start by creating your first one and begin your research journey!",
+        "button": "Create review"
+    }
+}

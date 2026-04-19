@@ -1,0 +1,8 @@
+{
+    "header": "Início",
+    "createNewReview": {
+        "welcome": "Bem-vindo ao seu espaço de trabalho!",
+        "message": "Você ainda não tem nenhuma revisão. Vamos começar criando a sua primeira e iniciar sua jornada de pesquisa!",
+        "button": "Criar revisão"
+    }
+}
