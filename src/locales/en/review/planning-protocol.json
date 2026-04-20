@@ -66,5 +66,21 @@
                 "placeholder": "What is your context?"
             }
         }
+    },
+    "researchQuestions": {
+        "headerText": "Protocol: Research Questions",
+        "navButton": {
+            "back": "Back",
+            "next": "Next"
+        },
+        "primaryQuestion": {
+            "label": "Primary question",
+            "placeholder": "Enter review description"
+        },
+        "secondaryQuestions": {
+            "heading": "Secondary Questions",
+            "label": "Research Questions",
+            "placeholder": "Enter the other Research Questions"
+        }
     }
 }

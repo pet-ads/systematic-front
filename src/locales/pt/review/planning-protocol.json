@@ -66,5 +66,22 @@
                 "placeholder": "Qual é o seu contexto?"
             }
         }
+    },
+    "researchQuestions": {
+        "headerText": "Protocolo: Questões de Pesquisa",
+        "navButton": {
+            "back": "Voltar",
+            "next": "Próximo"
+        },
+        "primaryQuestion": {
+            "label": "Questão principal",
+            "placeholder": "Insira a descrição da revisão"
+        },
+        "secondaryQuestions": {
+            "heading": "Questões Secundárias",
+            "label": "Questões de Pesquisa",
+            "placeholder": "Insira as outras Questões de Pesquisa"
+        }
+
     }
 }
