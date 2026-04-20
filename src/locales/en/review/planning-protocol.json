@@ -156,6 +156,17 @@
                 "label": "Extraction Questions"
             }
         }
-    }
-    
+    },
+    "riskOfBiasAssessment": {
+        "headerText": "Protocol: Risk of Bias Assessment",
+        "navButton": {
+            "back": "Back",
+            "next": "Next"
+        },
+        "input": {
+            "riskOfBiasQuestions": {
+                "label": "Risk of Bias Questions"
+            }
+        }
+    }    
 }

@@ -156,6 +156,17 @@
                 "label": "Questões de Extração"
             }
         }
+    },
+    "riskOfBiasAssessment": {
+        "headerText": "Protocolo: Avaliação do Risco de Viés",
+        "navButton": {
+            "back": "Voltar",
+            "next": "Próximo"
+        },
+        "input": {
+            "riskOfBiasQuestions": {
+                "label": "Questões sobre Risco de Viés"
+            }
+        }
     }
-
 }
