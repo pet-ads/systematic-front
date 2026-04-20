@@ -168,5 +168,18 @@
                 "label": "Risk of Bias Questions"
             }
         }
+    },
+    "analysisAndSynthesisOfResults": {
+        "headerText": "Protocol: Analysis and Synthesis of Results",
+        "navButton": {
+            "back": "Back",
+            "next": "Next"
+        },
+        "input": {
+            "analysisAndSynthesisProcess": {
+                "label": "Analysis and Synthesis Method",
+                "placeholder": "Enter your Analysis and Synthesis Method"
+            }
+        }
     }    
 }

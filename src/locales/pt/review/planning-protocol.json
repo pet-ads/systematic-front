@@ -168,5 +168,18 @@
                 "label": "Questões sobre Risco de Viés"
             }
         }
+    },
+    "analysisAndSynthesisOfResults": {
+        "headerText": "Protocolo: Análise e Síntese dos Resultados",
+        "navButton": {
+            "back": "Voltar",
+            "next": "Próximo"
+        },
+        "input": {
+            "analysisAndSynthesisProcess": {
+                "label": "Método de Análise e Síntese",
+                "placeholder": "Insira o seu Método de Análise e Síntese"
+            }
+        }
     }
 }
