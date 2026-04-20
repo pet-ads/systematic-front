@@ -107,5 +107,34 @@
                 "placeholder": "Selecione um idioma"
             }
         }
+    },
+    "informationSourcesAndSearchStrategy": {
+        "headerText": "Protocolo: Fontes de Informação e Estratégia de Busca",
+        "navButton": {
+            "back": "Voltar",
+            "next": "Próximo"
+        },
+        "input": {
+            "sourcesSelectionCriteria": {
+                "label": "Critérios de Seleção das Fontes",
+                "placeholder": "Insira os critérios de seleção das fontes"
+            },
+            "databasesAndInformationSource": {
+                "label": "Bases de Dados e Fontes de Informação",
+                "placeholder": "Selecione a base de dados"
+            },
+            "searchMethod": {
+                "label": "Estratégia de Busca",
+                "placeholder": "Insira a estratégia de busca"
+            },
+            "keywords": {
+                "label": "Palavras-chave",
+                "placeholder": "Insira as palavras-chave relacionadas à sua revisão"
+            },
+            "searchString": {
+                "label": "String de Busca",
+                "placeholder": "Insira a string de busca"
+            }
+        }
     }
 }

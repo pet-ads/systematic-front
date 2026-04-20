@@ -107,5 +107,34 @@
                 "placeholder": "Select language"
             }
         }
-    }
+    },
+    "informationSourcesAndSearchStrategy": {
+        "headerText": "Protocol: Information Sources and Search Strategy",
+        "navButton": {
+            "back": "Back",
+            "next": "Next"
+        },
+        "input": {
+            "sourcesSelectionCriteria": {
+                "label": "Sources Selection Criteria",
+                "placeholder": "Enter the sources selection criteria"
+            },
+            "databasesAndInformationSource": {
+                "label": "Databases and Information Source",
+                "placeholder": "Select Database"
+            },
+            "searchMethod": {
+                "label": "Search Strategy",
+                "placeholder": "Enter Search Strategy"
+            },
+            "keywords": {
+                "label": "Keywords",
+                "placeholder": "Enter the keywords related to your review"
+            },
+            "searchString": {
+                "label": "Search String",
+                "placeholder": "Enter the search string"
+            }
+        }
+    }    
 }
