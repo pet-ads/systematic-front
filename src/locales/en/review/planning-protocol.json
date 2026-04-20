@@ -37,5 +37,34 @@
                 "placeholder": "What are your goals?"
             }
         }
+    },
+    "picoc": {
+        "headerText": "Protocolo: PICOC",
+        "navButton": {
+            "back": "Back",
+            "next": "Next"
+        },
+        "input": {
+            "population": {
+                "label": "Population",
+                "placeholder": "What is your study population?"
+            },
+            "intervention": {
+                "label": "Intervention",
+                "placeholder": "What is your intervention?"
+            },
+            "control": {
+                "label": "Control",
+                "placeholder": "What is your control?"
+            },
+            "outcome": {
+                "label": "Outcome",
+                "placeholder": "What is your outcome?"
+            },
+            "context": {
+                "label": "Context",
+                "placeholder": "What is your context?"
+            }
+        }
     }
 }
