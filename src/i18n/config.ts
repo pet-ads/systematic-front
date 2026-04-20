@@ -12,6 +12,8 @@ import enMyReviews from "../locales/en/user/my-reviews.json";
 import ptMyReviews from "../locales/pt/user/my-reviews.json";
 import enPlanningProtocol from "../locales/en/review/planning-protocol.json";
 import ptPlanningProtocol from "../locales/pt/review/planning-protocol.json";
+import enExecutionIdentification from "../locales/en/review/execution-identification.json"
+import ptExecutionIdentification from "../locales/pt/review/execution-identification.json"
 
 i18n
   .use(LanguageDetector)
@@ -27,6 +29,7 @@ i18n
         "user/profile": enProfile,
         "structure/sidebar": enSidebar,
         "review/planning-protocol": enPlanningProtocol,
+        "review/execution-identification": enExecutionIdentification,
       },
       pt: {
         "landing/homepage": ptHomepage,
@@ -34,6 +37,7 @@ i18n
         "user/profile": ptProfile,
         "structure/sidebar": ptSidebar,
         "review/planning-protocol": ptPlanningProtocol,
+        "review/execution-identification": ptExecutionIdentification,
       },
     },
 
