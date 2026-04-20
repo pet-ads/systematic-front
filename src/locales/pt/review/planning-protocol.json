@@ -136,5 +136,26 @@
                 "placeholder": "Insira a string de busca"
             }
         }
+    },
+    "selectionAndExtraction": {
+        "headerText": "Protocolo: Seleção e Extração",
+        "navButton": {
+            "back": "Voltar",
+            "next": "Próximo"
+        },
+        "input": {
+            "selectionProcess": {
+                "label": "Processo de Seleção dos Estudos",
+                "placeholder": "Insira o processo de seleção"
+            },
+            "dataCollectionProcess": {
+                "label": "Processo de Coleta de Dados",
+                "placeholder": "Insira o processo de coleta de dados"
+            },
+            "extractionQuestions": {
+                "label": "Questões de Extração"
+            }
+        }
     }
+
 }
