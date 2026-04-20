@@ -10,6 +10,8 @@ import enSidebar from "../locales/en/structure/sidebar.json";
 import ptSidebar from "../locales/pt/structure/sidebar.json";
 import enMyReviews from "../locales/en/user/my-reviews.json";
 import ptMyReviews from "../locales/pt/user/my-reviews.json";
+import enPlanningProtocol from "../locales/en/review/planning-protocol.json";
+import ptPlanningProtocol from "../locales/pt/review/planning-protocol.json";
 
 i18n
   .use(LanguageDetector)
@@ -24,12 +26,14 @@ i18n
         "user/my-reviews": enMyReviews,
         "user/profile": enProfile,
         "structure/sidebar": enSidebar,
+        "review/planning-protocol": enPlanningProtocol,
       },
       pt: {
         "landing/homepage": ptHomepage,
         "user/my-reviews": ptMyReviews,
         "user/profile": ptProfile,
         "structure/sidebar": ptSidebar,
+        "review/planning-protocol": ptPlanningProtocol,
       },
     },
 
