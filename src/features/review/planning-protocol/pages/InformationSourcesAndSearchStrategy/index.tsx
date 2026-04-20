@@ -1,3 +1,6 @@
+// External Libraries
+import { useTranslation } from "react-i18next";
+
 // Components
 import NavButton from "@components/common/buttons/NavigationButton";
 import AddTextTable from "../../components/common/inputs/text/AddTextTable";
@@ -16,13 +19,14 @@ export default function InformationSourcesAndSearchStrategy() {
     syncAndNavigate,
   } = useCreateProtocol();
 
+  const { t } = useTranslation("review/planning-protocol");
   const { searchMethod, searchString, sourcesSelectionCriteria } =
     informationSourcesAndSearchStrategy;
   const id = localStorage.getItem("systematicReviewId");
 
   return (
     <ProtocolFormLayout
-      headerText="Protocol: Information Sources and Search Strategy"
+      headerText={t("informationSourcesAndSearchStrategy.headerText")}
       navButtons={
         <>
           <NavButton
@@ -31,7 +35,7 @@ export default function InformationSourcesAndSearchStrategy() {
                 `/review/planning/protocol/eligibility-criteria/${id}`,
               )
             }
-            text="Back"
+            text={t("informationSourcesAndSearchStrategy.navButton.back")}
           />
           <NavButton
             event={() =>
@@ -39,7 +43,7 @@ export default function InformationSourcesAndSearchStrategy() {
                 `/review/planning/protocol/selection-and-extraction/${id}`,
               )
             }
-            text="Next"
+            text={t("informationSourcesAndSearchStrategy.navButton.next")}
           />
         </>
       }
@@ -53,11 +57,11 @@ export default function InformationSourcesAndSearchStrategy() {
               event.target.value,
             );
           }}
-          label="Sources Selection Criteria"
-          placeholder="Enter the sources selection criteria"
+          label={t("informationSourcesAndSearchStrategy.input.sourcesSelectionCriteria.label")}
+          placeholder={t("informationSourcesAndSearchStrategy.input.sourcesSelectionCriteria.placeholder")}
         />
         <AddSelectionTable
-          label="Databases and Information Source"
+          label={t("informationSourcesAndSearchStrategy.input.databasesAndInformationSource.label")}
           options={[
             "ACM Digital Library",
             "Backward Snowballing",
@@ -77,7 +81,7 @@ export default function InformationSourcesAndSearchStrategy() {
             "SpringerLink",
             "Web of Science",
           ]}
-          placeholder={"Select Database"}
+          placeholder={t("informationSourcesAndSearchStrategy.input.databasesAndInformationSource.placeholder")}
           typeField="select"
         />
         <TextAreaInput
@@ -88,12 +92,12 @@ export default function InformationSourcesAndSearchStrategy() {
               event.target.value,
             );
           }}
-          label="Search Strategy"
-          placeholder="Enter Search Strategy"
+          label={t("informationSourcesAndSearchStrategy.input.searchMethod.label")}
+          placeholder={t("informationSourcesAndSearchStrategy.input.searchMethod.placeholder")}
         />
         <AddTextTable
-          text="Keywords"
-          placeholder="Enter the keywords related to your review"
+          text={t("informationSourcesAndSearchStrategy.input.keywords.label")}
+          placeholder={t("informationSourcesAndSearchStrategy.input.keywords.placeholder")}
           enableReferenceCode={false}
         />
         <TextAreaInput
@@ -104,8 +108,8 @@ export default function InformationSourcesAndSearchStrategy() {
               event.target.value,
             );
           }}
-          label="Search String"
-          placeholder="Enter the search string"
+          label={t("informationSourcesAndSearchStrategy.input.searchString.label")}
+          placeholder={t("informationSourcesAndSearchStrategy.input.searchString.placeholder")}
         />
       </Box>
     </ProtocolFormLayout>
