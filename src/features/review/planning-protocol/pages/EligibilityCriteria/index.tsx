@@ -1,3 +1,6 @@
+// External Libraries
+import { useTranslation } from "react-i18next";
+
 // Components
 import NavButton from "@components/common/buttons/NavigationButton";
 import AddTextTable from "../../components/common/inputs/text/AddTextTable";
@@ -21,12 +24,13 @@ export default function EligibilityCriteria() {
     syncAndNavigate,
   } = useCreateProtocol();
 
+  const { t } = useTranslation("review/planning-protocol")
   const { studyTypeDefinition } = eligibilityCriteria;
   const id = localStorage.getItem("systematicReviewId");
 
   return (
     <ProtocolFormLayout
-      headerText="Protocol: Eligibility Criteria"
+      headerText={t("eligibilityCriteria.headerText")}
       navButtons={
         <>
           <NavButton
@@ -35,7 +39,7 @@ export default function EligibilityCriteria() {
                 `/review/planning/protocol/research-questions/${id}`,
               )
             }
-            text="Back"
+            text={t("eligibilityCriteria.navButton.back")}
           />
           <NavButton
             event={() =>
@@ -43,21 +47,21 @@ export default function EligibilityCriteria() {
                 `/review/planning/protocol/information-sources-and-search-strategy/${id}`,
               )
             }
-            text="Next"
+            text={t("eligibilityCriteria.navButton.next")}
           />
         </>
       }
     >
       <Box>
         <AddTextTable
-          text="Inclusion criteria"
-          placeholder="Enter the criteria"
+          text={t("eligibilityCriteria.input.inclusionCriteria.label")}
+          placeholder={t("eligibilityCriteria.input.inclusionCriteria.placeholder")}
           referencePrefix="IC"
           enableReferenceCode={true}
         />
         <AddTextTable
-          text="Exclusion criteria"
-          placeholder="Enter the criteria"
+          text={t("eligibilityCriteria.input.exclusionCriteria.label")}
+          placeholder={t("eligibilityCriteria.input.exclusionCriteria.placeholder")}
           referencePrefix="EC"
           enableReferenceCode={true}
         />
@@ -69,13 +73,13 @@ export default function EligibilityCriteria() {
               event.target.value,
             );
           }}
-          label="Study Type Definition"
-          placeholder="Enter the study type definition"
+          label={t("eligibilityCriteria.input.studyTypeDefinition.label")}
+          placeholder={t("eligibilityCriteria.input.studyTypeDefinition.placeholder")}
         />
         <AddSelectionTable
-          label="Languages"
+          label={t("eligibilityCriteria.input.languages.label")}
           options={Languages}
-          placeholder="Select language"
+          placeholder={t("eligibilityCriteria.input.languages.placeholder")}
           typeField="select"
         />
       </Box>
