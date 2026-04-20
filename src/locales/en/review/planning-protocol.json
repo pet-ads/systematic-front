@@ -82,5 +82,30 @@
             "label": "Research Questions",
             "placeholder": "Enter the other Research Questions"
         }
+    },
+    "eligibilityCriteria": {
+        "headerText": "Protocol: Eligibility Criteria",
+        "navButton": {
+            "back": "Back",
+            "next": "Next"
+        },
+        "input": {
+            "inclusionCriteria": {
+                "label": "Inclusion criteria",
+                "placeholder": "Enter the criteria"
+            },
+            "exclusionCriteria": {
+                "label": "Exclusion criteria",
+                "placeholder": "Enter the criteria"
+            },
+            "studyTypeDefinition": {
+                "label": "Study Type Definition",
+                "placeholder": "Enter the study type definition"
+            },
+            "languages": {
+                "label": "Languages",
+                "placeholder": "Select language"
+            }
+        }
     }
 }

@@ -82,6 +82,30 @@
             "label": "Questões de Pesquisa",
             "placeholder": "Insira as outras Questões de Pesquisa"
         }
-
+    },
+    "eligibilityCriteria": {
+        "headerText": "Protocolo: Critérios de Elegibilidade",
+        "navButton": {
+            "back": "Voltar",
+            "next": "Próximo"
+        },
+        "input": {
+            "inclusionCriteria": {
+                "label": "Critério de inclusão",
+                "placeholder": "Insira o critério"
+            },
+            "exclusionCriteria": {
+                "label": "Critério de exclusão",
+                "placeholder": "Insira o critério"
+            },
+            "studyTypeDefinition": {
+                "label": "Definição do Tipo de Estudo",
+                "placeholder": "Insira a definição do tipo de estudo"
+            },
+            "languages": {
+                "label": "Idiomas",
+                "placeholder": "Selecione um idioma"
+            }
+        }
     }
 }
