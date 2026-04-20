@@ -1,0 +1,41 @@
+{
+    "generalDefinition": {
+        "headerText": "Protocolo: Definição Geral",
+        "navButtonText": {
+            "create": "Criar nova Revisão",
+            "next": "Próximo"
+        },
+        "input": {
+            "title": {
+                "label": "Título",
+                "placeholder": "Insira o título da revisão"
+            },
+            "description": {
+                "label": "Descrição",
+                "placeholder": "Insira a descrição da revisão"
+            },
+            "objectives": {
+                "label": "Objetivos",
+                "placeholder": "Quais são seus objetivos?"
+            },
+            "researchers": {
+                "label": "Pesquisadores",
+                "placeholder": "Insira o nome dos pesquisadores "
+            }
+        },
+        "alert": {
+            "title": {
+                "label": "Título é obrigatório",
+                "placeholder": "Insira o título da revisão"
+            },
+            "description": {
+                "label": "Descrição é obrigatória",
+                "placeholder": "Insira a descrição da revisão"
+            },
+            "objectives": {
+                "label": "Objetivos são obrigatórios",
+                "placeholder": "Quais são seus objetivos?"
+            }
+        }
+    }
+}

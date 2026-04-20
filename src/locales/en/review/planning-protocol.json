@@ -1,0 +1,41 @@
+{
+    "generalDefinition": {
+        "headerText": "Protocol: General Definition",
+        "navButtonText": {
+            "create": "Create new Review",
+            "next": "Next"
+        },
+        "input": {
+            "title": {
+                "label": "Title",
+                "placeholder": "Enter review title"
+            },
+            "description": {
+                "label": "Description",
+                "placeholder": "Enter review description"
+            },
+            "objectives": {
+                "label": "Objectives",
+                "placeholder": "What are your goals?"
+            },
+            "researchers": {
+                "label": "Researchers",
+                "placeholder": "Enter the name of the researchers "
+            }
+        },
+        "alert": {
+            "title": {
+                "label": "Title is required",
+                "placeholder": "Enter review title"
+            },
+            "description": {
+                "label": "Description is required",
+                "placeholder": "Enter review description"
+            },
+            "objectives": {
+                "label": "Objectives are required",
+                "placeholder": "What are your goals?"
+            }
+        }
+    }
+}
