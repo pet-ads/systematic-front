@@ -1,3 +1,6 @@
+// External Libraries
+import { useTranslation } from "react-i18next";
+
 // Components
 import NavButton from "@components/common/buttons/NavigationButton";
 import TextAreaInput from "../../../../../components/common/inputs/InputTextArea";
@@ -14,6 +17,7 @@ export default function SelectionAndExtraction() {
     syncAndNavigate,
   } = useCreateProtocol();
 
+  const { t } = useTranslation("review/planning-protocol");
   const { dataCollectionProcess, selectionProcess } = selectionAndExtraction;
 
   const id = localStorage.getItem("systematicReviewId") || "";
@@ -21,7 +25,7 @@ export default function SelectionAndExtraction() {
 
   return (
     <ProtocolFormLayout
-      headerText="Protocol: Selection and Extraction"
+      headerText={t("selectionAndExtraction.headerText")}
       navButtons={(
         <>
           <NavButton
@@ -30,7 +34,7 @@ export default function SelectionAndExtraction() {
                 `/review/planning/protocol/information-sources-and-search-strategy/${id}`
               )
             }
-            text="Back"
+            text={t("selectionAndExtraction.navButton.back")}
           />
           <NavButton
             event={() =>
@@ -38,7 +42,7 @@ export default function SelectionAndExtraction() {
                 `/review/planning/protocol/risk-of-bias-assessment/${id}`
               )
             }
-            text="Next"
+            text={t("selectionAndExtraction.navButton.next")}
           />
         </>
       )}
@@ -51,8 +55,8 @@ export default function SelectionAndExtraction() {
             event.target.value
           );
         }}
-        label="Study Selection Process"
-        placeholder="Enter selection process"
+        label={t("selectionAndExtraction.input.selectionProcess.label")}
+        placeholder={t("selectionAndExtraction.input.selectionProcess.placeholder")}
       />
       <TextAreaInput
         value={dataCollectionProcess}
@@ -62,10 +66,10 @@ export default function SelectionAndExtraction() {
             event.target.value
           );
         }}
-        label="Data Collection Process"
-        placeholder="Enter the data colletion process"
+        label={t("selectionAndExtraction.input.dataCollectionProcess.label")}
+        placeholder={t("selectionAndExtraction.input.dataCollectionProcess.placeholder")}
       />
-      <InteractiveTable id={id} url={url} label={"Extraction Questions"} />
+      <InteractiveTable id={id} url={url} label={t("selectionAndExtraction.input.extractionQuestions.label")} />
     </ProtocolFormLayout>
   );
 }
