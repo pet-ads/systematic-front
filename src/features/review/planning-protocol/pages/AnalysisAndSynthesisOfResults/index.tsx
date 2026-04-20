@@ -1,3 +1,6 @@
+// External Libraries
+import { useTranslation } from "react-i18next";
+
 // Components
 import NavButton from "@components/common/buttons/NavigationButton";
 import TextAreaInput from "@components/common/inputs/InputTextArea";
@@ -17,9 +20,11 @@ export default function AnalysisAndSynthesisOfResults() {
 
   const id = localStorage.getItem("systematicReviewId") || "";
 
+  const { t } = useTranslation("review/planning-protocol");
+
   return (
     <ProtocolFormLayout
-      headerText="Protocol: Analysis and Synthesis of Results"
+      headerText={t("analysisAndSynthesisOfResults.headerText")}
       navButtons={(
         <>
           <NavButton
@@ -28,19 +33,19 @@ export default function AnalysisAndSynthesisOfResults() {
                 `/review/planning/protocol/risk-of-bias-assessment/${id}`
               )
             }
-            text="Back"
+            text={t("analysisAndSynthesisOfResults.navButton.back")}
           />
           <NavButton
             event={() => syncAndNavigate("/review/execution/identification")}
-            text="Next"
+            text={t("analysisAndSynthesisOfResults.navButton.next")}
           />
         </>
       )}
     >
       <TextAreaInput
         value={analysisAndSynthesisProcess}
-        label="Analysis and Synthesis Method"
-        placeholder="Enter your Analysis and Synthesis Method"
+        label={t("analysisAndSynthesisOfResults.input.analysisAndSynthesisProcess.label")}
+        placeholder={t("analysisAndSynthesisOfResults.input.analysisAndSynthesisProcess.placeholder")}
         onChange={(event) =>
           handleChangeAnalysisAndSynthesisOfResults(
             "analysisAndSynthesisProcess",
