@@ -1,5 +1,6 @@
 // External library
 import { Box } from "@chakra-ui/react";
+import { useTranslation } from "react-i18next";
 
 // Components
 import NavButton from "@components/common/buttons/NavigationButton";
@@ -16,9 +17,11 @@ export default function RiskOfBiasAssessment() {
 
   const { syncAndNavigate } = useCreateProtocol();
 
+  const { t } = useTranslation("review/planning-protocol");
+
   return (
     <ProtocolFormLayout
-      headerText="Protocol: Risk of Bias Assessment"
+      headerText={t("riskOfBiasAssessment.headerText")}
       navButtons={
         <>
           <NavButton
@@ -27,7 +30,7 @@ export default function RiskOfBiasAssessment() {
                 `/review/planning/protocol/selection-and-extraction/${id}`
               )
             }
-            text="Back"
+            text={t("riskOfBiasAssessment.navButton.back")}
           />
           <NavButton
             event={() =>
@@ -35,13 +38,13 @@ export default function RiskOfBiasAssessment() {
                 `/review/planning/protocol/analysis-and-synthesis-of-results/${id}`
               )
             }
-            text="Next"
+            text={t("riskOfBiasAssessment.navButton.next")}
           />
         </>
       }
     >
       <Box>
-        <InteractiveTable id={id} url={url} label={"Risk of Bias Questions"} />
+        <InteractiveTable id={id} url={url} label={t("riskOfBiasAssessment.input.riskOfBiasQuestions.label")} />
       </Box>
     </ProtocolFormLayout>
   );
