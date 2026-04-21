@@ -1,5 +1,6 @@
 // External library
 import useSWR from "swr";
+import { useTranslation } from "react-i18next";
 
 // Service
 import Axios from "../../../../infrastructure/http/axiosClient";
@@ -32,6 +33,8 @@ export default function useFetchRevisionStage({
   reviewId,
 }: RevisionStageProps) {
   const path = reviewId ? `systematic-study/${reviewId}/protocol/stage` : null;
+  
+  const { t } = useTranslation("user/my-reviews");
 
   async function getStage(): Promise<Stage> {
     if (!path) throw new Error("Invalid path");
@@ -49,20 +52,20 @@ export default function useFetchRevisionStage({
   });
 
   const StageMap: Record<Stage, string> = {
-    GENERAL_DEFINITION: "General Definition",
-    RESEARCH_QUESTIONS: "Research Questions",
-    PICOC: "PICOC",
-    ELIGIBILITY_CRITERIA: "Eligibility Criteria",
+    GENERAL_DEFINITION: t("status.GENERAL_DEFINITION"),
+    RESEARCH_QUESTIONS: t("status.RESEARCH_QUESTIONS"),
+    PICOC: t("status.PICOC"),
+    ELIGIBILITY_CRITERIA: t("status.ELIGIBILITY_CRITERIA"),
     INFORMATION_SOURCES_AND_SEARCH_STRATEGY:
-      "Information Sources",
-    SELECTION_AND_EXTRACTION: "Selection And Extraction",
-    RISK_OF_BIAS: "Risk Of Bias",
-    ANALYSIS_AND_SYNTHESIS_METHOD: "Analysis And Synthesis Method",
-    IDENTIFICATION: "Identification",
-    SELECTION: "Selection",
-    EXTRACTION: "Extraction",
-    GRAPHICS: "Graphics",
-    FINALIZATION: "Finalization",
+      t("status.INFORMATION_SOURCES_AND_SEARCH_STRATEGY"),
+    SELECTION_AND_EXTRACTION: t("status.SELECTION_AND_EXTRACTION"),
+    RISK_OF_BIAS: t("status.RISK_OF_BIAS"),
+    ANALYSIS_AND_SYNTHESIS_METHOD: t("status.ANALYSIS_AND_SYNTHESIS_METHOD"),
+    IDENTIFICATION: t("status.IDENTIFICATION"),
+    SELECTION: t("status.SELECTION"),
+    EXTRACTION: t("status.EXTRACTION"),
+    GRAPHICS: t("status.GRAPHICS"),
+    FINALIZATION: t("status.FINALIZATION"),
   };
 
   const currentStage = StageMap[data as Stage];
