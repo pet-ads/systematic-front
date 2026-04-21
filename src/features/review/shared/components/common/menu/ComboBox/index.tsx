@@ -1,4 +1,5 @@
 // External libraries
+import { useContext } from "react";
 import {
   Button,
   Checkbox,
@@ -14,6 +15,10 @@ import { HiOutlineCheckCircle, HiOutlineXCircle } from "react-icons/hi";
 // Hooks
 import useComboBoxSelection from "../../../../hooks/useComboBoxSelection";
 import useToaster from "@components/feedback/Toaster";
+
+// Context & Services
+import StudyContext from "@features/review/shared/context/StudiesContext";
+import { UseChangeStudyExtractionStatus } from "../../../../services/useChangeStudyExtractionStatus";
 
 // Types
 import type { PageLayout } from "../../../structure/LayoutFactory";
@@ -61,6 +66,8 @@ export default function ComboBox({
 
   const toast = useToaster();
 
+  const studiesContext = useContext(StudyContext);
+
   const { selectionStatus, extractionStatus } = status;
 
   const hasInvalidStatus =
@@ -68,11 +75,58 @@ export default function ComboBox({
 
   const showDuplicatedWarning = () =>
     toast({
-      title: "Ação não permitida",
+      title: "Action not allowed",
       description:
-        "Você não pode incluir ou excluir critérios de um artigo marcado como duplicado pelo sistema.",
+        "You cannot include or exclude criteria for an article marked as duplicated by the system.",
       status: "warning",
     });
+
+  const handleCheckboxToggle = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    optionText: string,
+  ) => {
+    if (hasInvalidStatus) {
+      showDuplicatedWarning();
+      return;
+    }
+
+    const newValue = e.target.checked;
+
+    const updatedList = options.map((item) =>
+      item.text === optionText ? { ...item, isChecked: newValue } : item,
+    );
+
+    const activeItems = updatedList
+      .filter((data) => data.isChecked)
+      .map((item) => item.text);
+
+    if (
+      newValue === false &&
+      activeItems.length === 0 &&
+      extractionStatus !== "UNCLASSIFIED"
+    ) {
+      const articleId = studiesContext?.selectedArticleReview;
+      if (articleId && articleId !== -1) {
+        try {
+          await UseChangeStudyExtractionStatus({
+            studyReviewId: [articleId],
+            status: "UNCLASSIFIED",
+            criterias: [],
+          });
+        } catch (error) {
+          console.error("Error resetting extraction status via Menu", error);
+        }
+      }
+    }
+
+    handlerUpdateCriteriasStructure(groupKey, optionText, newValue);
+
+    if (text === "Include") {
+      handleIncludeItemClick(activeItems);
+    } else if (text === "Exclude") {
+      handleExcludeItemClick(activeItems);
+    }
+  };
 
   return (
     <Menu closeOnSelect={false}>
@@ -103,32 +157,7 @@ export default function ComboBox({
                 <Checkbox
                   isDisabled={isDisabled}
                   isChecked={option.isChecked}
-                  onChange={(e) => {
-                    if (hasInvalidStatus) {
-                      showDuplicatedWarning();
-                      return;
-                    }
-
-                    const newValue = e.target.checked;
-
-                    handlerUpdateCriteriasStructure(
-                      groupKey,
-                      option.text,
-                      newValue,
-                    );
-
-                    const updatedList = options.map((item) =>
-                      item.text === option.text
-                        ? { ...item, isChecked: newValue }
-                        : item,
-                    );
-
-                    handleIncludeItemClick(
-                      updatedList
-                        .filter((data) => data.isChecked == true)
-                        .map((item) => item.text),
-                    );
-                  }}
+                  onChange={(e) => handleCheckboxToggle(e, option.text)}
                 >
                   <Tooltip
                     label={option.text}
@@ -142,7 +171,7 @@ export default function ComboBox({
                       fontWeight={isHighlighted ? "bold" : "normal"}
                       color={isHighlighted ? "black" : "inherit"}
                     >
-                      {`IC-${(index + 1).toString().padStart(2, '0')}`}
+                      {`IC-${(index + 1).toString().padStart(2, "0")}`}
                     </Text>
                   </Tooltip>
                 </Checkbox>
@@ -150,32 +179,7 @@ export default function ComboBox({
                 <Checkbox
                   isDisabled={isDisabled}
                   isChecked={option.isChecked}
-                  onChange={(e) => {
-                    if (hasInvalidStatus) {
-                      showDuplicatedWarning();
-                      return;
-                    }
-
-                    const newValue = e.target.checked;
-
-                    handlerUpdateCriteriasStructure(
-                      groupKey,
-                      option.text,
-                      newValue,
-                    );
-
-                    const updatedList = options.map((item) =>
-                      item.text === option.text
-                        ? { ...item, isChecked: newValue }
-                        : item,
-                    );
-
-                    handleExcludeItemClick(
-                      updatedList
-                        .filter((data) => data.isChecked == true)
-                        .map((item) => item.text),
-                    );
-                  }}
+                  onChange={(e) => handleCheckboxToggle(e, option.text)}
                 >
                   <Tooltip
                     label={option.text}
@@ -189,7 +193,7 @@ export default function ComboBox({
                       fontWeight={isHighlighted ? "bold" : "normal"}
                       color={isHighlighted ? "black" : "inherit"}
                     >
-                      {`EC-${(index + 1).toString().padStart(2, '0')}`}
+                      {`EC-${(index + 1).toString().padStart(2, "0")}`}
                     </Text>
                   </Tooltip>
                 </Checkbox>
