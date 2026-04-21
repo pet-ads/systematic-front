@@ -23,7 +23,7 @@
         "view": "View",
         "label": {
             "title": "Title",
-            "authors": "Author",
+            "author": "Author",
             "journal": "Journal",
             "year": "Year",
             "selection": "Selection",
