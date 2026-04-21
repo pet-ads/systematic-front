@@ -33,7 +33,8 @@
         "accordionDashboard": {
             "date": "Date",
             "studies": "Studies",
-            "actions": "Actions"
+            "actions": "Actions",
+            "notFound": "Studies not found"
         },
         "identificationModal": {
             "heading": {

@@ -141,7 +141,7 @@ export default function AccordionDashboard({
               </Table>
             </Box>
           ) : (
-            <Text>Studies not found</Text>
+            <Text>{t("dataBaseCard.accordionDashboard.notFound")}</Text>
           )}
           {sessions.length > 0 && (
             <Box>
