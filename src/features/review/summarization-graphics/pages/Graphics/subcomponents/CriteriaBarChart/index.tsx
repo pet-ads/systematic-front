@@ -2,6 +2,7 @@ import ArticleInterface from "@features/review/shared/types/ArticleInterface";
 import { StudyInterface } from "@features/review/shared/types/IStudy";
 
 import { Text } from "@chakra-ui/react";
+import { useTranslation } from "react-i18next";
 
 import BarChart from "../../../../components/charts/BarChart";
 import { useFetchStudiesByStage } from "../../../../services/useFetchStudiesByStage";
@@ -18,6 +19,7 @@ export default function CriteriaBarChart({
   stage,
   filteredStudies,
 }: Props) {
+  const { t } = useTranslation("review/summarization-graphics");
   const color = criteria === "inclusion" ? "#3c73b6" : "#C21807";
   const { studiesByStage, isLoadingByStage } = useFetchStudiesByStage(stage);
   const { studiesByCriteria, isLoadingByCriteria } =
@@ -58,7 +60,7 @@ export default function CriteriaBarChart({
   return (
     <BarChart
       title={
-        criteria === "inclusion" ? "Inclusion Criteria" : "Exclusion Criteria"
+        criteria === "inclusion" ? t("sectionMenu.sections.s1InclusionCriteria") : t("sectionMenu.sections.s1ExclusionCriteria")
       }
       labels={labels}
       data={data}

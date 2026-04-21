@@ -1,4 +1,5 @@
 import { Flex, Text } from "@chakra-ui/react";
+import { useTranslation } from "react-i18next";
 
 import { TbArticleOff } from "react-icons/tb";
 
@@ -14,15 +15,16 @@ export default function NoDataMessage() {
     boxShadow: "sm",
     gap: ".5rem",
   };
+  const { t } = useTranslation("review/summarization-graphics")
 
   return (
     <Flex sx={container}>
       <TbArticleOff size={"4rem"} color="#263C56" />
       <Text fontSize="xl" fontWeight="bold" color="gray.600">
-        No Articles Found
+        {t("noDataMessage.message")}
       </Text>
       <Text fontSize="md" color="gray.500">
-        Try adjusting your filters or check back later.
+        {t("noDataMessage.text")}
       </Text>
     </Flex>
   );

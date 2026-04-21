@@ -130,11 +130,11 @@ export const QuestionsCharts = ({
 
         let chartContent = null;
 
-        if (type === "Pie Chart") {
+        if (type === "Pie Chart" || type === "Gráfico de Pizza") {
           chartContent = (
             <PieChart title={`Question ${code}`} labels={labels} data={data} />
           );
-        } else if (type === "Bar Chart") {
+        } else if (type === "Bar Chart" || type === "Gráfico de Barras") {
           chartContent = (
             <BarChart
               title={`Question ${code}`}

@@ -5,6 +5,7 @@ import { IncludedStudiesLineChart } from "../../IncludedStudiesLineChart";
 import BubbleChart from "@features/review/summarization-graphics/components/charts/BubbleChart";
 import useBubbleDataGeneric, { BubbleItem } from "@features/review/summarization-graphics/hooks/useBubbleDataGeneric";
 import { Box } from "@chakra-ui/react";
+import { useTranslation } from "react-i18next";
 
 
 type Props = {
@@ -14,14 +15,15 @@ type Props = {
 };
 
 export default function IncludedStudiesRenderer({ filteredStudies, type, chartId}: Props) {
+  const { t } = useTranslation("review/summarization-graphics");
   const includedStudies = filteredStudies.filter((s) => s.extractionStatus === "INCLUDED");
 
 
 
   let content;
-  if (type === "Table") content = <LayoutFactoryChart articles={includedStudies as ArticleInterface[]} isLoading={false} />;
-  else if (type === "Line Chart") content = <IncludedStudiesLineChart filteredStudies={includedStudies} />;
-  else if (type === "Bubble Chart") {
+  if (type === "Table" || type === "Tabela") content = <LayoutFactoryChart articles={includedStudies as ArticleInterface[]} isLoading={false} />;
+  else if (type === "Line Chart" || type === "Gráfico de Linhas") content = <IncludedStudiesLineChart filteredStudies={includedStudies} />;
+  else if (type === "Bubble Chart" || type === "Gráfico de Bolhas") {
     const items: BubbleItem[] = includedStudies.flatMap(study => 
       study.searchSources.map(src => ({ x: Number(study.year), group: src, y: 1 }))
     );
@@ -35,7 +37,7 @@ export default function IncludedStudiesRenderer({ filteredStudies, type, chartId
    />
     
        );
-  } else content = <div>Tipo de gráfico não suportado</div>;
+  } else content = <div>{t("typeNotSupported")}</div>;
 
   return <Box id={chartId}>{content}</Box>;
 }

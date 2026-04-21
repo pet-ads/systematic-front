@@ -2,6 +2,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { fetchStudiesBySource, HttpResponse } from "@features/review/summarization-graphics/services/fetchStudiesBySources";
 import useGetAllReviewArticles from "@features/review/shared/services/useGetAllReviewArticles";
@@ -25,6 +26,7 @@ type Description = {
 };
 
 export const SearchSorcesTable = () => {
+  const { t } = useTranslation("review/summarization-graphics");
   const { databases } = useFetchDataBases();
   const { articles } = useGetAllReviewArticles();
   const [studiesData, setStudiesData] = useState<HttpResponse[]>([]);
@@ -96,12 +98,12 @@ export const SearchSorcesTable = () => {
   });
 
   const columns: ColumnDef<SearchSourceRow>[] = [
-    { key: "source", label: "Source", width: 200, sortable: true },
-    { key: "included", label: "Included", width: 100, isNumeric: true, sortable: true },
-    { key: "excluded", label: "Excluded", width: 100, isNumeric: true, sortable: true },
-    { key: "total", label: "Total", width: 100, isNumeric: true, sortable: true },
-    { key: "indexingRate", label: "Indexing Rate", width: 120, isNumeric: true, sortable: true, render: (row) => row.indexingRate.toFixed(2) + "%" },
-    { key: "precisionRate", label: "Precision Rate", width: 120, isNumeric: true, sortable: true, render: (row) => row.precisionRate.toFixed(2) + "%" },
+    { key: "source", label: t("searchSourcesTable.source"), width: 200, sortable: true },
+    { key: "included", label: t("searchSourcesTable.included"), width: 100, isNumeric: true, sortable: true },
+    { key: "excluded", label: t("searchSourcesTable.excluded"), width: 100, isNumeric: true, sortable: true },
+    { key: "total", label: t("searchSourcesTable.total"), width: 100, isNumeric: true, sortable: true },
+    { key: "indexingRate", label: t("searchSourcesTable.indexingRate"), width: 120, isNumeric: true, sortable: true, render: (row) => row.indexingRate.toFixed(2) + "%" },
+    { key: "precisionRate", label: t("searchSourcesTable.precisionRate"), width: 120, isNumeric: true, sortable: true, render: (row) => row.precisionRate.toFixed(2) + "%" },
   ];
 
   return <GenericExpandedTable<SearchSourceRow> data={rows} columns={columns}/>;

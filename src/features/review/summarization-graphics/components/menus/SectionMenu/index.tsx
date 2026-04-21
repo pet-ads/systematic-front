@@ -9,6 +9,7 @@ import {
   MenuItem,
   MenuList,
 } from "@chakra-ui/react";
+import { useTranslation } from "react-i18next";
 
 type MenuProps = {
   onSelect: (section: string) => void;
@@ -22,18 +23,20 @@ type Section = {
   group?: string; 
 };
 
-const sections: Section[] = [
-  { label: "Search Sources", value: "Search Sources" },
-  { label: "Inclusion Criteria", value: "S1_Inclusion Criteria", group: "First Selection" },
-  { label: "Exclusion Criteria", value: "S1_Exclusion Criteria", group: "First Selection" },
-  { label: "Inclusion Criteria", value: "S2_Inclusion Criteria", group: "Second Selection" },
-  { label: "Exclusion Criteria", value: "S2_Exclusion Criteria", group: "Second Selection" },
-  { label: "Studies Funnel", value: "Studies Funnel" },
-  { label: "Included Studies", value: "Included Studies" },
-  { label: "Form Questions", value: "Form Questions" },
-];
 
 export default function SectionMenu({ onSelect, selected }: MenuProps) {
+  const { t } = useTranslation("review/summarization-graphics");
+
+  const sections: Section[] = [
+    { label: t("sectionMenu.sections.searchSources"), value: "Search Sources" },
+    { label: t("sectionMenu.sections.s1InclusionCriteria"), value: "S1_Inclusion Criteria", group: "First Selection" },
+    { label: t("sectionMenu.sections.s1ExclusionCriteria"), value: "S1_Exclusion Criteria", group: "First Selection" },
+    { label: t("sectionMenu.sections.s2InclusionCriteria"), value: "S2_Inclusion Criteria", group: "Second Selection" },
+    { label: t("sectionMenu.sections.s2ExclusionCriteria"), value: "S2_Exclusion Criteria", group: "Second Selection" },
+    { label: t("sectionMenu.sections.studiesFunnel"), value: "Studies Funnel" },
+    { label: t("sectionMenu.sections.includedStudies"), value: "Included Studies" },
+    { label: t("sectionMenu.sections.formQuestions"), value: "Form Questions" },
+  ];
   
   const groupedSections = sections.reduce((acc, section) => {
     const group = section.group || "ungrouped";
@@ -41,7 +44,7 @@ export default function SectionMenu({ onSelect, selected }: MenuProps) {
     acc[group].push(section);
     return acc;
   }, {} as Record<string, Section[]>);
-
+  
   return (
     <Menu>
       <MenuButton
@@ -54,7 +57,7 @@ export default function SectionMenu({ onSelect, selected }: MenuProps) {
         
       >
         <Flex w="100%" justifyContent="space-between" alignItems="center">
-          <Box>Choose Section</Box>
+          <Box>{t("sectionMenu.chooseSection")}</Box>
           <ChevronDownIcon fontSize="1.25rem" />
         </Flex>
       </MenuButton>
@@ -65,7 +68,7 @@ export default function SectionMenu({ onSelect, selected }: MenuProps) {
 
           return (
             <Box key={groupName}>
-              {!isUngrouped && <MenuGroup title={groupName} bg="#EBF0F3" ml="3" fontSize="md" fontWeight="bold" />}
+              {!isUngrouped && <MenuGroup title={t(`sectionMenu.groups.${groupName.toLowerCase().replace(" ", "_")}`)} bg="#EBF0F3" ml="3" fontSize="md" fontWeight="bold" />}
               {items.map((item) => (
                 <MenuItem
                   key={item.value}

@@ -15,7 +15,7 @@ export function getCsvData(
 case "Included Studies": {
   const includedStudies = studies.filter(s => s.extractionStatus === "INCLUDED");
 
-  if (type.toLowerCase().includes("line chart")) {
+  if (type.toLowerCase().includes("line chart") || type.toLowerCase().includes("gráfico de linhas")) {
     
     const map: Record<number, number> = {};
     includedStudies.forEach(s => {
@@ -26,7 +26,7 @@ case "Included Studies": {
     return Object.entries(map)
       .map(([year, count]) => ({ year, includedStudies: count }))
       .sort((a, b) => Number(a.year) - Number(b.year));
-  } else if (type.toLowerCase().includes("bubble chart")) {
+  } else if (type.toLowerCase().includes("bubble chart") || type.toLowerCase().includes("gráfico de bolhas")) {
     
     const map: Record<string, number> = {};
     includedStudies.forEach(s => {
@@ -58,7 +58,7 @@ case "Included Studies": {
 }
 
 case "Search Sources": {
-  if (type.toLowerCase().includes("bubble chart")) {
+  if (type.toLowerCase().includes("bubble chart") || type.toLowerCase().includes("gráfico de bolhas")) {
   
     const map: Record<string, number> = {};
     studies.forEach(s => {

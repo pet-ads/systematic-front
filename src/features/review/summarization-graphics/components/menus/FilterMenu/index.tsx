@@ -4,6 +4,7 @@ import useFetchDataBases from "@features/review/shared/services/useFetchDataBase
 import useFetchInclusionCriteria from "@features/review/shared/services/useFetchInclusionCriteria";
 import { FiltersState } from "@features/review/summarization-graphics/hooks/useGraphicsState";
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 export type FilterType = "Start Year" | "End Year" | "Source" | "Criteria";
 
@@ -20,6 +21,8 @@ export default function FiltersMenu({
 }: InlineFiltersProps) {
   const { databases = [] } = useFetchDataBases();
   const inclusionCriterias = useFetchInclusionCriteria() || [];
+  const { t } = useTranslation("review/summarization-graphics");
+
 
   React.useEffect(() => {
     setFilters((prev) => ({
@@ -41,7 +44,7 @@ export default function FiltersMenu({
     <Flex wrap="wrap" gap="1rem" alignItems="center">
       {availableFilters.includes("Source") && (
         <CheckboxDropdown
-          label="Sources"
+          label={t("filtersArea.sources")}
           options={databases}
           selected={filters.source || []}
           onToggle={(clickedSource: string) => {
@@ -64,7 +67,7 @@ export default function FiltersMenu({
 
       {availableFilters.includes("Criteria") && (
         <CheckboxDropdown
-          label="Criteria"
+          label={t("filtersArea.criteria")}
           options={inclusionCriterias}
           selected={filters.criteria || []}
           onToggle={(clickedCriteria: string) => {
@@ -88,7 +91,7 @@ export default function FiltersMenu({
         <NumberInput
           min={1900}
           max={2100}
-          w="120px"
+          w="180px"
           value={filters.startYear ?? ""}
           onChange={(_, n) =>
             setFilters((prev: FiltersState) => ({
@@ -97,7 +100,7 @@ export default function FiltersMenu({
             }))
           }
         >
-          <NumberInputField placeholder="Start Year" bg="white" />
+          <NumberInputField placeholder={t("filtersArea.startYear")} bg="white" />
         </NumberInput>
       )}
 
@@ -105,7 +108,7 @@ export default function FiltersMenu({
         <NumberInput
           min={1900}
           max={2100}
-          w="120px"
+          w="180px"
           value={filters.endYear ?? ""}
           onChange={(_, n) =>
             setFilters((prev: FiltersState) => ({
@@ -114,7 +117,7 @@ export default function FiltersMenu({
             }))
           }
         >
-          <NumberInputField placeholder="End Year" bg="white" />
+          <NumberInputField placeholder={t("filtersArea.endYear")} bg="white" />
         </NumberInput>
       )}
     </Flex>
