@@ -21,7 +21,6 @@ import DeleteDatabaseModal from "../../modals/DeleteDatabase";
 import IdentificationModal from "../../modals/IdentificationModal";
 
 import useGetSession from "../../../../../services/useGetSession";
-
 import UseDeleteSession from "../../../../../services/useDeleteSession";
 
 interface DatabaseCardProps {
@@ -29,17 +28,14 @@ interface DatabaseCardProps {
 }
 
 export default function DataBaseCard({ text }: DatabaseCardProps) {
-
   const [showModal, setShowModal] = useState(false);
   const [actionModal, setActionModal] = useState<"create" | "update">("create");
   const [sessionId, setSessionId] = useState("");
-
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteModal, setdeleteModal] = useState<"delete" | "refuse">("delete");
 
   const { data, mutate } = useGetSession(text);
-
 
   const handleCreateSession = () => {
     setSessionId("");
@@ -47,13 +43,11 @@ export default function DataBaseCard({ text }: DatabaseCardProps) {
     setShowModal(true);
   };
 
-
   const handleOpenSessionModal = (action: "create" | "update", id: string) => {
     setSessionId(id);
     setActionModal(action);
     setShowModal(true);
   };
-
 
   const handleDeleteSession = (id: string) => {
     UseDeleteSession({ sessionId: id, mutate });
@@ -75,15 +69,13 @@ export default function DataBaseCard({ text }: DatabaseCardProps) {
       mb="2rem"
       boxShadow="sm"
     >
-
+      {/* CABEÇALHO DO CARD */}
       <Flex
         w="100%"
         justifyContent="space-between"
         alignItems="center"
         p="1rem 1.5rem"
         bg="white"
-        borderBottom="1px solid"
-        borderColor="gray.200"
       >
         <Flex alignItems="center" gap="0.75rem">
           <DataBaseIcon />
@@ -114,8 +106,13 @@ export default function DataBaseCard({ text }: DatabaseCardProps) {
         </Flex>
       </Flex>
 
-
-      <TableContainer>
+      {/* TABELA COM FORMATAÇÃO DE DATA E ESTILO ZEBRA */}
+      <TableContainer
+        border="1px solid"
+        borderColor="gray.200"
+        borderRadius="md"
+        m="0 1.5rem 1.5rem 1.5rem"
+      >
         <Table variant="simple" size="md">
           <Thead bg="#263C56">
             <Tr>
@@ -127,8 +124,18 @@ export default function DataBaseCard({ text }: DatabaseCardProps) {
           <Tbody>
             {data && data.length > 0 ? (
               data.map((session: any, index: number) => (
-                <Tr key={session.id || index} _hover={{ bg: "gray.50" }}>
-                  <Td color="gray.700">{session.timestamp}</Td>
+                <Tr 
+                  key={session.id || index} 
+                  bg="white" 
+                  _even={{ bg: "#E2E8F0" }} 
+                  _hover={{ bg: "gray.100" }} 
+                  transition="background 0.2s"
+                >
+                  {/* DATA FORMATADA AQUI */}
+                  <Td color="gray.700">
+                    {new Date(session.timestamp).toLocaleDateString("pt-BR")}
+                  </Td>
+                  
                   <Td color="gray.700">{session.numberOfRelatedStudies}</Td>
                   <Td textAlign="right">
                     <Flex justify="flex-end" gap="0.5rem">
@@ -169,7 +176,7 @@ export default function DataBaseCard({ text }: DatabaseCardProps) {
         </Table>
       </TableContainer>
 
-
+      {/* MODAIS */}
       {showDeleteModal && (
         <DeleteDatabaseModal
           show={setShowDeleteModal}
