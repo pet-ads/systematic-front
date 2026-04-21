@@ -23,9 +23,13 @@ interface useChangePriorityPayload {
 
 const priorityMap: Record<string, PriorityValue> = {
   "Very Low": "VERY_LOW",
+  "Muito Baixa": "VERY_LOW",
   Low: "LOW",
+  Baixa: "LOW",
   High: "HIGH",
+  Alta: "HIGH",
   "Very High": "VERY_HIGH",
+  "Muito Alta": "VERY_HIGH",
 };
 
 export default function useChangePriority({

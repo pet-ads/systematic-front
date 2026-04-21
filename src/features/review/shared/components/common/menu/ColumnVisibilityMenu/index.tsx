@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence, easeInOut } from "framer-motion";
 import { CgOptions } from "react-icons/cg";
+import { useTranslation } from "react-i18next";
 
 // Hooks
 import { ColumnVisibility } from "@features/review/shared/hooks/useVisibilityColumns";
@@ -42,6 +43,7 @@ export default function ColumnVisibilityMenu({
 }: ColumnVisibilityMenuInput) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownMenu = useRef<HTMLDivElement>(null);
+  const { t } = useTranslation("review/execution-selection");
 
   const handleMenuState = () => {
     setIsOpen((prev) => !prev);
@@ -67,7 +69,7 @@ export default function ColumnVisibilityMenu({
       <button onClick={handleMenuState} className={styles["dropdown-toggle"]}>
         <div className={styles["dropdown-toggle-content"]}>
           <CgOptions />
-          <span>View</span>
+          <span>{t("columnVisibilityMenu.view")}</span>
         </div>
       </button>
 
@@ -93,7 +95,7 @@ export default function ColumnVisibilityMenu({
                       toggleColumnVisibility(key as keyof ColumnVisibility)
                     }
                   />
-                  <span style={{ marginLeft: 8 }}>{label}</span>
+                  <span style={{ marginLeft: 8 }}>{t(`columnVisibilityMenu.label.${label.toLowerCase()}`)}</span>
                 </label>
               ))}
           </motion.div>

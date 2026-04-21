@@ -5,6 +5,7 @@ import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { RiResetLeftLine } from "react-icons/ri";
 import { Tooltip } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 // Hooks
 import useFetchAllCriteriasByArticle from "../../../../services/useFetchAllCriteriasByArticle";
@@ -62,6 +63,7 @@ export default function ButtonsForSelection({
 }: ButtonsForSelectionProps) {
   const { handleResetStatusToUnclassified } = useResetStatus({ page, reloadArticles });
   const { handleChangePriority } = useChangePriority({ reloadArticles });
+  const { t } = useTranslation("review/execution-selection");
 
   const currentArticle = articles[articleIndex];
 
@@ -172,13 +174,13 @@ export default function ButtonsForSelection({
   const comboBoxGroups: Record<OptionType, ComboBoxGroup> = {
     INCLUSION: {
       label: "Include",
-      description: "Add inclusion criteria",
+      description: t("buttonsForSelection.tooltips.includeDescription"),
       isDisabled: criteriaGroupDataMap["INCLUSION"].data.length === 0 || isExclusionActive,
       options: criteriaGroupDataMap["INCLUSION"].data,
     },
     EXCLUSION: {
       label: "Exclude",
-      description: "Add exclusion criteria",
+      description: t("buttonsForSelection.tooltips.excludeDescription"),
       isDisabled: criteriaGroupDataMap["EXCLUSION"].data.length === 0 || isInclusionActive,
       options: criteriaGroupDataMap["EXCLUSION"].data,
     },
@@ -188,7 +190,7 @@ export default function ButtonsForSelection({
     <Flex sx={conteiner} justifyContent={isUniqueArticle ? "center" : "space-between"}>
       {!isUniqueArticle && (
         <Flex sx={buttonconteiner}>
-          <Tooltip label="Previous article" placement="top" hasArrow p=".5rem" borderRadius=".25rem">
+          <Tooltip label={t("buttonsForSelection.tooltips.previousArticle")} placement="top" hasArrow p=".5rem" borderRadius=".25rem">
             <Box style={{ display: "inline-block" }}>
               <IoIosArrowBack
                 color="black"
@@ -227,16 +229,21 @@ export default function ButtonsForSelection({
           </Tooltip>
         ))}
 
-        <Tooltip label="Reset article" placement="top" hasArrow p=".5rem" borderRadius=".25rem">
+        <Tooltip label={t("buttonsForSelection.tooltips.resetArticle")} placement="top" hasArrow p=".5rem" borderRadius=".25rem">
           <Button color="black" bg="white" p="1rem" onClick={handleFullReset}>
             <RiResetLeftLine color="black" size="1.5rem" />
           </Button>
         </Tooltip>
 
-        <Tooltip label="Select reading priority" placement="top" hasArrow p=".5rem" borderRadius=".25rem">
+        <Tooltip label={t("buttonsForSelection.tooltips.selectPriority")} placement="top" hasArrow p=".5rem" borderRadius=".25rem">
           <Box style={{ display: "inline-block" }}>
             <MenuOptions
-              options={["Very Low", "Low", "High", "Very High"]}
+              options={[
+                t("buttonsForSelection.priorityOptions.veryLow"),
+                t("buttonsForSelection.priorityOptions.low"),
+                t("buttonsForSelection.priorityOptions.high"),
+                t("buttonsForSelection.priorityOptions.veryHigh")
+              ]}
               onOptionToggle={(option) => handleChangePriority({ status: option })}
               icon={<MdOutlineLowPriority color="black" size="1.75rem" />}
             />
@@ -246,7 +253,7 @@ export default function ButtonsForSelection({
 
       {!isUniqueArticle && (
         <Flex sx={buttonconteiner}>
-          <Tooltip label="Next article" placement="top" hasArrow p=".5rem" borderRadius=".25rem">
+          <Tooltip label={t("buttonsForSelection.tooltips.nextArticle")} placement="top" hasArrow p=".5rem" borderRadius=".25rem">
             <Box style={{ display: "inline-block" }}>
               <IoIosArrowForward
                 color="black"
