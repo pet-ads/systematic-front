@@ -1,6 +1,7 @@
 // External library
 import { Flex, Text, Button } from "@chakra-ui/react";
 import { TbDatabaseOff } from "react-icons/tb";
+import { useTranslation } from "react-i18next";
 
 // Hooks
 import { useNavigation } from "@features/shared/hooks/useNavigation";
@@ -35,6 +36,7 @@ const button = {
 export default function DataBaseRequired() {
   const reviewId = localStorage.getItem("systematicReviewId");
 
+  const { t } = useTranslation("review/execution-identification");
   const { toGo } = useNavigation();
 
   const handleGoToProtocolPartTwo = () => {
@@ -47,11 +49,10 @@ export default function DataBaseRequired() {
     <Flex sx={container}>
       <TbDatabaseOff size={"4rem"} color="#263C56" />
       <Text fontSize="xl" fontWeight="bold" color="gray.600">
-        No databases registered
+        {t("dataBaseRequired.message")}
       </Text>
       <Text fontSize="md" color="gray.500">
-        To continue this stage of the execution, please add at least one
-        database. Once added, you can proceed smoothly with your review.
+        {t("dataBaseRequired.text")}
       </Text>
       <Button
         sx={button}
@@ -60,11 +61,11 @@ export default function DataBaseRequired() {
           color: "black",
           border: "2px solid black",
         }}
-        w="15rem"
+        w="fit-content"
         onClick={handleGoToProtocolPartTwo}
         mt={4}
       >
-        Go to database registration
+        {t("dataBaseRequired.button")}
       </Button>
     </Flex>
   );

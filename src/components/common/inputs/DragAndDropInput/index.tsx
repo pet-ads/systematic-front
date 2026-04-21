@@ -1,6 +1,7 @@
 import { useDropzone } from "react-dropzone";
 import { Box, Icon, Text, VStack } from "@chakra-ui/react";
 import { FaFileAlt } from "react-icons/fa";
+import { useTranslation } from "react-i18next";
 
 interface DragAndDropProps {
   handleFileChange: (files: { acceptedFiles: File[] }) => void;
@@ -11,6 +12,7 @@ export default function DragAndDrop({ handleFileChange }: DragAndDropProps) {
     handleFileChange({ acceptedFiles });
 };
 
+  const { t } = useTranslation("review/execution-identification");
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
@@ -35,10 +37,10 @@ export default function DragAndDrop({ handleFileChange }: DragAndDropProps) {
       <VStack spacing={2}>
         <Icon as={FaFileAlt} boxSize={6} color="#263C56" />
         <Text fontSize="md" color="#263C56">
-          {isDragActive ? "Drop the files here..." : "Drag & Drop your files or click to select"}
+          {isDragActive ? t("dataBaseCard.identificationModal.input.referenceFiles.dragAndDrop.activeDrag") : t("dataBaseCard.identificationModal.input.referenceFiles.dragAndDrop.inactiveDrag")}
         </Text>
         <Text fontSize="sm" color="gray.500">
-          Supported formats: .bib, .ris
+          {t("dataBaseCard.identificationModal.input.referenceFiles.dragAndDrop.supported")}
         </Text>
       </VStack>
     </Box>
