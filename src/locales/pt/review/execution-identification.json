@@ -1,0 +1,70 @@
+{
+    "header": "Estudos de Identificação",
+    "dataBaseRequired": {
+        "message": "Nenhuma base de dados registrada",
+        "text": "Para continuar esta etapa da execução, adicione pelo menos uma base de dados. Uma vez adicionada, você poderá prosseguir normalmente com sua revisão.",
+        "button": "Ir para o registro de base de dados"
+    },
+    "dataBaseCard": {
+        "deleteDatabaseModal": {
+            "toasts": {
+                "incorrectName": {
+                    "title": "Nome de Base de Dados Inválido",
+                    "description": "Por favor, insira o nome correto da base de dados para continuar."
+                },
+                "success": {
+                    "title": "Todas as Sessões de Estudo Foram Excluídas!",
+                    "description": "Suas sessões de estudo foram removidas com sucesso."
+                },
+                "catch": {
+                    "title": "Ação Falhou",
+                    "description": "Certifique-se de que o campo esteja preenchido antes de continuar."
+                }
+            },
+            "heading": "Excluir todas as sessões de estudo",
+            "message": "Tem certeza de que deseja excluir todas as referências na base de dados? Esta ação é permanente e não pode ser desfeita.",
+            "label1": "Para excluir os dados de \"",
+            "label2": "\", escreva o nome da base de dados abaixo:",
+            "placeholder": "Insira o nome da base de dados",
+            "aria-label": "Campo de entrada do nome da base de dados",
+            "cancel": "Cancelar",
+            "remove": "Remover"
+        },
+        "accordionDashboard": {
+            "date": "Data",
+            "studies": "Estudos",
+            "actions": "Ações"
+        },
+        "identificationModal": {
+            "heading": {
+                "create": "Nova Sessão de Busca",
+                "update": "Atualizar Sessão"
+            },
+            "input": {
+                "date": "Data",
+                "searchString": {
+                    "label": "String de Busca",
+                    "placeholder": "Insira sua string de busca",
+                    "error": "A string de busca é obrigatória."
+                },
+                "comments": {
+                    "label": "Comentários",
+                    "placeholder": "Adicione comentários"
+                },
+                "referenceFiles": {
+                    "label": "Arquivos de Referência",
+                    "aria-label": "Remover arquivo",
+                    "dragAndDrop": {
+                        "activeDrag": "Solte os arquivos aqui...",
+                        "inactiveDrag": "Arraste e solte seus arquivos ou clique para selecionar",
+                        "supported": "Formatos suportados: .bib, .ris"
+                    }
+                }
+            },
+            "button": {
+                "create": "Criar",
+                "update": "Atualizar"
+            }
+        }
+    }
+}
