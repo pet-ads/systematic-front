@@ -29,9 +29,10 @@ export default function AddSelectTable({
 
   const formattedOptions = options.map((opt) => capitalize(opt.toLowerCase()));
 
-  const formatSelectedValues = selectedValues.map((value) =>
-    capitalize(value.toLowerCase())
-  );
+const formatSelectedValues = selectedValues.map((val) => {
+  const originalOption = options.find((opt) => opt.toLowerCase() === val.toLowerCase());
+  return originalOption || val;
+});
 
   return (
     <FormControl sx={conteiner} alignContent={"center"}>
