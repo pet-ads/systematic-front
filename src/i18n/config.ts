@@ -18,6 +18,8 @@ import enExecutionSelection from "../locales/en/review/execution-selection.json"
 import ptExecutionSelection from "../locales/pt/review/execution-selection.json"
 import enExecutionExtraction from "../locales/en/review/execution-extraction.json"
 import ptExecutionExtraction from "../locales/pt/review/execution-extraction.json"
+import enSummarizationGraphics from "../locales/en/review/summarization-graphics.json"
+import ptSummarizationGraphics from "../locales/pt/review/summarization-graphics.json"
 
 i18n
   .use(LanguageDetector)
@@ -36,6 +38,7 @@ i18n
         "review/execution-identification": enExecutionIdentification,
         "review/execution-selection": enExecutionSelection,
         "review/execution-extraction": enExecutionExtraction,
+        "review/summarization-graphics": enSummarizationGraphics,
       },
       pt: {
         "landing/homepage": ptHomepage,
@@ -46,6 +49,7 @@ i18n
         "review/execution-identification": ptExecutionIdentification,
         "review/execution-selection": ptExecutionSelection,
         "review/execution-extraction": ptExecutionExtraction,
+        "review/summarization-graphics": ptSummarizationGraphics,
       },
     },
 
