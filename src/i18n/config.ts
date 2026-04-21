@@ -14,6 +14,8 @@ import enPlanningProtocol from "../locales/en/review/planning-protocol.json";
 import ptPlanningProtocol from "../locales/pt/review/planning-protocol.json";
 import enExecutionIdentification from "../locales/en/review/execution-identification.json"
 import ptExecutionIdentification from "../locales/pt/review/execution-identification.json"
+import enExecutionSelection from "../locales/en/review/execution-selection.json"
+import ptExecutionSelection from "../locales/pt/review/execution-selection.json"
 
 i18n
   .use(LanguageDetector)
@@ -30,6 +32,7 @@ i18n
         "structure/sidebar": enSidebar,
         "review/planning-protocol": enPlanningProtocol,
         "review/execution-identification": enExecutionIdentification,
+        "review/execution-selection": enExecutionSelection,
       },
       pt: {
         "landing/homepage": ptHomepage,
@@ -38,6 +41,7 @@ i18n
         "structure/sidebar": ptSidebar,
         "review/planning-protocol": ptPlanningProtocol,
         "review/execution-identification": ptExecutionIdentification,
+        "review/execution-selection": ptExecutionSelection,
       },
     },
 
