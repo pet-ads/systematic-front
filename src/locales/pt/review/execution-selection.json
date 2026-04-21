@@ -1,0 +1,93 @@
+{
+    "header": "Seleção",
+    "selectLayout": {
+        "choose": "Escolher Layout",
+        "type": {
+            "table": "tabela",
+            "horizontal": "horizontal",
+            "horizontal-invert": "horizontal-invertida",
+            "vertical": "vertical",
+            "vertical-invert": "vertical-invertida",
+            "article": "artigo"
+        }
+    },
+    "search": "Inserir atributo do artigo",
+    "buttonsForMultipleSelection": {
+        "showSelected": "Mostrar selecionados",
+        "showAll": "Mostrar todos",
+        "markAsDuplicated": "Marcar como duplicado",
+        "markAsExcluded": "Marcar como excluído",
+        "clearSelection": "Limpar seleção"
+    },
+    "columnVisibilityMenu": {
+        "view": "Visualizar",
+        "label": {
+            "title": "Título",
+            "author": "Autor",
+            "journal": "Periódico",
+            "year": "Ano",
+            "selection": "Seleção",
+            "extraction": "Extração",
+            "score": "Pontuação",
+            "priority": "Prioridade"
+        }
+    },
+    "statusSelect": {
+        "placeholder": "Selecionar status",
+        "options": {
+            "included": "Incluído",
+            "duplicated": "Duplicado",
+            "excluded": "Excluído",
+            "unclassified": "Não classificado"
+        },
+        "clearFilters": "Limpar filtros"
+    },
+    "tableHeaders": {
+        "id": "ID",
+        "title": "Título",
+        "authors": "Autor",
+        "venue": "Periódico",
+        "year": "Ano",
+        "selectionStatus": "Seleção",
+        "extractionStatus": "Extração",
+        "score": "Pontuação",
+        "readingPriority": "Prioridade"
+    },
+    "priority": {
+        "very_low": "muito baixa",
+        "low": "baixa",
+        "high": "alta",
+        "very_high": "muito alta"
+    },
+    "noArticlesFound": "Nenhum artigo foi encontrado",
+    "pagination": {
+        "rowsPerPage": "Linhas por página",
+        "firstPage": "Primeira página",
+        "previousPage": "Página anterior",
+        "nextPage": "Próxima página",
+        "lastPage": "Última página",
+        "page": "Página",
+        "of": "de"
+    },
+    "buttonsForSelection": {
+        "tooltips": {
+            "previousArticle": "Artigo anterior",
+            "nextArticle": "Próximo artigo",
+            "resetArticle": "Redefinir artigo",
+            "selectPriority": "Selecionar prioridade de leitura",
+            "includeDescription": "Adicionar critério de inclusão",
+            "excludeDescription": "Adicionar critério de exclusão"
+        },
+        "comboBox": {
+            "include": "Incluir",
+            "exclude": "Excluir"
+        },
+        "priorityOptions": {
+            "veryLow": "Muito Baixa",
+            "low": "Baixa",
+            "high": "Alta",
+            "veryHigh": "Muito Alta"
+        }
+    }
+
+}
