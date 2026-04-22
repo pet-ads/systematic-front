@@ -57,11 +57,17 @@ export default function InformationSourcesAndSearchStrategy() {
               event.target.value,
             );
           }}
-          label={t("informationSourcesAndSearchStrategy.input.sourcesSelectionCriteria.label")}
-          placeholder={t("informationSourcesAndSearchStrategy.input.sourcesSelectionCriteria.placeholder")}
+          label={t(
+            "informationSourcesAndSearchStrategy.input.sourcesSelectionCriteria.label",
+          )}
+          placeholder={t(
+            "informationSourcesAndSearchStrategy.input.sourcesSelectionCriteria.placeholder",
+          )}
         />
         <AddSelectionTable
-          label={t("informationSourcesAndSearchStrategy.input.databasesAndInformationSource.label")}
+          label={t(
+            "informationSourcesAndSearchStrategy.input.databasesAndInformationSource.label",
+          )}
           options={[
             "ACM Digital Library",
             "Backward Snowballing",
@@ -81,8 +87,11 @@ export default function InformationSourcesAndSearchStrategy() {
             "SpringerLink",
             "Web of Science",
           ]}
-          placeholder={t("informationSourcesAndSearchStrategy.input.databasesAndInformationSource.placeholder")}
+          placeholder={t(
+            "informationSourcesAndSearchStrategy.input.databasesAndInformationSource.placeholder",
+          )}
           typeField="select"
+          stateKey="Databases and Information Source" // <-- String exata do código dev
         />
         <TextAreaInput
           value={searchMethod}
@@ -92,12 +101,18 @@ export default function InformationSourcesAndSearchStrategy() {
               event.target.value,
             );
           }}
-          label={t("informationSourcesAndSearchStrategy.input.searchMethod.label")}
-          placeholder={t("informationSourcesAndSearchStrategy.input.searchMethod.placeholder")}
+          label={t(
+            "informationSourcesAndSearchStrategy.input.searchMethod.label",
+          )}
+          placeholder={t(
+            "informationSourcesAndSearchStrategy.input.searchMethod.placeholder",
+          )}
         />
         <AddTextTable
           text={t("informationSourcesAndSearchStrategy.input.keywords.label")}
-          placeholder={t("informationSourcesAndSearchStrategy.input.keywords.placeholder")}
+          placeholder={t(
+            "informationSourcesAndSearchStrategy.input.keywords.placeholder",
+          )}
           enableReferenceCode={false}
         />
         <TextAreaInput
@@ -108,8 +123,12 @@ export default function InformationSourcesAndSearchStrategy() {
               event.target.value,
             );
           }}
-          label={t("informationSourcesAndSearchStrategy.input.searchString.label")}
-          placeholder={t("informationSourcesAndSearchStrategy.input.searchString.placeholder")}
+          label={t(
+            "informationSourcesAndSearchStrategy.input.searchString.label",
+          )}
+          placeholder={t(
+            "informationSourcesAndSearchStrategy.input.searchString.placeholder",
+          )}
         />
       </Box>
     </ProtocolFormLayout>

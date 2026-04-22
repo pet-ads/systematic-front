@@ -12,10 +12,38 @@ import ProtocolFormLayout from "../../components/common/protocolForm";
 import useCreateProtocol from "../../services/useCreateProtocol";
 import { Box } from "@chakra-ui/react";
 
-const Languages = ["Arabic", "Bengali", "Chinese", "Czech", "Danish", "Dutch", "English",
-  "Finnish", "French", "German", "Greek", "Hebrew", "Hindi", "Hungarian", "Indonesian",
-  "Italian", "Japanese", "Korean", "Norwegian", "Persian", "Polish", "Portuguese",
-  "Romanian", "Russian", "Spanish", "Swedish", "Thai", "Turkish", "Ukrainian", "Vietnamese"].sort();
+const Languages = [
+  "Arabic",
+  "Bengali",
+  "Chinese",
+  "Czech",
+  "Danish",
+  "Dutch",
+  "English",
+  "Finnish",
+  "French",
+  "German",
+  "Greek",
+  "Hebrew",
+  "Hindi",
+  "Hungarian",
+  "Indonesian",
+  "Italian",
+  "Japanese",
+  "Korean",
+  "Norwegian",
+  "Persian",
+  "Polish",
+  "Portuguese",
+  "Romanian",
+  "Russian",
+  "Spanish",
+  "Swedish",
+  "Thai",
+  "Turkish",
+  "Ukrainian",
+  "Vietnamese",
+].sort();
 
 export default function EligibilityCriteria() {
   const {
@@ -24,7 +52,7 @@ export default function EligibilityCriteria() {
     syncAndNavigate,
   } = useCreateProtocol();
 
-  const { t } = useTranslation("review/planning-protocol")
+  const { t } = useTranslation("review/planning-protocol");
   const { studyTypeDefinition } = eligibilityCriteria;
   const id = localStorage.getItem("systematicReviewId");
 
@@ -55,13 +83,17 @@ export default function EligibilityCriteria() {
       <Box>
         <AddTextTable
           text={t("eligibilityCriteria.input.inclusionCriteria.label")}
-          placeholder={t("eligibilityCriteria.input.inclusionCriteria.placeholder")}
+          placeholder={t(
+            "eligibilityCriteria.input.inclusionCriteria.placeholder",
+          )}
           referencePrefix="IC"
           enableReferenceCode={true}
         />
         <AddTextTable
           text={t("eligibilityCriteria.input.exclusionCriteria.label")}
-          placeholder={t("eligibilityCriteria.input.exclusionCriteria.placeholder")}
+          placeholder={t(
+            "eligibilityCriteria.input.exclusionCriteria.placeholder",
+          )}
           referencePrefix="EC"
           enableReferenceCode={true}
         />
@@ -74,13 +106,16 @@ export default function EligibilityCriteria() {
             );
           }}
           label={t("eligibilityCriteria.input.studyTypeDefinition.label")}
-          placeholder={t("eligibilityCriteria.input.studyTypeDefinition.placeholder")}
+          placeholder={t(
+            "eligibilityCriteria.input.studyTypeDefinition.placeholder",
+          )}
         />
         <AddSelectionTable
           label={t("eligibilityCriteria.input.languages.label")}
           options={Languages}
           placeholder={t("eligibilityCriteria.input.languages.placeholder")}
           typeField="select"
+          stateKey="Languages" // <-- String exata do código dev
         />
       </Box>
     </ProtocolFormLayout>
