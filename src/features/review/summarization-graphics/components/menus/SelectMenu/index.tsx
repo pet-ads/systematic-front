@@ -37,7 +37,9 @@ export default function SelectMenu<T>({
         display="flex"
       >
         <Flex w="100%" justifyContent="space-between" alignItems="center">
-          <Box>{placeholder}</Box>
+          <Box>
+            {selected ? getLabel(selected) : placeholder}
+          </Box>
           <ChevronDownIcon fontSize="1.25rem" />
         </Flex>
       </MenuButton>
