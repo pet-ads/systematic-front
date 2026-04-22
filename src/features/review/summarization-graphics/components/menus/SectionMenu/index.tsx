@@ -20,14 +20,15 @@ type Section = {
   label: string;
   value: string;
   group?: string; 
+  displayName?: string;
 };
 
 const sections: Section[] = [
   { label: "Search Sources", value: "Search Sources" },
-  { label: "Inclusion Criteria", value: "S1_Inclusion Criteria", group: "First Selection" },
-  { label: "Exclusion Criteria", value: "S1_Exclusion Criteria", group: "First Selection" },
-  { label: "Inclusion Criteria", value: "S2_Inclusion Criteria", group: "Second Selection" },
-  { label: "Exclusion Criteria", value: "S2_Exclusion Criteria", group: "Second Selection" },
+  { label: "Inclusion Criteria", value: "S1_Inclusion Criteria", group: "First Selection", displayName: "First Selection - Inclusion Criteria" },
+  { label: "Exclusion Criteria", value: "S1_Exclusion Criteria", group: "First Selection", displayName: "First Selection - Exclusion Criteria"},
+  { label: "Inclusion Criteria", value: "S2_Inclusion Criteria", group: "Second Selection", displayName: "Second Selection - Inclusion Criteria"},
+  { label: "Exclusion Criteria", value: "S2_Exclusion Criteria", group: "Second Selection", displayName: "Second Selection - Exclusion Criteria"},
   { label: "Studies Funnel", value: "Studies Funnel" },
   { label: "Included Studies", value: "Included Studies" },
   { label: "Form Questions", value: "Form Questions" },
@@ -54,7 +55,13 @@ export default function SectionMenu({ onSelect, selected }: MenuProps) {
         
       >
         <Flex w="100%" justifyContent="space-between" alignItems="center">
-          <Box>Choose Section</Box>
+          <Box>
+            {(() => {
+              const current = sections.find((s) => s.value === selected);
+              if (!current) return "Choose Section";
+              return current.displayName || current.label;
+            })()}
+          </Box> 
           <ChevronDownIcon fontSize="1.25rem" />
         </Flex>
       </MenuButton>

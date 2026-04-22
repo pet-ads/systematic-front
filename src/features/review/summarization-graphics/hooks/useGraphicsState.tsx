@@ -22,10 +22,10 @@ export function useGraphicsState() {
 
   // estados principais
   const [selectedQuestionId, setSelectedQuestionId] = useState<string | undefined>(
-    allQuestions[0]?.questionId ?? undefined
+    undefined
   );
-  const [section, setSection] = useState("Included Studies");
-  const [type, setType] = useState("Table");
+  const [section, setSection] = useState("");
+  const [type, setType] = useState("");
   const [filters, setFilters] = useState<FiltersState>({});
 
 

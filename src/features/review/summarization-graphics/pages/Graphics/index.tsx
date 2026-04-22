@@ -76,21 +76,39 @@ export default function Graphics() {
         </Flex>
       </Flex>
 
-      <CardDefault
-        backgroundColor="#fff"
-        borderRadius="1rem"
-        withShadow={false}
-      >
-        <ExportProvider>
-          <ChartsRenderer
-            key={section + type + JSON.stringify(filters) + selectedQuestionId}
-            section={section}
-            type={type}
-            filters={filters}
-            selectedQuestionId={selectedQuestionId}
-          />
-        </ExportProvider>
-      </CardDefault>
+  <CardDefault
+    backgroundColor="#fff"
+    borderRadius="1rem"
+    withShadow={false}
+  >
+    <ExportProvider>
+      {section ? (
+        <ChartsRenderer
+          key={section + type + JSON.stringify(filters) + selectedQuestionId}
+          section={section}
+          type={type}
+          filters={filters}
+          selectedQuestionId={selectedQuestionId}
+        />
+      ) : (
+        /* Render placeholder when section is not yet defined */
+        <Flex 
+          direction="column" 
+          align="center" 
+          justify="center" 
+          h="800px" 
+          textAlign="center"
+        >
+          <Text fontSize="34px" fontWeight="bold" color="#2E4B6C" mb="2">
+            Graphics Area
+          </Text>
+          <Text fontSize="19px" color="gray.600">
+            Please select a section and layout above to view the data.
+          </Text>
+        </Flex>
+      )}
+    </ExportProvider>
+  </CardDefault>
     </FlexLayout>
   );
 }
