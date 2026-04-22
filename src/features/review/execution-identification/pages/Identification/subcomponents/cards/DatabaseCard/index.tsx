@@ -11,7 +11,12 @@ import {
   Td,
   TableContainer,
   IconButton,
-  Button
+  Button,
+  Accordion,
+  AccordionItem,
+  AccordionButton,
+  AccordionPanel,
+  AccordionIcon,
 } from "@chakra-ui/react";
 import { AddIcon } from "@chakra-ui/icons";
 import { AiOutlineDelete, AiOutlineEdit, AiOutlineEye } from "react-icons/ai";
@@ -37,7 +42,8 @@ export default function DataBaseCard({ text }: DatabaseCardProps) {
 
   const { data, mutate } = useGetSession(text);
 
-  const handleCreateSession = () => {
+  const handleCreateSession = (e: React.MouseEvent) => {
+    e.stopPropagation();
     setSessionId("");
     setActionModal("create");
     setShowModal(true);
@@ -53,130 +59,144 @@ export default function DataBaseCard({ text }: DatabaseCardProps) {
     UseDeleteSession({ sessionId: id, mutate });
   };
 
-  const handleOpenDeleteModal = (action: "delete" | "refuse") => {
+  const handleOpenDeleteModal = (action: "delete" | "refuse", e: React.MouseEvent) => {
+    e.stopPropagation();
     setdeleteModal(action);
     setShowDeleteModal(true);
   };
 
   return (
-    <Box
-      w="100%"
-      bg="white"
-      borderRadius="md"
-      border="1px solid"
-      borderColor="gray.200"
-      overflow="hidden"
-      mb="2rem"
-      boxShadow="sm"
-    >
-      {/* CABEÇALHO DO CARD */}
-      <Flex
-        w="100%"
-        justifyContent="space-between"
-        alignItems="center"
-        p="1rem 1.5rem"
-        bg="white"
-      >
-        <Flex alignItems="center" gap="0.75rem">
-          <DataBaseIcon />
-          <Text fontSize="lg" fontWeight="bold" color="#263C56">
-            {text}
-          </Text>
-        </Flex>
-
-        <Flex gap="0.5rem">
-          <Button
-            size="sm"
-            leftIcon={<AddIcon />}
-            bg="#263C56"
-            color="white"
-            _hover={{ bg: "#1a2a3c" }}
-            onClick={handleCreateSession}
+    <Box mb="2rem" w="100%" h="100%">
+      <Accordion allowMultiple w="100%" h="100%">
+        <AccordionItem
+          bg="white"
+          borderRadius="md"
+          border="1px solid"
+          borderColor="gray.200"
+          boxShadow="sm"
+          borderTop="none"
+          h="100%"
+        >
+          
+          <Flex
+            w="100%"
+            minH="90px"
+            justifyContent="space-between"
+            alignItems="center"
+            p="1rem 1.5rem"
+            borderBottom="1px solid"
+            borderColor="gray.200"
           >
-            Add Session
-          </Button>
-          <IconButton
-            aria-label="Delete Database"
-            size="sm"
-            icon={<AiOutlineDelete />}
-            colorScheme="red"
-            variant="outline"
-            onClick={() => handleOpenDeleteModal("delete")}
-          />
-        </Flex>
-      </Flex>
+            
+            <AccordionButton 
+              p={0} 
+              _hover={{ bg: "transparent" }} 
+              flex="1" 
+              mr="1.5rem"
+            >
+              <Flex flex="1" alignItems="center" gap="0.75rem">
+                <DataBaseIcon />
+                <Text fontSize="lg" fontWeight="bold" color="#263C56" textAlign="left">
+                  {text}
+                </Text>
+              </Flex>
+              
+              <AccordionIcon color="gray.500" boxSize={6} />
+            </AccordionButton>
+          
+            <Flex gap="0.5rem" alignItems="center">
+              <Button
+                size="lg"
+                leftIcon={<AddIcon />}
+                bg="#263C56"
+                color="white"
+                _hover={{ bg: "#1a2a3c" }}
+                onClick={handleCreateSession}
+              >
+                Add Session
+              </Button>
+              <IconButton
+                aria-label="Delete Database"
+                size="lg"
+                icon={<AiOutlineDelete size={22} />}
+                colorScheme="red"
+                variant="outline"
+                onClick={(e) => handleOpenDeleteModal("delete", e)}
+              />
+            </Flex>
+          </Flex>
 
-      {/* TABELA COM FORMATAÇÃO DE DATA E ESTILO ZEBRA */}
-      <TableContainer
-        border="1px solid"
-        borderColor="gray.200"
-        borderRadius="md"
-        m="0 1.5rem 1.5rem 1.5rem"
-      >
-        <Table variant="simple" size="md">
-          <Thead bg="#263C56">
-            <Tr>
-              <Th color="white" textTransform="none" fontSize="sm">Date</Th>
-              <Th color="white" textTransform="none" fontSize="sm">Studies</Th>
-              <Th color="white" textTransform="none" fontSize="sm" textAlign="right">Actions</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {data && data.length > 0 ? (
-              data.map((session: any, index: number) => (
-                <Tr 
-                  key={session.id || index} 
-                  bg="white" 
-                  _even={{ bg: "#E2E8F0" }} 
-                  _hover={{ bg: "gray.100" }} 
-                  transition="background 0.2s"
-                >
-                  {/* DATA FORMATADA AQUI */}
-                  <Td color="gray.700">
-                    {new Date(session.timestamp).toLocaleDateString("pt-BR")}
-                  </Td>
-                  
-                  <Td color="gray.700">{session.numberOfRelatedStudies}</Td>
-                  <Td textAlign="right">
-                    <Flex justify="flex-end" gap="0.5rem">
-                      <IconButton
-                        aria-label="View"
-                        icon={<AiOutlineEye />}
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => handleOpenSessionModal("update", session.id)}
-                      />
-                      <IconButton
-                        aria-label="Edit"
-                        icon={<AiOutlineEdit />}
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => handleOpenSessionModal("update", session.id)}
-                      />
-                      <IconButton
-                        aria-label="Delete"
-                        icon={<AiOutlineDelete />}
-                        size="sm"
-                        variant="ghost"
-                        colorScheme="red"
-                        onClick={() => handleDeleteSession(session.id)}
-                      />
-                    </Flex>
-                  </Td>
-                </Tr>
-              ))
-            ) : (
-              <Tr>
-                <Td colSpan={3} textAlign="center" color="gray.500" py="2rem">
-                  No sessions found for this database.
-                </Td>
-              </Tr>
-            )}
-          </Tbody>
-        </Table>
-      </TableContainer>
+          <AccordionPanel pb={4} px={4} pt={4}>
+            <TableContainer
+              border="1px solid"
+              borderColor="gray.200"
+              borderRadius="md"
+            >
+              <Table variant="simple" size="md">
+                <Thead bg="#263C56">
+                  <Tr>
+                    <Th color="white" textTransform="none" fontSize="sm">Date</Th>
+                    <Th color="white" textTransform="none" fontSize="sm">Studies</Th>
+                    <Th color="white" textTransform="none" fontSize="sm" textAlign="right">Actions</Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  {data && data.length > 0 ? (
+                    data.map((session: any, index: number) => (
+                      <Tr 
+                        key={session.id || index} 
+                        bg="white" 
+                        _even={{ bg: "#E2E8F0" }} 
+                        _hover={{ bg: "gray.100" }} 
+                        transition="background 0.2s"
+                      >
+                        <Td color="gray.700">
+                          {new Date(session.timestamp).toLocaleDateString("pt-BR")}
+                        </Td>
+                        <Td color="gray.700">{session.numberOfRelatedStudies}</Td>
+                        <Td textAlign="right">
+                          <Flex justify="flex-end" gap="0.5rem">
+                            <IconButton
+                              aria-label="View"
+                              icon={<AiOutlineEye size={22} />}
+                              size="lg"
+                              variant="ghost"
+                              onClick={() => handleOpenSessionModal("update", session.id)}
+                            />
+                            <IconButton
+                              aria-label="Edit"
+                              icon={<AiOutlineEdit size={22} />}
+                              size="lg"
+                              variant="ghost"
+                              onClick={() => handleOpenSessionModal("update", session.id)}
+                            />
+                            <IconButton
+                              aria-label="Delete"
+                              icon={<AiOutlineDelete size={22} />}
+                              size="lg"
+                              variant="ghost"
+                              colorScheme="red"
+                              onClick={() => handleDeleteSession(session.id)}
+                            />
+                          </Flex>
+                        </Td>
+                      </Tr>
+                    ))
+                  ) : (
+                    <Tr>
+                      <Td colSpan={3} textAlign="center" color="gray.500" py="2rem">
+                        No sessions found for this database.
+                      </Td>
+                    </Tr>
+                  )}
+                </Tbody>
+              </Table>
+            </TableContainer>
+          </AccordionPanel>
+        </AccordionItem>
+      </Accordion>
 
-      {/* MODAIS */}
+      
       {showDeleteModal && (
         <DeleteDatabaseModal
           show={setShowDeleteModal}
