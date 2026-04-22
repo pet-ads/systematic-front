@@ -65,6 +65,9 @@ export default function ExtractionForm({ studyData }: ArticlePreviewProps) {
               border="1px solid"
               borderColor="gray.200"
               bg="gray.50"
+              maxWidth="500px" 
+              mx="auto"        
+              mt="6rem"
             >
               <Icon as={LockIcon} w={6} h={6} color="gray.400" />
               <VStack spacing={1}>

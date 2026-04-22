@@ -1,29 +1,34 @@
-import { Flex, Text } from "@chakra-ui/react";
-
+import { Box, Flex, Text, VStack } from "@chakra-ui/react";
 import { TbArticleOff } from "react-icons/tb";
 
 export default function NoDataMessage() {
-  const container = {
-    w: "100%",
-    h: "calc(100% - 1rem)",
-    justifyContent: "center",
-    alignItems: "center",
-    flexDirection: "column",
-    bg: "gray.50",
-    borderRadius: "md",
-    boxShadow: "sm",
-    gap: ".5rem",
-  };
-
   return (
-    <Flex sx={container}>
-      <TbArticleOff size={"4rem"} color="#263C56" />
-      <Text fontSize="xl" fontWeight="bold" color="gray.600">
-        No Articles Found
-      </Text>
-      <Text fontSize="md" color="gray.500">
-        Try adjusting your filters or check back later.
-      </Text>
-    </Flex>
+    <Box px={{ base: "1rem", md: "2rem" }} w="100%" h="100%">
+      <Flex
+        mt="4rem"
+        flexDirection="column"
+        justifyContent="center"
+        alignItems="center"
+        textAlign="center"
+        gap="0.75rem"
+        p="2rem"
+        borderRadius="md"
+        border="1px solid"
+        borderColor="gray.200"
+        bg="gray.50"
+        h="calc(100% - 1rem)" 
+      >
+        <TbArticleOff size="2.5rem" color="#A0AEC0" />
+        
+        <VStack spacing={1}>
+          <Text fontSize="md" fontWeight="bold" color="gray.800">
+            No Articles Found
+          </Text>
+          <Text fontSize="sm" color="gray.600">
+            Try adjusting your filters or check back later.
+          </Text>
+        </VStack>
+      </Flex>
+    </Box>
   );
 }
