@@ -1,14 +1,9 @@
-// External library
 import { useCallback, useContext, useRef } from "react";
 
-// Context
 import StudyContext from "@features/review/shared/context/StudiesContext";
-
-// Hook
 import { UseChangeStudySelectionStatus } from "../services/useChangeStudySelectionStatus";
 import { UseChangeStudyExtractionStatus } from "../services/useChangeStudyExtractionStatus";
 
-// Type
 import type { PageLayout } from "../components/structure/LayoutFactory";
 import { SelectionArticles } from "@features/review/execution-selection/services/useFetchSelectionArticles";
 import { KeyedMutator } from "swr";
@@ -23,9 +18,8 @@ const useComboBoxSelection = ({
   reloadArticles,
 }: ComboBoxSelectionProps) => {
   const studiesContext = useContext(StudyContext);
-
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  
+
   if (!studiesContext) throw new Error("Context not available");
 
   const { selectedArticleReview } = studiesContext;
@@ -35,17 +29,29 @@ const useComboBoxSelection = ({
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
 
       timeoutRef.current = setTimeout(async () => {
-        const updateFunction =
-          page === "Selection"
-            ? UseChangeStudySelectionStatus
-            : UseChangeStudyExtractionStatus;
-
         try {
-          await updateFunction({
-            studyReviewId: [selectedArticleReview],
-            criterias,
-            status,
-          });
+          if (page === "Selection") {
+            await UseChangeStudySelectionStatus({
+              studyReviewId: [selectedArticleReview],
+              criterias,
+              status,
+            });
+
+            const extractionStatus =
+              status === "INCLUDED" ? "UNCLASSIFIED" : status;
+
+            await UseChangeStudyExtractionStatus({
+              studyReviewId: [selectedArticleReview],
+              criterias: status === "EXCLUDED" ? criterias : [],
+              status: extractionStatus,
+            });
+          } else {
+            await UseChangeStudyExtractionStatus({
+              studyReviewId: [selectedArticleReview],
+              criterias,
+              status,
+            });
+          }
 
           await reloadArticles();
         } catch (error) {

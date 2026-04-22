@@ -98,7 +98,7 @@ export default function ButtonsForSelection({
   const currentArticleStatus = {
     selectionStatus: currentArticle?.selectionStatus,
     extractionStatus: currentArticle?.extractionStatus,
-  };
+  };  
 
   const isBlockedByExtraction =
     page === "Selection" &&
@@ -206,7 +206,11 @@ export default function ButtonsForSelection({
       label: "Include",
       description: isBlockedByExtraction
         ? "Article already classified in Extraction"
-        : "Add inclusion criteria",
+        : criteriaGroupDataMap["INCLUSION"].data.length === 0
+          ? "No inclusion criteria configured in Planning"
+          : isExclusionActive
+            ? "Remove exclusion criteria first"
+            : "Add inclusion criteria",
       isDisabled:
         isBlockedByExtraction ||
         criteriaGroupDataMap["INCLUSION"].data.length === 0 ||
@@ -217,7 +221,11 @@ export default function ButtonsForSelection({
       label: "Exclude",
       description: isBlockedByExtraction
         ? "Article already classified in Extraction"
-        : "Add exclusion criteria",
+        : criteriaGroupDataMap["EXCLUSION"].data.length === 0
+          ? "No exclusion criteria configured in Planning"
+          : isInclusionActive
+            ? "Remove inclusion criteria first"
+            : "Add exclusion criteria",
       isDisabled:
         isBlockedByExtraction ||
         criteriaGroupDataMap["EXCLUSION"].data.length === 0 ||

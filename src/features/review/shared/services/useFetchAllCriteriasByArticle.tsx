@@ -1,13 +1,10 @@
-// External library
 import { useContext, useEffect, useState } from "react";
 
-// Hooks
 import useFetchCriteriaForFocusedArticle from "./useCriteriaForFocusedArticle";
 import useFetchInclusionCriteria from "./useFetchInclusionCriteria";
 import useFetchExclusionCriteria from "./useFetchExclusionCriterias";
 import useRevertCriterionState from "./useRevertCriterionState";
 
-// Types
 import { PageLayout } from "../components/structure/LayoutFactory";
 import StudyContext from "../context/StudiesContext";
 
@@ -59,17 +56,9 @@ export default function useFetchAllCriteriasByArticle({
 
   useEffect(() => {
     if (!inclusion || !exclusion || selectedArticleReview === -1) return;
-
     if (inclusion.length === 0 && exclusion.length === 0) return;
-
+    
     setCriterias((prev) => {
-      if (
-        prev[stateKey] &&
-        prev[stateKey].options.INCLUSION.content.length > 0
-      ) {
-        return prev;
-      }
-
       const groupOfCriteria: Record<OptionType, string[]> = {
         INCLUSION: criteria?.inclusionCriteria || [],
         EXCLUSION: criteria?.exclusionCriteria || [],
@@ -80,13 +69,12 @@ export default function useFetchAllCriteriasByArticle({
         isChecked: groupOfCriteria["INCLUSION"].includes(content),
       }));
 
-      const inclusionStatus = inclusionMapped.some((crit) => crit.isChecked);
-
       const exclusionMapped = exclusion.map((content) => ({
         text: content,
         isChecked: groupOfCriteria["EXCLUSION"].includes(content),
       }));
 
+      const inclusionStatus = inclusionMapped.some((crit) => crit.isChecked);
       const exclusionStatus = exclusionMapped.some((crit) => crit.isChecked);
 
       return {
@@ -118,7 +106,9 @@ export default function useFetchAllCriteriasByArticle({
     groupCriteria: CriteiriaProps["options"],
     oppositeKey: OptionType,
   ) {
-    return groupCriteria[oppositeKey].content.some((crit) => crit.isChecked);
+    return groupCriteria[oppositeKey].content.some(
+      (crit: OptionProps) => crit.isChecked,
+    );
   }
 
   function updateCriteriaContent(
@@ -203,21 +193,25 @@ export default function useFetchAllCriteriasByArticle({
       const resetContent = (content: OptionProps[]) =>
         content.map((c) => ({ ...c, isChecked: false }));
 
-      return {
-        ...prev,
-        [stateKey]: {
-          ...current,
-          options: {
-            INCLUSION: {
-              content: resetContent(current.options.INCLUSION.content),
-              isActive: false,
-            },
-            EXCLUSION: {
-              content: resetContent(current.options.EXCLUSION.content),
-              isActive: false,
-            },
+      const resetState: CriteiriaProps = {
+        ...current,
+        options: {
+          INCLUSION: {
+            content: resetContent(current.options.INCLUSION.content),
+            isActive: false,
+          },
+          EXCLUSION: {
+            content: resetContent(current.options.EXCLUSION.content),
+            isActive: false,
           },
         },
+      };
+
+      criteriaStateCache[stateKey] = resetState;
+
+      return {
+        ...prev,
+        [stateKey]: resetState,
       };
     });
   };
