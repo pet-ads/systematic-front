@@ -1,5 +1,7 @@
 import { useContext, useState } from "react";
 
+import { useTranslation } from "react-i18next";
+
 import SessionPrev from "./subcomponents/tables/SessionPrev";
 
 import UseDeleteSession from "../../../../../services/useDeleteSession";
@@ -38,6 +40,8 @@ export default function AccordionDashboard({
   const [showModal, setShowModal] = useState(false);
   const [sessionId, setSessionId] = useState("");
   const [actionModal, setActionModal] = useState<"create" | "update">("create");
+
+  const { t } = useTranslation("review/execution-identification");
 
   const studiesContext = useContext(StudyContext);
 
@@ -98,7 +102,7 @@ export default function AccordionDashboard({
                       textTransform="capitalize"
                       fontSize="md"
                     >
-                      Date
+                      {t("dataBaseCard.accordionDashboard.date")}
                     </Th>
                     <Th
                       textAlign="center"
@@ -107,7 +111,7 @@ export default function AccordionDashboard({
                       textTransform="capitalize"
                       fontSize="md"
                     >
-                      Studies
+                      {t("dataBaseCard.accordionDashboard.studies")}
                     </Th>
                     <Th
                       textAlign="center"
@@ -116,7 +120,7 @@ export default function AccordionDashboard({
                       textTransform="capitalize"
                       fontSize="md"
                     >
-                      Actions
+                      {t("dataBaseCard.accordionDashboard.actions")}
                     </Th>
                   </Tr>
                 </Thead>
@@ -137,7 +141,7 @@ export default function AccordionDashboard({
               </Table>
             </Box>
           ) : (
-            <Text>Studies not found</Text>
+            <Text>{t("dataBaseCard.accordionDashboard.notFound")}</Text>
           )}
           {sessions.length > 0 && (
             <Box>

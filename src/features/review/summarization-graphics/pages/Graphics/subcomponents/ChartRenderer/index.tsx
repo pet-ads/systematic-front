@@ -169,7 +169,7 @@ return (
       alignItems="center"
       p={
         section === "Included Studies" ||
-        (section === "Search Sources" && type === "Table")
+        (section === "Search Sources" && (type === "Table" || type === "Tabela"))
           ? "0"
           : "2rem"
       }

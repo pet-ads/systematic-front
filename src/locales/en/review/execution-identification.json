@@ -1,0 +1,71 @@
+{
+    "header": "Studies Identification",
+    "dataBaseRequired": {
+        "message": "No databases registered",
+        "text": "To continue this stage of the execution, please add at least one database. Once added, you can proceed smoothly with your review.",
+        "button": "Go to database registration"
+    },
+    "dataBaseCard": {
+        "deleteDatabaseModal": {
+            "toasts": {
+                "incorrectName": {
+                    "title": "Invalid Database Name",
+                    "description": "Please enter the correct database name to proceed."
+                },
+                "success": {
+                    "title": "All Study Sessions Deleted!",
+                    "description": "Your study sessions have been successfully removed."
+                },
+                "catch": {
+                    "title": "Action Failed",
+                    "description": "Please ensure the field is filled before proceeding."
+                }
+            },
+            "heading": "Delete all session studies",
+            "message": "Are you sure you want to delete all references in the database? This action is permanent and cannot be undone.",
+            "label1": "To delete data from \"",
+            "label2": "\", write the database name below:",
+            "placeholder": "Enter database name",
+            "aria-label": "Database name input",
+            "cancel": "Cancel",
+            "remove": "Remove"
+        },
+        "accordionDashboard": {
+            "date": "Date",
+            "studies": "Studies",
+            "actions": "Actions",
+            "notFound": "Studies not found"
+        },
+        "identificationModal": {
+            "heading": {
+                "create": "New Search Session",
+                "update": "Update Session"
+            },
+            "input": {
+                "date": "Date",
+                "searchString": {
+                    "label": "Search String",
+                    "placeholder": "Enter your search string",
+                    "error": "Search string is required."
+                },
+                "comments": {
+                    "label": "Comments",
+                    "placeholder": "Add comments"
+                },
+                "referenceFiles": {
+                    "label": "Reference Files",
+                    "aria-label": "Remove file",
+                    "dragAndDrop": {
+                        "activeDrag": "Drop the files here..",
+                        "inactiveDrag": "Drag & Drop your files or click to select",
+                        "supported": "Supported formats: .bib, .ris"
+                    }
+                }
+            },
+            "button": {
+                "create": "Create",
+                "update": "Update"
+            }
+        }
+    }
+}

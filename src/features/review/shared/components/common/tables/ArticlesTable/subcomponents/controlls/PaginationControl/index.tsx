@@ -6,6 +6,7 @@ import {
   MdKeyboardDoubleArrowLeft,
   MdKeyboardDoubleArrowRight,
 } from "react-icons/md";
+import { useTranslation } from "react-i18next";
 
 // Types
 interface PaginationControlProps {
@@ -38,24 +39,26 @@ const PaginationControl: React.FC<PaginationControlProps> = ({
   const numberOfCases = String(quantityOfPages).length;
   const isPaginationEnabled = quantityOfPages > 1;
 
+  const { t } = useTranslation("review/execution-selection");
+
   const actionButtons: ActionButton[] = [
     {
-      label: "First page",
+      label: t("pagination.firstPage"),
       icon: <MdKeyboardDoubleArrowLeft size={20} />,
       action: handleBackToInitial,
     },
     {
-      label: "Previous page",
+      label: t("pagination.previousPage"),
       icon: <MdKeyboardArrowLeft size={20} />,
       action: handlePrevPage,
     },
     {
-      label: "Next page",
+      label: t("pagination.nextPage"),
       icon: <MdKeyboardArrowRight size={20} />,
       action: handleNextPage,
     },
     {
-      label: "Last page",
+      label: t("pagination.lastPage"),
       icon: <MdKeyboardDoubleArrowRight size={20} />,
       action: handleGoToFinal,
     },
@@ -83,7 +86,7 @@ const PaginationControl: React.FC<PaginationControlProps> = ({
         order={{ base: 2, md: 1 }}
         mb={{ base: "0.5rem", md: 0 }}
       >
-        <Text whiteSpace="nowrap">Rows per page</Text>
+        <Text whiteSpace="nowrap">{t("pagination.rowsPerPage")}</Text>
         <Select
           w="70px"
           h="32px"
@@ -109,8 +112,7 @@ const PaginationControl: React.FC<PaginationControlProps> = ({
         order={{ base: 3, md: 2 }}
       >
         <Text whiteSpace="nowrap">
-          Page {String(currentPage).padStart(numberOfCases, "0")} of
-          {" " + quantityOfPages}
+          {t("pagination.page") + " " + String(currentPage).padStart(numberOfCases, "0") + t("pagination.of") + " " + quantityOfPages}
         </Text>
         {isPaginationEnabled &&
           actionButtons.map(({ icon, action, label }, index) => (

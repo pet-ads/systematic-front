@@ -14,6 +14,7 @@ import {
   Box,
 } from "@chakra-ui/react";
 
+import { useTranslation } from "react-i18next";
 import { CheckCircleIcon, QuestionIcon, WarningIcon } from "@chakra-ui/icons";
 import { FaChevronDown, FaChevronUp} from "react-icons/fa6";
 import { MdOutlineKeyboardArrowLeft, MdOutlineKeyboardArrowRight, MdOutlineKeyboardDoubleArrowLeft, MdOutlineKeyboardDoubleArrowRight } from "react-icons/md";
@@ -96,26 +97,27 @@ export default function Expanded({
   });
 
   const studyContext = useContext(StudyContext);
+  const { t } = useTranslation("review/execution-selection")
 
   const columns: Column[] = [
-    { label: "ID", key: "studyReviewId", width: columnWidths.studyReviewId },
-    { label: "Title", key: "title", width: columnWidths.title },
-    { label: "Author", key: "authors", width: columnWidths.authors },
-    { label: "Journal", key: "venue", width: columnWidths.venue },
-    { label: "Year", key: "year", width: columnWidths.year },
+    { label: t("tableHeaders.id"), key: "studyReviewId", width: columnWidths.studyReviewId },
+    { label: t("tableHeaders.title"), key: "title", width: columnWidths.title },
+    { label: t("tableHeaders.authors"), key: "authors", width: columnWidths.authors },
+    { label: t("tableHeaders.venue"), key: "venue", width: columnWidths.venue },
+    { label: t("tableHeaders.year"), key: "year", width: columnWidths.year },
     {
-      label: "Selection",
+      label: t("tableHeaders.selectionStatus"),
       key: "selectionStatus",
       width: columnWidths.selectionStatus,
     },
     {
-      label: "Extraction",
+      label: t("tableHeaders.extractionStatus"),
       key: "extractionStatus",
       width: columnWidths.extractionStatus,
     },
-    { label: "Score", key: "score", width: columnWidths.score },
+    { label: t("tableHeaders.score"), key: "score", width: columnWidths.score },
     {
-      label: "Priority",
+      label: t("tableHeaders.readingPriority"),
       key: "readingPriority",
       width: columnWidths.readingPriority,
     },
@@ -551,9 +553,9 @@ export default function Expanded({
                         {renderStatusIcon(reference.selectionStatus)}
                         <Text sx={collapsedSpanTextChanged}>
                           {capitalize(
-                            reference.selectionStatus
+                            t(`statusSelect.options.${reference.selectionStatus
                               ?.toString()
-                              .toLowerCase() || ""
+                              .toLowerCase()}`) || ""
                           )}
                         </Text>
                       </Box>
@@ -570,9 +572,9 @@ export default function Expanded({
                         {renderStatusIcon(reference.extractionStatus)}
                         <Text sx={collapsedSpanTextChanged}>
                           {capitalize(
-                            reference.extractionStatus
+                            t(`statusSelect.options.${reference.extractionStatus
                               ?.toString()
-                              .toLowerCase() || ""
+                              .toLowerCase()}`) || ""
                           )}
                         </Text>
                       </Box>
@@ -608,9 +610,9 @@ export default function Expanded({
                         {renderPriorityIcon(reference.readingPriority?.toString())}
                         <Text sx={collapsedSpanTextChanged}>
                           {capitalize(
-                            reference.readingPriority
+                            t(`priority.${reference.readingPriority
                               ?.toString()
-                              .toLowerCase() || ""
+                              .toLowerCase()}`) || ""
                           ).replace("_", " ")}
                         </Text>
                       </Box>
@@ -621,7 +623,7 @@ export default function Expanded({
             ) : (
               <Tr>
                 <Td colSpan={8} textAlign="center">
-                  No articles found.
+                  {t("noArticlesFound")}
                 </Td>
               </Tr>
             )}

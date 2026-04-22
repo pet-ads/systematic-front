@@ -1,0 +1,185 @@
+{
+    "generalDefinition": {
+        "headerText": "Protocolo: Definição Geral",
+        "navButtonText": {
+            "create": "Criar nova Revisão",
+            "next": "Próximo"
+        },
+        "input": {
+            "title": {
+                "label": "Título",
+                "placeholder": "Insira o título da revisão"
+            },
+            "description": {
+                "label": "Descrição",
+                "placeholder": "Insira a descrição da revisão"
+            },
+            "objectives": {
+                "label": "Objetivos",
+                "placeholder": "Quais são seus objetivos?"
+            },
+            "researchers": {
+                "label": "Pesquisadores",
+                "placeholder": "Insira o nome dos pesquisadores "
+            }
+        },
+        "alert": {
+            "title": {
+                "label": "Título é obrigatório",
+                "placeholder": "Insira o título da revisão"
+            },
+            "description": {
+                "label": "Descrição é obrigatória",
+                "placeholder": "Insira a descrição da revisão"
+            },
+            "objectives": {
+                "label": "Objetivos são obrigatórios",
+                "placeholder": "Quais são seus objetivos?"
+            }
+        }
+    },
+    "picoc": {
+        "headerText": "Protocolo: PICOC",
+        "navButton": {
+            "back": "Voltar",
+            "next": "Próximo"
+        },
+        "input": {
+            "population": {
+                "label": "População",
+                "placeholder": "Qual é a sua população de estudo?"
+            },
+            "intervention": {
+                "label": "Intervenção",
+                "placeholder": "Qual é a sua intervenção?"
+            },
+            "control": {
+                "label": "Controle",
+                "placeholder": "Qual é o seu controle?"
+            },
+            "outcome": {
+                "label": "Resultado",
+                "placeholder": "Qual é o seu resultado?"
+            },
+            "context": {
+                "label": "Contexto",
+                "placeholder": "Qual é o seu contexto?"
+            }
+        }
+    },
+    "researchQuestions": {
+        "headerText": "Protocolo: Questões de Pesquisa",
+        "navButton": {
+            "back": "Voltar",
+            "next": "Próximo"
+        },
+        "primaryQuestion": {
+            "label": "Questão principal",
+            "placeholder": "Insira a descrição da revisão"
+        },
+        "secondaryQuestions": {
+            "heading": "Questões Secundárias",
+            "label": "Questões de Pesquisa",
+            "placeholder": "Insira as outras Questões de Pesquisa"
+        }
+    },
+    "eligibilityCriteria": {
+        "headerText": "Protocolo: Critérios de Elegibilidade",
+        "navButton": {
+            "back": "Voltar",
+            "next": "Próximo"
+        },
+        "input": {
+            "inclusionCriteria": {
+                "label": "Critério de inclusão",
+                "placeholder": "Insira o critério"
+            },
+            "exclusionCriteria": {
+                "label": "Critério de exclusão",
+                "placeholder": "Insira o critério"
+            },
+            "studyTypeDefinition": {
+                "label": "Definição do Tipo de Estudo",
+                "placeholder": "Insira a definição do tipo de estudo"
+            },
+            "languages": {
+                "label": "Idiomas",
+                "placeholder": "Selecione um idioma"
+            }
+        }
+    },
+    "informationSourcesAndSearchStrategy": {
+        "headerText": "Protocolo: Fontes de Informação e Estratégia de Busca",
+        "navButton": {
+            "back": "Voltar",
+            "next": "Próximo"
+        },
+        "input": {
+            "sourcesSelectionCriteria": {
+                "label": "Critérios de Seleção das Fontes",
+                "placeholder": "Insira os critérios de seleção das fontes"
+            },
+            "databasesAndInformationSource": {
+                "label": "Bases de Dados e Fontes de Informação",
+                "placeholder": "Selecione a base de dados"
+            },
+            "searchMethod": {
+                "label": "Estratégia de Busca",
+                "placeholder": "Insira a estratégia de busca"
+            },
+            "keywords": {
+                "label": "Palavras-chave",
+                "placeholder": "Insira as palavras-chave relacionadas à sua revisão"
+            },
+            "searchString": {
+                "label": "String de Busca",
+                "placeholder": "Insira a string de busca"
+            }
+        }
+    },
+    "selectionAndExtraction": {
+        "headerText": "Protocolo: Seleção e Extração",
+        "navButton": {
+            "back": "Voltar",
+            "next": "Próximo"
+        },
+        "input": {
+            "selectionProcess": {
+                "label": "Processo de Seleção dos Estudos",
+                "placeholder": "Insira o processo de seleção"
+            },
+            "dataCollectionProcess": {
+                "label": "Processo de Coleta de Dados",
+                "placeholder": "Insira o processo de coleta de dados"
+            },
+            "extractionQuestions": {
+                "label": "Questões de Extração"
+            }
+        }
+    },
+    "riskOfBiasAssessment": {
+        "headerText": "Protocolo: Avaliação do Risco de Viés",
+        "navButton": {
+            "back": "Voltar",
+            "next": "Próximo"
+        },
+        "input": {
+            "riskOfBiasQuestions": {
+                "label": "Questões sobre Risco de Viés"
+            }
+        }
+    },
+    "analysisAndSynthesisOfResults": {
+        "headerText": "Protocolo: Análise e Síntese dos Resultados",
+        "navButton": {
+            "back": "Voltar",
+            "next": "Próximo"
+        },
+        "input": {
+            "analysisAndSynthesisProcess": {
+                "label": "Método de Análise e Síntese",
+                "placeholder": "Insira o seu Método de Análise e Síntese"
+            }
+        }
+    }
+}

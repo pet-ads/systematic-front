@@ -1,0 +1,28 @@
+{
+    "header": {
+        "title": "My Profile"
+    },
+    "buttons": {
+        "edit": "Edit",
+        "cancel": "Cancel",
+        "save": "Save"
+    },
+    "inputs": {
+        "name": {
+            "label": "Full Name",
+            "placeholder": "Your full name"
+        },
+        "email": {
+            "label": "Email",
+            "placeholder": "your.email@example.com"
+        },
+        "affiliation": {
+            "label": "Affiliation",
+            "placeholder": "Your affiliation"
+        },
+        "country": {
+            "label": "Country",
+            "placeholder": "Your country"
+        }
+    }
+}

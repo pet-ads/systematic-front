@@ -1,5 +1,6 @@
 import { useContext } from "react";
 import { Button, Flex } from "@chakra-ui/react";
+import { useTranslation } from "react-i18next";
 
 import StudyContext from "@features/review/shared/context/StudiesContext";
 import { UseChangeStudySelectionStatus } from "../../../../services/useChangeStudySelectionStatus";
@@ -29,6 +30,7 @@ export default function ButtonsForMultipleSelection({
   isShown,
 }: ButtonsForMultipleSelectionProps) {
   const studyContext = useContext(StudyContext);
+  const { t } = useTranslation("review/execution-identification");
 
   const duplicatedStudies = studyContext?.deletedArticles.filter(
     (art) => art != studyContext?.firstSelected
@@ -71,7 +73,7 @@ export default function ButtonsForMultipleSelection({
           }}
           leftIcon={<FaEye color="green" />}
         >
-          Show selected
+          {t("buttonsForMultipleSelection.showSelected")}
         </Button>
       ) : (
         <Button
@@ -84,7 +86,7 @@ export default function ButtonsForMultipleSelection({
           }}
           leftIcon={<FaEye color="green" />}
         >
-          Show all
+          {t("buttonsForMultipleSelection.showAll")}
         </Button>
       )}
 
@@ -96,7 +98,7 @@ export default function ButtonsForMultipleSelection({
         onClick={handleSendDuplicatedStudies}
         leftIcon={<FaCheckCircle color="blue"/>}
       >
-        Mark as duplicated
+        {t("buttonsForMultipleSelection.markAsDuplicated")}
       </Button>
       <Button
         sx={buttonSX}
@@ -106,7 +108,7 @@ export default function ButtonsForMultipleSelection({
         onClick={handleSendExcludedStudies}
         leftIcon={<FaTrashAlt color="red"/>}
       >
-        Mark as excluded
+        {t("buttonsForMultipleSelection.markAsExcluded")}
       </Button>
       <Button
         sx={buttonSX}
@@ -119,7 +121,7 @@ export default function ButtonsForMultipleSelection({
         }}
         leftIcon={<MdOutlineCleaningServices color="orange"/>}
       >
-        Clear selection
+        {t("buttonsForMultipleSelection.clearSelection")}
       </Button>
     </Flex>
   ) : null;

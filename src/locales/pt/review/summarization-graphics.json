@@ -1,0 +1,58 @@
+{
+    "header": "Gráficos",
+    "filtersArea": {
+        "heading":"Área de Filtros",
+        "sources": "Fontes",
+        "criteria": "Critérios",
+        "startYear": "Ano de Início",
+        "endYear": "Ano de Término"
+    },
+    "sectionMenu": {
+      "chooseSection": "Escolher Seção",
+      "sections": {
+        "searchSources": "Fontes de Busca",
+        "s1InclusionCriteria": "Critérios de Inclusão",
+        "s1ExclusionCriteria": "Critérios de Exclusão",
+        "s2InclusionCriteria": "Critérios de Inclusão",
+        "s2ExclusionCriteria": "Critérios de Exclusão",
+        "studiesFunnel": "Funil de Estudos",
+        "includedStudies": "Estudos Incluídos",
+        "formQuestions": "Questões do Formulário"
+      },
+      "groups": {
+        "first_selection": "Primeira Seleção",
+        "second_selection": "Segunda Seleção"
+      }
+    },
+    "selectMenu": {
+        "chooseLayout": "Escolher Layout",
+        "graphicsTypes": {
+            "pieChart": "Gráfico de Pizza",
+            "barChart": "Gráfico de Barras",
+            "bubbleChart": "Gráfico de Bolhas",
+            "lineChart": "Gráfico de Linhas",
+            "table": "Tabela"
+        }
+    },
+    "noDataMessage": {
+        "message": "Nenhum Artigo Encontrado",
+        "text": "Tente ajustar seus filtros ou volte mais tarde."
+    },
+    "searchSourcesEvolution": "Evolução das Fontes de Busca",
+    "includedStudiesByYear": "Estudos Incluídos por Ano",
+    "typeNotSupported": "Tipo de gráfico não suportado",
+    "searchSourcesTable": {
+        "source": "Fonte",
+        "included": "Incluídos",
+        "excluded": "Excluídos",
+        "total": "Total",
+        "indexingRate": "Taxa de Indexação",
+        "precisionRate": "Taxa de Precisão"
+    },
+    "questionsTable": {
+        "answer": "Resposta",
+        "studies": "Estudos",
+        "total": "Total",
+        "percentage": "Percentual do Total"
+    }
+}

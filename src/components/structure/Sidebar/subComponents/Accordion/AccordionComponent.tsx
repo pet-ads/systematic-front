@@ -11,6 +11,7 @@ import { useMemo, useState, useEffect } from "react";
 import { MdRule } from "react-icons/md";
 import { LuFileSearch, LuFileCheck2 } from "react-icons/lu";
 import { useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 // Components
 import ProtocolAccordionSubItem from "./AccordionNavItem";
@@ -31,6 +32,7 @@ const sectionIcons: Record<AccordionSection, React.ReactNode> = {
 };
 
 const AccordionComponent = () => {
+  const { t } = useTranslation("structure/sidebar");
   const id = localStorage.getItem("systematicReviewId");
   const { generalDefinition, isLoading } = useStructureReview();
 
@@ -87,51 +89,51 @@ const AccordionComponent = () => {
       Planning: [
         {
           path: `/review/planning/protocol/general-definition`,
-          label: "Definition",
+          label: t("planning.definition"),
         },
-        { path: `/review/planning/protocol/picoc/${id}`, label: "PICOC" },
+        { path: `/review/planning/protocol/picoc/${id}`, label: t("planning.picoc") },
         {
           path: `/review/planning/protocol/research-questions/${id}`,
-          label: "Research",
+          label: t("planning.research"),
         },
         {
           path: `/review/planning/protocol/eligibility-criteria/${id}`,
-          label: "Criteria",
+          label: t("planning.criteria"),
         },
         {
           path: `/review/planning/protocol/information-sources-and-search-strategy/${id}`,
-          label: "Sources",
+          label: t("planning.sources"),
         },
         {
           path: `/review/planning/protocol/selection-and-extraction/${id}`,
-          label: "Selection",
+          label: t("planning.selection"),
         },
         {
           path: `/review/planning/protocol/risk-of-bias-assessment/${id}`,
-          label: "Risk of Bias",
+          label: t("planning.risk"),
         },
         {
           path: `/review/planning/protocol/analysis-and-synthesis-of-results/${id}`,
-          label: "Analysis",
+          label: t("planning.analysis"),
         },
       ],
       Execution: [
-        { path: `/review/execution/identification`, label: "Identification" },
-        { path: `/review/execution/selection`, label: "Selection" },
-        { path: `/review/execution/extraction`, label: "Extraction" },
+        { path: `/review/execution/identification`, label: t("execution.identification") },
+        { path: `/review/execution/selection`, label: t("execution.selection") },
+        { path: `/review/execution/extraction`, label: t("execution.extraction") },
       ],
       Summarization: [
-        { path: `/review/summarization/graphics`, label: "Graphics" },
-        { path: `/review/summarization/download`, label: "Download" },
+        { path: `/review/summarization/graphics`, label: t("summarization.graphics") },
+        { path: `/review/summarization/download`, label: t("summarization.download") },
         ...(hasShowOcultScreens
           ? [
               {
                 path: `/review/summarization/visualization`,
-                label: "Visualization",
+                label: t("summarization.visualization"),
               },
               {
                 path: `/review/summarization/finalization`,
-                label: "Finalization",
+                label: t("summarization.finalization"),
               },
             ]
           : []),
@@ -167,7 +169,7 @@ const AccordionComponent = () => {
                 gap=".5rem"
               >
                 {sectionIcons[section as AccordionSection]}
-                {section}
+                {t(`sections.${section}`)}
               </Box>
               <AccordionIcon />
             </AccordionButton>

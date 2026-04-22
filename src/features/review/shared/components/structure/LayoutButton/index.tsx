@@ -7,6 +7,7 @@ import {
   MenuItem,
   MenuList,
 } from "@chakra-ui/react";
+import { useTranslation } from "react-i18next";
 
 import { BsTable } from "react-icons/bs";
 import { PiArticleMediumBold } from "react-icons/pi";
@@ -28,6 +29,7 @@ export default function SelectLayout({
   handleChangeLayout,
   layout,
 }: SelectLayoutProps) {
+  const { t } = useTranslation("review/execution-selection");
 
   const buttons: Record<
     ViewModel,
@@ -78,7 +80,7 @@ export default function SelectLayout({
         display="flex"
       >
         <Flex w="100%" justifyContent="space-between" alignItems="center">
-          <Box>Choose layout</Box>
+          <Box>{t("selectLayout.choose")}</Box>
           <ChevronDownIcon fontSize="1.25rem" />
         </Flex>
       </MenuButton>
@@ -102,7 +104,7 @@ export default function SelectLayout({
               >
                 {element.icon}
               </Box>
-              {capitalize(element.layoutType)}
+              {capitalize(t(`selectLayout.type.${element.layoutType}`))}
             </Flex>
           </MenuItem>
         ))}

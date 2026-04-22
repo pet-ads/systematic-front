@@ -1,6 +1,7 @@
 // External library
 import { useNavigate } from "react-router-dom";
 import { Box, Flex, Icon, Tooltip } from "@chakra-ui/react";
+import { useTranslation } from "react-i18next";
 // Adicionei o FiPlusCircle para manter o mesmo padrão de ícones da linha de baixo
 import { FiHome, FiUser, FiLogOut, FiPlusCircle } from "react-icons/fi";
 
@@ -20,6 +21,7 @@ interface Props {
 }
 
 const Navigation = ({ type }: Props) => {
+  const { t } = useTranslation("structure/sidebar");
   const navigate = useNavigate();
   const { logout } = useAuthStore();
   const { toGo } = useNavigation();
@@ -54,7 +56,7 @@ const Navigation = ({ type }: Props) => {
             >
               <Icon as={FiPlusCircle} boxSize="1.25rem" />
               <Box as="span" fontSize="1rem">
-                New Review
+                {t("newReview")}
               </Box>
             </Flex>
           </Box>
@@ -75,7 +77,7 @@ const Navigation = ({ type }: Props) => {
         w="100%"
         borderTop="1px solid #E2E8F0"
       >
-        <Tooltip label="Home" placement="top">
+        <Tooltip label={t("tooltips.home")} placement="top">
           <Box cursor="pointer" onClick={() => navigate("/home")}>
             <Icon
               as={FiHome}
@@ -86,7 +88,7 @@ const Navigation = ({ type }: Props) => {
           </Box>
         </Tooltip>
 
-        <Tooltip label="Profile" placement="top">
+        <Tooltip label={t("tooltips.profile")} placement="top">
           <Box cursor="pointer" onClick={() => navigate("/profile")}>
             <Icon
               as={FiUser}
@@ -97,7 +99,7 @@ const Navigation = ({ type }: Props) => {
           </Box>
         </Tooltip>
 
-        <Tooltip label="Logout" placement="top">
+        <Tooltip label={t("tooltips.logout")} placement="top">
           <Box cursor="pointer" onClick={handleLogout}>
             <Icon
               as={FiLogOut}

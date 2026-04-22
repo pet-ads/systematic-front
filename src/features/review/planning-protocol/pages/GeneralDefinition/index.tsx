@@ -1,4 +1,7 @@
-  // Components
+// External Libraries
+import { useTranslation } from "react-i18next";
+
+// Components
 import InputText from "@components/common/inputs/InputText";
 import NavButton from "@components/common/buttons/NavigationButton";
 import InputTextArea from "@components/common/inputs/InputTextArea";
@@ -23,25 +26,27 @@ export default function GeneralDefinition() {
     isObjectivesValid,
   } = useCreateReview();
 
+  const { t } = useTranslation("review/planning-protocol"); 
+
   const { title, description, objectives } = generalDefinition;
 
   const isFormComplete = isTitleValid && isDescriptionValid && isObjectivesValid;
 
   return (
     <ProtocolFormLayout
-      headerText="Protocol: General Definition"
+      headerText={t("generalDefinition.headerText")}
       navButtons={
         <>
           {!isReturn ? (
             <NavButton
               event={handlePost}
-              text="Create new Review"
+              text={t("generalDefinition.navButtonText.create")}
               isDisabled={!isFormComplete}
             />
           ) : (
             <NavButton
               event={handlePut}
-              text="Next"
+              text={t("generalDefinition.navButtonText.next")}
               isDisabled={!isFormComplete}
             />
           )}
@@ -51,8 +56,8 @@ export default function GeneralDefinition() {
       {isTitleValid ? (
         <InputText
           value={title}
-          label="Title"
-          placeholder="Enter review title"
+          label={t("generalDefinition.input.title.label")}
+          placeholder={t("generalDefinition.input.title.placeholder")}
           type="text"
           nome="text"
           onChange={(event) =>
@@ -79,8 +84,8 @@ export default function GeneralDefinition() {
       {isDescriptionValid ? (
         <InputTextArea
           value={description}
-          label="Description"
-          placeholder="Enter review description"
+          label={t("generalDefinition.input.description.label")}
+          placeholder={t("generalDefinition.input.description.placeholder")}
           onChange={(event) =>
             handleChangeGeneralDefinition("description", event.target.value)
           }
@@ -104,8 +109,8 @@ export default function GeneralDefinition() {
       {isObjectivesValid ? (
         <InputTextArea
           value={objectives}
-          label="Objectives"
-          placeholder="What are your goals?"
+          label={t("generalDefinition.input.objectives.label")}
+          placeholder={t("generalDefinition.input.objectives.placeholder")}
           onChange={(event) =>
             handleChangeGeneralDefinition("objectives", event.target.value)
           }

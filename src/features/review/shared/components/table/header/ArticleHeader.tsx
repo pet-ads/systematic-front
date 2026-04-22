@@ -9,6 +9,7 @@ import {
   MdOutlineKeyboardDoubleArrowLeft,
   MdOutlineKeyboardDoubleArrowRight,
 } from "react-icons/md";
+import { useTranslation } from "react-i18next";
 
 // Utils
 import { capitalize } from "@features/shared/utils/helpers/formatters/CapitalizeText";
@@ -72,6 +73,8 @@ export default function ArticleHeader({
     },
   };
 
+  const { t } = useTranslation("review/execution-selection");
+
   const currentStatus =
     mode === "selection"
       ? statusIconMap[studyData.selectionStatus]
@@ -102,10 +105,10 @@ export default function ArticleHeader({
       >
         {currentStatus.icon}
         {capitalize(
-          (mode === "selection"
+          t(`statusSelect.options.${(mode === "selection"
             ? studyData.selectionStatus
             : studyData.extractionStatus
-          ).toLowerCase()
+          ).toLowerCase()}`)
         )}
       </Flex>
 
@@ -116,7 +119,7 @@ export default function ArticleHeader({
         _hover={{ bg: `${priorityLevel.color}.200` }}
       >
         {priorityLevel.icon}
-        {capitalize(studyData.readingPriority.toLowerCase().replace("_", " "))}
+        {capitalize(t(`priority.${studyData.readingPriority.toLowerCase()}`))}
       </Flex>
       {pathToReference && (
         <Button

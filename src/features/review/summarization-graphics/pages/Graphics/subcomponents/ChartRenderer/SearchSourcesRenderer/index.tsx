@@ -7,6 +7,7 @@ import PieChart from "@features/review/summarization-graphics/components/charts/
 import { SearchSorcesTable } from "@features/review/summarization-graphics/components/tables/SearchSoucesTable";
 
 import { Box } from "@chakra-ui/react";
+import { useTranslation } from "react-i18next";
 
 import useBubbleDataGeneric, {
   BubbleItem,
@@ -25,6 +26,7 @@ export default function SearchSourcesRenderer({
   type,
   chartId,
 }: Props) {
+  const { t } = useTranslation("review/summarization-graphics");
   const sourceCountMap = filteredStudies.reduce<Record<string, number>>(
     (acc, study) => {
       study.searchSources.forEach((src) => {
@@ -40,18 +42,18 @@ export default function SearchSourcesRenderer({
 
   let content;
 
-  if (type === "Pie Chart") {
-    content = <PieChart title="Search Sources" labels={labels} data={data} />;
-  } else if (type === "Bar Chart") {
+  if (type === t("selectMenu.graphicsTypes.pieChart")) {
+    content = <PieChart title={t("sectionMenu.sections.searchSources")} labels={labels} data={data} />;
+  } else if (type === t("selectMenu.graphicsTypes.barChart")) {
     content = (
       <BarChart
-        title="Search Sources"
+        title={t("sectionMenu.sections.searchSources")}
         labels={labels}
         data={data}
         section="searchSource"
       />
     );
-  } else if (type === "Bubble Chart") {
+  } else if (type === t("selectMenu.graphicsTypes.bubbleChart")) {
     const items: BubbleItem[] = filteredStudies.flatMap((study) =>
       study.searchSources.map((src) => ({
         x: Number(study.year),
@@ -63,23 +65,23 @@ export default function SearchSourcesRenderer({
     const { series, yCategories } = useBubbleDataGeneric(items);
     content = (
       <BubbleChart
-        title="Search Sources Evolution"
+        title={t("searchSourcesEvolution")}
         series={series}
         yCategories={yCategories}
-        yaxisText="Search Sources"
+        yaxisText={t("sectionMenu.sections.searchSources")}
       />
     );
-  } else if (type === "Table") {
+  } else if (type === "Table" || type === "Tabela") {
     content = <SearchSorcesTable />;
   } else {
-    content = <div>Tipo de gráfico não suportado</div>;
+    content = <div>{t("typeNotSupported")}</div>;
   }
   return (
 
     <Box
       id={chartId}
-      w={type === "Bubble Chart" ? "100%" : undefined}
-      sx={type === "Bar Chart" ? barchartBox : undefined}
+      w={type === t("selectMenu.graphicsTypes.bubbleChart") ? "100%" : undefined}
+      sx={type === t("selectMenu.graphicsTypes.barChart") ? barchartBox : undefined}
     >
       {content}
     </Box>

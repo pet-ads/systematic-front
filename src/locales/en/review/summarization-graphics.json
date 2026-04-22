@@ -1,0 +1,58 @@
+{
+    "header": "Graphics",
+    "filtersArea": {
+        "heading":"Filters Area",
+        "sources": "Sources",
+        "criteria": "Criteria",
+        "startYear": "Start Year",
+        "endYear": "End Year"
+    },
+    "sectionMenu": {
+      "chooseSection": "Choose Section",
+      "sections": {
+        "searchSources": "Search Sources",
+        "s1InclusionCriteria": "Inclusion Criteria",
+        "s1ExclusionCriteria": "Exclusion Criteria",
+        "s2InclusionCriteria": "Inclusion Criteria",
+        "s2ExclusionCriteria": "Exclusion Criteria",
+        "studiesFunnel": "Studies Funnel",
+        "includedStudies": "Included Studies",
+        "formQuestions": "Form Questions"
+      },
+      "groups": {
+        "first_selection": "First Selection",
+        "second_selection": "Second Selection"
+      }
+    },
+    "selectMenu": {
+        "chooseLayout": "Choose Layout",
+        "graphicsTypes": {
+            "pieChart": "Pie Chart",
+            "barChart": "Bar Chart",
+            "bubbleChart": "Bubble Chart",
+            "lineChart": "Line Chart",
+            "table": "Table"
+        }
+    },
+    "noDataMessage": {
+        "message": "No Articles Found",
+        "text": "Try adjusting your filters or check back later."
+    },
+    "searchSourcesEvolution": "Search Sources Evolution",
+    "includedStudiesByYear": "Included Studies by Year",
+    "typeNotSupported": "Chart type not supported.",
+    "searchSourcesTable": {
+        "source": "Source",
+        "included": "Included",
+        "excluded": "Excluded",
+        "total": "Total",
+        "indexingRate": "Indexing Rate",
+        "precisionRate": "Precision Rate"
+    },
+    "questionsTable": {
+        "answer": "Answer",
+        "studies": "Studies",
+        "total": "Total",
+        "percentage": "Percentage of Total"
+    }
+}

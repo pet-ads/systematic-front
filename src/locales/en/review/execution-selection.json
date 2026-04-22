@@ -1,0 +1,92 @@
+{
+    "header": "Selection",
+    "selectLayout": {
+        "choose": "Choose Layout",
+        "type": {
+            "table": "table",
+            "horizontal": "horizontal",
+            "horizontal-invert": "horizontal-invert",
+            "vertical": "vertical",
+            "vertical-invert": "vertical-invert",
+            "article": "article"
+        }
+    },
+    "search": "Insert article attribute",
+    "buttonsForMultipleSelection": {
+        "showSelected": "Show selected",
+        "showAll": "Show all",
+        "markAsDuplicated": "Mark as duplicated",
+        "markAsExcluded": "Mark as excluded",
+        "clearSelection": "Clear selection"
+    },
+    "columnVisibilityMenu": {
+        "view": "View",
+        "label": {
+            "title": "Title",
+            "author": "Author",
+            "journal": "Journal",
+            "year": "Year",
+            "selection": "Selection",
+            "extraction": "Extraction",
+            "score": "Score",
+            "priority": "Priority"
+        }
+    },
+    "statusSelect": {
+        "placeholder": "Select status",
+        "options": {
+            "included": "Included",
+            "duplicated": "Duplicated",
+            "excluded": "Excluded",
+            "unclassified": "Unclassified"
+        },
+        "clearFilters": "Clear filters"
+    },
+    "tableHeaders": {
+        "id": "ID",
+        "title": "Title",
+        "authors": "Author",
+        "venue": "Journal",
+        "year": "Year",
+        "selectionStatus": "Selection",
+        "extractionStatus": "Extraction",
+        "score": "Score",
+        "readingPriority": "Priority"
+    },
+    "priority": {
+        "very_low": "very low",
+        "low": "low",
+        "high": "high",
+        "very_high": "very high"
+    },
+    "noArticlesFound": "No articles found",
+    "pagination": {
+        "rowsPerPage": "Rows per page",
+        "firstPage": "First page",
+        "previousPage": "Previous page",
+        "nextPage": "Next page",
+        "lastPage": "Last page",
+        "page": "Page",
+        "of": "of"
+    },
+    "buttonsForSelection": {
+        "tooltips": {
+            "previousArticle": "Previous article",
+            "nextArticle": "Next article",
+            "resetArticle": "Reset article",
+            "selectPriority": "Select reading priority",
+            "includeDescription": "Add inclusion criteria",
+            "excludeDescription": "Add exclusion criteria"
+        },
+        "comboBox": {
+            "include": "Include",
+            "exclude": "Exclude"
+        },
+        "priorityOptions": {
+            "veryLow": "Very Low",
+            "low": "Low",
+            "high": "High",
+            "veryHigh": "Very High"
+        }
+    }
+}

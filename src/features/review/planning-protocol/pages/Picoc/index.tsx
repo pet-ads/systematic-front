@@ -1,3 +1,6 @@
+// External Libraries
+import { useTranslation } from "react-i18next";
+
 // Components
 import NavButton from "@components/common/buttons/NavigationButton";
 import TextAreaInput from "@components/common/inputs/InputTextArea";
@@ -8,20 +11,21 @@ import useCreateProtocol from "../../services/useCreateProtocol";
 
 export default function Picoc() {
   const { picoc, handleChangePicoc, syncAndNavigate } = useCreateProtocol();
+  const { t } = useTranslation("review/planning-protocol");
 
   const id = localStorage.getItem("systematicReviewId");
   const { population, intervention, control, outcome, context } = picoc;
 
 return (
     <ProtocolFormLayout
-      headerText="Protocol: PICOC"
+      headerText={t("picoc.headerText")}
       navButtons={(
         <>
           <NavButton
             event={() =>
               syncAndNavigate("/review/planning/protocol/general-definition")
             }
-            text="Back"
+            text={t("picoc.navButton.back")}
           />
           <NavButton
             event={() =>
@@ -29,47 +33,47 @@ return (
                 `/review/planning/protocol/research-questions/${id}`
               )
             }
-            text="Next"
+            text={t("picoc.navButton.next")}
           />
         </>
       )}
     >
       <TextAreaInput
         value={population}
-        label="Population"
-        placeholder="What is your study population?"
+        label={t("picoc.input.population.label")}
+        placeholder={t("picoc.input.population.placeholder")}
         onChange={(event) => {
           handleChangePicoc("population", event.target.value);
         }}
       />
       <TextAreaInput
         value={intervention}
-        label="Intervention"
-        placeholder="What is your intervention?"
+        label={t("picoc.input.intervention.label")}
+        placeholder={t("picoc.input.intervention.placeholder")}
         onChange={(event) => {
           handleChangePicoc("intervention", event.target.value);
         }}
       />
       <TextAreaInput
         value={control}
-        label="Control"
-        placeholder="What is your control?"
+        label={t("picoc.input.control.label")}
+        placeholder={t("picoc.input.control.placeholder")}
         onChange={(event) => {
           handleChangePicoc("control", event.target.value);
         }}
       />
       <TextAreaInput
         value={outcome}
-        label="Outcome"
-        placeholder="What is your outcome?"
+        label={t("picoc.input.outcome.label")}
+        placeholder={t("picoc.input.outcome.placeholder")}
         onChange={(event) => {
           handleChangePicoc("outcome", event.target.value);
         }}
       />
       <TextAreaInput
         value={context}
-        label="Context"
-        placeholder="What is your context?"
+        label={t("picoc.input.context.label")}
+        placeholder={t("picoc.input.context.placeholder")}
         onChange={(event) => {
           handleChangePicoc("context", event.target.value);
         }}

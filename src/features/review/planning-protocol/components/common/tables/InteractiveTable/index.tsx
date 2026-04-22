@@ -26,8 +26,8 @@ interface Props {
 
 export default function InteractiveTable({ id, url, label }: Props) {
   let adress = "";
-  if (label == "Extraction Questions") adress = "extraction-question";
-  if (label == "Risk of Bias Questions") adress = "rob-question";
+  if (label == "Extraction Questions" || label == "Questões de Extração") adress = "extraction-question";
+  if (label == "Risk of Bias Questions" || label == "Questões sobre Risco de Viés") adress = "rob-question";
 
   const toaster = useToaster();
   const validator = useValidatorSQLInjection();

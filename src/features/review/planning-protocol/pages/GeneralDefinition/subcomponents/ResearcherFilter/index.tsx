@@ -2,6 +2,7 @@ import { FormControl } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { FormControlstyle } from "./styles";
 import TextAreaInput from "../../../../../../../components/common/inputs/InputTextArea";
+import { useTranslation } from "react-i18next";
 
 interface IResearcherData {
   name: string;
@@ -14,6 +15,7 @@ export default function ResearcherFilter() {
     IResearcherData[]
   >([]);
   const [inputValue, setInputValue] = useState("");
+  const { t } = useTranslation("review/planning-protocol")
 
   useEffect(() => {
     fetch("src/data/test.json")
@@ -36,8 +38,8 @@ export default function ResearcherFilter() {
   return (
     <FormControl sx={FormControlstyle}>
       <TextAreaInput
-        label="Researchers"
-        placeholder={"Enter the name of the researchers "}
+        label={t("generalDefinition.input.researchers.label")}
+        placeholder={t("generalDefinition.input.researchers.placeholder")}
         onChange={handleInputChange}
         value={inputValue}
       ></TextAreaInput>

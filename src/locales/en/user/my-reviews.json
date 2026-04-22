@@ -1,0 +1,23 @@
+{
+    "header": "Home",
+    "createNewReview": {
+        "welcome": "Welcome to your workspace!",
+        "message": "You don’t have any reviews yet. Let’s start by creating your first one and begin your research journey!",
+        "button": "Create review"
+    },
+    "status": {
+        "GENERAL_DEFINITION": "General Definition",
+        "RESEARCH_QUESTIONS": "Research Questions",
+        "PICOC": "PICOC",
+        "ELIGIBILITY_CRITERIA": "Eligibility Criteria",
+        "INFORMATION_SOURCES_AND_SEARCH_STRATEGY": "Information Sources",
+        "SELECTION_AND_EXTRACTION": "Selection And Extraction",
+        "RISK_OF_BIAS": "Risk Of Bias",
+        "ANALYSIS_AND_SYNTHESIS_METHOD": "Analysis And Synthesis Method",
+        "IDENTIFICATION": "Identification",
+        "SELECTION": "Selection",
+        "EXTRACTION": "Extraction",
+        "GRAPHICS": "Graphics",
+        "FINALIZATION": "Finalization"
+    }
+}

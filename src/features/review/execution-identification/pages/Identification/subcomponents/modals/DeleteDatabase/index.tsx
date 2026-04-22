@@ -1,7 +1,7 @@
 import { useDisclosure } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import useToaster from "@components/feedback/Toaster";
-
+import { useTranslation } from "react-i18next";
 import {
   Button,
   Modal,
@@ -63,6 +63,7 @@ function DeleteDatabaseModal({
   const { isOpen, onClose, onOpen } = useDisclosure();
   const [nameOfDatabase, setNameOfDatabase] = useState<string>("");
   const toast = useToaster();
+  const { t } = useTranslation("review/execution-identification");
 
   useEffect(() => {
     onOpen();
@@ -80,8 +81,8 @@ function DeleteDatabaseModal({
   const deleteAllReferences = async () => {
     if (isDatabaseNameCorrect(nameOfDatabase)) {
       toast({
-        title: "Invalid Database Name",
-        description: "Please enter the correct database name to proceed.",
+        title: t("dataBaseCard.deleteDatabaseModal.toasts.incorrectName.title"),
+        description: t("dataBaseCard.deleteDatabaseModal.toasts.incorrectName.description"),
         status: "error",
       });
       return;
@@ -93,8 +94,8 @@ function DeleteDatabaseModal({
       });
 
       toast({
-        title: "All Study Sessions Deleted!",
-        description: "Your study sessions have been successfully removed.",
+        title: t("dataBaseCard.deleteDatabaseModal.toasts.success.title"),
+        description: t("dataBaseCard.deleteDatabaseModal.toasts.success.description"),
         status: "success",
       });
       mutate();
@@ -102,8 +103,8 @@ function DeleteDatabaseModal({
     } catch (err) {
       console.log(err);
       toast({
-        title: "Action Failed",
-        description: "Please ensure the field is filled before proceeding.",
+        title: t("dataBaseCard.deleteDatabaseModal.toasts.catch.title"),
+        description: t("dataBaseCard.deleteDatabaseModal.toasts.catch.description"),
         status: "error",
       });
     }
@@ -125,7 +126,7 @@ function DeleteDatabaseModal({
             <Flex gap={3}>
               <IoIosWarning size="2rem" />
               <FormLabel fontWeight="bold" fontSize="larger">
-                Delete all session studies
+                {t("dataBaseCard.deleteDatabaseModal.heading")}
               </FormLabel>
             </Flex>
           </FormControl>
@@ -133,19 +134,17 @@ function DeleteDatabaseModal({
         </ModalHeader>
         <ModalBody>
           <Flex>
-            Are you sure you want to delete all references in the database? This
-            action is permanent and cannot be undone.
+            {t("dataBaseCard.deleteDatabaseModal.message")}
           </Flex>
           <FormControl mt={4} mb={3}>
             <FormLabel>
-              To delete data from "{databaseName}", write the database name
-              below:
+              {t("dataBaseCard.deleteDatabaseModal.label1")+databaseName+t("dataBaseCard.deleteDatabaseModal.label2")}
             </FormLabel>
             <Input
               onChange={(e) => setNameOfDatabase(e.target.value)}
               value={nameOfDatabase}
-              placeholder="Enter database name"
-              aria-label="Database name input"
+              placeholder={t("dataBaseCard.deleteDatabaseModal.placeholder")}
+              aria-label={t("dataBaseCard.deleteDatabaseModal.aria-label")}
             />
           </FormControl>
         </ModalBody>
@@ -159,7 +158,7 @@ function DeleteDatabaseModal({
               boxShadow="sm"
               _hover={{ bg: "#2A4A6D", boxShadow: "md" }}
             >
-              Cancel
+              {t("dataBaseCard.deleteDatabaseModal.cancel")}
             </Button>
             <Button
               onClick={deleteAllReferences}
@@ -169,7 +168,7 @@ function DeleteDatabaseModal({
               _hover={{ bg: "#2A4A6D", boxShadow: "md" }}
               isDisabled={isDatabaseNameCorrect(databaseName)}
             >
-              Remove
+              {t("dataBaseCard.deleteDatabaseModal.remove")}
             </Button>
           </Flex>
         </ModalFooter>

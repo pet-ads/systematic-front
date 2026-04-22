@@ -1,5 +1,6 @@
 // External library
 import { Box, Flex } from "@chakra-ui/react";
+import { useTranslation } from "react-i18next";
 
 // Components
 import DataBaseRequired from "../../../shared/components/structure/DataBaseRequired";
@@ -17,11 +18,13 @@ import { conteiner, dataBaseconteiner } from "./styles";
 export default function Identification() {
   const { databases } = useFetchDataBases();
 
+  const { t } = useTranslation("review/execution-identification")
+
   const databaseListIsEmpty = databases.length == 0;
 
   return (
     <FlexLayout navigationType="Accordion">
-      <Header text="Studies Identification" />
+      <Header text={t("header")} />
       <CardDefault
         backgroundColor="#fff"
         borderRadius="1rem"

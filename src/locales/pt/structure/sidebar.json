@@ -1,0 +1,34 @@
+{
+    "newReview": "Nova Revisão",
+    "tooltips": {
+        "home": "Início",
+        "profile": "Perfil",
+        "logout": "Sair"
+    },
+    "sections": {
+        "Planning": "Planejamento",
+        "Execution": "Execução",
+        "Summarization": "Sumarização"
+    },
+    "planning": {
+        "definition": "Definição",
+        "picoc": "PICOC",
+        "research": "Pesquisa",
+        "criteria": "Critérios",
+        "sources": "Fontes",
+        "selection": "Seleção",
+        "risk": "Avaliação de Viés",
+        "analysis": "Análise"
+    },
+    "execution": {
+        "identification": "Identificação",
+        "selection": "Seleção",
+        "extraction": "Extração"
+    },
+    "summarization": {
+        "graphics": "Gráficos",
+        "download": "Download",
+        "visualization": "Visualização",
+        "finalization": "Finalização"
+    }
+}

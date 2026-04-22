@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, ReactNode } from "react";
 import { FaRegCircle } from "react-icons/fa";
 import { IoIosCloseCircle } from "react-icons/io";
 import type ArticleInterface from "@features/review/shared/types/ArticleInterface";
+import { useTranslation } from "react-i18next";
 
 type StatusKey = "INCLUDED" | "DUPLICATED" | "EXCLUDED" | "UNCLASSIFIED";
 
@@ -46,11 +47,12 @@ export default function StatusSelect({
   selectedValue,
   onSelect,
   page,
-  placeholder = "Select status",
   totalCount,
 }: StatusSelectProps) {
   const btnRef = useRef<HTMLButtonElement | null>(null);
   const [menuWidth, setMenuWidth] = useState<number>(0);
+
+  const { t } = useTranslation("review/execution-selection");
 
   const isClientSide = articles.length > 0;
 
@@ -68,10 +70,10 @@ export default function StatusSelect({
   }
 
   const options = [
-    { value: "INCLUDED", label: "Included" },
-    { value: "DUPLICATED", label: "Duplicated" },
-    { value: "EXCLUDED", label: "Excluded" },
-    { value: "UNCLASSIFIED", label: "Unclassified" },
+    { value: "INCLUDED", label: t("statusSelect.options.included") },
+    { value: "DUPLICATED", label: t("statusSelect.options.duplicated") },
+    { value: "EXCLUDED", label: t("statusSelect.options.excluded") },
+    { value: "UNCLASSIFIED", label: t("statusSelect.options.unclassified") },
   ];
 
   const getLabel = (optionLabel: string, optionValue: string) => {
@@ -85,7 +87,7 @@ export default function StatusSelect({
   };
 
   const selectedOption = options.find((o) => o.value === selectedValue);
-  let buttonLabel = placeholder;
+  let buttonLabel = t("statusSelect.placeholder");
   if (selectedOption) {
     buttonLabel = getLabel(selectedOption.label, selectedOption.value);
   }
@@ -146,7 +148,7 @@ export default function StatusSelect({
             <Divider borderColor="gray.300" />
             <MenuItem onClick={() => onSelect(null)} w="100%">
               <Text flex={1} textAlign="center" fontWeight="semibold" color={colors.clearFilters}>
-                Clear filters
+                {t("statusSelect.clearFilters")}
               </Text>
             </MenuItem>
           </MenuList>

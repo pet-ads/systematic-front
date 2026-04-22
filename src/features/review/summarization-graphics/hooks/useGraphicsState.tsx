@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { useFetchExtractionQuestions } from "@features/review/execution-extraction/services/useFetchExtractionQuestions";
 import { useFetchRobQuestions } from "@features/review/execution-extraction/services/useFetchRobQuestions";
+import { useTranslation } from "react-i18next";
 
  export type FilterType = "Start Year" | "End Year" | "Source" | "Criteria";
 
@@ -12,6 +13,7 @@ export type FiltersState = {
 };
 
 export function useGraphicsState() {
+  const { t } = useTranslation("review/summarization-graphics");
   //perguntas
   const { questions: extractionQuestions = [] } = useFetchExtractionQuestions();
   const { questions: robQuestions = [] } = useFetchRobQuestions();
@@ -25,7 +27,7 @@ export function useGraphicsState() {
     allQuestions[0]?.questionId ?? undefined
   );
   const [section, setSection] = useState("Included Studies");
-  const [type, setType] = useState("Table");
+  const [type, setType] = useState(t("selectMenu.graphicsTypes.table"));
   const [filters, setFilters] = useState<FiltersState>({});
 
 
@@ -38,23 +40,32 @@ export function useGraphicsState() {
     case "LABELED_SCALE":
     case "NUMBERED_SCALE":
     case "PICK_LIST":
-      return ["Pie Chart", "Table"];
+      return [t("selectMenu.graphicsTypes.pieChart"), t("selectMenu.graphicsTypes.table")];
     case "PICK_MANY":
-      return ["Bar Chart", "Table"];
+      return [t("selectMenu.graphicsTypes.barChart"), t("selectMenu.graphicsTypes.table")];
     default:
-      return ["Table"]; // TEXTUAL ou outros
+      return [t("selectMenu.graphicsTypes.table")];
   }
 };
 
   // tipos por seção
   const allowedTypes: Record<string, string[]> = {
-    "Search Sources": ["Pie Chart", "Bar Chart","Bubble Chart", "Table"],
-    "S1_Inclusion Criteria": ["Bar Chart"],
-    "S1_Exclusion Criteria": ["Bar Chart"],
-    "S2_Inclusion Criteria": ["Bar Chart"],
-    "S2_Exclusion Criteria": ["Bar Chart"],
+    "Search Sources": [
+      t("selectMenu.graphicsTypes.pieChart"),
+      t("selectMenu.graphicsTypes.barChart"),
+      t("selectMenu.graphicsTypes.bubbleChart"),
+      t("selectMenu.graphicsTypes.table")
+    ],
+    "S1_Inclusion Criteria": [t("selectMenu.graphicsTypes.barChart")],
+    "S1_Exclusion Criteria": [t("selectMenu.graphicsTypes.barChart")],
+    "S2_Inclusion Criteria": [t("selectMenu.graphicsTypes.barChart")],
+    "S2_Exclusion Criteria": [t("selectMenu.graphicsTypes.barChart")],
     "Studies Funnel": [],
-    "Included Studies": ["Line Chart", "Table","Bubble Chart"],
+    "Included Studies": [
+      t("selectMenu.graphicsTypes.lineChart"),
+      t("selectMenu.graphicsTypes.table"),
+      t("selectMenu.graphicsTypes.bubbleChart")
+    ],
     "Download Protocol": []
   };
 

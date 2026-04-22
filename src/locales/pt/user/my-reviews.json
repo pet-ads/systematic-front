@@ -1,0 +1,23 @@
+{
+    "header": "Início",
+    "createNewReview": {
+        "welcome": "Bem-vindo ao seu espaço de trabalho!",
+        "message": "Você ainda não tem nenhuma revisão. Vamos começar criando a sua primeira e iniciar sua jornada de pesquisa!",
+        "button": "Criar revisão"
+    },
+    "status": {
+        "GENERAL_DEFINITION": "Definição Geral",
+        "RESEARCH_QUESTIONS": "Questões de Pesquisa",
+        "PICOC": "PICOC",
+        "ELIGIBILITY_CRITERIA": "Critérios de Elegibilidade",
+        "INFORMATION_SOURCES_AND_SEARCH_STRATEGY": "Fontes de Informação",
+        "SELECTION_AND_EXTRACTION": "Seleção e Extração",
+        "RISK_OF_BIAS": "Avaliação de Viés",
+        "ANALYSIS_AND_SYNTHESIS_METHOD": "Método de Análise e Síntese",
+        "IDENTIFICATION": "Identificação",
+        "SELECTION": "Seleção",
+        "EXTRACTION": "Extração",
+        "GRAPHICS": "Gráficos",
+        "FINALIZATION": "Finalização"
+    }
+}

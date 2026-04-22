@@ -8,6 +8,7 @@ import { useGraphicsState } from "../../hooks/useGraphicsState";
 import SectionMenu from "../../components/menus/SectionMenu";
 import FiltersMenu from "../../components/menus/FilterMenu";
 import { ExportProvider } from "../../context/ExportContext";
+import { useTranslation } from "react-i18next";
 
 export default function Graphics() {
   const {
@@ -23,18 +24,19 @@ export default function Graphics() {
     filtersBySection,
     currentAllowedTypes,
   } = useGraphicsState();
+  const { t } = useTranslation("review/summarization-graphics");
 
   return (
     <FlexLayout navigationType="Accordion">
       <Flex justifyContent="space-between" alignItems="flex-start" w="100%" mb="1rem">
         
         <Flex flexDirection="column" gap="0.75rem">
-          <Header text="Graphics" />
+          <Header text={t("header")} />
 
           {filtersBySection[section]?.length > 0 && (
             <Flex flexDirection="column" gap="0.5rem">
               <Text fontWeight="semibold" fontSize="lg" color="#263C56">
-                Filters Area
+                {t("filtersArea.heading")}
               </Text>
               <FiltersMenu
                 availableFilters={filtersBySection[section]}
@@ -56,7 +58,7 @@ export default function Graphics() {
               options={currentAllowedTypes}
               selected={type}
               onSelect={setType}
-              placeholder="Choose Layout"
+              placeholder={t("selectMenu.chooseLayout")}
             />
           )}
           {section === "Form Questions" && (
