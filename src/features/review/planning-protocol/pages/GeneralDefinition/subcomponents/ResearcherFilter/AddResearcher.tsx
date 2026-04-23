@@ -16,14 +16,6 @@ export default function AddResearcher() {
               <Avatar size="sm" name="Potential Researcher 1" />
               <Text flex="1" fontSize="sm">Potential Researcher 1 - unincluded1@gmail.com</Text>
             </Flex>
-            <Flex align="center" gap={3} px={3} py={2}>
-              <Avatar size="sm" name="Potential Researcher 2" />
-              <Text flex="1" fontSize="sm">Potential Researcher 2 - unincluded2@gmail.com</Text>
-            </Flex>
-            <Flex align="center" gap={3} px={3} py={2}>
-              <Avatar size="sm" name="Potential Researcher 3" />
-              <Text flex="1" fontSize="sm">Potential Researcher 3 - unincluded3@gmail.com</Text>
-            </Flex>
           </Box>
         )}
       </Flex>
