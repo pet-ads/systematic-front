@@ -1,4 +1,4 @@
-import { DeleteIcon } from "@chakra-ui/icons";
+import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import { Flex, Icon, Text, Avatar } from "@chakra-ui/react";
 import { addedResearchersMock } from "../../../../../../../mocks/addedResearchers";
 import { useState } from "react";
@@ -12,7 +12,11 @@ export default function IncludedResearchers() {
         <Avatar size="sm" name={researcher.name} />
         <Flex align="center" justify="space-between" flex="1">
           <Text>{researcher.name} - {researcher.email}</Text>
-          <Icon as={DeleteIcon} w="15px" h="15px" color="gray.500" />
+          <Flex align="center" gap={8}>
+            {researcher.status == "pending" && (<Text color="gray.500">Pending</Text>)}
+            {researcher.status == "included" && (<Text>role: {researcher.role}</Text>)}
+            <Icon as={DeleteIcon} w="15px" h="15px" color="gray.500" />
+          </Flex> 
         </Flex>
       </Flex>
     ))}
