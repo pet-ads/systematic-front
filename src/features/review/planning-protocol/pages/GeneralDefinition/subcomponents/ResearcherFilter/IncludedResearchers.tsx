@@ -1,10 +1,16 @@
-import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
+import { DeleteIcon } from "@chakra-ui/icons";
 import { Flex, Icon, Text, Avatar } from "@chakra-ui/react";
 import { addedResearchersMock } from "../../../../../../../mocks/addedResearchers";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function IncludedResearchers() {
   const [addedResearchers, setAddedResearchers] = useState(addedResearchersMock);
+
+  useEffect(() => {
+    // simulating API call to get added researchers
+    setAddedResearchers(addedResearchersMock);
+  }, []);
+
   return (
     <>
     {addedResearchers.map((researcher) => (
