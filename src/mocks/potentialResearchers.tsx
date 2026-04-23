@@ -17,4 +17,22 @@ export const potentialResearchersMock = [
     email: "unincluded3@gmail.com",
     photo: "photo.jpg",
   },
+  {
+    id: "7",
+    name: "Potential Researcher 4",
+    email: "unincluded4@gmail.com",
+    photo: "photo.jpg",
+  },
+  {
+    id: "8",
+    name: "Potential Researcher 5",
+    email: "unincluded5@gmail.com",
+    photo: "photo.jpg",
+  },
+  {
+    id: "9",
+    name: "Potential Researcher 6",
+    email: "unincluded6@gmail.com",
+    photo: "photo.jpg",
+  },
 ];
