@@ -13,10 +13,16 @@ export default function AddResearcher() {
     setPotentialResearchers(potentialResearchersMock);
   }, []);
 
+  const filterPotentialResearchers = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    const filteredResearchers = potentialResearchers.filter((researcher) => researcher.name.toLowerCase().includes(value.toLowerCase()));
+    setSelectedPotentialResearchers(filteredResearchers.slice(0, 3));
+  };
+
   return (
     <Flex justify="center" py={2}>
       <Flex gap={2} align="center" width="28rem" position="relative">
-        <Input placeholder="Add a researcher" flex="1" minW={0} size="md" onFocus={() => setSuggestionsOpen(true)} onBlur={() => setSuggestionsOpen(false)}/>
+        <Input placeholder="Add a researcher" flex="1" minW={0} size="md" onChange = {filterPotentialResearchers} onFocus={() => setSuggestionsOpen(true)} onBlur={() => setSuggestionsOpen(false)}/>
         <EventButton w="40px" flexShrink={0} />
         {suggestionsOpen && (
           <Box position="absolute" width="25rem" top="100%" mt={1} bg="white" border="1px solid" borderColor="gray.300" borderRadius="md">
