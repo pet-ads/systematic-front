@@ -5,6 +5,7 @@ import { potentialResearchersMock } from "../../../../../../../mocks/potentialRe
 
 export default function AddResearcher() {
   const [potentialResearchers, setPotentialResearchers] = useState(potentialResearchersMock);
+  const [selectedPotentialResearchers, setSelectedPotentialResearchers] = useState(potentialResearchersMock.slice(0, 3));
   const [suggestionsOpen, setSuggestionsOpen] = useState(false);
 
   useEffect(() => {
@@ -19,7 +20,7 @@ export default function AddResearcher() {
         <EventButton w="40px" flexShrink={0} />
         {suggestionsOpen && (
           <Box position="absolute" width="25rem" top="100%" mt={1} bg="white" border="1px solid" borderColor="gray.300" borderRadius="md">
-            {potentialResearchers.map((researcher) => (
+            {selectedPotentialResearchers.map((researcher) => (
               <Flex key={researcher.id} align="center" gap={3} px={3} py={2}>
               <Avatar size="sm" name="Potential Researcher 1" />
                 <Text flex="1" fontSize="sm">{researcher.name} - {researcher.email}</Text>
