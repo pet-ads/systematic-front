@@ -3,9 +3,9 @@ import { Box, Button, Flex } from "@chakra-ui/react";
 import { MdOutlineLowPriority } from "react-icons/md";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { RiResetLeftLine } from "react-icons/ri";
+import { BsTable } from "react-icons/bs";
 import { Tooltip } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
-import { useTranslation } from "react-i18next";
 
 // Hooks
 import useFetchAllCriteriasByArticle from "../../../../services/useFetchAllCriteriasByArticle";
@@ -23,15 +23,9 @@ import { boxconteiner, buttonconteiner, conteiner } from "./styles";
 import ArticleInterface from "../../../../types/ArticleInterface";
 import { StudyInterface } from "../../../../types/IStudy";
 import { PageLayout } from "../../../structure/LayoutFactory";
-import type {
-  OptionProps,
-  OptionType,
-} from "../../../../services/useFetchAllCriteriasByArticle";
+import type { OptionProps, OptionType } from "../../../../services/useFetchAllCriteriasByArticle";
 import { SelectionArticles } from "@features/review/execution-selection/services/useFetchSelectionArticles";
 import { KeyedMutator } from "swr";
-
-// Services
-import { UseChangeStudyExtractionStatus } from "../../../../services/useChangeStudyExtractionStatus";
 
 interface ButtonsForSelectionProps {
   page: PageLayout;
@@ -45,6 +39,7 @@ interface ButtonsForSelectionProps {
   onFetchPrevPage: () => Promise<ArticleInterface[]>;
   onWrapToLast: () => Promise<ArticleInterface[]>;
   onWrapToFirst: () => ArticleInterface[];
+  handleChangeLayout?: (layout: any) => void;
 }
 
 type ComboBoxGroup = {
@@ -66,13 +61,10 @@ export default function ButtonsForSelection({
   onFetchPrevPage,
   onWrapToLast,
   onWrapToFirst,
+  handleChangeLayout,
 }: ButtonsForSelectionProps) {
-  const { handleResetStatusToUnclassified } = useResetStatus({
-    page,
-    reloadArticles,
-  });
+  const { handleResetStatusToUnclassified } = useResetStatus({ page, reloadArticles });
   const { handleChangePriority } = useChangePriority({ reloadArticles });
-  const { t } = useTranslation("review/execution-selection");
 
   const currentArticle = articles[articleIndex];
 
@@ -97,32 +89,8 @@ export default function ButtonsForSelection({
     }
   }, [currentArticleId, page]);
 
-  const currentArticleStatus = {
-    selectionStatus: currentArticle?.selectionStatus,
-    extractionStatus: currentArticle?.extractionStatus,
-  };
-
-  const isBlockedByExtraction =
-    page === "Selection" &&
-    currentArticleStatus.selectionStatus === "INCLUDED" &&
-    currentArticleStatus.extractionStatus !== undefined &&
-    currentArticleStatus.extractionStatus !== "UNCLASSIFIED";
-
   const handleFullReset = async () => {
-    if (!currentArticleId || isBlockedByExtraction) return;
-
-    if (currentArticleStatus.extractionStatus !== "UNCLASSIFIED") {
-      try {
-        await UseChangeStudyExtractionStatus({
-          studyReviewId: [currentArticleId],
-          status: "UNCLASSIFIED",
-          criterias: [],
-        });
-      } catch (error) {
-        console.error("Error resetting extraction status", error);
-      }
-    }
-
+    if (!currentArticleId) return;
     await handleResetStatusToUnclassified(currentArticleId, historicalCriteria);
     resetLocalCriterias();
     if (page === "Selection") {
@@ -132,12 +100,14 @@ export default function ButtonsForSelection({
 
   if (!fetchedCriterias) return null;
 
+  const currentArticleStatus = {
+    selectionStatus: currentArticle.selectionStatus,
+    extractionStatus: currentArticle.extractionStatus,
+  };
+
   const criteriaOptions = fetchedCriterias.options;
 
-  const criteriaGroupDataMap: Record<
-    OptionType,
-    { data: OptionProps[]; isActive: boolean }
-  > = {
+  const criteriaGroupDataMap: Record<OptionType, { data: OptionProps[]; isActive: boolean }> = {
     INCLUSION: {
       data: criteriaOptions.INCLUSION.content,
       isActive: criteriaOptions.INCLUSION.isActive,
@@ -148,8 +118,7 @@ export default function ButtonsForSelection({
     },
   };
 
-  if (!criteriaGroupDataMap["INCLUSION"] || !criteriaGroupDataMap["EXCLUSION"])
-    return null;
+  if (!criteriaGroupDataMap["INCLUSION"] || !criteriaGroupDataMap["EXCLUSION"]) return null;
 
   const isInclusionActive = criteriaOptions.INCLUSION.isActive;
   const isExclusionActive = criteriaOptions.EXCLUSION.isActive;
@@ -206,50 +175,23 @@ export default function ButtonsForSelection({
   const comboBoxGroups: Record<OptionType, ComboBoxGroup> = {
     INCLUSION: {
       label: "Include",
-      description: isBlockedByExtraction
-        ? "Article already classified in Extraction"
-        : criteriaGroupDataMap["INCLUSION"].data.length === 0
-          ? "No inclusion criteria configured in Planning"
-          : isExclusionActive
-            ? "Remove exclusion criteria first"
-            : t("buttonsForSelection.tooltips.includeDescription"),
-      isDisabled:
-        isBlockedByExtraction ||
-        criteriaGroupDataMap["INCLUSION"].data.length === 0 ||
-        isExclusionActive,
+      description: "Add inclusion criteria",
+      isDisabled: criteriaGroupDataMap["INCLUSION"].data.length === 0 || isExclusionActive,
       options: criteriaGroupDataMap["INCLUSION"].data,
     },
     EXCLUSION: {
       label: "Exclude",
-      description: isBlockedByExtraction
-        ? "Article already classified in Extraction"
-        : criteriaGroupDataMap["EXCLUSION"].data.length === 0
-          ? "No exclusion criteria configured in Planning"
-          : isInclusionActive
-            ? "Remove inclusion criteria first"
-            : t("buttonsForSelection.tooltips.excludeDescription"), 
-      isDisabled:
-        isBlockedByExtraction ||
-        criteriaGroupDataMap["EXCLUSION"].data.length === 0 ||
-        isInclusionActive,
+      description: "Add exclusion criteria",
+      isDisabled: criteriaGroupDataMap["EXCLUSION"].data.length === 0 || isInclusionActive,
       options: criteriaGroupDataMap["EXCLUSION"].data,
     },
   };
 
   return (
-    <Flex
-      sx={conteiner}
-      justifyContent={isUniqueArticle ? "center" : "space-between"}
-    >
+    <Flex sx={conteiner} justifyContent={isUniqueArticle ? "center" : "space-between"}>
       {!isUniqueArticle && (
         <Flex sx={buttonconteiner}>
-          <Tooltip
-            label={t("buttonsForSelection.tooltips.previousArticle")}
-            placement="top"
-            hasArrow
-            p=".5rem"
-            borderRadius=".25rem"
-          >
+          <Tooltip label="Previous article" placement="top" hasArrow p=".5rem" borderRadius=".25rem">
             <Box style={{ display: "inline-block" }}>
               <IoIosArrowBack
                 color="black"
@@ -261,94 +203,69 @@ export default function ButtonsForSelection({
           </Tooltip>
         </Flex>
       )}
-
+      
       <Flex sx={boxconteiner}>
-        {(Object.entries(comboBoxGroups) as [OptionType, ComboBoxGroup][]).map(
-          ([groupKey, group]) => (
-            <Tooltip
-              key={groupKey}
-              label={group.description}
-              placement="top"
-              hasArrow
-              p=".5rem"
-              borderRadius=".25rem"
-            >
-              <Box style={{ display: "inline-block" }}>
-                <ComboBox
-                  page={page}
-                  text={group.label}
-                  status={currentArticleStatus}
-                  groupKey={groupKey}
-                  options={group.options}
-                  isDisabled={group.isDisabled}
-                  handlerUpdateCriteriasStructure={
-                    handlerUpdateCriteriasStructure
-                  }
-                  reloadArticles={reloadArticles}
-                  selectedCriteria={historicalCriteria}
-                />
-              </Box>
-            </Tooltip>
-          ),
-        )}
-
-        <Tooltip
-          label={
-            isBlockedByExtraction
-              ? "Article already classified in Extraction"
-              : t("buttonsForSelection.tooltips.resetArticle")
-          }
-          placement="top"
-          hasArrow
-          p=".5rem"
-          borderRadius=".25rem"
-        >
-          <Box style={{ display: "inline-block" }}>
-            <Button
-              color="black"
-              bg="white"
-              p="1rem"
-              onClick={handleFullReset}
-              isDisabled={isBlockedByExtraction}
-            >
-              <RiResetLeftLine color="black" size="1.5rem" />
-            </Button>
-          </Box>
-        </Tooltip>
-
-        <Tooltip
-          label={t("buttonsForSelection.tooltips.selectPriority")}
-          placement="top"
-          hasArrow
-          p=".5rem"
-          borderRadius=".25rem"
-        >
-          <Box style={{ display: "inline-block" }}>
-            <MenuOptions
-              options={[
-                t("buttonsForSelection.priorityOptions.veryLow"),
-                t("buttonsForSelection.priorityOptions.low"),
-                t("buttonsForSelection.priorityOptions.high"),
-                t("buttonsForSelection.priorityOptions.veryHigh"),
-              ]}
-              onOptionToggle={(option) =>
-                handleChangePriority({ status: option })
-              }
-              icon={<MdOutlineLowPriority color="black" size="1.75rem" />}
-            />
-          </Box>
-        </Tooltip>
-      </Flex>
-
-      {!isUniqueArticle && (
-        <Flex sx={buttonconteiner}>
+        {(Object.entries(comboBoxGroups) as [OptionType, ComboBoxGroup][]).map(([groupKey, group]) => (
           <Tooltip
-            label={t("buttonsForSelection.tooltips.nextArticle")}
+            key={groupKey}
+            label={group.description}
             placement="top"
             hasArrow
             p=".5rem"
             borderRadius=".25rem"
           >
+            <Box style={{ display: "inline-block" }}>
+              <ComboBox
+                page={page}
+                text={group.label}
+                status={currentArticleStatus}
+                groupKey={groupKey}
+                options={group.options}
+                isDisabled={group.isDisabled}
+                handlerUpdateCriteriasStructure={handlerUpdateCriteriasStructure}
+                reloadArticles={reloadArticles}
+                selectedCriteria={historicalCriteria}
+              />
+            </Box>
+          </Tooltip>
+        ))}
+
+        <Tooltip label="Reset article" placement="top" hasArrow p=".5rem" borderRadius=".25rem">
+          <Button color="black" bg="white" p="1rem" onClick={handleFullReset}>
+            <RiResetLeftLine color="black" size="1.5rem" />
+          </Button>
+        </Tooltip>
+
+        <Tooltip label="Select reading priority" placement="top" hasArrow p=".5rem" borderRadius=".25rem">
+          <Box style={{ display: "inline-block" }}>
+            <MenuOptions
+              options={["Very Low", "Low", "High", "Very High"]}
+              onOptionToggle={(option) => handleChangePriority({ status: option })}
+              icon={<MdOutlineLowPriority color="black" size="1.75rem" />}
+            />
+          </Box>
+        </Tooltip>
+
+        <Tooltip label="Change to table view" placement="top" hasArrow p=".5rem" borderRadius=".25rem">
+          <Button 
+            color="black" 
+            bg="white" 
+            p="1rem" 
+            onClick={() => {
+              if (handleChangeLayout) {
+                handleChangeLayout("table");
+              }
+            }}
+          >
+            <BsTable color="black" size="1.5rem" /> 
+          </Button>
+        </Tooltip>
+
+      </Flex>
+
+      {!isUniqueArticle && (
+        <Flex sx={buttonconteiner}>
+          <Tooltip label="Next article" placement="top" hasArrow p=".5rem" borderRadius=".25rem">
             <Box style={{ display: "inline-block" }}>
               <IoIosArrowForward
                 color="black"

@@ -14,6 +14,7 @@ interface TableProps {
   pagination: PaginationControls;
   onTablePageChange: (page: number) => void;
   extraParams?: Record<string, any>;
+  handleChangeLayout?: (layout: any) => void; 
 }
 
 export const FullArticle: React.FC<TableProps> = ({
@@ -23,6 +24,7 @@ export const FullArticle: React.FC<TableProps> = ({
   pagination,
   onTablePageChange,
   extraParams = {},
+  handleChangeLayout, 
 }) => {
   return (
     <Box w="100%" h="calc(100% - 1rem)">
@@ -35,6 +37,7 @@ export const FullArticle: React.FC<TableProps> = ({
         pageSize={pagination.itensPerPage}
         onTablePageChange={onTablePageChange}
         extraParams={extraParams}
+        handleChangeLayout={handleChangeLayout}
       />
     </Box>
   );

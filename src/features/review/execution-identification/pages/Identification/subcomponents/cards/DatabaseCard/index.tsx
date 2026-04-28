@@ -22,7 +22,6 @@ import {
 import { AddIcon } from "@chakra-ui/icons";
 import { AiOutlineDelete, AiOutlineEdit, AiOutlineEye } from "react-icons/ai";
 
-import DataBaseIcon from "../../icons/DatabaseIcon";
 import DeleteDatabaseModal from "../../modals/DeleteDatabase";
 import IdentificationModal from "../../modals/IdentificationModal";
 
@@ -76,7 +75,7 @@ export default function DataBaseCard({ text }: DatabaseCardProps) {
   };
 
   return (
-    <Box mb="2rem" w="100%">
+    <Box mb="0.2rem" w="100%">
       <Accordion allowMultiple w="100%">
         <AccordionItem
           bg="white"
@@ -93,18 +92,17 @@ export default function DataBaseCard({ text }: DatabaseCardProps) {
             flexDirection="column"
             _hover={{ bg: "transparent" }}
           >
+            
             <Flex
               w="100%"
-              minH="70px"
+              minH="10px" 
               bg="#263C56"
               justifyContent="space-between"
               alignItems="center"
-              p="1rem 1.5rem"
+              p="1.5rem 1.5rem" 
             >
               <Flex flex="1" alignItems="center" gap="0.75rem">
-                <Box color="white" sx={{ "& svg, & path": { fill: "white" } }}>
-                  <DataBaseIcon />
-                </Box>
+                
                 <Text
                   fontSize="lg"
                   fontWeight="bold"

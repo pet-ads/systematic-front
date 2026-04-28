@@ -26,11 +26,15 @@ interface VerticalProps {
   page: PageLayout;
   columnsVisible: ColumnVisibility;
   pagination: PaginationControls;
-  sortConfig: { key: keyof ArticleInterface; direction: "asc" | "desc" } | null;
+  sortConfig: {
+    key: keyof ArticleInterface;
+    direction: "asc" | "desc";
+  } | null;
   handleHeaderClick: (key: keyof ArticleInterface) => void;
   reloadArticles: KeyedMutator<SelectionArticles>;
   onTablePageChange: (page: number) => void;
   extraParams?: Record<string, any>;
+  handleChangeLayout?: (layout: any) => void;
 }
 
 export const SplitVertical: React.FC<VerticalProps> = ({
@@ -44,6 +48,7 @@ export const SplitVertical: React.FC<VerticalProps> = ({
   reloadArticles,
   onTablePageChange,
   extraParams = {},
+  handleChangeLayout,
 }) => {
   const selectionArea = (
     <StudySelectionArea
@@ -55,6 +60,7 @@ export const SplitVertical: React.FC<VerticalProps> = ({
       pageSize={pagination.itensPerPage}
       onTablePageChange={onTablePageChange}
       extraParams={extraParams}
+      handleChangeLayout={handleChangeLayout}
     />
   );
 
