@@ -28,6 +28,7 @@ interface StudySelectionAreaProps {
   pageSize: number;
   onTablePageChange: (page: number) => void;
   extraParams?: Record<string, any>;
+  handleChangeLayout?: (layout: any) => void;
 }
 
 export default function StudySelectionArea({
@@ -39,6 +40,7 @@ export default function StudySelectionArea({
   pageSize,
   onTablePageChange,
   extraParams = {},
+  handleChangeLayout, 
 }: StudySelectionAreaProps) {
   const studiesContext = useContext(StudyContext);
 
@@ -172,6 +174,7 @@ export default function StudySelectionArea({
           onFetchPrevPage={onFetchPrevPage}
           onWrapToLast={onWrapToLast}
           onWrapToFirst={onWrapToFirst}
+          handleChangeLayout={handleChangeLayout} 
         />
       </Flex>
       <Box w="100%" h="80%">

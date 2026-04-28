@@ -28,7 +28,10 @@ interface LayoutFactoryProps {
   isLoading: boolean;
   columnsVisible: ColumnVisibility;
   pagination: PaginationControls;
-  sortConfig: { key: keyof ArticleInterface; direction: "asc" | "desc" } | null;
+  sortConfig: {
+    key: keyof ArticleInterface;
+    direction: "asc" | "desc";
+  } | null;
   handleHeaderClick: (key: keyof ArticleInterface) => void;
   reloadArticles: KeyedMutator<SelectionArticles>;
   onTablePageChange: (page: number) => void;
@@ -49,6 +52,7 @@ export default function LayoutFactory({
   onTablePageChange,
   extraParams = {},
 }: LayoutFactoryProps) {
+  
   const handleRowClick = () => {
     handleChangeLayout("vertical");
   };
@@ -64,6 +68,7 @@ export default function LayoutFactory({
         handleHeaderClick={handleHeaderClick}
       />
     ),
+
     vertical: (
       <SplitVertical
         articles={articles}
@@ -76,8 +81,10 @@ export default function LayoutFactory({
         handleHeaderClick={handleHeaderClick}
         onTablePageChange={onTablePageChange}
         extraParams={extraParams}
+        handleChangeLayout={handleChangeLayout}
       />
     ),
+
     "vertical-invert": (
       <SplitVertical
         articles={articles}
@@ -90,8 +97,10 @@ export default function LayoutFactory({
         handleHeaderClick={handleHeaderClick}
         onTablePageChange={onTablePageChange}
         extraParams={extraParams}
+        handleChangeLayout={handleChangeLayout}
       />
     ),
+
     horizontal: (
       <SplitHorizontal
         articles={articles}
@@ -107,6 +116,7 @@ export default function LayoutFactory({
         extraParams={extraParams}
       />
     ),
+
     "horizontal-invert": (
       <SplitHorizontal
         articles={articles}
@@ -122,6 +132,7 @@ export default function LayoutFactory({
         extraParams={extraParams}
       />
     ),
+
     article: (
       <FullArticle
         articles={articles}
@@ -130,6 +141,7 @@ export default function LayoutFactory({
         pagination={pagination}
         onTablePageChange={onTablePageChange}
         extraParams={extraParams}
+        handleChangeLayout={handleChangeLayout}
       />
     ),
   };
