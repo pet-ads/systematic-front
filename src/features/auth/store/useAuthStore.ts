@@ -98,11 +98,17 @@ export const useAuthStore = create<AuthState>()(
       partialize: (state) => ({ user: state.user }),
 
       onRehydrateStorage: () => (state) => {
-        if (state && state.user && !checkTokenExpiration(state.user)) {
-          state.logout();
+
+        if (!state) {
+          useAuthStore.setState({ _hasHydrated: true, isLoading: false });
+          return;
         }
-        useAuthStore.setState({ isLoading: false });
-      },
+
+        useAuthStore.setState({
+          _hasHydrated: true,
+          isLoading: false,
+        });
+      }
     }
   )
 );
