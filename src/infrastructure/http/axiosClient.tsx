@@ -7,8 +7,7 @@ import { useAuthStore } from "@features/auth/store/useAuthStore";
 // Services
 import refresh from "@features/auth/services/refresh";
 
-// Constants
-import { ERROR_CODE } from "@features/shared/errors/constants/error";
+// Guards
 import { isLeft } from "@features/shared/errors/pattern/Either";
 
 const Axios = axios.create({
@@ -17,63 +16,94 @@ const Axios = axios.create({
   timeout: 100000,
 });
 
+let isRefreshing = false;
+let failedQueue: {
+  resolve: (token: string) => void;
+  reject: (err: unknown) => void;
+}[] = [];
+
+const processQueue = (error: unknown, token: string | null = null) => {
+  failedQueue.forEach((prom) => {
+    if (error) {
+      prom.reject(error);
+    } else if (token) {
+      prom.resolve(token);
+    }
+  });
+
+  failedQueue = [];
+};
+
 Axios.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     const token = useAuthStore.getState().user?.token;
 
-    if (token && !config.headers.Authorization) {
-      config.headers.Authorization = `Bearer ${token}`;
+    if (token) {
+      config.headers.set("Authorization", `Bearer ${token}`);
     }
 
     if (!(config.data instanceof FormData)) {
-      if (!config.headers["Content-Type"]) {
-        config.headers.set("Content-Type", "application/json");
-      }
+      config.headers.set("Content-Type", "application/json");
     }
 
     return config;
   },
-  (error: AxiosError) => {
-    return Promise.reject(error);
-  }
+  (error: AxiosError) => Promise.reject(error)
 );
 
 Axios.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    return response;
+  },
   async (error: AxiosError) => {
     const originalRequest = error.config as InternalAxiosRequestConfig & {
       _retry?: boolean;
     };
 
+    const status = error.response?.status;
+
     if (!error.response) {
       return Promise.reject(error);
     }
 
-    const { status } = error.response;
-    const authCodes = [ERROR_CODE.unauthorized, ERROR_CODE.forbidden];
 
-    if (error.config?.url?.includes("auth/refresh")) {
+    if (originalRequest.url?.includes("auth/refresh")) {
       useAuthStore.getState().logout();
-      if (window.location.pathname !== "/login") {
-        window.location.href = "/login";
-      }
+      window.location.href = "/login";
       return Promise.reject(error);
     }
 
-    if (authCodes.every((code) => code !== status) || originalRequest._retry) {
+    const user = useAuthStore.getState().user;
+
+    if (status !== 401 || originalRequest._retry || !user) {
       return Promise.reject(error);
+    }
+
+    if (isRefreshing) {
+      return new Promise((resolve, reject) => {
+        failedQueue.push({
+          resolve: (token: string) => {
+            originalRequest.headers.set(
+              "Authorization",
+              `Bearer ${token}`
+            );
+            resolve(Axios(originalRequest));
+          },
+          reject,
+        });
+      });
     }
 
     originalRequest._retry = true;
+    isRefreshing = true;
 
     try {
       const result = await refresh();
 
       if (isLeft(result)) {
+        processQueue(result.value, null);
         useAuthStore.getState().logout();
-        if (window.location.pathname !== "/login") {
-          window.location.href = "/login";
-        }
+        window.location.href = "/login";
         return Promise.reject(result.value);
       }
 
@@ -81,15 +111,21 @@ Axios.interceptors.response.use(
 
       useAuthStore.getState().updateToken(accessToken);
 
-      originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+      processQueue(null, accessToken);
+
+      originalRequest.headers.set(
+        "Authorization",
+        `Bearer ${accessToken}`
+      );
 
       return Axios(originalRequest);
     } catch (err) {
+      processQueue(err, null);
       useAuthStore.getState().logout();
-      if (window.location.pathname !== "/login") {
-        window.location.href = "/login";
-      }
+      window.location.href = "/login";
       return Promise.reject(err);
+    } finally {
+      isRefreshing = false;
     }
   }
 );
