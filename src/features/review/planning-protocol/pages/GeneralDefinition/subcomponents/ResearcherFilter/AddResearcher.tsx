@@ -8,6 +8,7 @@ export default function AddResearcher() {
   const [potentialResearchers, setPotentialResearchers] = useState(potentialResearchersMock);
   const [selectedPotentialResearchers, setSelectedPotentialResearchers] = useState(potentialResearchersMock.slice(0, 3));
   const [suggestionsOpen, setSuggestionsOpen] = useState(false);
+  const [researcherChosen, setResearcherChosen] = useState(false);
 
   useEffect(() => {
     // simulating API call to get potential researchers
@@ -28,6 +29,7 @@ export default function AddResearcher() {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputText(e.target.value);
+    setResearcherChosen(false);
     setSuggestionsOpen(true);
     handleFilterResearchers(e.target.value);
   };
@@ -41,7 +43,7 @@ export default function AddResearcher() {
     <Flex justify="center" py={2}>
       <Flex gap={2} align="center" width="28rem" position="relative">
         {/* Add Researcher Input */}
-        <Input value={inputText} placeholder="Add a researcher" flex="1" minW={0} size="md" onChange = {handleInputChange} onFocus={() => setSuggestionsOpen(true)} onBlur={() => setSuggestionsOpen(false)}/>
+        <Input style = {{ backgroundColor: researcherChosen ? "#C9D9E5" : "#ffffffff" }} value={inputText} placeholder="Add a researcher" flex="1" minW={0} size="md" onChange = {handleInputChange} onFocus={() => setSuggestionsOpen(true)} onBlur={() => setSuggestionsOpen(false)}/>
         
         {/* Suggestions */}
         {suggestionsOpen && (
@@ -59,6 +61,7 @@ export default function AddResearcher() {
                     onMouseDown={(e) => e.preventDefault()}
                     onClick={() => {
                       setInputText(`${researcher.name} - ${researcher.email}`);
+                      setResearcherChosen(true);
                       handleFilterResearchers(`${researcher.name} - ${researcher.email}`);
                       setSuggestionsOpen(false);
                     }}
