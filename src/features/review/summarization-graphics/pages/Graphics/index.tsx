@@ -26,63 +26,61 @@ export default function Graphics() {
   } = useGraphicsState();
   const { t } = useTranslation("review/summarization-graphics");
 
+  const handleUnifiedSelection = (value: string) => {
+    const isQuestion = allQuestions.some(q => q.questionId === value);
+
+    if (isQuestion) {
+      handleSectionChange("Form Questions");
+      setSelectedQuestionId(value);
+    } 
+    else {
+      handleSectionChange(value);
+      setSelectedQuestionId(undefined);
+    }
+  };
+
   return (
-    <FlexLayout navigationType="Accordion">
-      <Flex justifyContent="space-between" alignItems="flex-start" w="100%" mb="1rem">
-        
-        <Flex flexDirection="column" gap="0.75rem">
-          <Header text={t("header")} />
+<FlexLayout navigationType="Accordion">
+  <Flex justifyContent="space-between" alignItems="flex-start" w="100%" mb="1rem">
+    <Flex flexDirection="column" gap="0.75rem">
+      <Header text={t("header")} />
 
-          {filtersBySection[section]?.length > 0 && (
-            <Flex flexDirection="column" gap="0.5rem">
-              <Text fontWeight="semibold" fontSize="lg" color="#263C56">
-                {t("filtersArea.heading")}
-              </Text>
-              <FiltersMenu
-                availableFilters={filtersBySection[section]}
-                filters={filters}
-                setFilters={setFilters}
-              />
-            </Flex>
-          )}
+      {filtersBySection[section]?.length > 0 && (
+        <Flex flexDirection="column" gap="0.5rem">
+          <Text fontWeight="semibold" fontSize="lg" color="#263C56">
+            {t("filtersArea.heading")}
+          </Text>
+          <FiltersMenu
+            availableFilters={filtersBySection[section]}
+            filters={filters}
+            setFilters={setFilters}
+          />
         </Flex>
+      )}
+    </Flex>
+    <Flex flexDirection="column" gap="0.5rem" mt="0.75rem">
+      <SectionMenu 
+        onSelect={handleUnifiedSelection} 
+        selected={selectedQuestionId || section} 
+        questions={allQuestions.filter(q => q.questionId !== null)}
+      />
+      
+      {section && !(
+        section === "Studies Funnel" ||
+        section === "Form Questions" ||
+        section === "Protocol"
+      ) && (
+        <SelectMenu
+          options={currentAllowedTypes}
+          selected={type}
+          onSelect={setType}
+          placeholder={t("selectMenu.chooseLayout")}
+        />
+      )}
+    </Flex>
+  </Flex>
 
-        <Flex flexDirection="column" gap="0.5rem" mt="0.75rem">
-          <SectionMenu onSelect={handleSectionChange} selected={section} />
-          {!(
-            section === "Studies Funnel" ||
-            section === "Form Questions" ||
-            section === "Protocol"
-          ) && (
-            <SelectMenu
-              options={currentAllowedTypes}
-              selected={type}
-              onSelect={setType}
-              placeholder={t("selectMenu.chooseLayout")}
-            />
-          )}
-          {section === "Form Questions" && (
-            <SelectMenu
-              options={allQuestions.filter((q) => q.questionId !== null)}
-              selected={allQuestions.find(
-                (q) => q.questionId === selectedQuestionId
-              )}
-              onSelect={(q) =>
-                setSelectedQuestionId(q.questionId ?? undefined)
-              }
-              getLabel={(q) => q.code}
-              getKey={(q) => q.questionId ?? q.code}
-              placeholder="Choose Question"
-            />
-          )}
-        </Flex>
-      </Flex>
-
-  <CardDefault
-    backgroundColor="#fff"
-    borderRadius="1rem"
-    withShadow={false}
-  >
+  <CardDefault backgroundColor="#fff" borderRadius="1rem" withShadow={false}>
     <ExportProvider>
       {section ? (
         <ChartsRenderer
@@ -93,24 +91,19 @@ export default function Graphics() {
           selectedQuestionId={selectedQuestionId}
         />
       ) : (
-        /* Render placeholder when section is not yet defined */
-        <Flex 
-          direction="column" 
-          align="center" 
-          justify="center" 
-          h="800px" 
-          textAlign="center"
-        >
+        <Flex direction="column" align="center" justify="center" h="800px" textAlign="center">
           <Text fontSize="34px" fontWeight="bold" color="#2E4B6C" mb="2">
-            Graphics Area
+            {t("graphicsArea.title") === "graphicsArea.title" ? "Graphics Area" : t("graphicsArea.title")}
           </Text>
           <Text fontSize="19px" color="gray.600">
-            Please select a section and layout above to view the data.
+            {t("graphicsArea.instruction") === "graphicsArea.instruction" 
+              ? "Switch between sections above to view specific data or keep the overview." 
+              : t("graphicsArea.instruction")}
           </Text>
         </Flex>
       )}
     </ExportProvider>
   </CardDefault>
-    </FlexLayout>
+</FlexLayout>
   );
 }
