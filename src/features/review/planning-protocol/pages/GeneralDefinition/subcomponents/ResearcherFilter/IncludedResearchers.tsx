@@ -19,7 +19,11 @@ export default function IncludedResearchers() {
         <Flex align="center" justify="space-between" flex="1">
           <Text>{researcher.name} - {researcher.email}</Text>
           <Flex align="center" gap={8}>
-            {researcher.status == "pending" && (<Text color="gray.500">Pending</Text>)}
+            {(researcher.status === "pending" || researcher.status === "expired") && (
+              <Text color="gray.500">
+                {researcher.status.charAt(0).toUpperCase() + researcher.status.slice(1)}
+              </Text>
+            )}
             {researcher.status == "included" && (<Text>Role: {researcher.role}</Text>)}
             <Icon as={DeleteIcon} w="15px" h="15px" color="gray.500" />
           </Flex> 

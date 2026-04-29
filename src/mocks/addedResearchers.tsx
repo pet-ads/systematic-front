@@ -20,4 +20,11 @@ export const addedResearchersMock = [
     role: "owner",
     status: "included",
   },
+  {
+    id: "10",
+    name: "Added Researcher 10",
+    email: "added10@gmail.com",
+    role: "reviewer",
+    status: "expired",
+  },
 ];
