@@ -36,7 +36,13 @@ export default function AddResearcher() {
 
   const handleAddResearcher = () => {
     //send researcher to server
+    console.log("Adding researcher:", inputText);
     
+    // Reset all states
+    setResearcherChosen(false);
+    setInputText("");
+    setSuggestionsOpen(false);
+    setSelectedPotentialResearchers([]);
   };
 
   return (
