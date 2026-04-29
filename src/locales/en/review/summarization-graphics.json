@@ -8,6 +8,7 @@
         "endYear": "End Year"
     },
     "sectionMenu": {
+      "overview": "Overview",
       "chooseSection": "Choose Section",
       "sections": {
         "searchSources": "Search Sources",

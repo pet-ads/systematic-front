@@ -1,28 +1,35 @@
 {
     "header": "Gráficos",
     "filtersArea": {
-        "heading":"Área de Filtros",
+        "heading": "Área de Filtros",
         "sources": "Fontes",
         "criteria": "Critérios",
         "startYear": "Ano de Início",
         "endYear": "Ano de Término"
     },
     "sectionMenu": {
-      "chooseSection": "Escolher Seção",
-      "sections": {
-        "searchSources": "Fontes de Busca",
-        "s1InclusionCriteria": "Critérios de Inclusão",
-        "s1ExclusionCriteria": "Critérios de Exclusão",
-        "s2InclusionCriteria": "Critérios de Inclusão",
-        "s2ExclusionCriteria": "Critérios de Exclusão",
-        "studiesFunnel": "Funil de Estudos",
-        "includedStudies": "Estudos Incluídos",
-        "formQuestions": "Questões do Formulário"
-      },
-      "groups": {
-        "first_selection": "Primeira Seleção",
-        "second_selection": "Segunda Seleção"
-      }
+        "overview": "Visão Geral",
+        "chooseSection": "Visão Geral",
+        "sections": {
+            "searchSources": "Fontes de Busca",
+            "s1InclusionCriteria": "Critérios de Inclusão",
+            "s1ExclusionCriteria": "Critérios de Exclusão",
+            "s2InclusionCriteria": "Critérios de Inclusão",
+            "s2ExclusionCriteria": "Critérios de Exclusão",
+            "studiesFunnel": "Funil de Estudos",
+            "includedStudies": "Estudos Incluídos",
+            "formQuestions": "Questões do Formulário"
+        },
+        "groups": {
+            "first_selection": "Primeira Seleção",
+            "second_selection": "Segunda Seleção",
+            "form_questions": "Perguntas do Formulário"
+        },
+        "tooltips": {
+            "inclusion": "Critério de Inclusão",
+            "exclusion": "Critério de Exclusão",
+            "rbq": "Questão de Risco de Viés"
+        }
     },
     "selectMenu": {
         "chooseLayout": "Escolher Layout",

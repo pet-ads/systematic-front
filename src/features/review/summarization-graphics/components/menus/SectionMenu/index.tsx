@@ -8,67 +8,92 @@ import {
   MenuGroup,
   MenuItem,
   MenuList,
+  Tooltip,
 } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 
 type MenuProps = {
   onSelect: (section: string) => void;
   selected: string;
+  questions?: any[];
 };
 
 type Section = {
   label: string;
   value: string;
   group?: string;
-  displayName?: string; 
+  displayName?: string;
+  tooltip?: string;
 };
 
-export default function SectionMenu({ onSelect, selected }: MenuProps) {
+const getQuestionTooltip = (code: string, t: any): string => {
+  const num = code.replace(/[^0-9]/g, "");
+  if (code.startsWith("EQ")) return `Extraction Question ${num}`;
+  if (code.startsWith("RBQ")) return `Risk of Bias Question ${num}`;
+  return code;
+};
+
+export default function SectionMenu({ onSelect, selected, questions = [] }: MenuProps) {
   const { t } = useTranslation("review/summarization-graphics");
 
-  const sections: Section[] = [
-    { label: t("sectionMenu.sections.searchSources"), value: "Search Sources" },
+  const staticSections: Section[] = [
+    {
+      label: t("sectionMenu.sections.searchSources"),
+      value: "Search Sources",
+    },
     {
       label: t("sectionMenu.sections.s1InclusionCriteria"),
       value: "S1_Inclusion Criteria",
       group: "First Selection",
-      displayName: "First Selection - Inclusion Criteria",
+      displayName: `First Selection - ${t("sectionMenu.sections.s1InclusionCriteria")}`,
     },
     {
       label: t("sectionMenu.sections.s1ExclusionCriteria"),
       value: "S1_Exclusion Criteria",
       group: "First Selection",
-      displayName: "First Selection - Exclusion Criteria",
+      displayName: `First Selection - ${t("sectionMenu.sections.s1ExclusionCriteria")}`,
     },
     {
       label: t("sectionMenu.sections.s2InclusionCriteria"),
       value: "S2_Inclusion Criteria",
       group: "Second Selection",
-      displayName: "Second Selection - Inclusion Criteria",
+      displayName: `Second Selection - ${t("sectionMenu.sections.s2InclusionCriteria")}`,
     },
     {
       label: t("sectionMenu.sections.s2ExclusionCriteria"),
       value: "S2_Exclusion Criteria",
       group: "Second Selection",
-      displayName: "Second Selection - Exclusion Criteria",
+      displayName: `Second Selection - ${t("sectionMenu.sections.s2ExclusionCriteria")}`,
     },
-    { label: t("sectionMenu.sections.studiesFunnel"), value: "Studies Funnel" },
+    {
+      label: t("sectionMenu.sections.studiesFunnel"),
+      value: "Studies Funnel",
+    },
     {
       label: t("sectionMenu.sections.includedStudies"),
       value: "Included Studies",
     },
-    { label: t("sectionMenu.sections.formQuestions"), value: "Form Questions" },
   ];
 
-  const groupedSections = sections.reduce(
-    (acc, section) => {
-      const group = section.group || "ungrouped";
-      if (!acc[group]) acc[group] = [];
-      acc[group].push(section);
-      return acc;
-    },
-    {} as Record<string, Section[]>,
-  );
+  const allSections: Section[] = [
+    ...staticSections,
+    ...questions.map((q) => ({
+      label: q.code,
+      value: q.questionId,
+      group: "Form Questions",
+      displayName: `Form Question - ${q.code}`,
+      tooltip: getQuestionTooltip(q.code, t),
+    })),
+  ];
+
+  const groupedSections = allSections.reduce((acc, section) => {
+    const group = section.group || "ungrouped";
+    if (!acc[group]) acc[group] = [];
+    acc[group].push(section);
+    return acc;
+  }, {} as Record<string, Section[]>);
+
+  const current = allSections.find((s) => s.value === selected);
 
   return (
     <Menu>
@@ -82,17 +107,20 @@ export default function SectionMenu({ onSelect, selected }: MenuProps) {
       >
         <Flex w="100%" justifyContent="space-between" alignItems="center">
           <Box>
-            {(() => {
-              const current = sections.find((s) => s.value === selected);
-              if (!current) return t("sectionMenu.chooseSection");
-              return current.displayName || current.label;
-            })()}
+            {current ? (current.displayName || current.label) : t("sectionMenu.overview")}
           </Box>
           <ChevronDownIcon fontSize="1.25rem" />
         </Flex>
       </MenuButton>
 
-      <MenuList bg="#EBF0F3" color="#2E4B6C" zIndex="2000">
+      <MenuList
+        bg="#EBF0F3"
+        color="#2E4B6C"
+        zIndex="2000"
+        maxH="400px"
+        overflowY="auto"
+        overflowX="hidden"
+      >
         {Object.entries(groupedSections).map(([groupName, items]) => {
           const isUngrouped = groupName === "ungrouped";
 
@@ -100,9 +128,7 @@ export default function SectionMenu({ onSelect, selected }: MenuProps) {
             <Box key={groupName}>
               {!isUngrouped && (
                 <MenuGroup
-                  title={t(
-                    `sectionMenu.groups.${groupName.toLowerCase().replace(" ", "_")}`,
-                  )}
+                  title={t(`sectionMenu.groups.${groupName.toLowerCase().replace(" ", "_")}`, groupName)}
                   bg="#EBF0F3"
                   ml="3"
                   fontSize="md"
@@ -110,15 +136,26 @@ export default function SectionMenu({ onSelect, selected }: MenuProps) {
                 />
               )}
               {items.map((item) => (
-                <MenuItem
+                <Tooltip
                   key={item.value}
-                  onClick={() => onSelect(item.value)}
-                  ml={isUngrouped ? "0" : "1"}
-                  bg={selected === item.value ? "blue.100" : "transparent"}
-                  _hover={{ bg: "blue.200" }}
+                  label={item.tooltip || ""}
+                  placement="left"
+                  hasArrow
+                  isDisabled={!item.tooltip}
+                  bg="#2E4B6C"
+                  color="white"
+                  borderRadius="md"
+                  fontSize="sm"
                 >
-                  {item.label}
-                </MenuItem>
+                  <MenuItem
+                    onClick={() => onSelect(item.value)}
+                    ml={isUngrouped ? "0" : "1"}
+                    bg={selected === item.value ? "blue.100" : "transparent"}
+                    _hover={{ bg: "blue.200" }}
+                  >
+                    {item.label}
+                  </MenuItem>
+                </Tooltip>
               ))}
             </Box>
           );
