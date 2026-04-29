@@ -14,13 +14,22 @@ export default function AddResearcher() {
     setPotentialResearchers(potentialResearchersMock);
   }, []);
 
+  const filterResearchers = (search: string) => {
+    return potentialResearchers.filter((researcher) => {
+      const fullResearcherReference = `${researcher.name} - ${researcher.email}`;
+      return (fullResearcherReference.toLowerCase().includes(search.toLowerCase()));
+    });
+  };
+
+  const handleFilterResearchers = (search: string) => {
+    const filteredResearchers = filterResearchers(search);
+    setSelectedPotentialResearchers(filteredResearchers.slice(0, 3));
+  };
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputText(e.target.value);
-    const filteredResearchers = potentialResearchers.filter((researcher) => {
-      const fullResearcherReference = `${researcher.name} - ${researcher.email}`;
-      return (fullResearcherReference.toLowerCase().includes(e.target.value.toLowerCase()));
-    });
-    setSelectedPotentialResearchers(filteredResearchers.slice(0, 3));
+    setSuggestionsOpen(true);
+    handleFilterResearchers(e.target.value);
   };
 
   const handleAddResearcher = () => {
@@ -48,7 +57,11 @@ export default function AddResearcher() {
                     cursor="pointer"
                     _hover={{ bg: "gray.100" }}
                     onMouseDown={(e) => e.preventDefault()}
-                    onClick={() => {setInputText(`${researcher.name} - ${researcher.email}`);}}
+                    onClick={() => {
+                      setInputText(`${researcher.name} - ${researcher.email}`);
+                      handleFilterResearchers(`${researcher.name} - ${researcher.email}`);
+                      setSuggestionsOpen(false);
+                    }}
                   >
                     <Avatar size="sm" name="Potential Researcher 1" />
                     <Text flex="1" fontSize="sm">{researcher.name} - {researcher.email}</Text>
