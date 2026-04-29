@@ -78,7 +78,13 @@ export default function AddResearcher() {
         )}
 
         {/* Add button */}
-        <EventButton w="40px" flexShrink={0} onClick={handleAddResearcher}/>
+        <EventButton
+          style={{opacity: researcherChosen ? 1 : 0.30}}
+          w="40px"
+          flexShrink={0}
+          onClick={researcherChosen ? handleAddResearcher : undefined}
+          disabled={!researcherChosen}
+        />
       </Flex>
     </Flex>
   )
