@@ -1,7 +1,6 @@
 import { Flex, Input, Box, Avatar, Text } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import EventButton from "@components/common/buttons/EventButton";
-import { potentialResearchersMock } from "../../../../../../../mocks/potentialResearchers";
 import { researchersMock } from "../../../../../../../mocks/researchers";
 
 export default function AddResearcher() {
