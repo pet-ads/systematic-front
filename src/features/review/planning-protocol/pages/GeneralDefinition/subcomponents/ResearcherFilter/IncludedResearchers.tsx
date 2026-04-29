@@ -1,14 +1,14 @@
 import { DeleteIcon } from "@chakra-ui/icons";
 import { Flex, Icon, Text, Avatar, Button } from "@chakra-ui/react";
-import { addedResearchersMock } from "../../../../../../../mocks/addedResearchers";
+import { researchersMock } from "../../../../../../../mocks/researchers";
 import { useState, useEffect } from "react";
 
 export default function IncludedResearchers() {
-  const [addedResearchers, setAddedResearchers] = useState(addedResearchersMock);
+  const [addedResearchers, setAddedResearchers] = useState(researchersMock.filter((researcher) => researcher.status !== "none"));
 
   useEffect(() => {
     // simulating API call to get added researchers
-    setAddedResearchers(addedResearchersMock);
+    setAddedResearchers(researchersMock.filter((researcher) => researcher.status !== "none"));
   }, []);
 
   const handleDelete = (id: string, name: string, email: string) => {
