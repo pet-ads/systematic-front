@@ -16,7 +16,10 @@ export default function AddResearcher() {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputText(e.target.value);
-    const filteredResearchers = potentialResearchers.filter((researcher) => researcher.name.toLowerCase().includes(e.target.value.toLowerCase()));
+    const filteredResearchers = potentialResearchers.filter((researcher) => {
+      const fullResearcherReference = `${researcher.name} - ${researcher.email}`;
+      return (fullResearcherReference.toLowerCase().includes(e.target.value.toLowerCase()));
+    });
     setSelectedPotentialResearchers(filteredResearchers.slice(0, 3));
   };
 
