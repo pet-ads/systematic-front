@@ -9,6 +9,7 @@ export default function AddResearcher() {
   const [selectedPotentialResearchers, setSelectedPotentialResearchers] = useState(researchersMock.filter((researcher) => researcher.status == "none").slice(0, 3));
   const [suggestionsOpen, setSuggestionsOpen] = useState(false);
   const [researcherChosen, setResearcherChosen] = useState(false);
+  const [researcherChosenId, setResearcherChosenId] = useState("");
 
   useEffect(() => {
     // simulating API call to get potential researchers
@@ -29,6 +30,7 @@ export default function AddResearcher() {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputText(e.target.value);
+    setResearcherChosenId("");
     setResearcherChosen(false);
     setSuggestionsOpen(true);
     handleFilterResearchers(e.target.value);
@@ -38,11 +40,15 @@ export default function AddResearcher() {
     //send researcher to server
     console.log("Adding researcher:", inputText);
 
+    // Remove the new pending researcher from the potential researchers list
+    setSelectedPotentialResearchers(potentialResearchers.filter((researcher) => researcher.status == "none" && researcher.id !== researcherChosenId).slice(0, 3));
+
+    // Add the new pending researcher to the added researchers list (need to get it from props?)
+
     // Reset all states
     setResearcherChosen(false);
     setInputText("");
     setSuggestionsOpen(false);
-    setSelectedPotentialResearchers(researchersMock.filter((researcher) => researcher.status == "none").slice(0, 3));
   };
 
   return (
@@ -68,6 +74,7 @@ export default function AddResearcher() {
                     onClick={() => {
                       setInputText(`${researcher.name} - ${researcher.email}`);
                       setResearcherChosen(true);
+                      setResearcherChosenId(researcher.id);
                       handleFilterResearchers(`${researcher.name} - ${researcher.email}`);
                       setSuggestionsOpen(false);
                     }}
