@@ -2,17 +2,18 @@ import { Flex, Input, Box, Avatar, Text } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import EventButton from "@components/common/buttons/EventButton";
 import { potentialResearchersMock } from "../../../../../../../mocks/potentialResearchers";
+import { researchersMock } from "../../../../../../../mocks/researchers";
 
 export default function AddResearcher() {
   const [inputText, setInputText] = useState("");
-  const [potentialResearchers, setPotentialResearchers] = useState(potentialResearchersMock);
-  const [selectedPotentialResearchers, setSelectedPotentialResearchers] = useState(potentialResearchersMock.slice(0, 3));
+  const [potentialResearchers, setPotentialResearchers] = useState(researchersMock.filter((researcher) => researcher.status == "none"));
+  const [selectedPotentialResearchers, setSelectedPotentialResearchers] = useState(researchersMock.filter((researcher) => researcher.status == "none").slice(0, 3));
   const [suggestionsOpen, setSuggestionsOpen] = useState(false);
   const [researcherChosen, setResearcherChosen] = useState(false);
 
   useEffect(() => {
     // simulating API call to get potential researchers
-    setPotentialResearchers(potentialResearchersMock);
+    setPotentialResearchers(researchersMock.filter((researcher) => researcher.status == "none"));
   }, []);
 
   const filterResearchers = (search: string) => {
@@ -42,7 +43,7 @@ export default function AddResearcher() {
     setResearcherChosen(false);
     setInputText("");
     setSuggestionsOpen(false);
-    setSelectedPotentialResearchers(potentialResearchersMock.slice(0, 3));
+    setSelectedPotentialResearchers(researchersMock.filter((researcher) => researcher.status == "none").slice(0, 3));
   };
 
   return (
