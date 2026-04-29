@@ -11,7 +11,12 @@ export default function IncludedResearchers() {
     setAddedResearchers(addedResearchersMock);
   }, []);
 
-  const handleDelete = (id: string) => {
+  const handleDelete = (id: string, name: string, email: string) => {
+    const confirmed = window.confirm(
+      `Are you sure you want to delete ${name} (${email})?`,
+    );
+    if (!confirmed) return;
+
     setAddedResearchers(
       addedResearchers.map((researcher) =>
         researcher.id === id
@@ -35,7 +40,12 @@ export default function IncludedResearchers() {
               </Text>
             )}
             {researcher.status == "included" && (<Text>Role: {researcher.role}</Text>)}
-            <Button variant="ghost" onClick={() => handleDelete(researcher.id)}>
+            <Button
+              variant="ghost"
+              onClick={() =>
+                handleDelete(researcher.id, researcher.name, researcher.email)
+              }
+            >
               <Icon as={DeleteIcon} w={"15px"} h={"15px"} />
             </Button>
           </Flex> 
