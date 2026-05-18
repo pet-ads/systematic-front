@@ -151,6 +151,10 @@ export default function ComboBox({
           const isHighlighted =
             page === "Extraction" && selectedCriteria.includes(option.text);
 
+            const hasColon = option.text.includes(":");
+            const code = hasColon ? option.text.substring(0, option.text.indexOf(":")).trim() : null;
+            const desc = hasColon ? option.text.substring(option.text.indexOf(":") + 1).trim() : option.text;
+
           return (
             <MenuItem key={index} maxW="25rem" overflow="auto">
               {text === "Include" ? (
@@ -160,7 +164,7 @@ export default function ComboBox({
                   onChange={(e) => handleCheckboxToggle(e, option.text)}
                 >
                   <Tooltip
-                    label={option.text}
+                    label={desc}
                     aria-label="Full criteria"
                     p="1rem"
                     hasArrow
@@ -171,7 +175,7 @@ export default function ComboBox({
                       fontWeight={isHighlighted ? "bold" : "normal"}
                       color={isHighlighted ? "black" : "inherit"}
                     >
-                      {`IC-${(index + 1).toString().padStart(2, "0")}`}
+                      {code || `IC-${(index + 1).toString().padStart(2, "0")}`}
                     </Text>
                   </Tooltip>
                 </Checkbox>
@@ -182,7 +186,7 @@ export default function ComboBox({
                   onChange={(e) => handleCheckboxToggle(e, option.text)}
                 >
                   <Tooltip
-                    label={option.text}
+                    label={desc}
                     aria-label="Full criteria"
                     p="1rem"
                     hasArrow
@@ -193,7 +197,7 @@ export default function ComboBox({
                       fontWeight={isHighlighted ? "bold" : "normal"}
                       color={isHighlighted ? "black" : "inherit"}
                     >
-                      {`EC-${(index + 1).toString().padStart(2, "0")}`}
+                      {code || `EC-${(index + 1).toString().padStart(2, "0")}`}
                     </Text>
                   </Tooltip>
                 </Checkbox>
