@@ -101,7 +101,7 @@ export default function Extraction() {
 
   return (
     <FlexLayout navigationType="Accordion">
-      <Box w="100%" px="1rem" py=".75rem" h="fit-content">
+      <Box w="100%" px="1rem" pt="0" pb=".75rem" h="fit-content">
         <Flex
           w="100%"
           h="2.5rem"
@@ -153,8 +153,27 @@ export default function Extraction() {
       </Box>
       <Box
         w="calc(100% - 1.25rem)"
-        h="calc(100vh - 10rem)"
+        h="calc(100vh - 9.5rem - 20px)" 
         padding="0 0 0 .5rem"
+        position="relative"
+        top="30px" 
+        display="flex"
+        flexDirection="column"
+        sx={{
+          "& > div": {
+            flex: 1, 
+            display: "flex",
+            flexDirection: "column",
+            minHeight: 0,
+            marginBottom: "0px !important", 
+            paddingBottom: "0px !important"
+          },
+          "& > div > div": {
+            flex: 1,
+            overflowY: "auto",
+            marginBottom: "0px !important"
+          }
+        }}
       >
         <LayoutFactory
           page="Extraction"
