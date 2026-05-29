@@ -65,19 +65,38 @@ export default function Graphics() {
     if(tableSelected) setTablePage(tableSelected);
   }, [section]);
   
+  const currentFilters = filtersBySection[section] || [];
+  const isNoYearSection = section && (
+    section.toLowerCase().includes("inclusion") ||
+    section.toLowerCase().includes("exclusion") ||
+    section.toLowerCase().includes("inclusão") ||
+    section.toLowerCase().includes("exclusão") ||
+    section.toLowerCase().includes("form questions") || 
+    section.toLowerCase().includes("questões") ||
+    section.toLowerCase().includes("extração") ||
+    section.toLowerCase().includes("viés")
+  );
+
+  const displayedFilters = isNoYearSection
+    ? currentFilters.filter((f: any) => {
+        const itemText = JSON.stringify(f).toLowerCase();
+        return !itemText.includes("year") && !itemText.includes("ano");
+      })
+    : currentFilters;
+
   return (
     <FlexLayout navigationType="Accordion">
       <Flex justifyContent="space-between" alignItems="flex-start" w="100%" mb="1rem">
         <Flex flexDirection="column" gap="0.75rem">
           <Header text={t("header")} />
 
-          {filtersBySection[section]?.length > 0 && (
+          {displayedFilters.length > 0 && (
             <Flex flexDirection="column" gap="0.5rem">
               <Text fontWeight="semibold" fontSize="lg" color="#263C56">
                 {t("filtersArea.heading")}
               </Text>
               <FiltersMenu
-                availableFilters={filtersBySection[section]}
+                availableFilters={displayedFilters}
                 filters={filters}
                 setFilters={setFilters}
               />
