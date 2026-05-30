@@ -7,7 +7,7 @@ import ArticleInterface from "@features/review/shared/types/ArticleInterface";
 import { ColumnVisibility } from "@features/review/shared/hooks/useVisibilityColumns";
 import useBubbleDataGeneric, { BubbleItem } from "@features/review/summarization-graphics/hooks/useBubbleDataGeneric";
 import BubbleChart from "@features/review/summarization-graphics/components/charts/BubbleChart";
-//import BubbleChart from "@features/review/summarization-graphics/components/charts/BubbleChart";
+import TextualTable from "@features/review/summarization-graphics/components/tables/TextualTable";
 
 type Props = {
   selectedQuestionId?: string;
@@ -192,7 +192,15 @@ export const QuestionsCharts = ({
             />
           );
         } else {
-          chartContent = <QuestionsTable columnsVisible={columnsVisible} data={filteredAnswer} />;
+          const questionId = question.questionId
+          const textualStudies = filteredStudies.filter(
+            (study) =>
+              (study as any).formAnswers?.[question.questionId] !== undefined ||
+              (study as any).robAnswers?.[question.questionId] !== undefined
+          );
+          chartContent = question.questionType === "TEXTUAL" 
+            ? <TextualTable articles={textualStudies} sortConfig={null} questionId={questionId} />
+            : <QuestionsTable columnsVisible={columnsVisible} data={filteredAnswer} />;
         }
 
         return (
