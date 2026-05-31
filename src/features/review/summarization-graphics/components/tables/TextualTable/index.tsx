@@ -67,10 +67,10 @@ export default function TextualTable({
   const [itensPerPageUI, setItensPerPageUI] = useState(20);
 
   const [columnWidths, setColumnWidths] = useState({
-    studyReviewId: "100px",
-    authors: "220px",
-    title: "350px",
-    answer: "350px",
+    studyReviewId: "10%",
+    authors: "25%",
+    title: "30%",
+    answer: "35%",
   });
 
   const handleChangeItensPerPage = (value: number) => {
@@ -201,6 +201,7 @@ export default function TextualTable({
                             overflow="hidden"
                             textOverflow="ellipsis"
                             whiteSpace="nowrap"
+                            lineHeight="130%"
                           >
                             {col.label}
                           </Text>
