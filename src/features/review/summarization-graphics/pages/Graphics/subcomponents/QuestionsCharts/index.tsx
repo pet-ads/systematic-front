@@ -209,6 +209,7 @@ export const QuestionsCharts = ({
 
             chartContent = <TextualTable columnsVisible={columnsVisible} articles={textualStudies} sortConfig={null} questionId={questionId} />
           } else {
+            setTablePage("Graphics-FormQuestions");
             chartContent = <QuestionsTable columnsVisible={columnsVisible} data={filteredAnswer} />;
           }
         }
