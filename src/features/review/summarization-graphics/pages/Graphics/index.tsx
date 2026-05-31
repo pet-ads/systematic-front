@@ -58,6 +58,7 @@ export default function Graphics() {
     "Search Sources": "Graphics-SearchSources",
     "Included Studies": "Graphics-IncludedStudies",
     "Form Questions": "Graphics-FormQuestions",
+    "TEXTUAL": "Graphics-TextualQuestion",
   }
 
   useEffect(() => {
@@ -144,6 +145,7 @@ export default function Graphics() {
               filters={filters}
               selectedQuestionId={selectedQuestionId}
               columnsVisible={columnsVisible}
+              setTablePage={setTablePage}
             />
           ) : (
             <Flex direction="column" align="center" justify="center" h="800px" textAlign="center">

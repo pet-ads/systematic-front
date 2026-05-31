@@ -167,6 +167,25 @@ export default function useVisibiltyColumns({
       visibility.sources = null;
       visibility.ic = null;
     }
+    if(page === "Graphics-TextualQuestion") {
+      visibility.selectionStatus = null;
+      visibility.extractionStatus = null;
+      visibility.source = null;
+      visibility.included = null;
+      visibility.excluded = null;
+      visibility.total = null;
+      visibility.indexingRate = null;
+      visibility.precisionRate = null;
+      visibility.score = null;
+      visibility.readingPriority = null;
+      visibility.studies = null;
+      visibility.totalAnswers = null;
+      visibility.percentageOfTotal = null;   
+      visibility.sources = null;
+      visibility.ic = null;  
+      visibility.venue = null;
+      visibility.year = null; 
+    }
     return visibility;
   }, [page]);
 

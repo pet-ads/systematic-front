@@ -18,7 +18,7 @@ import { PaginationControls } from "@features/shared/types/pagination";
 import { KeyedMutator } from "swr";
 import { SelectionArticles } from "@features/review/execution-selection/services/useFetchSelectionArticles";
 
-export type PageLayout = "Selection" | "Extraction" | "Identification" | "Graphics-SearchSources" | "Graphics-IncludedStudies" | "Graphics-FormQuestions";
+export type PageLayout = "Selection" | "Extraction" | "Identification" | "Graphics-SearchSources" | "Graphics-IncludedStudies" | "Graphics-FormQuestions" | "Graphics-TextualQuestion";
 
 interface LayoutFactoryProps {
   layout: ViewModel;
