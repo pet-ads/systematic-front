@@ -206,8 +206,8 @@ export const QuestionsCharts = ({
                 (study as any).formAnswers?.[question.questionId] !== undefined ||
                 (study as any).robAnswers?.[question.questionId] !== undefined
             );
-            
-            chartContent = <TextualTable articles={textualStudies} sortConfig={null} questionId={questionId} />
+
+            chartContent = <TextualTable columnsVisible={columnsVisible} articles={textualStudies} sortConfig={null} questionId={questionId} />
           } else {
             chartContent = <QuestionsTable columnsVisible={columnsVisible} data={filteredAnswer} />;
           }

@@ -31,6 +31,7 @@ import {
   collapsedSpanText,
 } from "@features/review/execution-identification/pages/Identification/subcomponents/accordions/styles";
 import type ArticleInterface from "@features/review/shared/types/ArticleInterface";
+import { ColumnVisibility } from "@features/review/shared/hooks/useVisibilityColumns";
 
 
 export type AllKeys =
@@ -50,12 +51,14 @@ interface Props {
     articles: ArticleInterface[];
     sortConfig: { key: AllKeys; direction: "asc" | "desc" } | null;
     questionId: string;
+    columnsVisible: ColumnVisibility
 }
 
 export default function TextualTable({
     articles,
     sortConfig,
     questionId,
+    columnsVisible
 }: Props) {
   const ANSWER_ID = questionId;
 
@@ -97,6 +100,12 @@ export default function TextualTable({
       width: columnWidths.answer,
     },
   ];
+
+  const visibleColumns = columns.filter((column) => {
+    const visibilityKey = column.key;
+
+    return columnsVisible[visibilityKey as keyof ColumnVisibility] === true;
+  });
 
   const collapsedSpanTextChanged = {
     ...collapsedSpanText,
@@ -148,7 +157,7 @@ export default function TextualTable({
             borderBottom=".5rem solid #C9D9E5"
           >
             <Tr>
-              {columns.map((col) => (
+              {visibleColumns.map((col) => (
                 <Th
                   key={col.key}
                   textAlign="center"
@@ -235,35 +244,43 @@ export default function TextualTable({
                     "";
 
                 return (
-                  <Tr key={index}>
-                    <Td w={columnWidths.studyReviewId}>
-                      {study.studyReviewId}
-                    </Td>
+                    <Tr key={index}>
+                        {visibleColumns.map((col) => {
+                            let value = "";
 
-                    <Td w={columnWidths.authors}>
-                      <Tooltip label={study.authors} hasArrow>
-                        <Text sx={collapsedSpanTextChanged}>
-                          {study.authors}
-                        </Text>
-                      </Tooltip>
-                    </Td>
+                            switch (col.key) {
+                            case "studyReviewId":
+                                value = String(study.studyReviewId);
+                                break;
 
-                    <Td w={columnWidths.title}>
-                      <Tooltip label={study.title} hasArrow>
-                        <Text sx={collapsedSpanTextChanged}>
-                          {study.title}
-                        </Text>
-                      </Tooltip>
-                    </Td>
+                            case "authors":
+                                value = study.authors;
+                                break;
 
-                    <Td w={columnWidths.answer} lineHeight="150%">
-                      <Tooltip label={answer} hasArrow>
-                        <Text sx={collapsedSpanTextChanged}>
-                          {answer}
-                        </Text>
-                      </Tooltip>
-                    </Td>
-                  </Tr>
+                            case "title":
+                                value = study.title;
+                                break;
+
+                            case "answer":
+                                value = answer;
+                                break;
+                            }
+
+                            return (
+                            <Td
+                                key={col.key}
+                                w={columnWidths[col.key]}
+                                lineHeight="150%"
+                            >
+                                <Tooltip label={value} hasArrow>
+                                <Text sx={collapsedSpanTextChanged}>
+                                    {value}
+                                </Text>
+                                </Tooltip>
+                            </Td>
+                            );
+                        })}
+                    </Tr>
                 );
               })
             ) : (
