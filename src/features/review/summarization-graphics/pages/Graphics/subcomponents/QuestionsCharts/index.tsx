@@ -7,13 +7,16 @@ import ArticleInterface from "@features/review/shared/types/ArticleInterface";
 import { ColumnVisibility } from "@features/review/shared/hooks/useVisibilityColumns";
 import useBubbleDataGeneric, { BubbleItem } from "@features/review/summarization-graphics/hooks/useBubbleDataGeneric";
 import BubbleChart from "@features/review/summarization-graphics/components/charts/BubbleChart";
-//import BubbleChart from "@features/review/summarization-graphics/components/charts/BubbleChart";
+import TextualTable from "@features/review/summarization-graphics/components/tables/TextualTable";
+import { Dispatch, SetStateAction } from "react";
+import { PageLayout } from "@features/review/shared/components/structure/LayoutFactory";
 
 type Props = {
   selectedQuestionId?: string;
   filteredStudies: ArticleInterface[];
   type: string;
-  columnsVisible: ColumnVisibility
+  columnsVisible: ColumnVisibility;
+  setTablePage: Dispatch<SetStateAction<PageLayout>>
 };
 
 type Question = {
@@ -87,7 +90,8 @@ export const QuestionsCharts = ({
   selectedQuestionId,
   filteredStudies,
   type,
-  columnsVisible
+  columnsVisible,
+  setTablePage
 }: Props) => {
   const { extractionAnswers, isLoadingExtractionAnswers } =
     useFetchQuestionAnswers();
@@ -192,7 +196,22 @@ export const QuestionsCharts = ({
             />
           );
         } else {
-          chartContent = <QuestionsTable columnsVisible={columnsVisible} data={filteredAnswer} />;
+          if(question.questionType === "TEXTUAL") {
+            setTablePage("Graphics-TextualQuestion");
+            
+            const questionId = question.questionId
+
+            const textualStudies = filteredStudies.filter(
+              (study) =>
+                (study as any).formAnswers?.[question.questionId] !== undefined ||
+                (study as any).robAnswers?.[question.questionId] !== undefined
+            );
+
+            chartContent = <TextualTable columnsVisible={columnsVisible} articles={textualStudies} sortConfig={null} questionId={questionId} />
+          } else {
+            setTablePage("Graphics-FormQuestions");
+            chartContent = <QuestionsTable columnsVisible={columnsVisible} data={filteredAnswer} />;
+          }
         }
 
         return (

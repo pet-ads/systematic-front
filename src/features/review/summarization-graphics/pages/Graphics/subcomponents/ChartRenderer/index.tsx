@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { Dispatch, SetStateAction, useCallback, useMemo, useState } from "react";
 import { Box, Flex } from "@chakra-ui/react";
 import { graphicsconteiner } from "../../styles";
 
@@ -20,13 +20,15 @@ import ArticleInterface from "@features/review/shared/types/ArticleInterface";
 import { useFetchStudiesByStage } from "@features/review/summarization-graphics/services/useFetchStudiesByStage";
 import useFetchStudiesByCriteria from "@features/review/summarization-graphics/services/useFetchStudiesByCriteria";
 import { ColumnVisibility } from "@features/review/shared/hooks/useVisibilityColumns";
+import { PageLayout } from "@features/review/shared/components/structure/LayoutFactory";
 
 type Props = {
   section: string;
   type: string;
   filters: FiltersState;
   selectedQuestionId?: string;
-  columnsVisible: ColumnVisibility
+  columnsVisible: ColumnVisibility;
+  setTablePage: Dispatch<SetStateAction<PageLayout>>
 };
 export type CsvRow = Record<string, string | number>;
 
@@ -35,7 +37,8 @@ export default function ChartsRenderer({
   type,
   filters,
   selectedQuestionId,
-  columnsVisible
+  columnsVisible,
+  setTablePage
 }: Props) {
   const { articles, isLoading } = useGetAllReviewArticles();
   const [, setCsvData] = useState<CsvRow[]>([]);
@@ -149,6 +152,7 @@ export default function ChartsRenderer({
         chartId={chartId}
         selectedQuestionId={selectedQuestionId}
         columnsVisible={columnsVisible}
+        setTablePage={setTablePage}
       />
     ),
     "Studies Funnel": () => <StudiesFunnelRenderer chartId={chartId} />,
