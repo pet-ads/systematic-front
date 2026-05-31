@@ -36,8 +36,8 @@ import { ColumnVisibility } from "@features/review/shared/hooks/useVisibilityCol
 
 export type AllKeys =
 | "studyReviewId"
-| "authors"
 | "title"
+| "authors"
 | "answer";
 
 type Column = {
@@ -68,8 +68,8 @@ export default function TextualTable({
 
   const [columnWidths, setColumnWidths] = useState({
     studyReviewId: "10%",
-    authors: "25%",
     title: "30%",
+    authors: "25%",
     answer: "35%",
   });
 
@@ -85,14 +85,14 @@ export default function TextualTable({
       width: columnWidths.studyReviewId,
     },
     {
-      key: "authors",
-      label: "Autores",
-      width: columnWidths.authors,
-    },
-    {
       key: "title",
       label: "Título",
       width: columnWidths.title,
+    },
+    {
+      key: "authors",
+      label: "Autores",
+      width: columnWidths.authors,
     },
     {
       key: "answer",
