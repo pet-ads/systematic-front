@@ -14,12 +14,12 @@ export type FiltersState = {
 
 export function useGraphicsState() {
   const { t } = useTranslation("review/summarization-graphics");
-  // perguntas
+
   const { questions: extractionQuestions = [] } = useFetchExtractionQuestions();
   const { questions: robQuestions = [] } = useFetchRobQuestions();
   const allQuestions = useMemo(
     () => [...extractionQuestions, ...robQuestions],
-    [extractionQuestions, robQuestions],
+    [extractionQuestions, robQuestions]
   );
 
   const [selectedQuestionId, setSelectedQuestionId] = useState<
@@ -40,13 +40,13 @@ export function useGraphicsState() {
       case "PICK_LIST":
         return [
           t("selectMenu.graphicsTypes.pieChart"),
-          t("selectMenu.graphicsTypes.barChart"),
-          t("selectMenu.graphicsTypes.bubbleChart"),
           t("selectMenu.graphicsTypes.table"),
         ];
       case "PICK_MANY":
         return [
           t("selectMenu.graphicsTypes.barChart"),
+          t("selectMenu.graphicsTypes.bubbleChart"),
+          t("selectMenu.graphicsTypes.itemTable"),
           t("selectMenu.graphicsTypes.table"),
         ];
       default:
@@ -54,7 +54,6 @@ export function useGraphicsState() {
     }
   };
 
-  // tipos por seção
   const allowedTypes: Record<string, string[]> = {
     "Search Sources": [
       t("selectMenu.graphicsTypes.pieChart"),

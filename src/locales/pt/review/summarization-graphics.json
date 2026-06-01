@@ -39,7 +39,8 @@
             "barChart": "Gráfico de Barras",
             "bubbleChart": "Gráfico de Bolhas",
             "lineChart": "Gráfico de Linhas",
-            "table": "Tabela"
+            "table": "Tabela",
+            "itemTable": "Tabela por Item"
         }
     },
     "noDataMessage": {
@@ -59,7 +60,7 @@
     },
     "questionsTable": {
         "answer": "Resposta",
-        "studies": "ID do Estudo",
+        "studies": "Estudos",
         "total": "Total",
         "percentage": "Percentual do Total"
     }

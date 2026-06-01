@@ -12,7 +12,7 @@ type Props = {
   chartId: string;
   selectedQuestionId?: string;
   columnsVisible: ColumnVisibility;
-  setTablePage: Dispatch<SetStateAction<PageLayout>>
+  setTablePage: Dispatch<SetStateAction<PageLayout>>;
 };
 
 export default function FormQuestionsRenderer({
@@ -21,16 +21,10 @@ export default function FormQuestionsRenderer({
   selectedQuestionId,
   chartId,
   columnsVisible,
-  setTablePage
+  setTablePage,
 }: Props) {
   return (
-    <Box 
-      id={chartId}
-      w="100%"
-      display="block" 
-      pt={4} 
-      pb={10}
-    >
+    <Box id={chartId}>
       <QuestionsCharts
         filteredStudies={filteredStudies as ArticleInterface[]}
         type={type}
