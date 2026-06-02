@@ -60,7 +60,7 @@
     },
     "questionsTable": {
         "answer": "Resposta",
-        "studies": "Estudos",
+        "studies": "ID do Estudo",
         "total": "Total",
         "percentage": "Percentual do Total"
     }
