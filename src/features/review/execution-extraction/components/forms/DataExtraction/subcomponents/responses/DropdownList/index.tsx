@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 import SelectInput from "@components/common/inputs/SelectInput";
 
 // Utils
-import { capitalize } from "@features/shared/utils/helpers/formatters/CapitalizeText";
+import { renderQuestionLabel } from "../helpers";
 
 // Styles
 import { container, label } from "../styles";
@@ -38,7 +38,7 @@ export default function DropdownList({
 
   return (
     <FormControl sx={container} isInvalid={isInvalid}>
-      <FormLabel sx={label}>{capitalize(question)}</FormLabel>
+      <FormLabel sx={label}>{renderQuestionLabel(question)}</FormLabel>
       <SelectInput
         names={[...options]}
         values={[...options]}

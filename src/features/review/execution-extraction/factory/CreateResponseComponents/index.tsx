@@ -33,7 +33,7 @@ export default function CreateResponseComponent({
     TEXTUAL: (
       <TextualResponse
         key={question.code}
-        question={question.description}
+        question={`${question.code}: ${question.description}`}
         answer={answer.value as string}
         isInvalid={isInvalid}
         onResponse={(response) =>
@@ -47,7 +47,7 @@ export default function CreateResponseComponent({
     NUMBERED_SCALE: (
       <NumberScale
         key={question.code}
-        question={question.description}
+        question={`${question.code}: ${question.description}`}
         answer={answer.value as string}
         minValue={question.lower}
         maxValue={question.higher}
@@ -63,7 +63,7 @@ export default function CreateResponseComponent({
     LABELED_SCALE: (
       <LabeledList
         key={question.code}
-        question={question.description}
+        question={`${question.code}: ${question.description}`}
         scales={question.scales}
         answer={answer.value as { name: string; value: number }}
         isInvalid={isInvalid}
@@ -78,7 +78,7 @@ export default function CreateResponseComponent({
     PICK_LIST: (
       <DropdownList
         key={question.code}
-        question={question.description}
+        question={`${question.code}: ${question.description}`}
         options={question.options || []}
         answer={answer.value as string}
         isInvalid={isInvalid}
@@ -93,7 +93,7 @@ export default function CreateResponseComponent({
     PICK_MANY: (
       <MultiSelectionList
         key={question.code}
-        question={question.description}
+        question={`${question.code}: ${question.description}`}
         options={question.options || []}
         answer={answer.value as string[]}
         isInvalid={isInvalid}
