@@ -40,6 +40,8 @@ export function useGraphicsState() {
       case "PICK_LIST":
         return [
           t("selectMenu.graphicsTypes.pieChart"),
+          t("selectMenu.graphicsTypes.barChart"),
+          t("selectMenu.graphicsTypes.bubbleChart"),
           t("selectMenu.graphicsTypes.table"),
         ];
       case "PICK_MANY":
