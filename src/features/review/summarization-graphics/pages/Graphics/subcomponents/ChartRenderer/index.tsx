@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
 import { Box, Flex } from "@chakra-ui/react";
 import { graphicsconteiner } from "../../styles";
 
@@ -10,6 +10,7 @@ import SearchSourcesRenderer from "./SearchSourcesRenderer";
 import IncludedStudiesRenderer from "./IncludedStudiesRenderer";
 import CriteriaRenderer from "./CriteriaRenderer";
 import StudiesFunnelRenderer from "./StudiesFunnelRenderer";
+import ProtocolRenderer from "./ProtocolRenderer";
 import DownloadChartsButton from "@features/review/summarization-graphics/components/buttons/DownloadChatsButton";
 import FormQuestionsRenderer from "./FormQuestionsRenderer";
 import { downloadCSV } from "@features/review/summarization-graphics/components/export/ExportCsv";
@@ -21,6 +22,7 @@ import { useFetchStudiesByStage } from "@features/review/summarization-graphics/
 import useFetchStudiesByCriteria from "@features/review/summarization-graphics/services/useFetchStudiesByCriteria";
 import { ColumnVisibility } from "@features/review/shared/hooks/useVisibilityColumns";
 import { PageLayout } from "@features/review/shared/components/structure/LayoutFactory";
+import { Dispatch, SetStateAction } from "react";
 
 type Props = {
   section: string;
@@ -28,7 +30,7 @@ type Props = {
   filters: FiltersState;
   selectedQuestionId?: string;
   columnsVisible: ColumnVisibility;
-  setTablePage: Dispatch<SetStateAction<PageLayout>>
+  setTablePage: Dispatch<SetStateAction<PageLayout>>;
 };
 export type CsvRow = Record<string, string | number>;
 
@@ -38,16 +40,13 @@ export default function ChartsRenderer({
   filters,
   selectedQuestionId,
   columnsVisible,
-  setTablePage
+  setTablePage,
 }: Props) {
   const { articles, isLoading } = useGetAllReviewArticles();
-  const [, setCsvData] = useState<CsvRow[]>([]);
 
   const { extractionAnswers } = useFetchQuestionAnswers();
 
-  const handleCsvData = useCallback((data: CsvRow[]) => {
-    setCsvData(data);
-  }, []);
+  const handleCsvData = useCallback((_data: CsvRow[]) => {}, []);
 
   const filteredStudies = useMemo(() => {
     return articles
@@ -106,13 +105,12 @@ export default function ChartsRenderer({
 
   const chartId = `chart-${section.replace(/\s+/g, "-").toLowerCase()}`;
 
-  // Map de renderers
   const rendererMap: Record<string, any> = {
     "Search Sources": (props: any) => (
-      <SearchSourcesRenderer {...props} columnsVisible={columnsVisible} chartId={chartId} />
+      <SearchSourcesRenderer {...props} chartId={chartId} />
     ),
     "Included Studies": (props: any) => (
-      <IncludedStudiesRenderer {...props} columnsVisible={columnsVisible} chartId={chartId} />
+      <IncludedStudiesRenderer {...props} chartId={chartId} />
     ),
     "S1_Inclusion Criteria": (props: any) => (
       <CriteriaRenderer
@@ -156,72 +154,63 @@ export default function ChartsRenderer({
       />
     ),
     "Studies Funnel": () => <StudiesFunnelRenderer chartId={chartId} />,
+    Protocol: () => <ProtocolRenderer />,
   };
 
   const Renderer = rendererMap[section];
   if (!Renderer) return <Box>Seção não encontrada</Box>;
 
-return (
-  <Box
-    sx={{
-      ...graphicsconteiner,
-      minHeight: "calc(100vh - 210px)",
-      justifyContent: "space-between",
-    }}
-  >
+  return (
     <Box
-      display="flex"
-      flexWrap="wrap"
-      gap="2em"
-      justifyContent="center"
-      alignItems="center"
-      p={
-        section === "Included Studies" ||
-        (section === "Search Sources" && (type === "Table" || type === "Tabela"))
-          ? "0"
-          : "2rem"
-      }
-      pt="1rem"
+      pt={"1rem"}
+      sx={{
+        ...graphicsconteiner,
+        p:
+          section === "Included Studies" ||
+          (section === "Search Sources" && type === "Table")
+            ? undefined
+            : "2rem",
+        boxShadow: "md",
+      }}
     >
       <Renderer
         filteredStudies={filteredStudies}
         type={type}
         onCsvData={handleCsvData}
       />
-    </Box>
 
-    {section !== "Studies Funnel" && (
-      <Flex w="100%" justifyContent="flex-end" p="1rem">
-        <DownloadChartsButton
-          selector={`#${chartId}`}
-          fileName={section}
-          onDownloadCsv={() => {
-            if (section === "Form Questions") 
-              {
-              downloadCSV(
-                "questions",
-                buildQuestionsCsv(
-                  extractionAnswers,
-                  filteredStudies as ArticleInterface[],
-                  selectedQuestionId
-                )
-              );
-            } else {
-              downloadCSV(
-                section,
-                getCsvData(
+      {section !== "Studies Funnel" && section !== "Protocol" && (
+        <Flex w="100%" justifyContent="flex-end" p="1rem">
+          <DownloadChartsButton
+            selector={`#${chartId}`}
+            fileName={section}
+            onDownloadCsv={() => {
+              if (section === "Form Questions") {
+                downloadCSV(
+                  "questions",
+                  buildQuestionsCsv(
+                    extractionAnswers,
+                    filteredStudies as ArticleInterface[],
+                    selectedQuestionId,
+                    type
+                  )
+                );
+              } else {
+                downloadCSV(
                   section,
-                  filteredStudies,
-                  type,
-                  filteredStageIds,
-                  studiesByCriteria
-                )
-              );
-            }
-          }}
-        />
-      </Flex>
-    )}
-  </Box>
-);
+                  getCsvData(
+                    section,
+                    filteredStudies,
+                    type,
+                    filteredStageIds,
+                    studiesByCriteria
+                  )
+                );
+              }
+            }}
+          />
+        </Flex>
+      )}
+    </Box>
+  );
 }

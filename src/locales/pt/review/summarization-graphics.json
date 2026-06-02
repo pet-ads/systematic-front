@@ -39,7 +39,8 @@
             "barChart": "Gráfico de Barras",
             "bubbleChart": "Gráfico de Bolhas",
             "lineChart": "Gráfico de Linhas",
-            "table": "Tabela"
+            "table": "Tabela",
+            "itemTable": "Tabela por Item"
         }
     },
     "noDataMessage": {

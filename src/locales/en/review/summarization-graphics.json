@@ -34,7 +34,8 @@
             "barChart": "Bar Chart",
             "bubbleChart": "Bubble Chart",
             "lineChart": "Line Chart",
-            "table": "Table"
+            "table": "Table",
+            "itemTable": "Item Table"
         }
     },
     "noDataMessage": {
