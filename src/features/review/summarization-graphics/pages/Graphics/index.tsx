@@ -148,7 +148,7 @@ export default function Graphics() {
               setTablePage={setTablePage}
             />
           ) : (
-            <Flex direction="column" align="center" justify="center" h="800px" textAlign="center">
+            <Flex direction="column" align="center" justify="center" h="100%" textAlign="center">
               <Text fontSize="34px" fontWeight="bold" color="#2E4B6C" mb="2">
                 {t("graphicsArea.title") === "graphicsArea.title" ? "Graphics Area" : t("graphicsArea.title")}
               </Text>
