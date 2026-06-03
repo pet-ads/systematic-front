@@ -89,7 +89,7 @@ export default function StatusSelect({
   const selectedOption = options.find((o) => o.value === selectedValue);
   let buttonLabel = t("statusSelect.placeholder");
   if (selectedOption) {
-    buttonLabel = `${t("statusSelect.placeholder")} - ${getLabel(selectedOption.label, selectedOption.value)}`;
+    buttonLabel = getLabel(selectedOption.label, selectedOption.value);
   }
   useEffect(() => {
     const update = () => setMenuWidth(btnRef.current?.offsetWidth ?? 0);
