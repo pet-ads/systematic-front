@@ -13,7 +13,7 @@ import {
 import { useTranslation } from "react-i18next";
 
 // Utils
-import { capitalize } from "@features/shared/utils/helpers/formatters/CapitalizeText";
+import { renderQuestionLabel } from "../helpers";
 
 // Styles
 import { container, label } from "../styles";
@@ -62,7 +62,7 @@ export default function NumberScale({
 
   return (
     <FormControl sx={container} isInvalid={isInvalid}>
-      <FormLabel sx={label}>{capitalize(question)}</FormLabel>
+      <FormLabel sx={label}>{renderQuestionLabel(question)}</FormLabel>
       <Box display="flex" flexDirection="column" gap="1rem">
         <RadioGroup
           sx={radiosGroup}

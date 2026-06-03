@@ -4,7 +4,7 @@ import { FormControl, FormLabel, Textarea } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 
 // Utils
-import { capitalize } from "@features/shared/utils/helpers/formatters/CapitalizeText";
+import { renderQuestionLabel } from "../helpers";
 
 // Styles
 import { responseArea } from "./styles";
@@ -35,7 +35,7 @@ export default function TextualResponse({
 
   return (
     <FormControl sx={container} isInvalid={isInvalid}>
-      <FormLabel sx={label}>{capitalize(question)}</FormLabel>
+      <FormLabel sx={label}>{renderQuestionLabel(question)}</FormLabel>
       <Textarea
         value={response}
         onChange={handleChange}
