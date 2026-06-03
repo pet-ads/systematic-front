@@ -150,12 +150,10 @@ export default function Graphics() {
           ) : (
             <Flex direction="column" align="center" justify="center" h="100%" textAlign="center">
               <Text fontSize="34px" fontWeight="bold" color="#2E4B6C" mb="2">
-                {t("graphicsArea.title") === "graphicsArea.title" ? "Graphics Area" : t("graphicsArea.title")}
+                {t("graphicsArea.title")}
               </Text>
               <Text fontSize="19px" color="gray.600">
-                {t("graphicsArea.instruction") === "graphicsArea.instruction"
-                  ? "Choose a section from the menu to filter the dashboard results."
-                  : t("graphicsArea.instruction")}
+                {t("graphicsArea.instruction")}
               </Text>
             </Flex>
           )}

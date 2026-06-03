@@ -1,5 +1,9 @@
 {
     "header": "Graphics",
+    "graphicsArea": {
+        "title": "Graphics Area",
+        "instruction": "Choose a section from the menu to filter the dashboard results."
+    },
     "filtersArea": {
         "heading": "Filters Area",
         "sources": "Sources",
