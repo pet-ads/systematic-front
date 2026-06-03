@@ -22,6 +22,7 @@ import {
 import { AddIcon } from "@chakra-ui/icons";
 import { AiOutlineDelete, AiOutlineEdit, AiOutlineEye } from "react-icons/ai";
 import { useTranslation } from "react-i18next";
+import { KeyedMutator } from "swr";
 
 import DeleteDatabaseModal from "../../modals/DeleteDatabase";
 import IdentificationModal from "../../modals/IdentificationModal";
@@ -31,9 +32,10 @@ import UseDeleteSession from "../../../../../services/useDeleteSession";
 
 interface DatabaseCardProps {
   text: string;
+  mutateDatabases: KeyedMutator<string[]>;
 }
 
-export default function DataBaseCard({ text }: DatabaseCardProps) {
+export default function DataBaseCard({ text, mutateDatabases }: DatabaseCardProps) {
   const navigate = useNavigate();
   const { t } = useTranslation("review/execution-identification");
 
@@ -94,17 +96,15 @@ export default function DataBaseCard({ text }: DatabaseCardProps) {
             flexDirection="column"
             _hover={{ bg: "transparent" }}
           >
-            
             <Flex
               w="100%"
-              minH="10px" 
+              minH="10px"
               bg="#263C56"
               justifyContent="space-between"
               alignItems="center"
-              p="1.5rem 1.5rem" 
+              p="1.5rem 1.5rem"
             >
               <Flex flex="1" alignItems="center" gap="0.75rem">
-                
                 <Text
                   fontSize="lg"
                   fontWeight="bold"
@@ -202,9 +202,7 @@ export default function DataBaseCard({ text }: DatabaseCardProps) {
                         _even={{ bg: "#E2E8F0" }}
                       >
                         <Td color="gray.700">
-                          {new Date(session.timestamp).toLocaleDateString(
-                            "pt-BR",
-                          )}
+                          {new Date(session.timestamp).toLocaleDateString("pt-BR")}
                         </Td>
                         <Td color="gray.700">
                           {session.numberOfRelatedStudies}
@@ -217,9 +215,9 @@ export default function DataBaseCard({ text }: DatabaseCardProps) {
                               size="sm"
                               bg="transparent"
                               color="gray.600"
-                              borderRadius="md" 
+                              borderRadius="md"
                               transition="all 0.2s"
-                              _hover={{ bg: "blue.100", color: "blue.700" }} 
+                              _hover={{ bg: "blue.100", color: "blue.700" }}
                               onClick={() =>
                                 handleNavigateToSession(
                                   session.id,
@@ -233,7 +231,7 @@ export default function DataBaseCard({ text }: DatabaseCardProps) {
                               size="sm"
                               bg="transparent"
                               color="gray.600"
-                              borderRadius="md" 
+                              borderRadius="md"
                               transition="all 0.2s"
                               _hover={{ bg: "gray.200", color: "#263C56" }}
                               onClick={() =>
@@ -246,9 +244,9 @@ export default function DataBaseCard({ text }: DatabaseCardProps) {
                               size="sm"
                               bg="transparent"
                               color="red.500"
-                              borderRadius="md" 
+                              borderRadius="md"
                               transition="all 0.2s"
-                              _hover={{ bg: "red.100", color: "red.700" }} 
+                              _hover={{ bg: "red.100", color: "red.700" }}
                               onClick={() => handleDeleteSession(session.id)}
                             />
                           </Flex>
@@ -280,6 +278,7 @@ export default function DataBaseCard({ text }: DatabaseCardProps) {
           action={deleteModal}
           sessions={data}
           mutate={mutate}
+          mutateDatabases={mutateDatabases}
           databaseName={text}
         />
       )}

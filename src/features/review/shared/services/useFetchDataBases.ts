@@ -1,25 +1,23 @@
-import { useEffect, useState } from "react";
+import useSWR from "swr";
 import Axios from "../../../../infrastructure/http/axiosClient";
 
 const useFetchDataBases = () => {
-  const [databases, setdatabase] = useState<string[]>([]);
   const id = localStorage.getItem("systematicReviewId");
+  const path = `systematic-study/${id}/protocol`;
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        let response = await Axios.get(`systematic-study/${id}/protocol`, {
-          withCredentials: true,
-        });
-        setdatabase(response.data.content.informationSources);
-      } catch (error) {
-        console.error("Erro ao buscar os dados:", error);
-      }
-    };
+  const { data, error, isLoading, mutate } = useSWR(path, async () => {
+    const response = await Axios.get(path, { withCredentials: true });
+    return response.data.content.informationSources as string[];
+  }, {
+    revalidateOnFocus: true,
+    revalidateOnMount: true,
+  });
 
-    fetchData();
-  }, []);
-
-  return { databases };
+  return {
+    databases: data || [],
+    error,
+    isLoading,
+    mutate,
+  };
 };
 export default useFetchDataBases;

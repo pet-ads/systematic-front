@@ -1,26 +1,22 @@
-// External library
 import { Box, Flex } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 
-// Components
 import DataBaseRequired from "../../../shared/components/structure/DataBaseRequired";
 import DataBaseCard from "./subcomponents/cards/DatabaseCard";
 import Header from "../../../../../components/structure/Header/Header";
 import FlexLayout from "../../../../../components/structure/Flex/Flex";
 import CardDefault from "@components/common/cards";
 
-// Service
 import useFetchDataBases from "../../../shared/services/useFetchDataBases";
 
-// Styles
 import { conteiner, dataBaseconteiner } from "./styles";
 
 export default function Identification() {
-  const { databases } = useFetchDataBases();
+  const { databases, mutate: mutateDatabases } = useFetchDataBases();
 
-  const { t } = useTranslation("review/execution-identification")
+  const { t } = useTranslation("review/execution-identification");
 
-  const databaseListIsEmpty = databases.length == 0;
+  const databaseListIsEmpty = databases.length === 0;
 
   return (
     <FlexLayout navigationType="Accordion">
@@ -45,7 +41,11 @@ export default function Identification() {
           {databaseListIsEmpty && <DataBaseRequired />}
           <Box sx={dataBaseconteiner}>
             {databases.map((data, index) => (
-              <DataBaseCard text={data} key={index} />
+              <DataBaseCard
+                text={data}
+                key={index}
+                mutateDatabases={mutateDatabases}
+              />
             ))}
           </Box>
         </Box>
