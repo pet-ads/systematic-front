@@ -65,7 +65,7 @@ export default function useFetchAllCriteriasByArticle({
   const selectedArticleReview = studiesContext?.selectedArticleReview ?? -1;
   const toast = useToaster();
 
-  const { criteria, mutate } = useFetchCriteriaForFocusedArticle({
+  const { criteria, isLoading, mutate } = useFetchCriteriaForFocusedArticle({
     articleId: selectedArticleReview,
   });
 
@@ -74,8 +74,10 @@ export default function useFetchAllCriteriasByArticle({
   const { revertCriterionState } = useRevertCriterionState({ page });
 
   const criterias = useMemo<CriteiriaProps>(() => {
-    const checkedInclusion = criteria?.inclusionCriteria || [];
-    const checkedExclusion = criteria?.exclusionCriteria || [];
+    if (isLoading || !criteria) return CRITERIA_FALLBACK;
+
+    const checkedInclusion = criteria.inclusionCriteria || [];
+    const checkedExclusion = criteria.exclusionCriteria || [];
 
     const inclusionMapped: OptionProps[] = inclusion.map((text) => ({
       text,
@@ -99,7 +101,7 @@ export default function useFetchAllCriteriasByArticle({
         },
       },
     };
-  }, [inclusion, exclusion, criteria]);
+  }, [inclusion, exclusion, criteria, isLoading]);
 
   const handlerUpdateCriteriasStructure = async (
     key: OptionType,
@@ -186,7 +188,7 @@ export default function useFetchAllCriteriasByArticle({
 
   const resetLocalCriterias = async () => {
     if (selectedArticleReview === -1) return;
-    
+
     await mutate(
       (currentData: any) => ({
         ...currentData,
