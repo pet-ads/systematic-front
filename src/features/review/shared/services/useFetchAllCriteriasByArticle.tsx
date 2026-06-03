@@ -113,17 +113,17 @@ export default function useFetchAllCriteriasByArticle({
     const currentChecked = criteria?.[OPTION_TO_GET_KEY[key]] || [];
     const oppositeChecked = criteria?.[OPTION_TO_GET_KEY[oppositeKey]] || [];
 
-    if (newValue && oppositeChecked.length > 0) return;
-
     const newChecked = newValue
       ? [...currentChecked, optionText]
       : currentChecked.filter((c) => c !== optionText);
 
+    const newOppositeChecked = newValue ? [] : oppositeChecked;
+
     const optimisticData = {
       inclusionCriteria:
-        key === "INCLUSION" ? newChecked : criteria?.inclusionCriteria || [],
+        key === "INCLUSION" ? newChecked : newOppositeChecked,
       exclusionCriteria:
-        key === "EXCLUSION" ? newChecked : criteria?.exclusionCriteria || [],
+        key === "EXCLUSION" ? newChecked : newOppositeChecked,
     };
 
     const status: StatusValue =
@@ -137,8 +137,7 @@ export default function useFetchAllCriteriasByArticle({
       await mutate(
         async () => {
           if (page === "Selection") {
-            const extractionStatus: StatusValue =
-              status === "INCLUDED" ? "UNCLASSIFIED" : status;
+            const extractionStatus: StatusValue = status;
 
             await UseChangeStudyExtractionStatus({
               studyReviewId: [selectedArticleReview],
@@ -161,6 +160,8 @@ export default function useFetchAllCriteriasByArticle({
 
           if (!newValue) {
             await revertCriterionState([optionText]);
+          } else if (oppositeChecked.length > 0) {
+            await revertCriterionState(oppositeChecked);
           }
 
           if (reloadArticles) await reloadArticles();

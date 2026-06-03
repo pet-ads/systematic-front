@@ -37,8 +37,7 @@ const useComboBoxSelection = ({
               status,
             });
 
-            const extractionStatus =
-              status === "INCLUDED" ? "UNCLASSIFIED" : status;
+            const extractionStatus = status;
 
             await UseChangeStudyExtractionStatus({
               studyReviewId: [selectedArticleReview],
