@@ -1,5 +1,5 @@
 // External library
-import { Box, Flex } from "@chakra-ui/react";
+import { Box, Flex, Text } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 
 // Services
@@ -13,14 +13,16 @@ import CardDefault from "@components/common/cards";
 
 // Factory
 import RenderCards from "../../factory/cards/RenderCards";
-import RenderCreateNewReview from "../../factory/cards/RenderCreateNewReview";
-
-// Styles
-import { flexStyles } from "./styles";
 
 export default function MyReviews() {
   const { t } = useTranslation("user/my-reviews");
-  const { cardData, isLoaded } = useGetReviewCard();
+  
+  const { cardData: ownedReviews, isLoaded: isOwnedLoaded } = useGetReviewCard();
+
+  const participatingReviews: any[] | undefined = []; 
+  const isParticipatingLoaded = true; 
+  
+  const isLoaded = isOwnedLoaded && isParticipatingLoaded;
 
   return (
     <FlexLayout navigationType="Default">
@@ -30,18 +32,55 @@ export default function MyReviews() {
         </Flex>
       </Box>
       <CardDefault backgroundColor="white" borderRadius="1rem">
-        <Box w="100%" px="1rem">
-          <Flex sx={flexStyles} w={"100%"} align="center" justify="center">
-            {!isLoaded && <Loader />}
+        <Box w="100%" px="2rem" py="2rem"> 
+          
+          {!isLoaded ? (
+            <Flex w="100%" justify="center">
+              <Loader />
+            </Flex>
+          ) : (
+            <Flex direction="column" w="100%" align="flex-start">
+              
+              <Box w="100%" mb="2.5rem">
+                <Text 
+                  fontSize="1.125rem" 
+                  fontWeight="600" 
+                  color="#334155" 
+                  mb="1rem"
+                >
+                  {t("ownedReviews")}
+                </Text>
+                
+                {!ownedReviews || ownedReviews.length === 0 ? (
+                  <Text fontSize="0.875rem" color="gray.500">
+                    {t("emptyOwned")}
+                  </Text>
+                ) : (
+                  <RenderCards data={ownedReviews} />
+                )}
+              </Box>
 
-            {cardData && cardData.length == 0 && isLoaded && (
-              <RenderCreateNewReview />
-            )}
+              <Box w="100%">
+                <Text 
+                  fontSize="1.125rem" 
+                  fontWeight="600" 
+                  color="#334155" 
+                  mb="1rem"
+                >
+                  {t("participatingReviews")}
+                </Text>
+                
+                {!participatingReviews || participatingReviews.length === 0 ? (
+                  <Text fontSize="0.875rem" color="gray.500">
+                    {t("emptyParticipating")}
+                  </Text>
+                ) : (
+                  <RenderCards data={participatingReviews} />
+                )}
+              </Box>
 
-            {cardData && cardData.length > 0 && isLoaded && (
-              <RenderCards data={cardData} />
-            )}
-          </Flex>
+            </Flex>
+          )}
         </Box>
       </CardDefault>
     </FlexLayout>
