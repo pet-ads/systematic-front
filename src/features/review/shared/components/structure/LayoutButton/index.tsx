@@ -92,8 +92,7 @@ export default function SelectLayout({
               </Box>
             )}            
             <Box fontWeight="medium">
-              {t("selectLayout.choose")}
-              {layout ? ` - ${capitalize(t(`selectLayout.type.${layout}`))}` : ""}
+              {layout ? capitalize(t(`selectLayout.type.${layout}`)) : t("selectLayout.choose")}
             </Box>
           </Flex>
           <ChevronDownIcon fontSize="1.25rem" />
