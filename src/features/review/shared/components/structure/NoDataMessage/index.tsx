@@ -5,20 +5,18 @@ import { TbArticleOff } from "react-icons/tb";
 export default function NoDataMessage() {
 const { t } = useTranslation("review/summarization-graphics");
   return (
-    <Box px={{ base: "1rem", md: "2rem" }} w="100%" h="100%">
+    <Box w="100%" h="100%" display="flex">
       <Flex
-        mt="4rem"
         flexDirection="column"
         justifyContent="center"
         alignItems="center"
         textAlign="center"
         gap="0.75rem"
-        p="2rem"
-        borderRadius="md"
+        borderRadius="1rem"
         border="1px solid"
         borderColor="gray.200"
         bg="gray.50"
-        h="calc(100% - 1rem)"
+        flex="1"
       >
         <TbArticleOff size="2.5rem" color="#A0AEC0" />
 
