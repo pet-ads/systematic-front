@@ -18,11 +18,11 @@ import {
   Divider,
 } from "@chakra-ui/react";
 
-// Icon
 import { IoIosWarning } from "react-icons/io";
 
 import { KeyedMutator } from "swr";
 import UseDeleteSession from "@features/review/execution-identification/services/useDeleteSession";
+import Axios from "../../../../../../../../infrastructure/http/axiosClient";
 
 interface DeleteDatabaseModalProps {
   show: (value: boolean) => void;
@@ -37,33 +37,25 @@ interface DeleteDatabaseModalProps {
     source: string;
     numberOfRelatedStudies: number;
   }[];
-  // setSessions?:Dispatch<SetStateAction<{ id: string; systematicStudyd: string; userId: string; searchString: string; additionalInfo: string; timestamp: string; source: string; numberOfRelatedStudies: number; }[]>>;
-  mutate: KeyedMutator<
-    {
-      id: string;
-      systematicStudyd: string;
-      userId: string;
-      searchString: string;
-      additionalInfo: string;
-      timestamp: string;
-      source: string;
-      numberOfRelatedStudies: number;
-    }[]
-  >;
+  mutate: KeyedMutator<any[]>;
+  mutateDatabases: KeyedMutator<string[]>;
   databaseName: string;
 }
 
-// function DeleteDatabaseModal({ show, sessions, setSessions, databaseName}: DeleteDatabaseModalProps) {
 function DeleteDatabaseModal({
   show,
   sessions,
   mutate,
+  mutateDatabases,
   databaseName,
 }: DeleteDatabaseModalProps) {
   const { isOpen, onClose, onOpen } = useDisclosure();
   const [nameOfDatabase, setNameOfDatabase] = useState<string>("");
+  const [isDeleting, setIsDeleting] = useState(false);
   const toast = useToaster();
   const { t } = useTranslation("review/execution-identification");
+  const id = localStorage.getItem("systematicReviewId");
+  const protocolUrl = `systematic-study/${id}/protocol`;
 
   useEffect(() => {
     onOpen();
@@ -74,39 +66,67 @@ function DeleteDatabaseModal({
     onClose();
   };
 
-  const isDatabaseNameCorrect = (name: string) => {
-    return nameOfDatabase.trim() !== name.trim();
+  const isDatabaseNameCorrect = () => {
+    return nameOfDatabase.trim() === databaseName.trim();
+  };
+
+  const removeDatabaseFromProtocol = async () => {
+    const response = await Axios.get(protocolUrl);
+    const currentSources: string[] =
+      response.data.content.informationSources ?? [];
+
+    const updatedSources = currentSources.filter(
+      (source) => source.toUpperCase() !== databaseName.toUpperCase()
+    );
+
+    await Axios.put(protocolUrl, { informationSources: updatedSources });
   };
 
   const deleteAllReferences = async () => {
-    if (isDatabaseNameCorrect(nameOfDatabase)) {
+    if (!isDatabaseNameCorrect()) {
       toast({
         title: t("dataBaseCard.deleteDatabaseModal.toasts.incorrectName.title"),
-        description: t("dataBaseCard.deleteDatabaseModal.toasts.incorrectName.description"),
+        description: t(
+          "dataBaseCard.deleteDatabaseModal.toasts.incorrectName.description"
+        ),
         status: "error",
       });
       return;
     }
 
+    setIsDeleting(true);
+
     try {
-      sessions.map(async (study) => {
-        await UseDeleteSession({ sessionId: study.id, mutate });
-      });
+      await Promise.all(
+        sessions.map((session) =>
+          UseDeleteSession({ sessionId: session.id, mutate })
+        )
+      );
+
+      await removeDatabaseFromProtocol();
+
+      await mutateDatabases();
 
       toast({
         title: t("dataBaseCard.deleteDatabaseModal.toasts.success.title"),
-        description: t("dataBaseCard.deleteDatabaseModal.toasts.success.description"),
+        description: t(
+          "dataBaseCard.deleteDatabaseModal.toasts.success.description"
+        ),
         status: "success",
       });
-      mutate();
+
       handleClose();
     } catch (err) {
-      console.log(err);
+      console.error(err);
       toast({
         title: t("dataBaseCard.deleteDatabaseModal.toasts.catch.title"),
-        description: t("dataBaseCard.deleteDatabaseModal.toasts.catch.description"),
+        description: t(
+          "dataBaseCard.deleteDatabaseModal.toasts.catch.description"
+        ),
         status: "error",
       });
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -133,12 +153,12 @@ function DeleteDatabaseModal({
           <ModalCloseButton onClick={handleClose} />
         </ModalHeader>
         <ModalBody>
-          <Flex>
-            {t("dataBaseCard.deleteDatabaseModal.message")}
-          </Flex>
+          <Flex>{t("dataBaseCard.deleteDatabaseModal.message")}</Flex>
           <FormControl mt={4} mb={3}>
             <FormLabel>
-              {t("dataBaseCard.deleteDatabaseModal.label1")+databaseName+t("dataBaseCard.deleteDatabaseModal.label2")}
+              {t("dataBaseCard.deleteDatabaseModal.label1") +
+                databaseName +
+                t("dataBaseCard.deleteDatabaseModal.label2")}
             </FormLabel>
             <Input
               onChange={(e) => setNameOfDatabase(e.target.value)}
@@ -157,6 +177,7 @@ function DeleteDatabaseModal({
               color={"#EBF0F3"}
               boxShadow="sm"
               _hover={{ bg: "#2A4A6D", boxShadow: "md" }}
+              isDisabled={isDeleting}
             >
               {t("dataBaseCard.deleteDatabaseModal.cancel")}
             </Button>
@@ -166,7 +187,8 @@ function DeleteDatabaseModal({
               color={"#EBF0F3"}
               boxShadow="sm"
               _hover={{ bg: "#2A4A6D", boxShadow: "md" }}
-              isDisabled={isDatabaseNameCorrect(databaseName)}
+              isDisabled={!isDatabaseNameCorrect() || isDeleting}
+              isLoading={isDeleting}
             >
               {t("dataBaseCard.deleteDatabaseModal.remove")}
             </Button>
