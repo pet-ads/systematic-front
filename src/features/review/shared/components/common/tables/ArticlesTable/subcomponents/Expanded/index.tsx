@@ -84,6 +84,7 @@ export default function Expanded({
   pagination,
   checkbox,
 }: Props) {
+  console.log(layout)
   const [columnWidths, setColumnWidths] = useState({
     studyReviewId: "62px",
     title: "150px",
@@ -274,20 +275,9 @@ export default function Expanded({
   };
 
   return (
-    <Box w="100%" maxH="82.5vh">
+    <Box w="100%" h="100%" display="flex" flexDirection="column">
       <TableContainer
-        w="100%"
-        maxW="100%"
-        minH={
-          layout == "horizontal" || layout == "horizontal-invert"
-            ? "16rem"
-            : "calc(100vh - 16rem)"
-        }
-        maxH={
-          layout == "horizontal" || layout == "horizontal-invert"
-            ? "16rem"
-            : "calc(100vh - 16rem)"
-        }
+        flex="1"
         borderRadius="1rem 1rem 0 0"
         boxShadow="lg"
         bg="white"
