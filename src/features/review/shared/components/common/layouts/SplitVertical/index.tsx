@@ -77,7 +77,7 @@ export const SplitVertical: React.FC<VerticalProps> = ({
   return (
     <Flex
       w="100%"
-      h="calc(100% - 1rem)"
+      h="100%"
       gap="1rem"
       justifyContent="space-between"
       pr=".5rem"

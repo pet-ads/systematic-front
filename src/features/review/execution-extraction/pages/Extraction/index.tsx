@@ -152,9 +152,9 @@ export default function Extraction() {
         </Box>
       </Box>
       <Box
-        w="calc(100% - 1.25rem)"
-        h="calc(100vh - 10rem)"
-        padding="0 0 0 .5rem"
+        w="calc(100% - 1.5rem)"
+        h="calc(100% - 1rem)"
+        padding="0"
       >
         <LayoutFactory
           page="Extraction"
