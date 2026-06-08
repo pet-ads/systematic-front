@@ -35,7 +35,8 @@ export default function RevisionCard({
     <Flex 
       w="100%" 
       justify="space-between" 
-      py="1rem" 
+      p="1rem"
+      borderRadius="0.5rem" 
       borderBottom="1px solid" 
       borderColor="gray.200"
       onClick={redirectToReview} 
