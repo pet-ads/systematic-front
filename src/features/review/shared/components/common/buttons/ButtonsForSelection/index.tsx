@@ -134,6 +134,8 @@ export default function ButtonsForSelection({
 
   if (!criteriaGroupDataMap["INCLUSION"] || !criteriaGroupDataMap["EXCLUSION"]) return null;
 
+  const isInclusionActive = criteriaOptions.INCLUSION.isActive;
+  const isExclusionActive = criteriaOptions.EXCLUSION.isActive;
   const isDuplicated = currentArticle.extractionStatus === "DUPLICATED" || currentArticle.selectionStatus === "DUPLICATED";
   const isUniqueArticle = articles.length === 1;
 
@@ -189,13 +191,13 @@ export default function ButtonsForSelection({
     INCLUSION: {
       label: "Include",
       description: "Add inclusion criteria",
-      isDisabled: criteriaGroupDataMap["INCLUSION"].data.length === 0 || isDuplicated,
+      isDisabled: criteriaGroupDataMap["INCLUSION"].data.length === 0 || isExclusionActive || isDuplicated,
       options: criteriaGroupDataMap["INCLUSION"].data,
     },
     EXCLUSION: {
       label: "Exclude",
       description: "Add exclusion criteria",
-      isDisabled: criteriaGroupDataMap["EXCLUSION"].data.length === 0 || isDuplicated,
+      isDisabled: criteriaGroupDataMap["EXCLUSION"].data.length === 0 || isInclusionActive || isDuplicated,
       options: criteriaGroupDataMap["EXCLUSION"].data,
     },
   };
