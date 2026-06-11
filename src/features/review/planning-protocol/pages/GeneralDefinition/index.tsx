@@ -69,8 +69,8 @@ export default function GeneralDefinition() {
         <AlertInputText
           border="red"
           value={title}
-          label="Title is required"
-          placeholder="Enter review title"
+          label={t("generalDefinition.alert.title.label")}
+          placeholder={t("generalDefinition.alert.title.placeholder")}
           type="text"
           nome="text"
           onChange={(event) =>
@@ -94,8 +94,8 @@ export default function GeneralDefinition() {
         <AlertInputText
           border="red"
           value={description}
-          label="Description is required"
-          placeholder="Enter review description"
+          label={t("generalDefinition.alert.description.label")}
+          placeholder={t("generalDefinition.alert.description.placeholder")}
           type="text"
           nome="text"
           onChange={(event) =>
@@ -119,8 +119,8 @@ export default function GeneralDefinition() {
         <AlertInputText
           border="red"
           value={objectives}
-          label="Objectives are required"
-          placeholder="What are your goals?"
+          label={t("generalDefinition.alert.objectives.label")}
+          placeholder={t("generalDefinition.alert.objectives.placeholder")}
           type="text"
           nome="text"
           onChange={(event) =>

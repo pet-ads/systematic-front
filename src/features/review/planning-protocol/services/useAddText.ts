@@ -2,11 +2,13 @@ import { useState, useEffect } from "react";
 import useCreateProtocol from "./useCreateProtocol";
 import Axios from "../../../../infrastructure/http/axiosClient";
 import useToaster from "@components/feedback/Toaster";
+import { useTranslation } from "react-i18next";
 
 export function useAddText(context: string) {
   const { sendAddText } = useCreateProtocol();
   const [AddText, setAddText] = useState<string[]>([]);
   const toast = useToaster();
+  const { t } = useTranslation("review/planning-protocol");
 
   useEffect(() => {
     const id = localStorage.getItem("systematicReviewId");
@@ -60,8 +62,8 @@ export function useAddText(context: string) {
     setAddText((prevKeyWord) => {
       if (prevKeyWord.includes(newKeyword)) {
         toast({
-          title: "Duplicate Keyword",
-          description: "This keyword already exists!",
+          title: t("informationSourcesAndSearchStrategy.input.keywords.duplicateTitle", "Duplicate Keyword"),
+          description: t("informationSourcesAndSearchStrategy.input.keywords.duplicateDesc", "This keyword already exists!"),
           status: "warning",
         });
         return prevKeyWord;
