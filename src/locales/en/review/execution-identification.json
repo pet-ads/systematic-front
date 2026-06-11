@@ -66,6 +66,10 @@
             "button": {
                 "create": "Create",
                 "update": "Update"
+            },
+            "toasts": {
+                "sessionUpdatedSuccess": "Session updated successfully",
+                "sessionUpdatedError": "Error updating session"
             }
         }
     },
