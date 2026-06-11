@@ -3,6 +3,8 @@ import Axios from "../../../../infrastructure/http/axiosClient";
 
 // Hooks
 import useFocusedArticle from "../hooks/useFocusedArticle";
+import { useContext } from "react";
+import StudyContext from "../context/StudiesContext";
 
 // Types
 import type { PageLayout } from "../components/structure/LayoutFactory";
@@ -19,13 +21,19 @@ export default function useRevertCriterionState({
   page,
 }: RevertCriterionStateProps) {
   const { articleInFocus } = useFocusedArticle({ page });
-  const articleId = articleInFocus?.studyReviewId || -1;
+  const studiesContext = useContext(StudyContext);
+
+  const articleId =
+    articleInFocus?.studyReviewId ||
+    studiesContext?.selectedArticleReview ||
+    -1;
 
   const revertCriterionState = async (criteria: string[]) => {
     const id = localStorage.getItem("systematicReviewId");
 
     if (!id || articleId === -1) {
-      throw new Error("Invalid systematicReviewId or articleId");
+      console.warn("Invalid IDs, aborting revert silently to prevent UI crash.");
+      return []; 
     }
 
     try {
@@ -34,7 +42,7 @@ export default function useRevertCriterionState({
       return response.data.criteria;
     } catch (error) {
       console.error("Failed to revert criterion state:", error);
-      throw error;
+      return criteria;
     }
   };
 
