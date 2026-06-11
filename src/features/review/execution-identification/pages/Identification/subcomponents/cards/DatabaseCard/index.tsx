@@ -23,14 +23,24 @@ import { AddIcon } from "@chakra-ui/icons";
 import { AiOutlineDelete, AiOutlineEdit, AiOutlineEye } from "react-icons/ai";
 import { useTranslation } from "react-i18next";
 
-import DeleteDatabaseModal from "../../modals/DeleteDatabase";
 import IdentificationModal from "../../modals/IdentificationModal";
+import DeleteSessionModal from "../../modals/DeleteSessionModal";
 
 import useGetSession from "../../../../../services/useGetSession";
-import UseDeleteSession from "../../../../../services/useDeleteSession";
 
 interface DatabaseCardProps {
   text: string;
+}
+
+interface Session {
+  id: string;
+  systematicStudyd: string;
+  userId: string;
+  searchString: string;
+  additionalInfo: string;
+  timestamp: string;
+  source: string;
+  numberOfRelatedStudies: number;
 }
 
 export default function DataBaseCard({ text }: DatabaseCardProps) {
@@ -41,8 +51,8 @@ export default function DataBaseCard({ text }: DatabaseCardProps) {
   const [actionModal, setActionModal] = useState<"create" | "update">("create");
   const [sessionId, setSessionId] = useState("");
 
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [deleteModal, setdeleteModal] = useState<"delete" | "refuse">("delete");
+  const [showDeleteSessionModal, setShowDeleteSessionModal] = useState(false);
+  const [sessionToDelete, setSessionToDelete] = useState<Session | null>(null);
 
   const { data, mutate } = useGetSession(text);
 
@@ -59,17 +69,9 @@ export default function DataBaseCard({ text }: DatabaseCardProps) {
     setShowModal(true);
   };
 
-  const handleDeleteSession = (id: string) => {
-    UseDeleteSession({ sessionId: id, mutate });
-  };
-
-  const handleOpenDeleteModal = (
-    action: "delete" | "refuse",
-    e: React.MouseEvent,
-  ) => {
-    e.stopPropagation();
-    setdeleteModal(action);
-    setShowDeleteModal(true);
+  const handleOpenDeleteSessionModal = (session: Session) => {
+    setSessionToDelete(session);
+    setShowDeleteSessionModal(true);
   };
 
   const handleNavigateToSession = (id: string, totalItems: number) => {
@@ -94,17 +96,15 @@ export default function DataBaseCard({ text }: DatabaseCardProps) {
             flexDirection="column"
             _hover={{ bg: "transparent" }}
           >
-            
             <Flex
               w="100%"
-              minH="10px" 
+              minH="10px"
               bg="#263C56"
               justifyContent="space-between"
               alignItems="center"
-              p="1.5rem 1.5rem" 
+              p="1.5rem 1.5rem"
             >
               <Flex flex="1" alignItems="center" gap="0.75rem">
-                
                 <Text
                   fontSize="lg"
                   fontWeight="bold"
@@ -129,23 +129,6 @@ export default function DataBaseCard({ text }: DatabaseCardProps) {
                 >
                   {t("dataBaseCard.addSession")}
                 </Button>
-
-                <IconButton
-                  aria-label="Delete Database"
-                  size="sm"
-                  icon={<AiOutlineDelete size={18} />}
-                  bg="white"
-                  color="red.600"
-                  borderRadius="md"
-                  transition="all 0.2s ease"
-                  _hover={{
-                    bg: "red.100",
-                    color: "red.700",
-                    transform: "translateY(-1px)",
-                  }}
-                  _active={{ transform: "translateY(0)" }}
-                  onClick={(e) => handleOpenDeleteModal("delete", e)}
-                />
               </Flex>
             </Flex>
 
@@ -195,16 +178,14 @@ export default function DataBaseCard({ text }: DatabaseCardProps) {
                 </Thead>
                 <Tbody>
                   {data && data.length > 0 ? (
-                    data.map((session: any, index: number) => (
+                    data.map((session: Session, index: number) => (
                       <Tr
                         key={session.id || index}
                         bg="white"
                         _even={{ bg: "#E2E8F0" }}
                       >
                         <Td color="gray.700">
-                          {new Date(session.timestamp).toLocaleDateString(
-                            "pt-BR",
-                          )}
+                          {new Date(session.timestamp).toLocaleDateString("pt-BR")}
                         </Td>
                         <Td color="gray.700">
                           {session.numberOfRelatedStudies}
@@ -217,9 +198,9 @@ export default function DataBaseCard({ text }: DatabaseCardProps) {
                               size="sm"
                               bg="transparent"
                               color="gray.600"
-                              borderRadius="md" 
+                              borderRadius="md"
                               transition="all 0.2s"
-                              _hover={{ bg: "blue.100", color: "blue.700" }} 
+                              _hover={{ bg: "blue.100", color: "blue.700" }}
                               onClick={() =>
                                 handleNavigateToSession(
                                   session.id,
@@ -233,7 +214,7 @@ export default function DataBaseCard({ text }: DatabaseCardProps) {
                               size="sm"
                               bg="transparent"
                               color="gray.600"
-                              borderRadius="md" 
+                              borderRadius="md"
                               transition="all 0.2s"
                               _hover={{ bg: "gray.200", color: "#263C56" }}
                               onClick={() =>
@@ -246,10 +227,10 @@ export default function DataBaseCard({ text }: DatabaseCardProps) {
                               size="sm"
                               bg="transparent"
                               color="red.500"
-                              borderRadius="md" 
+                              borderRadius="md"
                               transition="all 0.2s"
-                              _hover={{ bg: "red.100", color: "red.700" }} 
-                              onClick={() => handleDeleteSession(session.id)}
+                              _hover={{ bg: "red.100", color: "red.700" }}
+                              onClick={() => handleOpenDeleteSessionModal(session)}
                             />
                           </Flex>
                         </Td>
@@ -274,13 +255,11 @@ export default function DataBaseCard({ text }: DatabaseCardProps) {
         </AccordionItem>
       </Accordion>
 
-      {showDeleteModal && (
-        <DeleteDatabaseModal
-          show={setShowDeleteModal}
-          action={deleteModal}
-          sessions={data}
+      {showDeleteSessionModal && sessionToDelete && (
+        <DeleteSessionModal
+          show={setShowDeleteSessionModal}
+          session={sessionToDelete}
           mutate={mutate}
-          databaseName={text}
         />
       )}
 
