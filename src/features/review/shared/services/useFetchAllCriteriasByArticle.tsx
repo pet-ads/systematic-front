@@ -188,7 +188,7 @@ export default function useFetchAllCriteriasByArticle({
 
   const resetLocalCriterias = async () => {
     if (selectedArticleReview === -1) return;
-
+    
     await mutate(
       (currentData: any) => ({
         ...currentData,

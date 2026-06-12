@@ -118,6 +118,18 @@ function buildPickManyBubbleItems(
   });
 }
 
+function QuestionBubbleChart({ items }: { items: BubbleItem[] }) {
+  const { series, yCategories } = useBubbleDataGeneric(items);
+  return (
+    <BubbleChart
+      title=""
+      series={series}
+      yCategories={yCategories}
+      yaxisText=""
+    />
+  );
+}
+
 export const QuestionsCharts = ({
   selectedQuestionId,
   filteredStudies,
@@ -207,15 +219,7 @@ export const QuestionsCharts = ({
             });
           }
 
-          const { series, yCategories } = useBubbleDataGeneric(items);
-          chartContent = (
-            <BubbleChart
-              title=""
-              series={series}
-              yCategories={yCategories}
-              yaxisText=""
-            />
-          );
+          chartContent = <QuestionBubbleChart items={items} />;
 
         } else if (
           (type === "Item Table" || type === "Tabela por Item") &&

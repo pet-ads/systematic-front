@@ -167,14 +167,6 @@ export default function IncludedResearchers({researchers, setResearchers}:any) {
                   <Flex>
                     <Button
                       variant="ghost"
-                      onClick={() =>
-                        setResearcherToDelete(researcher)
-                      }
-                    >
-                      <Icon as={DeleteIcon} w="15px" h="15px"/>
-                    </Button>
-                    <Button
-                      variant="ghost"
                       onClick={() => {
                         if(editingResearcherId === researcher.id) {
                           handleSaveRole();
@@ -189,6 +181,14 @@ export default function IncludedResearchers({researchers, setResearchers}:any) {
                       ) : (
                         <Icon as={EditIcon} w="15px" h="15px"/>
                       )}
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      onClick={() =>
+                        setResearcherToDelete(researcher)
+                      }
+                    >
+                      <Icon as={DeleteIcon} w="15px" h="15px"/>
                     </Button>
                   </Flex>
                 </>

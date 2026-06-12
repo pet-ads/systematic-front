@@ -24,18 +24,28 @@ import { AiOutlineDelete, AiOutlineEdit, AiOutlineEye } from "react-icons/ai";
 import { useTranslation } from "react-i18next";
 import { KeyedMutator } from "swr";
 
-import DeleteDatabaseModal from "../../modals/DeleteDatabase";
 import IdentificationModal from "../../modals/IdentificationModal";
+import DeleteSessionModal from "../../modals/DeleteSessionModal";
 
 import useGetSession from "../../../../../services/useGetSession";
-import UseDeleteSession from "../../../../../services/useDeleteSession";
 
 interface DatabaseCardProps {
   text: string;
   mutateDatabases: KeyedMutator<string[]>;
 }
 
-export default function DataBaseCard({ text, mutateDatabases }: DatabaseCardProps) {
+interface Session {
+  id: string;
+  systematicStudyd: string;
+  userId: string;
+  searchString: string;
+  additionalInfo: string;
+  timestamp: string;
+  source: string;
+  numberOfRelatedStudies: number;
+}
+
+export default function DataBaseCard({ text }: DatabaseCardProps) {
   const navigate = useNavigate();
   const { t } = useTranslation("review/execution-identification");
 
@@ -43,8 +53,8 @@ export default function DataBaseCard({ text, mutateDatabases }: DatabaseCardProp
   const [actionModal, setActionModal] = useState<"create" | "update">("create");
   const [sessionId, setSessionId] = useState("");
 
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [deleteModal, setdeleteModal] = useState<"delete" | "refuse">("delete");
+  const [showDeleteSessionModal, setShowDeleteSessionModal] = useState(false);
+  const [sessionToDelete, setSessionToDelete] = useState<Session | null>(null);
 
   const { data, mutate } = useGetSession(text);
 
@@ -61,17 +71,9 @@ export default function DataBaseCard({ text, mutateDatabases }: DatabaseCardProp
     setShowModal(true);
   };
 
-  const handleDeleteSession = (id: string) => {
-    UseDeleteSession({ sessionId: id, mutate });
-  };
-
-  const handleOpenDeleteModal = (
-    action: "delete" | "refuse",
-    e: React.MouseEvent,
-  ) => {
-    e.stopPropagation();
-    setdeleteModal(action);
-    setShowDeleteModal(true);
+  const handleOpenDeleteSessionModal = (session: Session) => {
+    setSessionToDelete(session);
+    setShowDeleteSessionModal(true);
   };
 
   const handleNavigateToSession = (id: string, totalItems: number) => {
@@ -129,23 +131,6 @@ export default function DataBaseCard({ text, mutateDatabases }: DatabaseCardProp
                 >
                   {t("dataBaseCard.addSession")}
                 </Button>
-
-                <IconButton
-                  aria-label="Delete Database"
-                  size="sm"
-                  icon={<AiOutlineDelete size={18} />}
-                  bg="white"
-                  color="red.600"
-                  borderRadius="md"
-                  transition="all 0.2s ease"
-                  _hover={{
-                    bg: "red.100",
-                    color: "red.700",
-                    transform: "translateY(-1px)",
-                  }}
-                  _active={{ transform: "translateY(0)" }}
-                  onClick={(e) => handleOpenDeleteModal("delete", e)}
-                />
               </Flex>
             </Flex>
 
@@ -195,7 +180,7 @@ export default function DataBaseCard({ text, mutateDatabases }: DatabaseCardProp
                 </Thead>
                 <Tbody>
                   {data && data.length > 0 ? (
-                    data.map((session: any, index: number) => (
+                    data.map((session: Session, index: number) => (
                       <Tr
                         key={session.id || index}
                         bg="white"
@@ -247,7 +232,7 @@ export default function DataBaseCard({ text, mutateDatabases }: DatabaseCardProp
                               borderRadius="md"
                               transition="all 0.2s"
                               _hover={{ bg: "red.100", color: "red.700" }}
-                              onClick={() => handleDeleteSession(session.id)}
+                              onClick={() => handleOpenDeleteSessionModal(session)}
                             />
                           </Flex>
                         </Td>
@@ -272,14 +257,11 @@ export default function DataBaseCard({ text, mutateDatabases }: DatabaseCardProp
         </AccordionItem>
       </Accordion>
 
-      {showDeleteModal && (
-        <DeleteDatabaseModal
-          show={setShowDeleteModal}
-          action={deleteModal}
-          sessions={data}
+      {showDeleteSessionModal && sessionToDelete && (
+        <DeleteSessionModal
+          show={setShowDeleteSessionModal}
+          session={sessionToDelete}
           mutate={mutate}
-          mutateDatabases={mutateDatabases}
-          databaseName={text}
         />
       )}
 
