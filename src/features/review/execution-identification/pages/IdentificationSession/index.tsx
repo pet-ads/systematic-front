@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useContext, useEffect } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
@@ -12,8 +12,17 @@ import ArticlesTable from "@features/review/shared/components/common/tables/Arti
 import useVisibiltyColumns from "@features/review/shared/hooks/useVisibilityColumns";
 import ColumnVisibilityMenu from "@features/review/shared/components/common/menu/ColumnVisibilityMenu";
 import usePaginationState from "@features/shared/hooks/usePaginationState";
+import useWindowWidth from "@features/shared/hooks/useWindowWidth";
+import AppContext from "@features/shared/context/ApplicationContext";
 
 export default function IdentificationSession() {
+  const window = useWindowWidth();
+  const context = useContext(AppContext);
+  if(!context) return null;
+  const { sidebarState, setSidebarState } = context;
+  useEffect(() => {
+    if(window < 1000 && sidebarState === "open") setSidebarState("collapsed");
+  }, []);
   const [fetchedTotalPages, setFetchedTotalPages] = useState<number>(1);
   const { session = "" } = useParams();
 

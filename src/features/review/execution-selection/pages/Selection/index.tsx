@@ -1,10 +1,11 @@
 // External library
-import { useContext, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { Box, Flex } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 
 // Context
 import StudySelectionContext from "@features/review/shared/context/StudiesContext";
+import AppContext from "@features/shared/context/ApplicationContext";
 
 // Hooks
 import useInputState from "@features/review/shared/hooks/useInputState";
@@ -12,6 +13,7 @@ import useLayoutPage from "../../../shared/hooks/useLayoutPage";
 import useVisibiltyColumns from "@features/review/shared/hooks/useVisibilityColumns";
 import useFetchSelectionArticles from "../../services/useFetchSelectionArticles";
 import usePaginationState from "@features/shared/hooks/usePaginationState";
+import useWindowWidth from "@features/shared/hooks/useWindowWidth";
 
 // Components
 import Header from "../../../../../components/structure/Header/Header";
@@ -29,6 +31,13 @@ import ArticleInterface from "@features/review/shared/types/ArticleInterface";
 import { inputconteiner } from "../../../shared/styles/executionStyles";
 
 export default function Selection() {
+  const window = useWindowWidth();
+  const context = useContext(AppContext);
+  if(!context) return null;
+  const { sidebarState, setSidebarState } = context;
+  useEffect(() => {
+    if(window < 1000 && sidebarState === "open") setSidebarState("collapsed");
+  }, []);
   const [searchString, setSearchString] = useState<string>("");
   const [showSelected, setShowSelected] = useState<boolean>(false);
   const [fetchedTotalPages, setFetchedTotalPages] = useState<number>(1);

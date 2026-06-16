@@ -14,9 +14,18 @@ import { useFetchRobQuestions } from "@features/review/execution-extraction/serv
 import ColumnVisibilityMenu from "@features/review/shared/components/common/menu/ColumnVisibilityMenu";
 import useVisibiltyColumns from "@features/review/shared/hooks/useVisibilityColumns";
 import { PageLayout } from "@features/review/shared/components/structure/LayoutFactory";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
+import useWindowWidth from "@features/shared/hooks/useWindowWidth";
+import AppContext from "@features/shared/context/ApplicationContext";
 
 export default function Graphics() {
+  const window = useWindowWidth();
+  const context = useContext(AppContext);
+  if(!context) return null;
+  const { sidebarState, setSidebarState } = context;
+  useEffect(() => {
+    if(window < 1000 && sidebarState === "open") setSidebarState("collapsed");
+  }, []);
   const {
     allQuestions,
     selectedQuestionId,
