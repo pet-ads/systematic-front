@@ -86,11 +86,11 @@ export default function Expanded({
 }: Props) {
   console.log(layout)
   const [columnWidths, setColumnWidths] = useState({
-    studyReviewId: "62px",
-    title: "150px",
-    authors: "100px",
-    venue: "100px",
-    year: "65px",
+    studyReviewId: "80px",
+    title: "95px",
+    authors: "95px",
+    venue: "110px",
+    year: "85px",
     selectionStatus: "90px",
     extractionStatus: "90px",
     score: "70px",
