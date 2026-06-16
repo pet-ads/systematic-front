@@ -1,5 +1,8 @@
 // External Libraries
+import { useContext, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import AppContext from "@features/shared/context/ApplicationContext";
+import useWindowWidth from "@features/shared/hooks/useWindowWidth";
 
 // Components
 import NavButton from "@components/common/buttons/NavigationButton";
@@ -13,6 +16,14 @@ import useCreateProtocol from "../../services/useCreateProtocol";
 import { Box } from "@chakra-ui/react";
 
 export default function InformationSourcesAndSearchStrategy() {
+  const windowWidth = useWindowWidth();
+  const context = useContext(AppContext);
+  if(!context) return null;
+  const { sidebarState, setSidebarState } = context;
+  useEffect(() => {
+    if(windowWidth < 1000 && sidebarState === "open") setSidebarState("collapsed");
+  }, []);
+
   const {
     informationSourcesAndSearchStrategy,
     handleChangeInformationSourcesAndSearchStrategy,
