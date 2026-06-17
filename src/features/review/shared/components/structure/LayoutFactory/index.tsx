@@ -10,6 +10,7 @@ import { FullArticle } from "../../common/layouts/FullArticle";
 
 // Hooks
 import { ColumnVisibility } from "@features/review/shared/hooks/useVisibilityColumns";
+import useWindowWidth from "@features/shared/hooks/useWindowWidth";
 
 // Types
 import type ArticleInterface from "../../../types/ArticleInterface";
@@ -52,9 +53,10 @@ export default function LayoutFactory({
   onTablePageChange,
   extraParams = {},
 }: LayoutFactoryProps) {
+  const window = useWindowWidth();
   
   const handleRowClick = () => {
-    handleChangeLayout("vertical");
+    handleChangeLayout(window > 1000 ? "vertical" : "horizontal");
   };
 
   const layoutMap: Record<ViewModel, React.ReactNode> = {

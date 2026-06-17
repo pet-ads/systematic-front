@@ -38,35 +38,42 @@ export default function SelectLayout({
       layoutType: ViewModel;
       icon: React.ReactNode;
       rotate?: string;
+      isAllowedForNonDesktop: boolean;
     }
   > = {
     table: {
       layoutType: "table",
       icon: <BsTable size=".85rem" color="black" />,
+      isAllowedForNonDesktop: true,
     },
     horizontal: {
       layoutType: "horizontal",
       icon: <RiFlipHorizontalLine size="1rem" color="black" />,
       rotate: "-90deg",
+      isAllowedForNonDesktop: true,
     },
     "horizontal-invert": {
       layoutType: "horizontal-invert",
       icon: <RiFlipHorizontalLine size="1rem" color="black" />,
       rotate: "90deg",
+      isAllowedForNonDesktop: true
     },
     vertical: {
       layoutType: "vertical",
       icon: <RiFlipHorizontalLine size="1rem" color="black" />,
       rotate: "-180deg",
+      isAllowedForNonDesktop: false,
     },
     "vertical-invert": {
       layoutType: "vertical-invert",
       icon: <RiFlipHorizontalLine size="1rem" color="black" />,
       rotate: "-360deg",
+      isAllowedForNonDesktop: false,
     },
     article: {
       layoutType: "article",
       icon: <PiArticleMediumBold size="1.2rem" color="black" />,
+      isAllowedForNonDesktop: true,
     },
   };
 
@@ -101,28 +108,30 @@ export default function SelectLayout({
         </Flex>
       </MenuButton>
       <MenuList bg={"#EBF0F3"} color="#2E4B6C" zIndex="2">
-        {Object.values(buttons).map((element, index) => (
-          <MenuItem
-            key={index}
-            onClick={() => {
-              handleChangeLayout(element.layoutType);
-            }}
-            bg={
-              layout === element.layoutType ? "blue.100" : "transparent"
-            }
-            _hover={{ bg: "blue.200" }}
-          >
-            <Flex align="center" gap="1rem" w="inherit">
-              <Box
-                transform={
-                  element.rotate ? `rotate(${element.rotate})` : undefined
-                }
-              >
-                {element.icon}
-              </Box>
-              {capitalize(t(`selectLayout.type.${element.layoutType}`))}
-            </Flex>
-          </MenuItem>
+        {Object.values(buttons)
+          .filter((element) => window > 1000 || element.isAllowedForNonDesktop)
+          .map((element, index) => (
+            <MenuItem
+              key={index}
+              onClick={() => {
+                handleChangeLayout(element.layoutType);
+              }}
+              bg={
+                layout === element.layoutType ? "blue.100" : "transparent"
+              }
+              _hover={{ bg: "blue.200" }}
+            >
+              <Flex align="center" gap="1rem" w="inherit">
+                <Box
+                  transform={
+                    element.rotate ? `rotate(${element.rotate})` : undefined
+                  }
+                >
+                  {element.icon}
+                </Box>
+                {capitalize(t(`selectLayout.type.${element.layoutType}`))}
+              </Flex>
+            </MenuItem>
         ))}
       </MenuList>
     </Menu>
