@@ -91,8 +91,22 @@ export default function ButtonsForSelection({
 
   const handleFullReset = async () => {
     if (!currentArticleId) return;
-    await handleResetStatusToUnclassified(currentArticleId, historicalCriteria);
+    const activeInclusion = fetchedCriterias?.options?.INCLUSION?.content
+      .filter((c) => c.isChecked)
+      .map((c) => c.text) || [];
+    
+    const activeExclusion = fetchedCriterias?.options?.EXCLUSION?.content
+      .filter((c) => c.isChecked)
+      .map((c) => c.text) || [];
+    
+    const currentActiveCriteria = [...activeInclusion, ...activeExclusion];
+
+    const criteriaToClear = currentActiveCriteria.length > 0 ? currentActiveCriteria : historicalCriteria;
+
+    await handleResetStatusToUnclassified(currentArticleId, criteriaToClear);
+    
     resetLocalCriterias();
+    
     if (page === "Selection") {
       setHistoricalCriteria([]);
     }

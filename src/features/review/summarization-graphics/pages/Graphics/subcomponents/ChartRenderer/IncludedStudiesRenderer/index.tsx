@@ -22,6 +22,11 @@ export default function IncludedStudiesRenderer({ filteredStudies, type, chartId
 
   const isTable = type === "Table" || type === "Tabela";
   const isBubble = type === "Bubble Chart" || type === "Gráfico de Bolhas";
+  
+  const bubbleItems: BubbleItem[] = includedStudies.flatMap(study =>
+    study.searchSources.map(src => ({ x: Number(study.year), group: src, y: 1 }))
+  );
+  const { series, yCategories } = useBubbleDataGeneric(bubbleItems);
 
   let content;
   
@@ -38,10 +43,6 @@ export default function IncludedStudiesRenderer({ filteredStudies, type, chartId
       </Box>
     );
   } else if (isBubble) {
-    const items: BubbleItem[] = includedStudies.flatMap(study => 
-      study.searchSources.map(src => ({ x: Number(study.year), group: src, y: 1 }))
-    );
-    const { series, yCategories } = useBubbleDataGeneric(items);
     content = (
       <BubbleChart
         title="Search Sources Evolution"

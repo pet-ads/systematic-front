@@ -27,6 +27,7 @@ export default function SearchSourcesRenderer({
   columnsVisible,
 }: Props) {
   const { t } = useTranslation("review/summarization-graphics");
+
   const sourceCountMap = filteredStudies.reduce<Record<string, number>>(
     (acc, study) => {
       study.searchSources.forEach((src) => {
@@ -40,10 +41,19 @@ export default function SearchSourcesRenderer({
   const labels = Object.keys(sourceCountMap);
   const data = Object.values(sourceCountMap);
 
-  let content;
-
   const isTable = type === "Table" || type === "Tabela";
   const isBubble = type === t("selectMenu.graphicsTypes.bubbleChart");
+  
+  const bubbleItems: BubbleItem[] = filteredStudies.flatMap((study) =>
+    study.searchSources.map((src) => ({
+      x: Number(study.year),
+      group: src,
+      y: 1,
+    }))
+  );
+  const { series, yCategories } = useBubbleDataGeneric(bubbleItems);
+
+  let content;
 
   if (type === t("selectMenu.graphicsTypes.pieChart")) {
     content = <PieChart title={t("sectionMenu.sections.searchSources")} labels={labels} data={data} />;
@@ -56,16 +66,7 @@ export default function SearchSourcesRenderer({
         section="searchSource"
       />
     );
-  } else if (type === t("selectMenu.graphicsTypes.bubbleChart")) {
-    const items: BubbleItem[] = filteredStudies.flatMap((study) =>
-      study.searchSources.map((src) => ({
-        x: Number(study.year),
-        group: src,
-        y: 1,
-      }))
-    );
-
-    const { series, yCategories } = useBubbleDataGeneric(items);
+  } else if (isBubble) {
     content = (
       <BubbleChart
         title={t("searchSourcesEvolution")}
