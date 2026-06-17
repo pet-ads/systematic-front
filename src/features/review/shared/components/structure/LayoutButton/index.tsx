@@ -18,6 +18,7 @@ import { ViewModel } from "../../../hooks/useLayoutPage";
 import React from "react";
 import { capitalize } from "../../../../../shared/utils/helpers/formatters/CapitalizeText";
 import { ChevronDownIcon } from "@chakra-ui/icons";
+import useWindowWidth from "@features/shared/hooks/useWindowWidth";
 
 interface SelectLayoutProps {
   handleChangeLayout: (newLayout: ViewModel) => void;
@@ -28,6 +29,7 @@ export default function SelectLayout({
   handleChangeLayout,
   layout,
 }: SelectLayoutProps) {
+  const window = useWindowWidth();
   const { t } = useTranslation("review/execution-selection");
 
   const buttons: Record<
@@ -74,7 +76,7 @@ export default function SelectLayout({
  <Menu>
       <MenuButton
         as={Button}
-        w="24rem"
+        w={window > 1000 ? "20rem" : "15rem"}
         bg="#EBF0F3"
         color="#2E4B6C"
         fontWeight="light"
