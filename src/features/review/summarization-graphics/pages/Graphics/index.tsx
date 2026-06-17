@@ -100,7 +100,7 @@ export default function Graphics() {
         <Flex flexDirection="column" gap="0.75rem">
           <Header text={t("header")} />
 
-          {displayedFilters.length > 0 && (
+          {displayedFilters.length > 0 && window > 1000 && (
             <Flex flexDirection="column" gap="0.5rem">
               <Text fontWeight="semibold" fontSize="lg" color="#263C56">
                 {t("filtersArea.heading")}
