@@ -62,7 +62,7 @@ export default function ProtocolFormLayout({
               p={0}
             >
               <Box 
-                w="60vw" 
+                w={{ base: "90%", md: "80%", lg: "60%" }} 
                 display="flex" 
                 flexDirection="column" 
                 gap="1.5rem"
@@ -79,7 +79,7 @@ export default function ProtocolFormLayout({
           >
             <Box
               mx="auto"
-              w="60vw"
+              w={{ base: "90%", md: "80%", lg: "60%" }}
               display="flex"
               alignItems="center"
               justifyContent="flex-end"
