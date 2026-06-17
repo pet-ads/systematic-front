@@ -126,13 +126,15 @@ export default function Extraction() {
         </Flex>
         <Box sx={inputconteiner}>
           <Flex gap="1rem" w="1rem" justifyContent="space-between">
-            <InputText
-              type="search"
-              placeholder={t("search")}
-              nome="search"
-              onChange={(e) => setSearchString(e.target.value)}
-              value={searchString}
-            />
+            {window > 1000 && (
+              <InputText
+                type="search"
+                placeholder={t("search")}
+                nome="search"
+                onChange={(e) => setSearchString(e.target.value)}
+                value={searchString}
+              />
+            )}
             {layout !== "article" ? (
               <ButtonsForMultipleSelection
                 onShowSelectedArticles={setShowSelected}
