@@ -139,12 +139,6 @@ export default function useFetchAllCriteriasByArticle({
       await mutate(
         async () => {
           if (page === "Selection") {
-            await UseChangeStudySelectionStatus({
-              studyReviewId: [selectedArticleReview],
-              criterias: newChecked,
-              status,
-            });
-
             const extractionStatus: StatusValue =
               status === "INCLUDED" ? "UNCLASSIFIED" : status;
 
@@ -152,6 +146,12 @@ export default function useFetchAllCriteriasByArticle({
               studyReviewId: [selectedArticleReview],
               criterias: status === "EXCLUDED" ? newChecked : [],
               status: extractionStatus,
+            });
+
+            await UseChangeStudySelectionStatus({
+              studyReviewId: [selectedArticleReview],
+              criterias: newChecked,
+              status,
             });
           } else {
             await UseChangeStudyExtractionStatus({
@@ -188,7 +188,15 @@ export default function useFetchAllCriteriasByArticle({
 
   const resetLocalCriterias = async () => {
     if (selectedArticleReview === -1) return;
-    await mutate();
+    
+    await mutate(
+      (currentData: any) => ({
+        ...currentData,
+        inclusionCriteria: [],
+        exclusionCriteria: [],
+      }),
+      { revalidate: false }
+    );
   };
 
   return {

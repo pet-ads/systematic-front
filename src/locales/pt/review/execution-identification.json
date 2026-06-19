@@ -31,6 +31,25 @@
             "cancel": "Cancelar",
             "remove": "Remover"
         },
+        "deleteSessionModal": {
+            "heading": "Excluir sessão",
+            "confirmMessage": "Tem certeza de que deseja excluir esta sessão? Esta ação é permanente e não pode ser desfeita.",
+            "blockedTitle": "Sessão não pode ser excluída",
+            "blockedMessage": "Esta sessão possui artigos Incluídos, Excluídos ou Duplicados. Redefina todos os artigos para Não Classificado antes de excluir a sessão.",
+            "checking": "Verificando artigos da sessão...",
+            "cancel": "Cancelar",
+            "confirm": "Confirmar exclusão",
+            "toasts": {
+                "success": {
+                    "title": "Sessão excluída com sucesso!",
+                    "description": "A sessão foi removida."
+                },
+                "catch": {
+                    "title": "Ação Falhou",
+                    "description": "Não foi possível excluir a sessão. Tente novamente."
+                }
+            }
+        },
         "accordionDashboard": {
             "date": "Data",
             "studies": "Estudos",
