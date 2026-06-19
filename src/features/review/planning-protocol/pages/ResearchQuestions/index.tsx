@@ -34,7 +34,6 @@ export default function ResearchQuestions() {
 
   const { showResearchQuestions } = useProtocolAccordion();
 
-
   useEffect(() => {
     if(context && windowWidth < 1000 && context.sidebarState === "open") {
       context.setSidebarState("collapsed");
@@ -108,17 +107,26 @@ export default function ResearchQuestions() {
               </AccordionButton>
             </h2>
             <AccordionPanel pb={4}>
-              <Flex w="100%"> 
-                <AddTextTable
-                  text={t("researchQuestions.secondaryQuestions.label")}
-                  contextId="Research Questions"
-                  placeholder={t(
-                    "researchQuestions.secondaryQuestions.placeholder",
-                  )}
-                  referencePrefix="RQ"
-                  enableReferenceCode={true}
-                  tableHeight="400px"
-                />
+              {/* Container com scroll horizontal (faz o papel do .tableWrapper) */}
+              <Flex 
+                w="100%" 
+                overflowX="auto" 
+                overflowY="hidden"
+                sx={{ WebkitOverflowScrolling: "touch" }}
+              > 
+                {/* Box com largura mínima (faz o papel do min-width na tabela) */}
+                <Box minW="540px" w="100%">
+                  <AddTextTable
+                    text={t("researchQuestions.secondaryQuestions.label")}
+                    contextId="Research Questions"
+                    placeholder={t(
+                      "researchQuestions.secondaryQuestions.placeholder",
+                    )}
+                    referencePrefix="RQ"
+                    enableReferenceCode={true}
+                    tableHeight="400px"
+                  />
+                </Box>
               </Flex>
             </AccordionPanel>
           </AccordionItem>

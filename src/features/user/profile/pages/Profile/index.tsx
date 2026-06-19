@@ -387,7 +387,7 @@ export default function Profile() {
                   nome="country"
                   type="text"
                   placeholder={t("inputs.country.placeholder")}
-                  value={isActiveUpdateMode ? updateProfile.country : country}
+                  value={isActiveUpdateMode ? updateProfile.country : t(`countries.${country}`, { defaultValue: country })}
                   onChange={(event) =>
                     handleChangeUserProfile("country", event.target.value)
                   }
