@@ -1,5 +1,5 @@
 // External library
-import { Box, Button, Flex, Text, Select, Tooltip } from "@chakra-ui/react";
+import { Button, Flex, Text, Select, Tooltip } from "@chakra-ui/react";
 import {
   MdKeyboardArrowLeft,
   MdKeyboardArrowRight,
@@ -7,6 +7,9 @@ import {
   MdKeyboardDoubleArrowRight,
 } from "react-icons/md";
 import { useTranslation } from "react-i18next";
+
+// Hooks
+import useWindowWidth from "@features/shared/hooks/useWindowWidth";
 
 // Types
 interface PaginationControlProps {
@@ -36,6 +39,7 @@ const PaginationControl: React.FC<PaginationControlProps> = ({
   handleGoToFinal,
   changeQuantityOfItens,
 }) => {
+  const window = useWindowWidth();
   const numberOfCases = String(quantityOfPages).length;
   const isPaginationEnabled = quantityOfPages > 1;
 
@@ -44,22 +48,22 @@ const PaginationControl: React.FC<PaginationControlProps> = ({
   const actionButtons: ActionButton[] = [
     {
       label: t("pagination.firstPage"),
-      icon: <MdKeyboardDoubleArrowLeft size={20} />,
+      icon: <MdKeyboardDoubleArrowLeft size={window > 1000 ? 20 : 15} />,
       action: handleBackToInitial,
     },
     {
       label: t("pagination.previousPage"),
-      icon: <MdKeyboardArrowLeft size={20} />,
+      icon: <MdKeyboardArrowLeft size={window > 1000 ? 20 : 15} />,
       action: handlePrevPage,
     },
     {
       label: t("pagination.nextPage"),
-      icon: <MdKeyboardArrowRight size={20} />,
+      icon: <MdKeyboardArrowRight size={window > 1000 ? 20 : 15} />,
       action: handleNextPage,
     },
     {
       label: t("pagination.lastPage"),
-      icon: <MdKeyboardDoubleArrowRight size={20} />,
+      icon: <MdKeyboardDoubleArrowRight size={window > 1000 ? 20 : 15} />,
       action: handleGoToFinal,
     },
   ];
@@ -74,11 +78,11 @@ const PaginationControl: React.FC<PaginationControlProps> = ({
       borderRadius="0 0 1rem 1rem"
       flexWrap="wrap"
       alignItems="center"
+      position="relative"
     >
-      <Box flex="1" minW="100px" display={{ base: "none", md: "block" }} />
       <Flex
         flex="1"
-        justifyContent="center"
+        justifyContent={window > 1000 ? "center" : "flex-start"}
         alignItems="center"
         gap=".5rem"
         minW={{ base: "100%", md: "200px" }}
@@ -86,9 +90,10 @@ const PaginationControl: React.FC<PaginationControlProps> = ({
         order={{ base: 2, md: 1 }}
         mb={{ base: "0.5rem", md: 0 }}
       >
-        <Text whiteSpace="nowrap">{t("pagination.rowsPerPage")}</Text>
+        <Text whiteSpace="nowrap"  fontSize={window > 1000 ? "1rem" : "0.8rem"}>{t("pagination.rowsPerPage")}</Text>
         <Select
           w="70px"
+          fontSize={window > 1000 ? "1rem" : "0.8rem"}
           h="32px"
           textAlign="center"
           onChange={(e) => changeQuantityOfItens(Number(e.target.value))}
@@ -103,15 +108,12 @@ const PaginationControl: React.FC<PaginationControlProps> = ({
         </Select>
       </Flex>
       <Flex
-        flex="1"
-        justifyContent={{ base: "center", md: "flex-end" }}
+        position="absolute"
+        right="2rem"
         alignItems="center"
-        gap="1rem"
-        minW={{ base: "100%", md: "250px" }}
-        w={{ base: "100%", md: "auto" }}
-        order={{ base: 3, md: 2 }}
+        gap="0.2rem"
       >
-        <Text whiteSpace="nowrap">
+        <Text whiteSpace="nowrap" fontSize={window > 1000 ? "1rem" : "0.8rem"}>
           {t("pagination.page") +
             " " +
             String(currentPage).padStart(numberOfCases, "0") +
@@ -134,10 +136,10 @@ const PaginationControl: React.FC<PaginationControlProps> = ({
                 variant="outline"
                 onClick={action}
                 aria-label={label}
-                minW="40px"
-                minH="40px"
-                w="40px"
-                h="40px"
+                minW={window > 1000 ? "40px" : "30px"}
+                minH={window > 1000 ? "40px" : "30px"}
+                w={window > 1000 ? "40px" : "30px"}
+                h={window > 1000 ? "40px" : "30px"}
                 p="0"
                 display="flex"
                 alignItems="center"
