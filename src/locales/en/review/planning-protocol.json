@@ -147,9 +147,7 @@
             },
             "keywords": {
                 "label": "Keywords",
-                "placeholder": "Enter the keywords related to your review",
-                "duplicateTitle": "Duplicate Keyword",
-                "duplicateDesc": "This keyword already exists!"
+                "placeholder": "Enter the keywords related to your review"
             },
             "searchString": {
                 "label": "Search String",
@@ -228,8 +226,8 @@
             }
         }
     },
-    "toast": {
-        "sessionUpdatedSuccess": "Session updated successfully",
-        "sessionUpdatedError": "Error updating session"
-    } 
+    "toasts": {
+        "duplicateTitle": "Duplicate Entry",
+        "duplicateDescription": "This item already exists!"
+    }
 }

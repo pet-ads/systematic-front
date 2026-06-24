@@ -62,8 +62,8 @@ export function useAddText(context: string) {
     setAddText((prevKeyWord) => {
       if (prevKeyWord.includes(newKeyword)) {
         toast({
-          title: t("informationSourcesAndSearchStrategy.input.keywords.duplicateTitle", "Duplicate Keyword"),
-          description: t("informationSourcesAndSearchStrategy.input.keywords.duplicateDesc", "This keyword already exists!"),
+          title: t("toasts.duplicateTitle", "Duplicate Entry"),
+          description: t("toasts.duplicateDescription", "This item already exists!"),
           status: "warning",
         });
         return prevKeyWord;

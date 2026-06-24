@@ -2,6 +2,7 @@ import { KeyedMutator } from "swr";
 import Axios from "../../../../infrastructure/http/axiosClient";
 import useToaster from "@components/feedback/Toaster";
 import { useTranslation } from "react-i18next";
+import { useParams } from "react-router-dom";
 
 interface UpdateSessionProps {
     sessionId?: string;
@@ -31,11 +32,13 @@ export default function useUpdateSession({
 }: UpdateSessionProps) {
     const toast = useToaster();
     const { t } = useTranslation("review/execution-identification");
+    const { id } = useParams<{ id: string }>();
 
     const updateSession = async () => {
         try {
-            const id = localStorage.getItem("systematicReviewId");
-            const url = `systematic-study/${id}/search-session/${sessionId}`;
+            const studyId = id || localStorage.getItem("systematicReviewId");
+            const url = `systematic-study/${studyId}/search-session/${sessionId}`;
+            
             const response = await Axios.put(url, {
                 "searchString": searchString,
                 "additionalInfo": comment,
