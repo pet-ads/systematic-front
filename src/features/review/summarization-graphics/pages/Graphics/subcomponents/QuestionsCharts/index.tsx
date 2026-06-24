@@ -157,7 +157,12 @@ export const QuestionsCharts = ({
       </Text>
     );
 
-  const filteredStudyIds = new Set(filteredStudies.map((s) => s.studyReviewId));
+  // apenas estudos ainda marcados como Incluído contam para os gráficos/tabelas
+  const includedStudies = filteredStudies.filter(
+    (s) => s.extractionStatus === "INCLUDED"
+  );
+
+  const filteredStudyIds = new Set(includedStudies.map((s) => s.studyReviewId));
 
   return (
     <>
@@ -196,13 +201,13 @@ export const QuestionsCharts = ({
           let items: BubbleItem[];
 
           if (question.questionType === "PICK_MANY") {
-            items = buildPickManyBubbleItems(filteredEntries, filteredStudies);
+            items = buildPickManyBubbleItems(filteredEntries, includedStudies);
           } else {
             const yearAnswerMap = new Map<string, number>();
 
             filteredEntries.forEach(([answer, ids]) => {
               ids.forEach((id) => {
-                const study = filteredStudies.find(
+                const study = includedStudies.find(
                   (s) => s.studyReviewId === id
                 );
                 if (!study) return;
@@ -230,7 +235,7 @@ export const QuestionsCharts = ({
             <PickManyItemTable
               data={filteredAnswer}
               options={question.options ?? []}
-              studyIds={filteredStudies.map((s) => s.studyReviewId)}
+              studyIds={includedStudies.map((s) => s.studyReviewId)}
             />
           );
 
@@ -240,7 +245,7 @@ export const QuestionsCharts = ({
             chartContent = (
               <TextualTable
                 columnsVisible={columnsVisible}
-                articles={filteredStudies.filter(
+                articles={includedStudies.filter(
                   (study) =>
                     (study as any).formAnswers?.[question.questionId] !==
                       undefined ||
