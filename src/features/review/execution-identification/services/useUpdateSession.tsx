@@ -1,9 +1,11 @@
 import { KeyedMutator } from "swr";
 import Axios from "../../../../infrastructure/http/axiosClient";
 import useToaster from "@components/feedback/Toaster";
+import { useTranslation } from "react-i18next";
+import { useParams } from "react-router-dom";
 
 interface UpdateSessionProps {
-    sessionId?: string;    
+    sessionId?: string;
     mutate: KeyedMutator<
     {
         id: string;
@@ -29,29 +31,31 @@ export default function useUpdateSession({
   type
 }: UpdateSessionProps) {
     const toast = useToaster();
+    const { t } = useTranslation("review/execution-identification");
+    const { id } = useParams<{ id: string }>();
 
     const updateSession = async () => {
         try {
-            const id = localStorage.getItem("systematicReviewId");
-            const url = `systematic-study/${id}/search-session/${sessionId}`;
-        
-            const response = await Axios.put(url, 
-                {
-                    "searchString": searchString,
-                    "additionalInfo": comment,
-                    "source": type
-                }
-            );
+            const studyId = id || localStorage.getItem("systematicReviewId");
+            const url = `systematic-study/${studyId}/search-session/${sessionId}`;
+            
+            const response = await Axios.put(url, {
+                "searchString": searchString,
+                "additionalInfo": comment,
+                "source": type
+            });
+            
             if(!response) throw new Error();
+            
             mutate();
             toast({
-            title: "Session updated successfully",
-            status: "success",
+                title: t("dataBaseCard.identificationModal.toasts.sessionUpdatedSuccess", "Session updated successfully"),
+                status: "success",
             });
         } catch(error) {
             toast({
-            title: "Error updating session",
-            status: "error",
+                title: t("dataBaseCard.identificationModal.toasts.sessionUpdatedError", "Error updating session"),
+                status: "error",
             });
         }
     };
