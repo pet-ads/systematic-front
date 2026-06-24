@@ -99,7 +99,6 @@ export function GenericExpandedTable<T>({
         maxH="auto"
         overflowY="visible"
         borderRadius="1rem 1rem 0 0"
-        boxShadow="lg"
         bg="white"
       >
         <Table variant="unstyled" size="md" layout="fixed" w="100%">
