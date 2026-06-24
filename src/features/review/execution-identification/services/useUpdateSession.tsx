@@ -49,12 +49,12 @@ export default function useUpdateSession({
             
             mutate();
             toast({
-                title: t("dataBaseCard.identificationModal.toasts.sessionUpdatedSuccess", "Session updated successfully"),
+                title: t("dataBaseCard.identificationModal.toasts.sessionUpdatedSuccess"),
                 status: "success",
             });
         } catch(error) {
             toast({
-                title: t("dataBaseCard.identificationModal.toasts.sessionUpdatedError", "Error updating session"),
+                title: t("dataBaseCard.identificationModal.toasts.sessionUpdatedError"),
                 status: "error",
             });
         }
