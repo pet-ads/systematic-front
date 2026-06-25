@@ -55,6 +55,7 @@ interface Props {
   onRowClick?: (article: ArticleInterface) => void;
   pagination: PaginationControls;
   checkbox?: boolean;
+  isSplited?: boolean;
 }
 
 type HeaderKeys =
@@ -83,6 +84,7 @@ export default function Expanded({
   onRowClick,
   pagination,
   checkbox,
+  isSplited,
 }: Props) {
   console.log(layout)
   const [columnWidths, setColumnWidths] = useState({
@@ -629,6 +631,7 @@ export default function Expanded({
         handleBackToInitial={handleBackToInitial}
         handleGoToFinal={handleGoToFinal}
         changeQuantityOfItens={changeQuantityOfItens}
+        isSplited={isSplited}
       />
     </Box>
   );

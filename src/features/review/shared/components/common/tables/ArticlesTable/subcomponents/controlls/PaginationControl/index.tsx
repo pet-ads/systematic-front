@@ -21,6 +21,7 @@ interface PaginationControlProps {
   handleBackToInitial: () => void;
   handleGoToFinal: () => void;
   changeQuantityOfItens: (newQuantity: number) => void;
+  isSplited?: boolean;
 }
 
 type ActionButton = {
@@ -38,6 +39,7 @@ const PaginationControl: React.FC<PaginationControlProps> = ({
   handleBackToInitial,
   handleGoToFinal,
   changeQuantityOfItens,
+  isSplited,
 }) => {
   const window = useWindowWidth();
   const numberOfCases = String(quantityOfPages).length;
@@ -82,7 +84,7 @@ const PaginationControl: React.FC<PaginationControlProps> = ({
     >
       <Flex
         flex="1"
-        justifyContent={window > 1000 ? "center" : "flex-start"}
+        justifyContent={window > 1200 && (window > 1700 || !isSplited) ? "center" : "flex-start"}
         alignItems="center"
         gap=".5rem"
         minW={{ base: "100%", md: "200px" }}
@@ -90,10 +92,10 @@ const PaginationControl: React.FC<PaginationControlProps> = ({
         order={{ base: 2, md: 1 }}
         mb={{ base: "0.5rem", md: 0 }}
       >
-        <Text whiteSpace="nowrap"  fontSize={window > 1000 ? "1rem" : "0.8rem"}>{t("pagination.rowsPerPage")}</Text>
+        <Text whiteSpace="nowrap"  fontSize={window > 1000 ? "1rem" : "0.8rem"}>{window > 1400 ? t("pagination.rowsPerPage") : ""}</Text>
         <Select
-          w="70px"
-          fontSize={window > 1000 ? "1rem" : "0.8rem"}
+          w={window < 1050 ? "65px" : "70px"}
+          fontSize={window > 1050 ? "1rem" : "0.8rem"}
           h="32px"
           textAlign="center"
           onChange={(e) => changeQuantityOfItens(Number(e.target.value))}
@@ -113,8 +115,8 @@ const PaginationControl: React.FC<PaginationControlProps> = ({
         alignItems="center"
         gap="0.2rem"
       >
-        <Text whiteSpace="nowrap" fontSize={window > 1000 ? "1rem" : "0.8rem"}>
-          {t("pagination.page") +
+        <Text whiteSpace="nowrap" fontSize={window > 1050 ? "1rem" : "0.8rem"}>
+          {(window > 1150 ? t("pagination.page") : "") +
             " " +
             String(currentPage).padStart(numberOfCases, "0") +
             " " +

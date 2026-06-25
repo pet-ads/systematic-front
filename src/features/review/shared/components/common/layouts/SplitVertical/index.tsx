@@ -91,6 +91,7 @@ export const SplitVertical: React.FC<VerticalProps> = ({
       pagination={pagination}
       sortConfig={sortConfig}
       handleHeaderClick={handleHeaderClick}
+      isSplited={true}
     />
   );
 
