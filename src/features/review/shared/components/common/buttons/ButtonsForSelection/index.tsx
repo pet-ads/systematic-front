@@ -208,7 +208,7 @@ export default function ButtonsForSelection({
   const windowWidth = useWindowWidth();
   
   const isCompactDesktop =
-    windowWidth <= 1300 && windowWidth >= 1000;
+    windowWidth <= 1300 && windowWidth >= 1000 || windowWidth < 800;
 
   const iconSize = isCompactDesktop ? "1.25rem" : "1.5rem";
   const priorityIconSize = isCompactDesktop ? "1.5rem" : "1.75rem";

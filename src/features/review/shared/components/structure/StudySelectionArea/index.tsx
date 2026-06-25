@@ -32,6 +32,7 @@ interface StudySelectionAreaProps {
   onTablePageChange: (page: number) => void;
   extraParams?: Record<string, any>;
   handleChangeLayout?: (layout: any) => void;
+  isVertical?: boolean;
 }
 
 export default function StudySelectionArea({
@@ -44,6 +45,7 @@ export default function StudySelectionArea({
   onTablePageChange,
   extraParams = {},
   handleChangeLayout, 
+  isVertical,
 }: StudySelectionAreaProps) {
   const window = useWindowWidth();
   const studiesContext = useContext(StudyContext);
@@ -165,7 +167,7 @@ export default function StudySelectionArea({
       alignItems="center"
       gap="1rem"
     >
-      <Flex alignItems="center" justifyContent="center" w={window > 1200 ? "100%" : undefined} maxW={window > 1200 ? "100%" : undefined}>
+      <Flex alignItems="center" justifyContent="center" w={window > 1200 || !isVertical ? "100%" : undefined} maxW={window > 1200 || !isVertical ? "100%" : undefined}>
         <ButtonsForSelection
           page={page}
           articles={activeArticles}

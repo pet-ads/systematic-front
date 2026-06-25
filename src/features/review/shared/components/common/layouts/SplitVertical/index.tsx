@@ -81,6 +81,7 @@ export const SplitVertical: React.FC<VerticalProps> = ({
       onTablePageChange={onTablePageChange}
       extraParams={extraParams}
       handleChangeLayout={handleChangeLayout}
+      isVertical={true}
     />
   );
 
@@ -92,6 +93,7 @@ export const SplitVertical: React.FC<VerticalProps> = ({
       sortConfig={sortConfig}
       handleHeaderClick={handleHeaderClick}
       isSplited={true}
+      isVertical={true}
     />
   );
 

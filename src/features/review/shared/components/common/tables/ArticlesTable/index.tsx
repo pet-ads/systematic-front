@@ -19,6 +19,7 @@ interface Props {
   sortConfig: { key: keyof ArticleInterface; direction: "asc" | "desc" } | null;
   handleHeaderClick: (key: keyof ArticleInterface) => void;
   isSplited?: boolean;
+  isVertical?: boolean;
 }
 
 export default function ArticlesTable({
@@ -31,6 +32,7 @@ export default function ArticlesTable({
   sortConfig,
   handleHeaderClick,
   isSplited,
+  isVertical,
 }: Props) {
   return (
     <Expanded
@@ -43,6 +45,7 @@ export default function ArticlesTable({
       pagination={pagination}
       checkbox={checkbox}
       isSplited={isSplited}
+      isVertical={isVertical}
     />
   );
 }

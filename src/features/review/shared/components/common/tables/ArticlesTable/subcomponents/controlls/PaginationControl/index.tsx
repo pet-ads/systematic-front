@@ -22,6 +22,7 @@ interface PaginationControlProps {
   handleGoToFinal: () => void;
   changeQuantityOfItens: (newQuantity: number) => void;
   isSplited?: boolean;
+  isVertical?: boolean;
 }
 
 type ActionButton = {
@@ -40,6 +41,7 @@ const PaginationControl: React.FC<PaginationControlProps> = ({
   handleGoToFinal,
   changeQuantityOfItens,
   isSplited,
+  isVertical,
 }) => {
   const window = useWindowWidth();
   const numberOfCases = String(quantityOfPages).length;
@@ -92,10 +94,10 @@ const PaginationControl: React.FC<PaginationControlProps> = ({
         order={{ base: 2, md: 1 }}
         mb={{ base: "0.5rem", md: 0 }}
       >
-        <Text whiteSpace="nowrap"  fontSize={window > 1000 ? "1rem" : "0.8rem"}>{window > 1400 ? t("pagination.rowsPerPage") : ""}</Text>
+        <Text whiteSpace="nowrap"  fontSize={window > 1000 ? "1rem" : "0.8rem"}>{window < 1000 || window > 1400 || !isVertical ? t("pagination.rowsPerPage") : ""}</Text>
         <Select
-          w={window < 1050 ? "65px" : "70px"}
-          fontSize={window > 1050 ? "1rem" : "0.8rem"}
+          w={window > 1000 && window < 1050 ? "65px" : "70px"}
+          fontSize={window < 1000 || window > 1050 ? "1rem" : "0.8rem"}
           h="32px"
           textAlign="center"
           onChange={(e) => changeQuantityOfItens(Number(e.target.value))}
@@ -116,7 +118,7 @@ const PaginationControl: React.FC<PaginationControlProps> = ({
         gap="0.2rem"
       >
         <Text whiteSpace="nowrap" fontSize={window > 1050 ? "1rem" : "0.8rem"}>
-          {(window > 1150 ? t("pagination.page") : "") +
+          {(window < 1000 || window > 1150 ? t("pagination.page") : "") +
             " " +
             String(currentPage).padStart(numberOfCases, "0") +
             " " +

@@ -56,6 +56,7 @@ interface Props {
   pagination: PaginationControls;
   checkbox?: boolean;
   isSplited?: boolean;
+  isVertical?: boolean;
 }
 
 type HeaderKeys =
@@ -85,6 +86,7 @@ export default function Expanded({
   pagination,
   checkbox,
   isSplited,
+  isVertical,
 }: Props) {
   console.log(layout)
   const [columnWidths, setColumnWidths] = useState({
@@ -632,6 +634,7 @@ export default function Expanded({
         handleGoToFinal={handleGoToFinal}
         changeQuantityOfItens={changeQuantityOfItens}
         isSplited={isSplited}
+        isVertical={isVertical}
       />
     </Box>
   );
