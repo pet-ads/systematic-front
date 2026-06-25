@@ -19,6 +19,9 @@ import StudyDataFiel from "../../common/tables/StudyData";
 import { SelectionArticles } from "@features/review/execution-selection/services/useFetchSelectionArticles";
 import { KeyedMutator } from "swr";
 
+// Hooks
+import useWindowWidth from "@features/shared/hooks/useWindowWidth";
+
 interface StudySelectionAreaProps {
   articles: ArticleInterface[] | StudyInterface[];
   page: PageLayout;
@@ -42,6 +45,7 @@ export default function StudySelectionArea({
   extraParams = {},
   handleChangeLayout, 
 }: StudySelectionAreaProps) {
+  const window = useWindowWidth();
   const studiesContext = useContext(StudyContext);
 
   if (!studiesContext)
@@ -161,7 +165,7 @@ export default function StudySelectionArea({
       alignItems="center"
       gap="1rem"
     >
-      <Flex alignItems="center" justifyContent="center" w="100%" maxW="100%">
+      <Flex alignItems="center" justifyContent="center" w={window > 1200 ? "100%" : undefined} maxW={window > 1200 ? "100%" : undefined}>
         <ButtonsForSelection
           page={page}
           articles={activeArticles}

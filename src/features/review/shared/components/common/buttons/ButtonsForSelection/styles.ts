@@ -2,11 +2,6 @@ export const conteiner = {
   m: "2",
   alignItems: "center",
   width: "100%",
-  gap: "2rem",
-};
-
-export const boxconteiner = {
-  gap: "1rem",
 };
 
 export const buttonconteiner = {
