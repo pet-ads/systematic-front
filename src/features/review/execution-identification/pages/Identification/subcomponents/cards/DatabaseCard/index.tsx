@@ -22,6 +22,7 @@ import {
 import { AddIcon } from "@chakra-ui/icons";
 import { AiOutlineDelete, AiOutlineEdit, AiOutlineEye } from "react-icons/ai";
 import { useTranslation } from "react-i18next";
+import useWindowWidth from "@features/shared/hooks/useWindowWidth";
 
 import IdentificationModal from "../../modals/IdentificationModal";
 import DeleteSessionModal from "../../modals/DeleteSessionModal";
@@ -46,6 +47,7 @@ interface Session {
 export default function DataBaseCard({ text }: DatabaseCardProps) {
   const navigate = useNavigate();
   const { t } = useTranslation("review/execution-identification");
+  const window = useWindowWidth();
 
   const [showModal, setShowModal] = useState(false);
   const [actionModal, setActionModal] = useState<"create" | "update">("create");
@@ -79,7 +81,7 @@ export default function DataBaseCard({ text }: DatabaseCardProps) {
   };
 
   return (
-    <Box mb="0.2rem" w="100%">
+    <Box mb="0.2rem" w={window > 809 ? "100%" : "90%"}>
       <Accordion allowMultiple w="100%">
         <AccordionItem
           bg="white"

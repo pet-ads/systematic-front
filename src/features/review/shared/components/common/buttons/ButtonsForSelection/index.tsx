@@ -17,7 +17,7 @@ import MenuOptions from "../../../../../../../components/common/menu/MenuOptions
 import ComboBox from "../../menu/ComboBox";
 
 // Styles
-import { boxconteiner, buttonconteiner, conteiner } from "./styles";
+import { buttonconteiner, conteiner } from "./styles";
 
 // Types
 import ArticleInterface from "../../../../types/ArticleInterface";
@@ -26,6 +26,9 @@ import { PageLayout } from "../../../structure/LayoutFactory";
 import type { OptionProps, OptionType } from "../../../../services/useFetchAllCriteriasByArticle";
 import { SelectionArticles } from "@features/review/execution-selection/services/useFetchSelectionArticles";
 import { KeyedMutator } from "swr";
+
+// Hooks
+import useWindowWidth from "@features/shared/hooks/useWindowWidth";
 
 interface ButtonsForSelectionProps {
   page: PageLayout;
@@ -202,15 +205,27 @@ export default function ButtonsForSelection({
     },
   };
 
+  const windowWidth = useWindowWidth();
+  
+  const isCompactDesktop =
+    windowWidth <= 1300 && windowWidth >= 1000 || windowWidth < 800;
+
+  const iconSize = isCompactDesktop ? "1.25rem" : "1.5rem";
+  const priorityIconSize = isCompactDesktop ? "1.5rem" : "1.75rem";
+
+  const containerGap = isCompactDesktop ? "1rem" : "2rem";
+  const boxGap = isCompactDesktop ? "0.5rem" : "1rem";
+  const navigationGap = isCompactDesktop ? "0.5rem" : "1rem";
+
   return (
-    <Flex sx={conteiner} justifyContent={isUniqueArticle ? "center" : "space-between"}>
+    <Flex sx={conteiner} gap={containerGap} justifyContent={isUniqueArticle ? "center" : "space-between"}>
       {!isUniqueArticle && (
-        <Flex sx={buttonconteiner}>
+        <Flex sx={buttonconteiner} gap={navigationGap}>
           <Tooltip label="Previous article" placement="top" hasArrow p=".5rem" borderRadius=".25rem">
             <Box style={{ display: "inline-block" }}>
               <IoIosArrowBack
                 color="black"
-                size="1.5rem"
+                size={iconSize}
                 onClick={goToPreviousArticle}
                 cursor="pointer"
               />
@@ -218,8 +233,8 @@ export default function ButtonsForSelection({
           </Tooltip>
         </Flex>
       )}
-      
-      <Flex sx={boxconteiner}>
+
+      <Flex gap={boxGap}>
         {(Object.entries(comboBoxGroups) as [OptionType, ComboBoxGroup][]).map(([groupKey, group]) => (
           <Tooltip
             key={groupKey}
@@ -245,8 +260,8 @@ export default function ButtonsForSelection({
         ))}
 
         <Tooltip label="Reset article" placement="top" hasArrow p=".5rem" borderRadius=".25rem">
-          <Button color="black" bg="white" p="1rem" onClick={handleFullReset}>
-            <RiResetLeftLine color="black" size="1.5rem" />
+          <Button color="black" bg="white" p={isCompactDesktop ? ".75rem" : "1rem"} onClick={handleFullReset}>
+            <RiResetLeftLine color="black" size={iconSize} />
           </Button>
         </Tooltip>
 
@@ -255,7 +270,7 @@ export default function ButtonsForSelection({
             <MenuOptions
               options={["Very Low", "Low", "High", "Very High"]}
               onOptionToggle={(option) => handleChangePriority({ status: option })}
-              icon={<MdOutlineLowPriority color="black" size="1.75rem" />}
+              icon={<MdOutlineLowPriority color="black" size={priorityIconSize} />}
             />
           </Box>
         </Tooltip>
@@ -264,26 +279,25 @@ export default function ButtonsForSelection({
           <Button 
             color="black" 
             bg="white" 
-            p="1rem" 
+            p={isCompactDesktop ? ".75rem" : "1rem"}
             onClick={() => {
               if (handleChangeLayout) {
                 handleChangeLayout("table");
               }
             }}
           >
-            <BsTable color="black" size="1.5rem" /> 
+            <BsTable color="black" size={iconSize} />
           </Button>
         </Tooltip>
-
       </Flex>
 
       {!isUniqueArticle && (
-        <Flex sx={buttonconteiner}>
+        <Flex sx={buttonconteiner} gap={navigationGap}>
           <Tooltip label="Next article" placement="top" hasArrow p=".5rem" borderRadius=".25rem">
             <Box style={{ display: "inline-block" }}>
               <IoIosArrowForward
                 color="black"
-                size="1.5rem"
+                size={iconSize}
                 onClick={goToNextArticle}
                 cursor="pointer"
               />

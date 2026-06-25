@@ -10,6 +10,7 @@ import {
   MenuList,
 } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
+import useWindowWidth from "@features/shared/hooks/useWindowWidth";
 
 type MenuProps = {
   onSelect: (section: string) => void;
@@ -31,6 +32,7 @@ export default function SectionMenu({
   extractionQuestions = [],
   robQuestions = [],
 }: MenuProps) {
+  const window = useWindowWidth();
   const { t } = useTranslation("review/summarization-graphics");
 
   const staticSections: Section[] = [
@@ -107,7 +109,7 @@ export default function SectionMenu({
     <Menu>
       <MenuButton
         as={Button}
-        w="24rem"
+        w={window > 1000 ? "24rem" : "20rem"}
         bg="#EBF0F3"
         color="#2E4B6C"
         fontWeight="light"
