@@ -83,7 +83,7 @@ export default function SelectLayout({
  <Menu>
       <MenuButton
         as={Button}
-        w={window > 1000 ? "20rem" : "15rem"}
+        w={window > 1100 ? "20rem" : "15rem"}
         bg="#EBF0F3"
         color="#2E4B6C"
         fontWeight="light"

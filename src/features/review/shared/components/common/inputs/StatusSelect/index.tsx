@@ -101,7 +101,7 @@ export default function StatusSelect({
   }, [buttonLabel]);
 
   return (
-    <FormControl w={windowWidth > 1000 ? "20rem" : "15rem"}>
+    <FormControl w={windowWidth > 1100 ? "20rem" : "15rem"}>
       <Menu isLazy>
         <MenuButton
           ref={btnRef}
