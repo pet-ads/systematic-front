@@ -6,6 +6,7 @@ import { RiResetLeftLine } from "react-icons/ri";
 import { BsTable } from "react-icons/bs";
 import { Tooltip } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 // Hooks
 import useFetchAllCriteriasByArticle from "../../../../services/useFetchAllCriteriasByArticle";
@@ -68,6 +69,7 @@ export default function ButtonsForSelection({
 }: ButtonsForSelectionProps) {
   const { handleResetStatusToUnclassified } = useResetStatus({ page, reloadArticles });
   const { handleChangePriority } = useChangePriority({ reloadArticles });
+  const { t } = useTranslation("review/execution-selection");
 
   const currentArticle = articles[articleIndex];
 
@@ -193,13 +195,21 @@ export default function ButtonsForSelection({
   const comboBoxGroups: Record<OptionType, ComboBoxGroup> = {
     INCLUSION: {
       label: "Include",
-      description: "Add inclusion criteria",
+      description: criteriaGroupDataMap["INCLUSION"].data.length === 0
+        ? "No inclusion criteria configured in Planning"
+        : isExclusionActive
+          ? "Remove exclusion criteria first"
+          : t("buttonsForSelection.tooltips.includeDescription"),
       isDisabled: criteriaGroupDataMap["INCLUSION"].data.length === 0 || isExclusionActive || isDuplicated,
       options: criteriaGroupDataMap["INCLUSION"].data,
     },
     EXCLUSION: {
       label: "Exclude",
-      description: "Add exclusion criteria",
+      description: criteriaGroupDataMap["EXCLUSION"].data.length === 0
+        ? "No exclusion criteria configured in Planning"
+        : isInclusionActive
+          ? "Remove inclusion criteria first"
+          : t("buttonsForSelection.tooltips.excludeDescription"),
       isDisabled: criteriaGroupDataMap["EXCLUSION"].data.length === 0 || isInclusionActive || isDuplicated,
       options: criteriaGroupDataMap["EXCLUSION"].data,
     },
@@ -221,7 +231,7 @@ export default function ButtonsForSelection({
     <Flex sx={conteiner} gap={containerGap} justifyContent={isUniqueArticle ? "center" : "space-between"}>
       {!isUniqueArticle && (
         <Flex sx={buttonconteiner} gap={navigationGap}>
-          <Tooltip label="Previous article" placement="top" hasArrow p=".5rem" borderRadius=".25rem">
+          <Tooltip label={t("buttonsForSelection.tooltips.previousArticle")} placement="top" hasArrow p=".5rem" borderRadius=".25rem">
             <Box style={{ display: "inline-block" }}>
               <IoIosArrowBack
                 color="black"
@@ -259,23 +269,28 @@ export default function ButtonsForSelection({
           </Tooltip>
         ))}
 
-        <Tooltip label="Reset article" placement="top" hasArrow p=".5rem" borderRadius=".25rem">
+        <Tooltip label={t("buttonsForSelection.tooltips.resetArticle")} placement="top" hasArrow p=".5rem" borderRadius=".25rem">
           <Button color="black" bg="white" p={isCompactDesktop ? ".75rem" : "1rem"} onClick={handleFullReset}>
             <RiResetLeftLine color="black" size={iconSize} />
           </Button>
         </Tooltip>
 
-        <Tooltip label="Select reading priority" placement="top" hasArrow p=".5rem" borderRadius=".25rem">
+        <Tooltip label={t("buttonsForSelection.tooltips.selectPriority")} placement="top" hasArrow p=".5rem" borderRadius=".25rem">
           <Box style={{ display: "inline-block" }}>
             <MenuOptions
-              options={["Very Low", "Low", "High", "Very High"]}
+              options={[
+                t("buttonsForSelection.priorityOptions.veryLow"),
+                t("buttonsForSelection.priorityOptions.low"),
+                t("buttonsForSelection.priorityOptions.high"),
+                t("buttonsForSelection.priorityOptions.veryHigh"),
+              ]}
               onOptionToggle={(option) => handleChangePriority({ status: option })}
               icon={<MdOutlineLowPriority color="black" size={priorityIconSize} />}
             />
           </Box>
         </Tooltip>
 
-        <Tooltip label="Change to table view" placement="top" hasArrow p=".5rem" borderRadius=".25rem">
+        <Tooltip label={t("buttonsForSelection.tooltips.changeToTable")} placement="top" hasArrow p=".5rem" borderRadius=".25rem">
           <Button 
             color="black" 
             bg="white" 
@@ -293,7 +308,7 @@ export default function ButtonsForSelection({
 
       {!isUniqueArticle && (
         <Flex sx={buttonconteiner} gap={navigationGap}>
-          <Tooltip label="Next article" placement="top" hasArrow p=".5rem" borderRadius=".25rem">
+          <Tooltip label={t("buttonsForSelection.tooltips.nextArticle")} placement="top" hasArrow p=".5rem" borderRadius=".25rem">
             <Box style={{ display: "inline-block" }}>
               <IoIosArrowForward
                 color="black"
