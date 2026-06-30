@@ -347,11 +347,13 @@ export default function InteractiveTable({ id, url, label }: Props) {
             _focus={{ boxShadow: isEditing ? "outline" : "none" }}
             borderRadius="md"
             size="sm"
+            px={isEditing ? undefined : 0}
             sx={{ textTransform: "uppercase" }}
           />
         );
       },
     },
+
     {
       key: "question",
       label: t("selectionAndExtraction.input.extractionQuestions.question"),
