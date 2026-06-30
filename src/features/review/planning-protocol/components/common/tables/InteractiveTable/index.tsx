@@ -335,19 +335,32 @@ export default function InteractiveTable({ id, url, label }: Props) {
       width: "10%",
       render: (row, index) => {
         const isEditing = editIndex === index;
+
+        if (!isEditing) {
+          return (
+            <Text
+              fontSize="sm"
+              color="black"
+              textAlign="center"
+              fontWeight="semibold"
+              sx={{ textTransform: "uppercase" }}
+            >
+              {row.id || "—"}
+            </Text>
+          );
+        }
+
         return (
           <Input
             value={row.id}
             onChange={(e) => handleIdChange(index, e.target.value)}
             maxLength={7}
-            isReadOnly={!isEditing}
-            border={isEditing ? "solid 1px #303D50" : "transparent"}
-            bg={isEditing ? "white" : "transparent"}
-            cursor={isEditing ? "text" : "default"}
-            _focus={{ boxShadow: isEditing ? "outline" : "none" }}
+            border="solid 1px #303D50"
+            bg="white"
+            cursor="text"
+            _focus={{ boxShadow: "outline" }}
             borderRadius="md"
             size="sm"
-            px={isEditing ? undefined : 0}
             sx={{ textTransform: "uppercase" }}
           />
         );
