@@ -24,11 +24,13 @@ const buttonSX = {
 interface ButtonsForMultipleSelectionProps {
   onShowSelectedArticles: (showSelected: boolean) => void;
   isShown: boolean;
+  reloadArticles: () => Promise<any>;
 }
 
 export default function ButtonsForMultipleSelection({
   onShowSelectedArticles,
   isShown,
+  reloadArticles,
 }: ButtonsForMultipleSelectionProps) {
   const window = useWindowWidth();
   const studyContext = useContext(StudyContext);
@@ -45,8 +47,10 @@ export default function ButtonsForMultipleSelection({
 
   const articles = studyContext?.selectedArticles;
 
-  const handleSendDuplicatedStudies = () => {
-    sendDuplicatedStudies();
+  const handleSendDuplicatedStudies = async () => {
+    await sendDuplicatedStudies();
+    await reloadArticles();
+
     studyContext?.clearSelectedArticles();
     onShowSelectedArticles(false);
   };

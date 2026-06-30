@@ -139,6 +139,7 @@ export default function Extraction() {
               <ButtonsForMultipleSelection
                 onShowSelectedArticles={setShowSelected}
                 isShown={showSelected}
+                reloadArticles={mutate}
               />
             ) : null}
           </Flex>

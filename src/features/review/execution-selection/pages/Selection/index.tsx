@@ -143,6 +143,7 @@ export default function Selection() {
               <ButtonsForMultipleSelection
                 onShowSelectedArticles={setShowSelected}
                 isShown={showSelected}
+                reloadArticles={mutate}
               />
             ) : null}
           </Flex>
