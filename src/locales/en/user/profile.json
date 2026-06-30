@@ -24,5 +24,8 @@
             "label": "Country",
             "placeholder": "Your country"
         }
+    },
+    "countries": {
+        "Brazil": "Brazil"
     }
 }

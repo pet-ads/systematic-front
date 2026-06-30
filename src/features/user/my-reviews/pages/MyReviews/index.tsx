@@ -1,6 +1,9 @@
 // External library
+import { useContext, useEffect } from "react";
 import { Box, Flex, Text } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
+import AppContext from "@features/shared/context/ApplicationContext";
+import useWindowWidth from "@features/shared/hooks/useWindowWidth";
 
 // Services
 import useGetReviewCard from "../../services/useGetReviewCard";
@@ -17,8 +20,16 @@ import RenderCards from "../../factory/cards/RenderCards";
 import { CardReview } from "../../types";
 
 export default function MyReviews() {
+  const windowWidth = useWindowWidth();
+  const context = useContext(AppContext);
+  if(!context) return null;
+  const { sidebarState, setSidebarState } = context;
+  useEffect(() => {
+    if(windowWidth < 1000 && sidebarState === "open") setSidebarState("collapsed");
+  }, []);
+
   const { t } = useTranslation("user/my-reviews");
-  
+
   const { cardData: ownedReviews, isLoaded: isOwnedLoaded } = useGetReviewCard();
 
   const participatingReviews: any[] | undefined = []; 

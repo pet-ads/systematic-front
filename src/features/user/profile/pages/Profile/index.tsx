@@ -1,11 +1,13 @@
 // External library
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Box, Button, Circle, Flex, Menu, MenuButton, MenuItem, MenuList, SimpleGrid, Text } from "@chakra-ui/react";
 import { ChevronDownIcon, CloseIcon } from "@chakra-ui/icons";
 import { FaCheckCircle } from "react-icons/fa";
 import { FaPen } from "react-icons/fa6";
 import { useTranslation } from "react-i18next";
 import i18n from "i18next";
+import AppContext from "@features/shared/context/ApplicationContext";
+import useWindowWidth from "@features/shared/hooks/useWindowWidth";
 
 // Service
 import useProfile from "@features/user/profile/services/useProfile";
@@ -54,6 +56,14 @@ const languageOptions = [
 ];
 
 export default function Profile() {
+  const windowWidth = useWindowWidth();
+  const context = useContext(AppContext);
+  if(!context) return null;
+  const { sidebarState, setSidebarState } = context;
+  useEffect(() => {
+    if(windowWidth < 1000 && sidebarState === "open") setSidebarState("collapsed");
+  }, []);
+
   const { t } = useTranslation("user/profile");
   const [userProfile, setUserProfile] = useState<Profile>(defaultUserProfile);
   const [updateProfile, setUpdateProfile] = useState<UpdateProfileDTO>(
@@ -378,7 +388,7 @@ export default function Profile() {
                   nome="country"
                   type="text"
                   placeholder={t("inputs.country.placeholder")}
-                  value={isActiveUpdateMode ? updateProfile.country : country}
+                  value={isActiveUpdateMode ? updateProfile.country : t(`countries.${country}`, { defaultValue: country })}
                   onChange={(event) =>
                     handleChangeUserProfile("country", event.target.value)
                   }

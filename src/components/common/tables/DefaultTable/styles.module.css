@@ -1,38 +1,41 @@
-/* Basic styling to make DefaultTable functional and clean */
-/* This is based on the original Chakra UI to blend in */
-
+/* Container com Scroll Horizontal (Lógica responsiva) */
 .tableContainer {
-  width: 60vw;
-
+  width: 100%; /* Ajustado para 100% para se adaptar melhor que 60vw em telas menores */
 }
 
 .title {
   font-size: 1.25rem; /* 20px */
   font-weight: 700;
-  color: #2E4B6C; /* From original component */
+  color: #2E4B6C; 
   margin-bottom: 1rem; /* 16px */
 }
 
+/* Aplicando o scroll suave aqui */
 .tableWrapper {
   border-radius: 8px;
-  overflow: hidden;
-  border: 1px solid #C9D9E5; /* From original component */
+  overflow-x: auto;
+  overflow-y: hidden;
+  border: 1px solid #C9D9E5; 
+  -webkit-overflow-scrolling: touch; 
 }
 
+/* Largura mínima para não esmagar as colunas */
 .table {
   width: 100%;
+  min-width: 540px; 
   border-collapse: collapse;
   background-color: white;
 }
 
+/* Cabeçalho Azul (Visual da sua branch) */
 .th {
-  background-color: #2E4B6C; /* From original component */
-  color: #DDE4E9; /* From original component */
-  padding: 0.75rem 1rem; /* 12px 16px */
+  background-color: #2E4B6C; 
+  color: #DDE4E9; 
+  padding: 0.75rem 1rem; 
   text-align: left;
   font-weight: 600;
   text-transform: uppercase;
-  font-size: 0.75rem; /* 12px */
+  font-size: 0.75rem; 
   letter-spacing: 0.05em;
   cursor: pointer;
   user-select: none;
@@ -41,7 +44,7 @@
 .headerContent {
   display: flex;
   align-items: center;
-  gap: 0.5rem; /* 8px */
+  gap: 0.5rem; 
 }
 
 .chevronIcon {
@@ -50,11 +53,11 @@
 }
 
 .tr {
-  border-bottom: 1px solid #E2E8F0; /* Light gray border */
+  border-bottom: 1px solid #E2E8F0; 
 }
 
 .tr:nth-child(even) {
-  background-color: #F7FAFC; /* Very light gray for striping */
+  background-color: #F7FAFC; 
 }
 
 .tr:last-child {
@@ -62,16 +65,16 @@
 }
 
 .td {
-  padding: 0.75rem 1rem; /* 12px 16px */
-  color: #2D3748; /* Darker text */
-  font-size: 0.875rem; /* 14px */
-  vertical-align: middle; /* Align content vertically */
+  padding: 0.75rem 1rem; 
+  color: #2D3748; 
+  font-size: 0.875rem; 
+  vertical-align: middle; 
 }
 
 .emptyRow {
   text-align: center;
   padding: 1rem;
-  color: #718096; /* Gray text */
+  color: #718096; 
   font-style: italic;
 }
 
@@ -79,6 +82,5 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 300px; /* Adjust as needed */
+  max-width: 300px; 
 }
-

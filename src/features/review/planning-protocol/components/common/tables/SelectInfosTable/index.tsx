@@ -12,8 +12,16 @@ export default function SelectInfosTable({
   onDeleteItem,
 }: SelectInfosTableProps) {
   return (
-    <TableContainer sx={tbConteiner}>
-      <Table variant="simple" size="md">
+    <TableContainer 
+      w="100%" 
+      sx={{ 
+        ...tbConteiner, 
+        width: "100% !important", 
+        maxWidth: "100% !important" 
+      }}
+    >
+      
+      <Table variant="simple" size="md" w="100%">
         <Tbody className="tableBody">
           {selectedItems.map((item, index) => (
             <Tr key={index}>

@@ -1,4 +1,5 @@
 // External library
+import { useContext, useEffect } from "react";
 import {
   Accordion,
   AccordionButton,
@@ -10,6 +11,8 @@ import {
   Heading,
 } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
+import AppContext from "@features/shared/context/ApplicationContext";
+import useWindowWidth from "@features/shared/hooks/useWindowWidth";
 
 // Components
 import NavButton from "@components/common/buttons/NavigationButton";
@@ -22,6 +25,8 @@ import useProtocolAccordion from "../../services/useProtocolAccordion";
 import ProtocolFormLayout from "../../components/common/protocolForm";
 
 export default function ResearchQuestions() {
+  const windowWidth = useWindowWidth();
+  const context = useContext(AppContext);
   const { researchQuestion, handleChangeResearchQuestion, syncAndNavigate } =
     useCreateProtocol();
 
@@ -29,8 +34,15 @@ export default function ResearchQuestions() {
 
   const { showResearchQuestions } = useProtocolAccordion();
 
-  const { justification } = researchQuestion;
+  useEffect(() => {
+    if(context && windowWidth < 1000 && context.sidebarState === "open") {
+      context.setSidebarState("collapsed");
+    }
+  }, [windowWidth]);
 
+  if(!context) return null;
+
+  const { justification } = researchQuestion;
   const id = localStorage.getItem("systematicReviewId");
 
   return (
@@ -56,48 +68,70 @@ export default function ResearchQuestions() {
         </>
       }
     >
-      <TextAreaInput
-        value={justification}
-        label={t("researchQuestions.primaryQuestion.label")}
-        placeholder={t("researchQuestions.primaryQuestion.placeholder")}
-        onChange={(event) =>
-          handleChangeResearchQuestion("justification", event.target.value)
-        }
-      />
-
-      <Accordion
-        defaultIndex={showResearchQuestions ? [0] : [-1]}
-        allowToggle
-        mt={6}
-        w={"60vw"}
+      
+      <Box 
+        display="flex" 
+        flexDirection="column" 
+        w="100%"
+        sx={{
+          "& > *": {
+            width: "100%",
+            maxWidth: "100%",
+          }
+        }}
       >
-        <AccordionItem>
-          <h2 style={{ color: "#2E4B6C" }}>
-            <AccordionButton>
-              <Box flex="1" textAlign="center">
-                <Heading size="md">
-                  {t("researchQuestions.secondaryQuestions.heading")}
-                </Heading>
-              </Box>
-              <AccordionIcon />
-            </AccordionButton>
-          </h2>
-          <AccordionPanel pb={4}>
-            <Flex>
-              <AddTextTable
-                text={t("researchQuestions.secondaryQuestions.label")}
-                contextId="Research Questions"
-                placeholder={t(
-                  "researchQuestions.secondaryQuestions.placeholder",
-                )}
-                referencePrefix="RQ"
-                enableReferenceCode={true}
-                tableHeight="400px"
-              />
-            </Flex>
-          </AccordionPanel>
-        </AccordionItem>
-      </Accordion>
+        <TextAreaInput
+          value={justification}
+          label={t("researchQuestions.primaryQuestion.label")}
+          placeholder={t("researchQuestions.primaryQuestion.placeholder")}
+          onChange={(event) =>
+            handleChangeResearchQuestion("justification", event.target.value)
+          }
+        />
+
+        <Accordion
+          defaultIndex={showResearchQuestions ? [0] : [-1]}
+          allowToggle
+          mt={6}
+          w="100%"
+        >
+          <AccordionItem>
+            <h2 style={{ color: "#2E4B6C" }}>
+              <AccordionButton>
+                <Box flex="1" textAlign="center">
+                  <Heading size="md">
+                    {t("researchQuestions.secondaryQuestions.heading")}
+                  </Heading>
+                </Box>
+                <AccordionIcon />
+              </AccordionButton>
+            </h2>
+            <AccordionPanel pb={4}>
+              {/* Container com scroll horizontal (faz o papel do .tableWrapper) */}
+              <Flex 
+                w="100%" 
+                overflowX="auto" 
+                overflowY="hidden"
+                sx={{ WebkitOverflowScrolling: "touch" }}
+              > 
+                {/* Box com largura mínima (faz o papel do min-width na tabela) */}
+                <Box minW="540px" w="100%">
+                  <AddTextTable
+                    text={t("researchQuestions.secondaryQuestions.label")}
+                    contextId="Research Questions"
+                    placeholder={t(
+                      "researchQuestions.secondaryQuestions.placeholder",
+                    )}
+                    referencePrefix="RQ"
+                    enableReferenceCode={true}
+                    tableHeight="400px"
+                  />
+                </Box>
+              </Flex>
+            </AccordionPanel>
+          </AccordionItem>
+        </Accordion>
+      </Box>
     </ProtocolFormLayout>
   );
 }
