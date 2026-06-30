@@ -86,7 +86,8 @@
             "resetArticle": "Reset article",
             "selectPriority": "Select reading priority",
             "includeDescription": "Add inclusion criteria",
-            "excludeDescription": "Add exclusion criteria"
+            "excludeDescription": "Add exclusion criteria",
+            "changeToTable": "Change to table view"
         },
         "comboBox": {
             "include": "Include",

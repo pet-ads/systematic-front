@@ -53,19 +53,21 @@ export default function RevisionCard({
           {t("owner")}: {t("you")}
         </Text>
         
-        <Text fontSize="0.875rem" color="gray.600">
-          {t("reviewers")}:
-        </Text>
         
         <Box pl="0.5rem" mt="0.25rem">
-          {collaborators && collaborators.length > 0 ? (
-            collaborators.map((collab, index) => (
-              <Text key={index} fontSize="0.875rem" color="gray.500">
-                {collab}
+          {collaborators && collaborators.length > 1 ? (
+            <>
+              <Text fontSize="0.875rem" color="gray.600">
+                {t("reviewers")}:
               </Text>
-            ))
+              {collaborators.map((collab, index) => (
+                <Text key={index} fontSize="0.875rem" color="gray.500">
+                  {collab}
+                </Text>
+              ))}
+            </>
           ) : (
-            <Text fontSize="0.875rem" color="gray.400">...</Text>
+            <Text fontSize="0.875rem" color="gray.400">{t("reviewers")}: -</Text>
           )}
         </Box>
       </Box>

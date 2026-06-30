@@ -18,6 +18,8 @@ interface Props {
   checkbox?: boolean;
   sortConfig: { key: keyof ArticleInterface; direction: "asc" | "desc" } | null;
   handleHeaderClick: (key: keyof ArticleInterface) => void;
+  isSplited?: boolean;
+  isVertical?: boolean;
 }
 
 export default function ArticlesTable({
@@ -29,6 +31,8 @@ export default function ArticlesTable({
   checkbox,
   sortConfig,
   handleHeaderClick,
+  isSplited,
+  isVertical,
 }: Props) {
   return (
     <Expanded
@@ -40,6 +44,8 @@ export default function ArticlesTable({
       onRowClick={onRowClick}
       pagination={pagination}
       checkbox={checkbox}
+      isSplited={isSplited}
+      isVertical={isVertical}
     />
   );
 }

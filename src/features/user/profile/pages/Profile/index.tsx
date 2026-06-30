@@ -198,7 +198,7 @@ export default function Profile() {
 
   return (
     <FlexLayout navigationType="Default">
-      <Flex alignItems="center" paddingRight="12px">
+      <Flex alignItems="center" position="relative">
         <Header text={t("header.title")}/>
         <Menu>
           <MenuButton
@@ -208,7 +208,8 @@ export default function Profile() {
             _hover={{ color: "black", backgroundColor: "white" }}
             _active={{ color: "black", backgroundColor: "white" }}
             _expanded={{ color: "black", backgroundColor: "white" }}
-            px="0.75rem"
+            position="absolute"
+            right="0.75rem"
           >
             <Flex alignItems="center" gap="0.4rem">
               <ReactCountryFlag

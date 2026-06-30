@@ -1,6 +1,7 @@
 // External library
 import { Box, Flex } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
+import { useContext, useEffect } from "react";
 
 // Components
 import DataBaseRequired from "../../../shared/components/structure/DataBaseRequired";
@@ -15,7 +16,17 @@ import useFetchDataBases from "../../../shared/services/useFetchDataBases";
 // Styles
 import { conteiner, dataBaseconteiner } from "./styles";
 
+import useWindowWidth from "@features/shared/hooks/useWindowWidth";
+import AppContext from "@features/shared/context/ApplicationContext";
+
 export default function Identification() {
+  const window = useWindowWidth();
+  const context = useContext(AppContext);
+  if(!context) return null;
+  const { sidebarState, setSidebarState } = context;
+  useEffect(() => {
+    if(window < 1000 && sidebarState === "open") setSidebarState("collapsed");
+  }, []);
   const { databases } = useFetchDataBases();
 
   const { t } = useTranslation("review/execution-identification")

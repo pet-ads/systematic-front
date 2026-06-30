@@ -165,12 +165,6 @@ export default function ChartsRenderer({
       pt={"1rem"}
       sx={{
         ...graphicsconteiner,
-        p:
-          section === "Included Studies" ||
-          (section === "Search Sources" && type === "Table")
-            ? undefined
-            : "2rem",
-        boxShadow: "md",
       }}
     >
       <Renderer
@@ -180,7 +174,7 @@ export default function ChartsRenderer({
       />
 
       {section !== "Studies Funnel" && section !== "Protocol" && (
-        <Flex w="100%" justifyContent="flex-end" p="1rem">
+        <Flex w="100%" justifyContent="flex-end" p="1rem" position="fixed" bottom="1rem" right="1rem">
           <DownloadChartsButton
             selector={`#${chartId}`}
             fileName={section}

@@ -225,5 +225,9 @@
                 "placeholder": "Enter your Analysis and Synthesis Method"
             }
         }
-    }    
+    },
+    "toasts": {
+        "duplicateTitle": "Duplicate Entry",
+        "duplicateDescription": "This item already exists!"
+    }
 }

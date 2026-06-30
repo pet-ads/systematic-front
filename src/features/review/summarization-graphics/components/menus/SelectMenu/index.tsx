@@ -8,6 +8,7 @@ import {
   MenuItem,
   MenuList,
 } from "@chakra-ui/react";
+import useWindowWidth from "@features/shared/hooks/useWindowWidth";
 
 type SelectMenuProps<T> = {
   options: T[];
@@ -26,11 +27,13 @@ export default function SelectMenu<T>({
   getKey = (o) => String(o),
   placeholder,
 }: SelectMenuProps<T>) {
+  const window = useWindowWidth();
+
   return (
     <Menu>
       <MenuButton
         as={Button}
-        w="24rem"
+        w={window > 1000 ? "24rem" : "20rem"}
         bg="#EBF0F3"
         color="#2E4B6C"
         fontWeight="light"

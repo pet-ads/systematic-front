@@ -225,5 +225,9 @@
                 "placeholder": "Insira o seu Método de Análise e Síntese"
             }
         }
+    },
+    "toasts": {
+        "duplicateTitle": "Palavra-chave Duplicada",
+        "duplicateDescription": "Esta palavra-chave já existe!"
     }
 }

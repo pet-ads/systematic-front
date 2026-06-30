@@ -85,6 +85,10 @@
             "button": {
                 "create": "Criar",
                 "update": "Atualizar"
+            },
+            "toasts": {
+                "sessionUpdatedSuccess": "Sessão atualizada com sucesso",
+                "sessionUpdatedError": "Erro ao atualizar a sessão"
             }
         }
     },

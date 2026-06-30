@@ -81,25 +81,5 @@ export default function SearchSourcesRenderer({
     content = <div>{t("typeNotSupported")}</div>;
   }
   
-  return (
-    <Box 
-      id={chartId}
-      w="100%"
-      minH="auto" 
-      display={isTable ? "block" : "flex"} 
-      justifyContent="center" 
-      alignItems="center"     
-      pt={isTable ? 4 : 10}
-      pb={10}
-    >
-      <Box 
-        w="100%" 
-        maxW={isTable ? "100%" : isBubble ? "1600px" : "1200px"} 
-        display={isTable ? "block" : "flex"} 
-        justifyContent="center"
-      > 
-        {content}
-      </Box>
-    </Box>
-  );
+  return <Box id={chartId}>{content}</Box>;
 }

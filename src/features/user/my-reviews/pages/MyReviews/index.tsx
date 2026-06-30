@@ -13,9 +13,11 @@ import FlexLayout from "@components/structure/Flex/Flex";
 import Header from "@components/structure/Header/Header";
 import Loader from "@components/feedback/Loader";
 import CardDefault from "@components/common/cards";
+import RenderCreateNewReview from "../../factory/cards/RenderCreateNewReview";
 
 // Factory
 import RenderCards from "../../factory/cards/RenderCards";
+import { CardReview } from "../../types";
 
 export default function MyReviews() {
   const windowWidth = useWindowWidth();
@@ -53,43 +55,23 @@ export default function MyReviews() {
             <Flex direction="column" w="100%" align="flex-start">
               
               <Box w="100%" mb="2.5rem">
-                <Text 
-                  fontSize="1.125rem" 
-                  fontWeight="600" 
-                  color="#334155" 
-                  mb="1rem"
-                >
-                  {t("ownedReviews")}
-                </Text>
-                
-                {!ownedReviews || ownedReviews.length === 0 ? (
-                  <Text fontSize="0.875rem" color="gray.500">
-                    {t("emptyOwned")}
-                  </Text>
+                {(!ownedReviews || ownedReviews.length === 0) && (!participatingReviews || participatingReviews.length === 0) ? (
+                  <RenderCreateNewReview />
                 ) : (
-                  <RenderCards data={ownedReviews} />
+                  <>
+                    <Text 
+                      fontSize="1.125rem" 
+                      fontWeight="600" 
+                      color="#334155" 
+                      mb="1rem"
+                    >
+                      {t("ownedReviews")}
+                    </Text>
+                    <RenderCards data={ownedReviews as CardReview[]} />
+                    <RenderCards data={participatingReviews} />
+                  </>
                 )}
               </Box>
-
-              <Box w="100%">
-                <Text 
-                  fontSize="1.125rem" 
-                  fontWeight="600" 
-                  color="#334155" 
-                  mb="1rem"
-                >
-                  {t("participatingReviews")}
-                </Text>
-                
-                {!participatingReviews || participatingReviews.length === 0 ? (
-                  <Text fontSize="0.875rem" color="gray.500">
-                    {t("emptyParticipating")}
-                  </Text>
-                ) : (
-                  <RenderCards data={participatingReviews} />
-                )}
-              </Box>
-
             </Flex>
           )}
         </Box>
