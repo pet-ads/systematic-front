@@ -229,5 +229,24 @@
     "toasts": {
         "duplicateTitle": "Palavra-chave Duplicada",
         "duplicateDescription": "Esta palavra-chave já existe!"
+    },
+    "deleteSourceModal": {
+        "heading": "Excluir fonte",
+        "confirmMessage": "Tem certeza de que deseja excluir a fonte",
+        "blockedTitle": "Fonte não pode ser excluída",
+        "blockedMessage": "Esta fonte possui artigos Incluídos, Excluídos ou Duplicados. Redefina todos os artigos para Não Classificado antes de excluir a fonte.",
+        "checking": "Verificando artigos da fonte...",
+        "cancel": "Cancelar",
+        "confirm": "Confirmar exclusão",
+        "toasts": {
+            "success": {
+                "title": "Fonte excluída com sucesso!",
+                "description": "A fonte foi removida."
+            },
+            "catch": {
+                "title": "Ação Falhou",
+                "description": "Não foi possível excluir a fonte. Tente novamente."
+            }
+        }
     }
 }
