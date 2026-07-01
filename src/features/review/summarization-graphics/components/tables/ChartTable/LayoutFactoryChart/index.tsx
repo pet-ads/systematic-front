@@ -27,6 +27,6 @@ export default function LayoutFactoryChart({
   ) : articles && articles.length > 0 ? (
     <ChartFullTable columnsVisible={columnsVisible} articles={articles} />
   ) : (
-    <NoDataMessage/>
+    <NoDataMessage isReport={true} />
   );
 }

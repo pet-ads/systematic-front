@@ -155,6 +155,6 @@ export default function LayoutFactory({
   ) : articles && articles.length > 0 ? (
     layoutMap[layout]
   ) : (
-    <NoDataMessage />
+    <NoDataMessage isReport={false} />
   );
 }

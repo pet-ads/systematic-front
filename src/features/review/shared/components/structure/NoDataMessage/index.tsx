@@ -2,10 +2,14 @@ import { Box, Flex, Text, VStack } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 import { TbArticleOff } from "react-icons/tb";
 
-export default function NoDataMessage() {
+type Props = {
+  isReport: boolean;
+}
+
+export default function NoDataMessage({ isReport }: Props) {
 const { t } = useTranslation("review/summarization-graphics");
   return (
-    <Box w="100%" h="100%" display="flex">
+    <Box w="100%" h="100%" mt={isReport ? "2rem" : "0"} display="flex">
       <Flex
         flexDirection="column"
         justifyContent="center"
@@ -13,9 +17,9 @@ const { t } = useTranslation("review/summarization-graphics");
         textAlign="center"
         gap="0.75rem"
         borderRadius="1rem"
-        border="1px solid"
+        border={isReport ? "none" : "1px solid"}
         borderColor="gray.200"
-        bg="gray.50"
+        bg={isReport ? "white" : "gray.50"}
         flex="1"
       >
         <TbArticleOff size="2.5rem" color="#A0AEC0" />
