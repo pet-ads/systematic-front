@@ -9,7 +9,7 @@ import {
 } from "@chakra-ui/react";
 
 // Utils
-import { capitalize } from "@features/shared/utils/helpers/formatters/CapitalizeText";
+import { renderQuestionLabel } from "../helpers";
 
 // Styles
 import { container, label } from "../styles";
@@ -45,7 +45,7 @@ export default function MultiSelectionList({
 
   return (
     <FormControl sx={container} isInvalid={isInvalid}>
-      <FormLabel sx={label}>{capitalize(question)}</FormLabel>
+      <FormLabel sx={label}>{renderQuestionLabel(question)}</FormLabel>
       <CheckboxGroup value={selected} onChange={handleChange}>
         <Box
           display="flex"

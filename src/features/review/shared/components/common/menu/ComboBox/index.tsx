@@ -13,6 +13,7 @@ import { HiOutlineCheckCircle, HiOutlineXCircle } from "react-icons/hi";
 
 // Hooks
 import useToaster from "@components/feedback/Toaster";
+import useWindowWidth from "@features/shared/hooks/useWindowWidth";
 
 // Types
 import type { PageLayout } from "../../../structure/LayoutFactory";
@@ -51,6 +52,14 @@ export default function ComboBox({
   handlerUpdateCriteriasStructure,
   selectedCriteria = [],
 }: IComboBoxProps) {
+  const windowWidth = useWindowWidth();
+
+  const isCompactDesktop =
+  windowWidth <= 1300 && windowWidth >= 1000;
+
+  const iconSize = isCompactDesktop ? "1.35rem" : "1.75rem";
+  const buttonPadding = isCompactDesktop ? ".75rem" : "1rem";
+  
   const toast = useToaster();
 
   const { selectionStatus, extractionStatus } = status;
@@ -86,11 +95,13 @@ export default function ComboBox({
         bg="white"
         color="black"
         isDisabled={isDisabled}
+        p={buttonPadding}
+        minW="unset"
       >
         {text === "Include" ? (
-          <HiOutlineCheckCircle size="1.75rem" />
+          <HiOutlineCheckCircle size={iconSize} />
         ) : (
-          <HiOutlineXCircle size="1.75rem" />
+          <HiOutlineXCircle size={iconSize} />
         )}
       </MenuButton>
 
@@ -119,7 +130,8 @@ export default function ComboBox({
                   >
                     <Text
                       isTruncated
-                      maxW="20rem"
+                      maxW={isCompactDesktop ? "14rem" : "20rem"}
+                      fontSize={isCompactDesktop ? "sm" : "md"}
                       fontWeight={isHighlighted ? "bold" : "normal"}
                       color={isHighlighted ? "black" : "inherit"}
                     >

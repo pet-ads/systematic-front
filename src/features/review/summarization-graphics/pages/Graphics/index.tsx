@@ -14,9 +14,18 @@ import { useFetchRobQuestions } from "@features/review/execution-extraction/serv
 import ColumnVisibilityMenu from "@features/review/shared/components/common/menu/ColumnVisibilityMenu";
 import useVisibiltyColumns from "@features/review/shared/hooks/useVisibilityColumns";
 import { PageLayout } from "@features/review/shared/components/structure/LayoutFactory";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
+import useWindowWidth from "@features/shared/hooks/useWindowWidth";
+import AppContext from "@features/shared/context/ApplicationContext";
 
 export default function Graphics() {
+  const window = useWindowWidth();
+  const context = useContext(AppContext);
+  if(!context) return null;
+  const { sidebarState, setSidebarState } = context;
+  useEffect(() => {
+    if(window < 1000 && sidebarState === "open") setSidebarState("collapsed");
+  }, []);
   const {
     allQuestions,
     selectedQuestionId,
@@ -58,6 +67,7 @@ export default function Graphics() {
     "Search Sources": "Graphics-SearchSources",
     "Included Studies": "Graphics-IncludedStudies",
     "Form Questions": "Graphics-FormQuestions",
+    "TEXTUAL": "Graphics-TextualQuestion",
   }
 
   useEffect(() => {
@@ -65,19 +75,38 @@ export default function Graphics() {
     if(tableSelected) setTablePage(tableSelected);
   }, [section]);
   
+  const currentFilters = filtersBySection[section] || [];
+  const isNoYearSection = section && (
+    section.toLowerCase().includes("inclusion") ||
+    section.toLowerCase().includes("exclusion") ||
+    section.toLowerCase().includes("inclusão") ||
+    section.toLowerCase().includes("exclusão") ||
+    section.toLowerCase().includes("form questions") || 
+    section.toLowerCase().includes("questões") ||
+    section.toLowerCase().includes("extração") ||
+    section.toLowerCase().includes("viés")
+  );
+
+  const displayedFilters = isNoYearSection
+    ? currentFilters.filter((f: any) => {
+        const itemText = JSON.stringify(f).toLowerCase();
+        return !itemText.includes("year") && !itemText.includes("ano");
+      })
+    : currentFilters;
+
   return (
     <FlexLayout navigationType="Accordion">
       <Flex justifyContent="space-between" alignItems="flex-start" w="100%" mb="1rem">
         <Flex flexDirection="column" gap="0.75rem">
           <Header text={t("header")} />
 
-          {filtersBySection[section]?.length > 0 && (
+          {displayedFilters.length > 0 && window > 1000 && (
             <Flex flexDirection="column" gap="0.5rem">
               <Text fontWeight="semibold" fontSize="lg" color="#263C56">
                 {t("filtersArea.heading")}
               </Text>
               <FiltersMenu
-                availableFilters={filtersBySection[section]}
+                availableFilters={displayedFilters}
                 filters={filters}
                 setFilters={setFilters}
               />
@@ -125,16 +154,15 @@ export default function Graphics() {
               filters={filters}
               selectedQuestionId={selectedQuestionId}
               columnsVisible={columnsVisible}
+              setTablePage={setTablePage}
             />
           ) : (
-            <Flex direction="column" align="center" justify="center" h="800px" textAlign="center">
+            <Flex direction="column" align="center" justify="center" h="100%" textAlign="center">
               <Text fontSize="34px" fontWeight="bold" color="#2E4B6C" mb="2">
-                {t("graphicsArea.title") === "graphicsArea.title" ? "Graphics Area" : t("graphicsArea.title")}
+                {t("graphicsArea.title")}
               </Text>
               <Text fontSize="19px" color="gray.600">
-                {t("graphicsArea.instruction") === "graphicsArea.instruction"
-                  ? "Choose a section from the menu to filter the dashboard results."
-                  : t("graphicsArea.instruction")}
+                {t("graphicsArea.instruction")}
               </Text>
             </Flex>
           )}

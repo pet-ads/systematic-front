@@ -14,6 +14,9 @@ import { PaginationControls } from "@features/shared/types/pagination";
 import { KeyedMutator } from "swr";
 import { SelectionArticles } from "@features/review/execution-selection/services/useFetchSelectionArticles";
 
+// Hooks
+import useWindowWidth from "@features/shared/hooks/useWindowWidth";
+
 const verticalTransitionVariants = {
   initial: { opacity: 0, x: 5 },
   animate: { opacity: 1, x: 0, transition: { duration: 0.5 } },
@@ -50,6 +53,23 @@ export const SplitVertical: React.FC<VerticalProps> = ({
   extraParams = {},
   handleChangeLayout,
 }) => {
+  const window = useWindowWidth();
+  let minWidth: string = "";
+  let maxWidth: string = "";
+  if(window > 1750) {
+    maxWidth = "65%";
+    minWidth = "35%";
+  } else if(window > 1550) {
+    maxWidth = "60%";
+    minWidth = "40%";
+  } else if(window > 1400) {
+    maxWidth = "55%";
+    minWidth = "45%";
+  } else {
+    maxWidth = "50%";
+    minWidth = "50%";
+  }
+
   const selectionArea = (
     <StudySelectionArea
       articles={articles}
@@ -61,6 +81,7 @@ export const SplitVertical: React.FC<VerticalProps> = ({
       onTablePageChange={onTablePageChange}
       extraParams={extraParams}
       handleChangeLayout={handleChangeLayout}
+      isVertical={true}
     />
   );
 
@@ -71,13 +92,15 @@ export const SplitVertical: React.FC<VerticalProps> = ({
       pagination={pagination}
       sortConfig={sortConfig}
       handleHeaderClick={handleHeaderClick}
+      isSplited={true}
+      isVertical={true}
     />
   );
 
   return (
     <Flex
       w="100%"
-      h="calc(100% - 1rem)"
+      h="100%"
       gap="1rem"
       justifyContent="space-between"
       pr=".5rem"
@@ -91,8 +114,8 @@ export const SplitVertical: React.FC<VerticalProps> = ({
           exit="exit"
           style={
             isInverted
-              ? { minWidth: "35%", maxHeight: "100%" }
-              : { maxWidth: "65%", maxHeight: "100%" }
+              ? { minWidth: minWidth, maxHeight: "100%" }
+              : { maxWidth: maxWidth, maxHeight: "100%" }
           }
         >
           {isInverted ? selectionArea : table}
@@ -105,8 +128,8 @@ export const SplitVertical: React.FC<VerticalProps> = ({
           exit="exit"
           style={
             isInverted
-              ? { maxWidth: "65%", maxHeight: "100%" }
-              : { minWidth: "35%", maxHeight: "100%" }
+              ? { maxWidth: maxWidth, maxHeight: "100%" }
+              : { minWidth: minWidth, maxHeight: "100%" }
           }
         >
           {isInverted ? table : selectionArea}

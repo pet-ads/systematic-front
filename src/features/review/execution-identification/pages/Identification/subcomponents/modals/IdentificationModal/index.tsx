@@ -81,30 +81,30 @@ function IdentificationModal({
     comment,
   });
 
-  const { updateSession } = useUpdateSession({ 
-    sessionId, 
-    mutate, 
-    searchString, 
-    comment, 
+  const { updateSession } = useUpdateSession({
+    sessionId,
+    mutate,
+    searchString,
+    comment,
     type
   });
 
 
   useEffect(() => {
-    const fetchSession = async () => {  
+    const fetchSession = async () => {
       setSource(type);
       onOpen();
 
-      if(action === "update") {
+      if (action === "update") {
         const id = localStorage.getItem("systematicReviewId");
         try {
           const response = await Axios.get(`/systematic-study/${id}/search-session`);
-          const selectedSession = response.data.searchSessions.find((session : any) => session.id === sessionId);
-          if(selectedSession) {
+          const selectedSession = response.data.searchSessions.find((session: any) => session.id === sessionId);
+          if (selectedSession) {
             setSearchString(selectedSession.searchString);
             setComment(selectedSession.additionalInfo);
           }
-        } catch(error) {
+        } catch (error) {
           const toast = useToaster();
           toast({
             title: "Failed to load session",
@@ -112,7 +112,7 @@ function IdentificationModal({
             status: "error",
           });
         }
-      } 
+      }
     };
 
     fetchSession();
@@ -131,7 +131,7 @@ function IdentificationModal({
       return;
     }
 
-    if(action === "create") {
+    if (action === "create") {
       sendFilesToServer();
     } else {
       updateSession();
@@ -195,7 +195,7 @@ function IdentificationModal({
               <FormLabel>{t("dataBaseCard.identificationModal.input.referenceFiles.label")}</FormLabel>
               {referenceFiles.map((file, index) => (
                 <Flex key={index} alignItems="center" mb={2}>
-                  <Box flex="1" border="1px" borderRadius="md" p={2}>
+                  <Box flex="1" border="1px" borderRadius="md" cursor="default" p={2}>
                     {file.name}
                   </Box>
                   <IconButton
@@ -207,7 +207,9 @@ function IdentificationModal({
                   />
                 </Flex>
               ))}
-              <DragAndDrop handleFileChange={handleFile} />
+              {referenceFiles.length === 0 && (
+                <DragAndDrop handleFileChange={handleFile} />
+              )}
             </FormControl>
           )}
         </ModalBody>

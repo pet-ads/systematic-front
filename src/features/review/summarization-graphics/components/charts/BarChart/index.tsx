@@ -21,7 +21,7 @@ export default function BarChart({
   section
 }: Props) {
   const labelAbbreviation = section == 'inclusion' ? 'IC'
-    : section == 'exclusion' ? 'EC' : section == 'questions' ? 'RQ' : 'Source';
+    : section == 'exclusion' ? 'EC' : '';
 
   const chartConfig = {
     series: [

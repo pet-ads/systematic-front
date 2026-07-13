@@ -116,9 +116,9 @@ export default function IncludedResearchers({researchers, setResearchers}:any) {
       {listedResearchers.map((researcher:any) => (
         <Flex key={researcher.id} align="center" gap={5} px={4} py={2} borderWidth="1px" borderColor="gray.200" borderRadius="md">
           <Avatar size="sm" name={researcher.name} bg="#2E4B6C" color="white"/>
-          <Flex align="center" justify="space-between" flex="1">
-            <Text>{researcher.name} - {researcher.email}</Text>
-            <Flex alignItems="center" justifyContent="center" gap={5}>
+          <Flex align={{ base: "flex-start", xl: "center" }} justify="space-between" flex="1" direction={{ base: "column", xl: "row" }} gap={{ base: 2, xl: 0 }}>
+            <Text wordBreak="break-word" pr={{ base: 0, xl: 4 }}>{researcher.name} - {researcher.email}</Text>
+            <Flex alignItems="center" justifyContent={{ base: "space-between", xl: "flex-end" }} gap={5} w={{ base: "100%", xl: "auto" }}>
               {(researcher.status === "pending" || researcher.status === "expired" || researcher.status === "excluding") && (
                 <Text color="gray.500">
                   {t(`generalDefinition.input.researchers.status.${researcher.status}`)}
@@ -136,7 +136,7 @@ export default function IncludedResearchers({researchers, setResearchers}:any) {
                         fontWeight="normal"
                         fontSize={16}
                         h="100%"
-                        w="200px"
+                        w={{ base: "auto", xl: "200px" }}
                         p="0"
                         textAlign="start"
                         display="flex"
@@ -160,19 +160,11 @@ export default function IncludedResearchers({researchers, setResearchers}:any) {
                       </MenuList>
                     </Menu>
                   ) : (
-                    <Text w="200px" h="100%" borderInline="3px solid transparent" p={0} display="flex" alignItems="center" lineHeight="20px">
+                    <Text w={{ base: "auto", xl: "200px" }} h="100%" borderInline="3px solid transparent" p={0} display="flex" alignItems="center" lineHeight="20px">
                       {`${t("generalDefinition.input.researchers.role.role")}: ${t(`generalDefinition.input.researchers.role.${researcher.role}`)}`}
                     </Text>
                   )}
                   <Flex>
-                    <Button
-                      variant="ghost"
-                      onClick={() =>
-                        setResearcherToDelete(researcher)
-                      }
-                    >
-                      <Icon as={DeleteIcon} w="15px" h="15px"/>
-                    </Button>
                     <Button
                       variant="ghost"
                       onClick={() => {
@@ -189,6 +181,14 @@ export default function IncludedResearchers({researchers, setResearchers}:any) {
                       ) : (
                         <Icon as={EditIcon} w="15px" h="15px"/>
                       )}
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      onClick={() =>
+                        setResearcherToDelete(researcher)
+                      }
+                    >
+                      <Icon as={DeleteIcon} w="15px" h="15px"/>
                     </Button>
                   </Flex>
                 </>

@@ -63,7 +63,7 @@ const useHandleExportedFiles = ({
           status: "warning",
         });
       } else {
-        setReferenceFiles((prevFiles) => [...prevFiles, newFile]);
+        setReferenceFiles([newFile]);
       }
     }
   };

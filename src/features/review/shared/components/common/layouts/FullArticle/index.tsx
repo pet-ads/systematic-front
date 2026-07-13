@@ -27,7 +27,7 @@ export const FullArticle: React.FC<TableProps> = ({
   handleChangeLayout, 
 }) => {
   return (
-    <Box w="100%" h="calc(100% - 1rem)">
+    <Box w="100%" h="100%">
       <StudySelectionArea
         articles={articles}
         page={page}

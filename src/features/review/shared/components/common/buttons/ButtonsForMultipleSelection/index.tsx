@@ -7,6 +7,7 @@ import { UseChangeStudySelectionStatus } from "../../../../services/useChangeStu
 import useSendDuplicatedStudies from "../../../../services/useSendDuplicatedStudies";
 import { FaCheckCircle, FaEye, FaTrashAlt } from "react-icons/fa";
 import { MdOutlineCleaningServices } from "react-icons/md";
+import useWindowWidth from "@features/shared/hooks/useWindowWidth";
 
 const buttonSX = {
   display: "flex",
@@ -23,12 +24,15 @@ const buttonSX = {
 interface ButtonsForMultipleSelectionProps {
   onShowSelectedArticles: (showSelected: boolean) => void;
   isShown: boolean;
+  reloadArticles: () => Promise<any>;
 }
 
 export default function ButtonsForMultipleSelection({
   onShowSelectedArticles,
   isShown,
+  reloadArticles,
 }: ButtonsForMultipleSelectionProps) {
+  const window = useWindowWidth();
   const studyContext = useContext(StudyContext);
   const { t } = useTranslation("review/execution-selection");
 
@@ -43,8 +47,10 @@ export default function ButtonsForMultipleSelection({
 
   const articles = studyContext?.selectedArticles;
 
-  const handleSendDuplicatedStudies = () => {
-    sendDuplicatedStudies();
+  const handleSendDuplicatedStudies = async () => {
+    await sendDuplicatedStudies();
+    await reloadArticles();
+
     studyContext?.clearSelectedArticles();
     onShowSelectedArticles(false);
   };
@@ -61,34 +67,37 @@ export default function ButtonsForMultipleSelection({
   };
 
   return articles && Object.keys(articles).length > 1 ? (
-    <Flex gap=".5rem">
-      {!isShown ? (
-        <Button
-          sx={buttonSX}
-          bg="#EBF0F3"
-          _hover={{ bg: "white", color: "#263C56", boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)"}}
-          transition="0.1s ease-in-out"
-          onClick={() => {
-            onShowSelectedArticles(!isShown);
-          }}
-          leftIcon={<FaEye color="green" />}
-        >
-          {t("buttonsForMultipleSelection.showSelected")}
-        </Button>
-      ) : (
-        <Button
-          sx={buttonSX}
-          bg="#EBF0F3"
-          _hover={{ bg: "white", color: "#263C56", boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)"}}
-          transition="0.2s ease-in-out"
-          onClick={() => {
-            onShowSelectedArticles(!isShown);
-          }}
-          leftIcon={<FaEye color="green" />}
-        >
-          {t("buttonsForMultipleSelection.showAll")}
-        </Button>
+    <Flex gap=".5rem" flexDirection={window > 1000 ? "row" : "column"}>
+      {window > 1000 && (
+        (!isShown ? (
+          <Button
+            sx={buttonSX}
+            bg="#EBF0F3"
+            _hover={{ bg: "white", color: "#263C56", boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)"}}
+            transition="0.1s ease-in-out"
+            onClick={() => {
+              onShowSelectedArticles(!isShown);
+            }}
+            leftIcon={<FaEye color="green" />}
+          >
+            {t("buttonsForMultipleSelection.showSelected")}
+          </Button>
+        ) : (
+          <Button
+            sx={buttonSX}
+            bg="#EBF0F3"
+            _hover={{ bg: "white", color: "#263C56", boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)"}}
+            transition="0.2s ease-in-out"
+            onClick={() => {
+              onShowSelectedArticles(!isShown);
+            }}
+            leftIcon={<FaEye color="green" />}
+          >
+            {t("buttonsForMultipleSelection.showAll")}
+          </Button>
+        ))
       )}
+
 
       <Button
         sx={buttonSX}
@@ -100,29 +109,33 @@ export default function ButtonsForMultipleSelection({
       >
         {t("buttonsForMultipleSelection.markAsDuplicated")}
       </Button>
-      <Button
-        sx={buttonSX}
-        bg="#EBF0F3"
-        _hover={{ bg: "white", color: "#263C56", boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)"}}
-        transition="0.2s ease-in-out"
-        onClick={handleSendExcludedStudies}
-        leftIcon={<FaTrashAlt color="red"/>}
-      >
-        {t("buttonsForMultipleSelection.markAsExcluded")}
-      </Button>
-      <Button
-        sx={buttonSX}
-        bg="#EBF0F3"
-        _hover={{ bg: "white", color: "#263C56", boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)"}}
-        transition="0.2s ease-in-out"
-        onClick={() => {
-          studyContext.clearSelectedArticles();
-          onShowSelectedArticles(false);
-        }}
-        leftIcon={<MdOutlineCleaningServices color="orange"/>}
-      >
-        {t("buttonsForMultipleSelection.clearSelection")}
-      </Button>
+      {window > 1000 && (
+        <>
+          <Button
+            sx={buttonSX}
+            bg="#EBF0F3"
+            _hover={{ bg: "white", color: "#263C56", boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)"}}
+            transition="0.2s ease-in-out"
+            onClick={handleSendExcludedStudies}
+            leftIcon={<FaTrashAlt color="red"/>}
+          >
+            {t("buttonsForMultipleSelection.markAsExcluded")}
+          </Button>
+          <Button
+            sx={buttonSX}
+            bg="#EBF0F3"
+            _hover={{ bg: "white", color: "#263C56", boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)"}}
+            transition="0.2s ease-in-out"
+            onClick={() => {
+              studyContext.clearSelectedArticles();
+              onShowSelectedArticles(false);
+            }}
+            leftIcon={<MdOutlineCleaningServices color="orange"/>}
+          >
+            {t("buttonsForMultipleSelection.clearSelection")}
+          </Button>
+        </>
+      )}
     </Flex>
   ) : null;
 }

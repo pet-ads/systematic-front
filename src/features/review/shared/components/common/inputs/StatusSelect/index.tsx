@@ -5,6 +5,7 @@ import { FaRegCircle } from "react-icons/fa";
 import { IoIosCloseCircle } from "react-icons/io";
 import type ArticleInterface from "@features/review/shared/types/ArticleInterface";
 import { useTranslation } from "react-i18next";
+import useWindowWidth from "@features/shared/hooks/useWindowWidth";
 
 type StatusKey = "INCLUDED" | "DUPLICATED" | "EXCLUDED" | "UNCLASSIFIED";
 
@@ -49,6 +50,7 @@ export default function StatusSelect({
   page,
   totalCount,
 }: StatusSelectProps) {
+  const windowWidth = useWindowWidth();
   const btnRef = useRef<HTMLButtonElement | null>(null);
   const [menuWidth, setMenuWidth] = useState<number>(0);
 
@@ -89,7 +91,7 @@ export default function StatusSelect({
   const selectedOption = options.find((o) => o.value === selectedValue);
   let buttonLabel = t("statusSelect.placeholder");
   if (selectedOption) {
-    buttonLabel = `${t("statusSelect.placeholder")} - ${getLabel(selectedOption.label, selectedOption.value)}`;
+    buttonLabel = getLabel(selectedOption.label, selectedOption.value);
   }
   useEffect(() => {
     const update = () => setMenuWidth(btnRef.current?.offsetWidth ?? 0);
@@ -99,7 +101,7 @@ export default function StatusSelect({
   }, [buttonLabel]);
 
   return (
-    <FormControl w="20rem">
+    <FormControl w={windowWidth > 1100 ? "20rem" : "15rem"}>
       <Menu isLazy>
         <MenuButton
           ref={btnRef}

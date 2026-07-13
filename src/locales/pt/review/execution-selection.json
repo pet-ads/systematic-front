@@ -86,7 +86,8 @@
             "resetArticle": "Redefinir artigo",
             "selectPriority": "Selecionar prioridade de leitura",
             "includeDescription": "Adicionar critério de inclusão",
-            "excludeDescription": "Adicionar critério de exclusão"
+            "excludeDescription": "Adicionar critério de exclusão",
+            "changeToTable": "Mudar para visualização de tabela"
         },
         "comboBox": {
             "include": "Incluir",

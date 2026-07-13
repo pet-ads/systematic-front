@@ -10,7 +10,14 @@ interface ITextInputProps {
   variant?: string;
 }
 
-export default function TextAreaInput({ label, placeholder, onChange, value, ...textareaProps }: ITextInputProps) {
+export default function TextAreaInput({ 
+  label, 
+  placeholder, 
+  onChange, 
+  value, 
+  w = "100%", 
+  ...textareaProps 
+}: ITextInputProps) {
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (onChange) {
       onChange(e);
@@ -20,11 +27,22 @@ export default function TextAreaInput({ label, placeholder, onChange, value, ...
   const normalizedValue = value ?? "";
 
   return (
-    <FormControl w={"100%"}>
-      <FormLabel mt={"30px"} fontWeight={500} fontSize={"large"} >{label}</FormLabel>
-      <Textarea border="2px solid" borderColor="gray.300" bgColor={"#ffffffff"} _placeholder={{ opacity: 1, color: 'gray.500' }}
-          focusBorderColor="#2E4B6C" placeholder={placeholder} onChange={handleChange}
-          {...textareaProps} value={normalizedValue}/>
+    <FormControl w={w}>
+      <FormLabel mt={"30px"} fontWeight={500} fontSize={"large"}>
+        {label}
+      </FormLabel>
+      <Textarea 
+        w="100%"
+        border="2px solid" 
+        borderColor="gray.300" 
+        bgColor={"#ffffff"} 
+        _placeholder={{ opacity: 1, color: 'gray.500' }}
+        focusBorderColor="#2E4B6C" 
+        placeholder={placeholder} 
+        onChange={handleChange}
+        value={normalizedValue}
+        {...textareaProps} 
+      />
     </FormControl>
   );
 }

@@ -26,8 +26,8 @@ export default function AddTextTable({
   const { handleDeleteText } = useDeleteText(hookContext);
 
   return (
-    <FormControl sx={label}>
-      <FormControl sx={formcontrol}>
+    <FormControl w="100%" sx={label}>
+      <FormControl w="100%" sx={formcontrol}>
         <FormLabel mt={"30px"} fontWeight={500} fontSize={"large"}>
           {" "}
           {text}

@@ -22,26 +22,23 @@ export default function IncludedStudiesRenderer({ filteredStudies, type, chartId
 
   const isTable = type === "Table" || type === "Tabela";
   const isBubble = type === "Bubble Chart" || type === "Gráfico de Bolhas";
+  
+  const bubbleItems: BubbleItem[] = includedStudies.flatMap(study =>
+    study.searchSources.map(src => ({ x: Number(study.year), group: src, y: 1 }))
+  );
+  const { series, yCategories } = useBubbleDataGeneric(bubbleItems);
 
   let content;
   
   if (isTable) {
     content = (
-      <Box w="100%">
-        <LayoutFactoryChart columnsVisible={columnsVisible} articles={includedStudies as ArticleInterface[]} isLoading={false} />
-      </Box>
+      <LayoutFactoryChart columnsVisible={columnsVisible} articles={includedStudies as ArticleInterface[]} isLoading={false} />
     );
   } else if (type === "Line Chart" || type === "Gráfico de Linhas") {
     content = (
-      <Box w="100%">
-        <IncludedStudiesLineChart filteredStudies={includedStudies} />
-      </Box>
+      <IncludedStudiesLineChart filteredStudies={includedStudies} />
     );
   } else if (isBubble) {
-    const items: BubbleItem[] = includedStudies.flatMap(study => 
-      study.searchSources.map(src => ({ x: Number(study.year), group: src, y: 1 }))
-    );
-    const { series, yCategories } = useBubbleDataGeneric(items);
     content = (
       <BubbleChart
         title="Search Sources Evolution"
@@ -54,25 +51,5 @@ export default function IncludedStudiesRenderer({ filteredStudies, type, chartId
     content = <div>{t("typeNotSupported")}</div>;
   }
 
-  return (
-    <Box 
-      id={chartId}
-      w="100%"
-      minH="auto" 
-      display="flex"
-      justifyContent="center" 
-      alignItems={isTable ? "flex-start" : "center"}  
-      pt={isTable ? 4 : 10} 
-      pb={10}
-    >
-      <Box 
-        w="100%" 
-        maxW={isBubble ? "1600px" : "1200px"} 
-        display="flex" 
-        justifyContent="center"
-      > 
-        {content}
-      </Box>
-    </Box>
-  );
+  return <Box id={chartId}>{content}</Box>;
 }

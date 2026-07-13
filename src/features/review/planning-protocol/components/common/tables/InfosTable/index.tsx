@@ -138,12 +138,21 @@ export default function InfosTable({
   };
 
   return (
-    <TableContainer sx={{ ...tbConteiner, h: tableHeight || tbConteiner.h }}>
-      <Table variant="simple" size="md">
+ 
+    <TableContainer 
+      w="100%" 
+      sx={{ 
+        ...tbConteiner, 
+        h: tableHeight || tbConteiner.h,
+        width: "100% !important",
+        maxWidth: "100% !important"
+      }}
+    >
+      <Table variant="simple" size="md" w="100%">
         <Thead>
           <Tr>
             <Th colSpan={3} padding="1rem">
-              <Flex gap="4" align="center">
+              <Flex gap="4" align="center" w="100%">
                 {enableReferenceCode && (
                   <Input
                     placeholder={`${referencePrefix}-01`}

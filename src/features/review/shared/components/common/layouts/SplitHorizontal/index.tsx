@@ -90,7 +90,7 @@ export const SplitHorizontal: React.FC<HorizontalProps> = ({
   return (
     <Flex
       w="100%"
-      h="calc(100% - 1rem)"
+      h="100%"
       flexDirection="column"
       gap="1rem"
       justifyContent="space-between"

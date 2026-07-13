@@ -25,7 +25,7 @@
                 "status": {
                     "pending": "Pending",
                     "expired": "Expired",
-                    "excluding": "Excluding"               
+                    "excluding": "Excluding"
                 },
                 "role": {
                     "role": "Role",
@@ -178,7 +178,7 @@
                 "questionType": {
                     "textual": "textual",
                     "pickList": "pick list",
-                    "numberedScale": "number scale", 
+                    "numberedScale": "number scale",
                     "labeledList": "labeled list",
                     "pickMany": "pick many"
                 },
@@ -225,5 +225,28 @@
                 "placeholder": "Enter your Analysis and Synthesis Method"
             }
         }
-    }    
+    },
+    "toasts": {
+        "duplicateTitle": "Duplicate Entry",
+        "duplicateDescription": "This item already exists!"
+    },
+    "deleteSourceModal": {
+        "heading": "Delete source",
+        "confirmMessage": "Are you sure you want to delete the source",
+        "blockedTitle": "Source cannot be deleted",
+        "blockedMessage": "This source has Included, Excluded or Duplicated articles. Reset all articles to Unclassified before deleting the source.",
+        "checking": "Checking source articles...",
+        "cancel": "Cancel",
+        "confirm": "Confirm deletion",
+        "toasts": {
+            "success": {
+                "title": "Source deleted successfully!",
+                "description": "The source has been removed."
+            },
+            "catch": {
+                "title": "Action Failed",
+                "description": "Could not delete the source. Please try again."
+            }
+        }
+    }
 }

@@ -10,6 +10,7 @@ import { FullArticle } from "../../common/layouts/FullArticle";
 
 // Hooks
 import { ColumnVisibility } from "@features/review/shared/hooks/useVisibilityColumns";
+import useWindowWidth from "@features/shared/hooks/useWindowWidth";
 
 // Types
 import type ArticleInterface from "../../../types/ArticleInterface";
@@ -18,7 +19,7 @@ import { PaginationControls } from "@features/shared/types/pagination";
 import { KeyedMutator } from "swr";
 import { SelectionArticles } from "@features/review/execution-selection/services/useFetchSelectionArticles";
 
-export type PageLayout = "Selection" | "Extraction" | "Identification" | "Graphics-SearchSources" | "Graphics-IncludedStudies" | "Graphics-FormQuestions";
+export type PageLayout = "Selection" | "Extraction" | "Identification" | "Graphics-SearchSources" | "Graphics-IncludedStudies" | "Graphics-FormQuestions" | "Graphics-TextualQuestion";
 
 interface LayoutFactoryProps {
   layout: ViewModel;
@@ -52,9 +53,10 @@ export default function LayoutFactory({
   onTablePageChange,
   extraParams = {},
 }: LayoutFactoryProps) {
+  const window = useWindowWidth();
   
   const handleRowClick = () => {
-    handleChangeLayout("vertical");
+    handleChangeLayout(window > 1000 ? "vertical" : "horizontal");
   };
 
   const layoutMap: Record<ViewModel, React.ReactNode> = {
@@ -153,6 +155,6 @@ export default function LayoutFactory({
   ) : articles && articles.length > 0 ? (
     layoutMap[layout]
   ) : (
-    <NoDataMessage />
+    <NoDataMessage isReport={false} />
   );
 }

@@ -31,18 +31,34 @@ export default function AddSelectionTable({
 
   const formattedOptions = options.map((opt) => capitalize(opt.toLowerCase()));
 
-const formatSelectedValues = selectedValues.map((val) => {
-  const originalOption = options.find((opt) => opt.toLowerCase() === val.toLowerCase());
-  return originalOption || val;
-});
-
+  const formatSelectedValues = selectedValues.map((val) => {
+    const originalOption = options.find((opt) => opt.toLowerCase() === val.toLowerCase());
+    return originalOption || val;
+  });
 
   return (
-    <FormControl sx={conteiner} alignContent={"center"}>
+    <FormControl 
+      w="100%" 
+      sx={{ 
+        ...conteiner, 
+        width: "100% !important", 
+        maxWidth: "100% !important" 
+      }} 
+      alignContent={"center"}
+    >
       <FormLabel mt={"30px"} fontWeight={500} fontSize={"large"}>
         {label}
       </FormLabel>
-      <FormControl sx={formcontrol} justifyContent={"space-between"}>
+      
+      <FormControl 
+        w="100%" 
+        sx={{ 
+          ...formcontrol, 
+          width: "100% !important", 
+          maxWidth: "100% !important" 
+        }} 
+        justifyContent={"space-between"}
+      >
         <SelectInput
           values={formattedOptions}
           names={options}

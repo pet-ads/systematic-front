@@ -1,5 +1,9 @@
 // External Libraries
+import { useContext, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import AppContext from "@features/shared/context/ApplicationContext";
+import useWindowWidth from "@features/shared/hooks/useWindowWidth";
+import { Box } from "@chakra-ui/react"; // Adicionado o Box
 
 // Components
 import NavButton from "@components/common/buttons/NavigationButton";
@@ -11,6 +15,9 @@ import useCreateProtocol from "../../services/useCreateProtocol";
 import ProtocolFormLayout from "../../components/common/protocolForm";
 
 export default function SelectionAndExtraction() {
+  const windowWidth = useWindowWidth();
+  const context = useContext(AppContext);
+  
   const {
     selectionAndExtraction,
     handleChangeSelectionAndExtraction,
@@ -18,6 +25,15 @@ export default function SelectionAndExtraction() {
   } = useCreateProtocol();
 
   const { t } = useTranslation("review/planning-protocol");
+  
+  useEffect(() => {
+    if(context && windowWidth < 1000 && context.sidebarState === "open") {
+      context.setSidebarState("collapsed");
+    }
+  }, [windowWidth]);
+
+  if(!context) return null;
+
   const { dataCollectionProcess, selectionProcess } = selectionAndExtraction;
 
   const id = localStorage.getItem("systematicReviewId") || "";
@@ -47,29 +63,42 @@ export default function SelectionAndExtraction() {
         </>
       )}
     >
-      <TextAreaInput
-        value={selectionProcess}
-        onChange={(event) => {
-          handleChangeSelectionAndExtraction(
-            "selectionProcess",
-            event.target.value
-          );
+      <Box 
+        display="flex" 
+        flexDirection="column" 
+        w="100%"
+        gap="2rem"
+        sx={{
+          "& > *": {
+            width: "100%",
+            maxWidth: "100%",
+          }
         }}
-        label={t("selectionAndExtraction.input.selectionProcess.label")}
-        placeholder={t("selectionAndExtraction.input.selectionProcess.placeholder")}
-      />
-      <TextAreaInput
-        value={dataCollectionProcess}
-        onChange={(event) => {
-          handleChangeSelectionAndExtraction(
-            "dataCollectionProcess",
-            event.target.value
-          );
-        }}
-        label={t("selectionAndExtraction.input.dataCollectionProcess.label")}
-        placeholder={t("selectionAndExtraction.input.dataCollectionProcess.placeholder")}
-      />
-      <InteractiveTable id={id} url={url} label={t("selectionAndExtraction.input.extractionQuestions.label")} />
+      >
+        <TextAreaInput
+          value={selectionProcess}
+          onChange={(event) => {
+            handleChangeSelectionAndExtraction(
+              "selectionProcess",
+              event.target.value
+            );
+          }}
+          label={t("selectionAndExtraction.input.selectionProcess.label")}
+          placeholder={t("selectionAndExtraction.input.selectionProcess.placeholder")}
+        />
+        <TextAreaInput
+          value={dataCollectionProcess}
+          onChange={(event) => {
+            handleChangeSelectionAndExtraction(
+              "dataCollectionProcess",
+              event.target.value
+            );
+          }}
+          label={t("selectionAndExtraction.input.dataCollectionProcess.label")}
+          placeholder={t("selectionAndExtraction.input.dataCollectionProcess.placeholder")}
+        />
+        <InteractiveTable id={id} url={url} label={t("selectionAndExtraction.input.extractionQuestions.label")} />
+      </Box>
     </ProtocolFormLayout>
   );
 }

@@ -1,5 +1,9 @@
 {
     "header": "Gráficos",
+    "graphicsArea": {
+        "title": "Área de Gráficos",
+        "instruction": "Escolha uma seção do menu para filtrar os resultados do dashboard"
+    },
     "filtersArea": {
         "heading": "Área de Filtros",
         "sources": "Fontes",
@@ -39,7 +43,8 @@
             "barChart": "Gráfico de Barras",
             "bubbleChart": "Gráfico de Bolhas",
             "lineChart": "Gráfico de Linhas",
-            "table": "Tabela"
+            "table": "Tabela",
+            "itemTable": "Tabela por Item"
         }
     },
     "noDataMessage": {

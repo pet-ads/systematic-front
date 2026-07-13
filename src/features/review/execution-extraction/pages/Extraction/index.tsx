@@ -1,15 +1,17 @@
 // External library
-import { useContext, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { Box, Flex } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 
 // Context
 import StudySelectionContext from "@features/review/shared/context/StudiesContext";
+import AppContext from "@features/shared/context/ApplicationContext";
 
 // Hooks
 import useInputState from "@features/review/shared/hooks/useInputState";
 import useLayoutPage from "../../../shared/hooks/useLayoutPage";
 import useVisibiltyColumns from "@features/review/shared/hooks/useVisibilityColumns";
+import useWindowWidth from "@features/shared/hooks/useWindowWidth";
 
 // Components
 import Header from "../../../../../components/structure/Header/Header";
@@ -30,6 +32,13 @@ import useFetchExtractionArticles from "../../services/useFetchExtractionArticle
 import type ArticleInterface from "@features/review/shared/types/ArticleInterface";
 
 export default function Extraction() {
+  const window = useWindowWidth();
+  const context = useContext(AppContext);
+  if(!context) return null;
+  const { sidebarState, setSidebarState } = context;
+  useEffect(() => {
+    if(window < 1000 && sidebarState === "open") setSidebarState("collapsed");
+  }, []);
   const [searchString, setSearchString] = useState<string>("");
   const [showSelected, setShowSelected] = useState<boolean>(false);
   const [fetchedTotalPages, setFetchedTotalPages] = useState<number>(1);
@@ -117,17 +126,20 @@ export default function Extraction() {
         </Flex>
         <Box sx={inputconteiner}>
           <Flex gap="1rem" w="1rem" justifyContent="space-between">
-            <InputText
-              type="search"
-              placeholder={t("search")}
-              nome="search"
-              onChange={(e) => setSearchString(e.target.value)}
-              value={searchString}
-            />
+            {window > 1000 && (
+              <InputText
+                type="search"
+                placeholder={t("search")}
+                nome="search"
+                onChange={(e) => setSearchString(e.target.value)}
+                value={searchString}
+              />
+            )}
             {layout !== "article" ? (
               <ButtonsForMultipleSelection
                 onShowSelectedArticles={setShowSelected}
                 isShown={showSelected}
+                reloadArticles={mutate}
               />
             ) : null}
           </Flex>
@@ -152,9 +164,9 @@ export default function Extraction() {
         </Box>
       </Box>
       <Box
-        w="calc(100% - 1.25rem)"
-        h="calc(100vh - 10rem)"
-        padding="0 0 0 .5rem"
+        w="calc(100% - 1.5rem)"
+        h="calc(100% - 1rem)"
+        padding="0"
       >
         <LayoutFactory
           page="Extraction"

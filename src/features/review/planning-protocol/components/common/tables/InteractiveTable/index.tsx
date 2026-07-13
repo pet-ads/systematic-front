@@ -1,6 +1,6 @@
 // External library
 import { useEffect, useState } from "react";
-import { Input, Select, FormLabel, Textarea } from "@chakra-ui/react";
+import { Input, Select, FormLabel, Textarea, Text } from "@chakra-ui/react";
 import { mutate } from "swr";
 import { useTranslation } from "react-i18next";
 import Axios from "../../../../../../../infrastructure/http/axiosClient";
@@ -335,16 +335,30 @@ export default function InteractiveTable({ id, url, label }: Props) {
       width: "10%",
       render: (row, index) => {
         const isEditing = editIndex === index;
+
+        if (!isEditing) {
+          return (
+            <Text
+              fontSize="sm"
+              color="black"
+              textAlign="center"
+              fontWeight="semibold"
+              sx={{ textTransform: "uppercase" }}
+            >
+              {row.id || "—"}
+            </Text>
+          );
+        }
+
         return (
           <Input
             value={row.id}
             onChange={(e) => handleIdChange(index, e.target.value)}
             maxLength={7}
-            isReadOnly={!isEditing}
-            border={isEditing ? "solid 1px #303D50" : "transparent"}
-            bg={isEditing ? "white" : "transparent"}
-            cursor={isEditing ? "text" : "default"}
-            _focus={{ boxShadow: isEditing ? "outline" : "none" }}
+            border="solid 1px #303D50"
+            bg="white"
+            cursor="text"
+            _focus={{ boxShadow: "outline" }}
             borderRadius="md"
             size="sm"
             sx={{ textTransform: "uppercase" }}
@@ -352,6 +366,7 @@ export default function InteractiveTable({ id, url, label }: Props) {
         );
       },
     },
+
     {
       key: "question",
       label: t("selectionAndExtraction.input.extractionQuestions.question"),
@@ -388,18 +403,31 @@ export default function InteractiveTable({ id, url, label }: Props) {
       width: "25%",
       render: (row, index) => {
         const isEditing = editIndex === index;
+
+        if (!isEditing) {
+          return (
+            <Text
+              fontSize="sm"
+              color="black"
+              whiteSpace="normal"
+              wordBreak="break-word"
+              textAlign="center"
+            >
+              {row.type || "—"}
+            </Text>
+          );
+        }
+
         return (
           <Select
             onChange={(e) => handleSelect(index, e.target.value)}
             placeholder={!row.type ? "Select type" : undefined}
             value={row.type || ""}
-            isDisabled={!isEditing}
-            border={isEditing ? "solid 1px #303D50" : "transparent"}
-            bg={isEditing ? "white" : "transparent"}
+            border="solid 1px #303D50"
+            bg="white"
             color="black"
-            iconColor={isEditing ? "#303D50" : "transparent"}
-            cursor={isEditing ? "pointer" : "default"}
-            _disabled={{ opacity: 1, cursor: "default" }}
+            iconColor="#303D50"
+            cursor="pointer"
             borderRadius="md"
             size="sm"
           >
@@ -452,7 +480,7 @@ export default function InteractiveTable({ id, url, label }: Props) {
   ];
 
   return (
-    <div>
+    <div style={{ width: "100%" }}>
       <FormLabel mb={4} fontSize="lg">
         {label}
       </FormLabel>
@@ -472,6 +500,7 @@ export default function InteractiveTable({ id, url, label }: Props) {
           display: "flex",
           gap: "0.5rem",
           justifyContent: "end",
+          width: "100%",
         }}
       >
         <EventButton

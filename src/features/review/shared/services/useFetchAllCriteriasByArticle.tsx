@@ -65,7 +65,7 @@ export default function useFetchAllCriteriasByArticle({
   const selectedArticleReview = studiesContext?.selectedArticleReview ?? -1;
   const toast = useToaster();
 
-  const { criteria, mutate } = useFetchCriteriaForFocusedArticle({
+  const { criteria, isLoading, mutate } = useFetchCriteriaForFocusedArticle({
     articleId: selectedArticleReview,
   });
 
@@ -74,8 +74,10 @@ export default function useFetchAllCriteriasByArticle({
   const { revertCriterionState } = useRevertCriterionState({ page });
 
   const criterias = useMemo<CriteiriaProps>(() => {
-    const checkedInclusion = criteria?.inclusionCriteria || [];
-    const checkedExclusion = criteria?.exclusionCriteria || [];
+    if (isLoading || !criteria) return CRITERIA_FALLBACK;
+
+    const checkedInclusion = criteria.inclusionCriteria || [];
+    const checkedExclusion = criteria.exclusionCriteria || [];
 
     const inclusionMapped: OptionProps[] = inclusion.map((text) => ({
       text,
@@ -99,7 +101,7 @@ export default function useFetchAllCriteriasByArticle({
         },
       },
     };
-  }, [inclusion, exclusion, criteria]);
+  }, [inclusion, exclusion, criteria, isLoading]);
 
   const handlerUpdateCriteriasStructure = async (
     key: OptionType,
@@ -137,12 +139,6 @@ export default function useFetchAllCriteriasByArticle({
       await mutate(
         async () => {
           if (page === "Selection") {
-            await UseChangeStudySelectionStatus({
-              studyReviewId: [selectedArticleReview],
-              criterias: newChecked,
-              status,
-            });
-
             const extractionStatus: StatusValue =
               status === "INCLUDED" ? "UNCLASSIFIED" : status;
 
@@ -150,6 +146,12 @@ export default function useFetchAllCriteriasByArticle({
               studyReviewId: [selectedArticleReview],
               criterias: status === "EXCLUDED" ? newChecked : [],
               status: extractionStatus,
+            });
+
+            await UseChangeStudySelectionStatus({
+              studyReviewId: [selectedArticleReview],
+              criterias: newChecked,
+              status,
             });
           } else {
             await UseChangeStudyExtractionStatus({
@@ -186,7 +188,15 @@ export default function useFetchAllCriteriasByArticle({
 
   const resetLocalCriterias = async () => {
     if (selectedArticleReview === -1) return;
-    await mutate();
+    
+    await mutate(
+      (currentData: any) => ({
+        ...currentData,
+        inclusionCriteria: [],
+        exclusionCriteria: [],
+      }),
+      { revalidate: false }
+    );
   };
 
   return {

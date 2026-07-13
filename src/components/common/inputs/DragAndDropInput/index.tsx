@@ -16,6 +16,7 @@ export default function DragAndDrop({ handleFileChange }: DragAndDropProps) {
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
+    multiple: false,
     accept: {
       'application/x-bibtex': [".bib"], 'application/rdf+xml': [".ris"]}
 
