@@ -32,7 +32,14 @@ export default function SelectInfosTable({
 
   return (
     <>
-      <TableContainer sx={tbConteiner}>
+      <TableContainer
+        w="100%"
+        sx={{
+          ...tbConteiner,
+          width: "100% !important",
+          maxWidth: "100% !important"
+        }}
+      >
         <Table variant="simple" size="md">
           <Tbody className="tableBody">
             {selectedItems.map((item, index) => (
