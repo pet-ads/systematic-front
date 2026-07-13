@@ -55,9 +55,8 @@ export default function ButtonsForMultipleSelection({
   };
 
   return articles && Object.keys(articles).length > 1 ? (
-    <Flex gap=".5rem" flexDirection={window > 1000 ? "row" : "column"}>
-      {window > 1000 && (
-        (!isShown ? (
+    <Flex gap={window > 1350 ? ".5rem" : ".2rem"} flexDirection={window > 1350 ? "row" : "column"}>
+      {!isShown ? (
           <Button
             sx={buttonSX}
             bg="#EBF0F3"
@@ -83,9 +82,8 @@ export default function ButtonsForMultipleSelection({
           >
             {t("buttonsForMultipleSelection.showAll")}
           </Button>
-        ))
-      )}
-
+        )
+      }
 
       <Button
         sx={buttonSX}
@@ -97,23 +95,20 @@ export default function ButtonsForMultipleSelection({
       >
         {t("buttonsForMultipleSelection.markAsDuplicated")}
       </Button>
-      {window > 1000 && (
-        <>
-          <Button
-            sx={buttonSX}
-            bg="#EBF0F3"
-            _hover={{ bg: "white", color: "#263C56", boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)"}}
-            transition="0.2s ease-in-out"
-            onClick={() => {
-              studyContext.clearSelectedArticles();
-              onShowSelectedArticles(false);
-            }}
-            leftIcon={<MdOutlineCleaningServices color="orange"/>}
-          >
-            {t("buttonsForMultipleSelection.clearSelection")}
-          </Button>
-        </>
-      )}
+
+      <Button
+        sx={buttonSX}
+        bg="#EBF0F3"
+        _hover={{ bg: "white", color: "#263C56", boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)"}}
+        transition="0.2s ease-in-out"
+        onClick={() => {
+          studyContext.clearSelectedArticles();
+          onShowSelectedArticles(false);
+        }}
+        leftIcon={<MdOutlineCleaningServices color="orange"/>}
+      >
+        {t("buttonsForMultipleSelection.clearSelection")}
+      </Button>
     </Flex>
   ) : null;
 }
