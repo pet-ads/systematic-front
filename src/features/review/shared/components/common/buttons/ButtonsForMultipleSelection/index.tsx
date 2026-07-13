@@ -3,9 +3,8 @@ import { Button, Flex } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 
 import StudyContext from "@features/review/shared/context/StudiesContext";
-import { UseChangeStudySelectionStatus } from "../../../../services/useChangeStudySelectionStatus";
 import useSendDuplicatedStudies from "../../../../services/useSendDuplicatedStudies";
-import { FaCheckCircle, FaEye, FaTrashAlt } from "react-icons/fa";
+import { FaCheckCircle, FaEye } from "react-icons/fa";
 import { MdOutlineCleaningServices } from "react-icons/md";
 import useWindowWidth from "@features/shared/hooks/useWindowWidth";
 
@@ -55,17 +54,6 @@ export default function ButtonsForMultipleSelection({
     onShowSelectedArticles(false);
   };
 
-  const handleSendExcludedStudies = () => {
-    if (!articles || Object.keys(articles).length <= 1) return;
-    UseChangeStudySelectionStatus({
-      status: "EXCLUDED",
-      studyReviewId: [...Object.values(articles).map((art) => art.id)],
-      criterias: [],
-    });
-    studyContext?.clearSelectedArticles();
-    onShowSelectedArticles(false);
-  };
-
   return articles && Object.keys(articles).length > 1 ? (
     <Flex gap=".5rem" flexDirection={window > 1000 ? "row" : "column"}>
       {window > 1000 && (
@@ -111,16 +99,6 @@ export default function ButtonsForMultipleSelection({
       </Button>
       {window > 1000 && (
         <>
-          <Button
-            sx={buttonSX}
-            bg="#EBF0F3"
-            _hover={{ bg: "white", color: "#263C56", boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)"}}
-            transition="0.2s ease-in-out"
-            onClick={handleSendExcludedStudies}
-            leftIcon={<FaTrashAlt color="red"/>}
-          >
-            {t("buttonsForMultipleSelection.markAsExcluded")}
-          </Button>
           <Button
             sx={buttonSX}
             bg="#EBF0F3"
