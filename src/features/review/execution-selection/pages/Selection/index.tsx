@@ -38,6 +38,7 @@ export default function Selection() {
   useEffect(() => {
     if(window < 1000 && sidebarState === "open") setSidebarState("collapsed");
   }, []);
+  const [isMutipleSelectionEnable, setIsMultipleSelectionEnable] = useState<boolean>(false);
   const [searchString, setSearchString] = useState<string>("");
   const [showSelected, setShowSelected] = useState<boolean>(false);
   const [fetchedTotalPages, setFetchedTotalPages] = useState<number>(1);
@@ -129,8 +130,8 @@ export default function Selection() {
           />
         </Flex>
         <Box sx={inputconteiner}>
-          <Flex gap="1rem" w="1rem" justifyContent="space-between">
-            {window > 1000 && (
+          <Box>
+            {!isMutipleSelectionEnable && (
               <InputText
                 type="search"
                 placeholder={t("search")}
@@ -144,9 +145,10 @@ export default function Selection() {
                 onShowSelectedArticles={setShowSelected}
                 isShown={showSelected}
                 reloadArticles={mutate}
+                setIsMultipleSelectionEnable={setIsMultipleSelectionEnable}
               />
             ) : null}
-          </Flex>
+          </Box>
           <Box
             display="flex"
             gap="1rem"

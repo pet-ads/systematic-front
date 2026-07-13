@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { SetStateAction, useContext } from "react";
 import { Button, Flex } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 
@@ -24,12 +24,14 @@ interface ButtonsForMultipleSelectionProps {
   onShowSelectedArticles: (showSelected: boolean) => void;
   isShown: boolean;
   reloadArticles: () => Promise<any>;
+  setIsMultipleSelectionEnable: React.Dispatch<SetStateAction<boolean>>;
 }
 
 export default function ButtonsForMultipleSelection({
   onShowSelectedArticles,
   isShown,
   reloadArticles,
+  setIsMultipleSelectionEnable
 }: ButtonsForMultipleSelectionProps) {
   const window = useWindowWidth();
   const studyContext = useContext(StudyContext);
@@ -45,6 +47,12 @@ export default function ButtonsForMultipleSelection({
   });
 
   const articles = studyContext?.selectedArticles;
+
+  if(articles && Object.keys(articles).length > 1){
+    setIsMultipleSelectionEnable(true);
+  } else {
+    setIsMultipleSelectionEnable(false);
+  }
 
   const handleSendDuplicatedStudies = async () => {
     await sendDuplicatedStudies();
