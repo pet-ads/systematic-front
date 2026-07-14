@@ -1,6 +1,8 @@
 // External library
 import { FormControl, FormLabel, Input } from "@chakra-ui/react";
 
+import useWindowWidth from "@features/shared/hooks/useWindowWidth";
+
 // Types
 interface ITextFieldProps {
   label?: string;
@@ -35,6 +37,7 @@ export default function InputText({
   isDisabled,
 }: ITextFieldProps) {
   const isSearchField = type === "search";
+  const window = useWindowWidth();
 
   return (
     <FormControl
@@ -51,12 +54,12 @@ export default function InputText({
           type={type}
           name={nome}
           placeholder={placeholder}
-          w={isSearchField ? "250px" : "100%"}
+          w={isSearchField ? window < 1000 ? "225px" : "250px" : "100%"}
           bgColor={"#ffffff"}
           borderRadius={"3px"}
           border="2px solid"
           borderColor="gray.300"
-          fontSize={"lg"}
+          fontSize={isSearchField ? "medium" : "lg"}
           _placeholder={{ opacity: 1, color: "gray.500" }}
           focusBorderColor="#2E4B6C"
           onChange={onChange}
