@@ -63,7 +63,7 @@ export default function ButtonsForMultipleSelection({
   };
 
   return articles && Object.keys(articles).length > 1 ? (
-    <Flex gap={window > 1350 ? ".5rem" : ".2rem"} flexDirection={window > 1350 ? "row" : "column"}>
+    <Flex gap={window > 1400 ? ".5rem" : ".2rem"} flexDirection={window > 1400 ? "row" : "column"}>
       {!isShown ? (
           <Button
             sx={buttonSX}
