@@ -96,12 +96,12 @@ export default function Graphics() {
 
   return (
     <FlexLayout navigationType="Accordion">
-      <Flex justifyContent="space-between" alignItems="flex-start" w="100%" mb="1rem">
+      <Flex justifyContent="space-between" alignItems="flex-start" w="100%" mb="1rem" h={displayedFilters.length > 0 ? "10rem" : undefined} position="relative">
         <Flex flexDirection="column" gap="0.75rem">
           <Header text={t("header")} />
 
-          {displayedFilters.length > 0 && window > 1000 && (
-            <Flex flexDirection="column" gap="0.5rem">
+          {displayedFilters.length > 0 && (
+            <Flex flexDirection="column" gap="0.5rem" position="absolute" bottom="0">
               <Text fontWeight="semibold" fontSize="lg" color="#263C56">
                 {t("filtersArea.heading")}
               </Text>
