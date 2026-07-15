@@ -161,7 +161,7 @@ export function PickManyItemTable({ data, options, studyIds }: Props) {
         </Table>
       </TableContainer>
 
-      {!isExporting && (
+      {!isExporting && rows.length >= 20 && (
         <PaginationControl
           currentPage={currentPage}
           itensPerPage={itensPerPage}
