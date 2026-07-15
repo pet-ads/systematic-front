@@ -295,16 +295,18 @@ export default function TextualTable({
         </Table>
       </TableContainer>
 
-      <PaginationControl
-        currentPage={currentPage}
-        itensPerPage={itensPerPageUI}
-        quantityOfPages={quantityOfPages}
-        handleNextPage={handleNextPage}
-        handlePrevPage={handlePrevPage}
-        handleBackToInitial={handleBackToInitial}
-        handleGoToFinal={handleGoToFinal}
-        changeQuantityOfItens={handleChangeItensPerPage}
-      />
+      {articles.length >= 20 && (
+        <PaginationControl
+          currentPage={currentPage}
+          itensPerPage={itensPerPageUI}
+          quantityOfPages={quantityOfPages}
+          handleNextPage={handleNextPage}
+          handlePrevPage={handlePrevPage}
+          handleBackToInitial={handleBackToInitial}
+          handleGoToFinal={handleGoToFinal}
+          changeQuantityOfItens={handleChangeItensPerPage}
+        />
+      )}
     </Box>
   );
 }
