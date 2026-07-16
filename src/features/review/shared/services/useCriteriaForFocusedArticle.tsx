@@ -6,6 +6,7 @@ import useToaster from "@components/feedback/Toaster";
 
 // Service
 import Axios from "../../../../infrastructure/http/axiosClient";
+import { PageLayout } from "../components/structure/LayoutFactory";
 
 interface HttpResponse {
   inclusionCriteria: string[];
@@ -14,10 +15,12 @@ interface HttpResponse {
 
 interface CriteriaForFocusedArticleProps {
   articleId: number;
+  page: PageLayout
 }
 
 export default function useFetchCriteriaForFocusedArticle({
   articleId,
+  page,
 }: CriteriaForFocusedArticleProps) {
   const id = localStorage.getItem("systematicReviewId");
   const toast = useToaster();
@@ -47,7 +50,14 @@ export default function useFetchCriteriaForFocusedArticle({
   async function fetchAllCriteria() {
     try {
       if (!path) return;
-      const response = await Axios.get<HttpResponse>(path);
+      const response = await Axios.get<HttpResponse>(
+        path,
+        {
+          params: {
+            stage: page.toUpperCase()
+          }
+        }
+      );
       return response.data;
     } catch (error) {
       console.error("Error fetching criteria", error);

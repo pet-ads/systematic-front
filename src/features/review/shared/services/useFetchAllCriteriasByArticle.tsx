@@ -67,6 +67,7 @@ export default function useFetchAllCriteriasByArticle({
 
   const { criteria, isLoading, mutate } = useFetchCriteriaForFocusedArticle({
     articleId: selectedArticleReview,
+    page,
   });
 
   const inclusion = useFetchInclusionCriteria() || [];
