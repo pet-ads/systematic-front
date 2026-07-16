@@ -7,6 +7,7 @@ import useSendDuplicatedStudies from "../../../../services/useSendDuplicatedStud
 import { FaCheckCircle, FaEye } from "react-icons/fa";
 import { MdOutlineCleaningServices } from "react-icons/md";
 import useWindowWidth from "@features/shared/hooks/useWindowWidth";
+import { PageLayout } from "../../../structure/LayoutFactory";
 
 const buttonSX = {
   display: "flex",
@@ -25,13 +26,15 @@ interface ButtonsForMultipleSelectionProps {
   isShown: boolean;
   reloadArticles: () => Promise<any>;
   setIsMultipleSelectionEnable: React.Dispatch<SetStateAction<boolean>>;
+  page: PageLayout
 }
 
 export default function ButtonsForMultipleSelection({
   onShowSelectedArticles,
   isShown,
   reloadArticles,
-  setIsMultipleSelectionEnable
+  setIsMultipleSelectionEnable,
+  page,
 }: ButtonsForMultipleSelectionProps) {
   const window = useWindowWidth();
   const studyContext = useContext(StudyContext);
@@ -44,6 +47,7 @@ export default function ButtonsForMultipleSelection({
   const { sendDuplicatedStudies } = useSendDuplicatedStudies({
     firstSelected: studyContext?.firstSelected || 0,
     duplicatedStudies: duplicatedStudies || [],
+    page,
   });
 
   const articles = studyContext?.selectedArticles;
