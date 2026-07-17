@@ -140,20 +140,20 @@ export default function useFetchAllCriteriasByArticle({
       await mutate(
         async () => {
           if (page === "Selection") {
-            const extractionStatus: StatusValue =
-              status === "INCLUDED" ? "UNCLASSIFIED" : status;
-
-            await UseChangeStudyExtractionStatus({
-              studyReviewId: [selectedArticleReview],
-              criterias: status === "EXCLUDED" ? newChecked : [],
-              status: extractionStatus,
-            });
-
             await UseChangeStudySelectionStatus({
               studyReviewId: [selectedArticleReview],
               criterias: newChecked,
               status,
             });
+
+            if(status === "EXCLUDED" || status === "UNCLASSIFIED") {
+              await UseChangeStudyExtractionStatus({
+                studyReviewId: [selectedArticleReview],
+                criterias: [],
+                status: "UNCLASSIFIED",
+              });
+            }
+
           } else {
             await UseChangeStudyExtractionStatus({
               studyReviewId: [selectedArticleReview],
