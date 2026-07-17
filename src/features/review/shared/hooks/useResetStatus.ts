@@ -45,7 +45,7 @@ const useResetStatus = ({ page, reloadArticles }: ResetButtonProps) => {
         const id = localStorage.getItem("systematicReviewId");
         if (id) {
           const path = `systematic-study/${id}/study-review/remove-criteria/${articleId}`;
-          await Axios.patch(path, { criteria: historicalCriteria }).catch(
+          await Axios.patch(path, { criteria: historicalCriteria, stage: page.toUpperCase() }).catch(
             (err) => console.warn("Aviso: Falha ao limpar critérios fisicamente no reset", err)
           );
         }
