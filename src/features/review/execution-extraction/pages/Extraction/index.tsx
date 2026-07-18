@@ -166,7 +166,7 @@ export default function Extraction() {
         </Box>
       </Box>
       <Box
-        w="calc(100% - 1.5rem)"
+        w="calc(100% - 0.5rem)"
         h="calc(100% - 1rem)"
         padding="0"
       >
