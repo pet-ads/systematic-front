@@ -9,22 +9,75 @@ interface DeleteSourceModalProps {
   onClose: () => void;
 }
 
-type SelectionStatus = "INCLUDED" | "EXCLUDED" | "DUPLICATED" | "UNCLASSIFIED";
+interface Session {
+  id: string;
+  numberOfRelatedStudies: number;
+}
+
+const BLOCKED_STATUSES = ["INCLUDED", "EXCLUDED", "DUPLICATED"];
+
+function getSelectionStatus(study: any): string {
+  return (study.selectionStatus ?? study.selection ?? "").toUpperCase();
+}
+
+async function fetchSessionsForSource(
+  reviewId: string,
+  sourceName: string
+): Promise<Session[]> {
+  const variations = [
+    sourceName,
+    sourceName.toUpperCase(),
+    sourceName.toLowerCase(),
+  ];
+
+  const sessionMap = new Map<string, Session>();
+
+  for (const name of variations) {
+    try {
+      const path = `systematic-study/${reviewId}/search-session-source/${encodeURIComponent(name)}`;
+      const response = await Axios.get(path);
+      const sessions: Session[] = response.data?.searchSessions ?? [];
+      sessions.forEach((s) => sessionMap.set(s.id, s));
+    } catch {
+    }
+  }
+
+  return [...sessionMap.values()];
+}
 
 async function canDeleteSource(
   reviewId: string,
   sourceName: string
 ): Promise<boolean> {
-  const path = `systematic-study/${reviewId}/search-source/${encodeURIComponent(sourceName)}`;
-  const response = await Axios.get(path);
-  const studies = response.data?.studyReviews ?? [];
+  const sessions = await fetchSessionsForSource(reviewId, sourceName);
 
-  if (studies.length === 0) return true;
+  if (sessions.length === 0) return true;
 
-  const blockedStatuses: SelectionStatus[] = ["INCLUDED", "EXCLUDED", "DUPLICATED"];
-  return !studies.some((s: any) =>
-    blockedStatuses.includes(s.selectionStatus as SelectionStatus)
-  );
+  for (const session of sessions) {
+    if (session.numberOfRelatedStudies === 0) continue;
+
+    let page = 0;
+    const size = 50;
+
+    while (true) {
+      const articlesPath = `systematic-study/${reviewId}/find-by-search-session/${session.id}`;
+      const articlesResponse = await Axios.get(articlesPath, {
+        params: { page, size },
+      });
+      const studies: any[] = articlesResponse.data?.studyReviews ?? [];
+      const totalPages: number = articlesResponse.data?.totalPages ?? 1;
+
+      const hasBlocked = studies.some((s) =>
+        BLOCKED_STATUSES.includes(getSelectionStatus(s))
+      );
+
+      if (hasBlocked) return false;
+      if (page >= totalPages - 1) break;
+      page++;
+    }
+  }
+
+  return true;
 }
 
 export default function DeleteSourceModal({
