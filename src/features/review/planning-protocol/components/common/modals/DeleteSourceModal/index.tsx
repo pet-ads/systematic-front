@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 
 import Axios from "../../../../../../../infrastructure/http/axiosClient";
 import DeleteWithValidationModal from "@features/review/shared/components/common/modals/DeleteWithValidationModal";
+import { capitalize } from "@features/shared/utils/helpers/formatters/CapitalizeText";
 
 interface DeleteSourceModalProps {
   sourceName: string;
@@ -20,29 +21,30 @@ function getSelectionStatus(study: any): string {
   return (study.selectionStatus ?? study.selection ?? "").toUpperCase();
 }
 
+function toTitleCase(text: string): string {
+  return text
+    .toLowerCase()
+    .split(" ")
+    .map((word) => capitalize(word))
+    .join(" ");
+}
+
+
 async function fetchSessionsForSource(
   reviewId: string,
   sourceName: string
 ): Promise<Session[]> {
-  const variations = [
-    sourceName,
-    sourceName.toUpperCase(),
-    sourceName.toLowerCase(),
-  ];
+  const formattedName = toTitleCase(sourceName);
 
-  const sessionMap = new Map<string, Session>();
-
-  for (const name of variations) {
-    try {
-      const path = `systematic-study/${reviewId}/search-session-source/${encodeURIComponent(name)}`;
-      const response = await Axios.get(path);
-      const sessions: Session[] = response.data?.searchSessions ?? [];
-      sessions.forEach((s) => sessionMap.set(s.id, s));
-    } catch {
-    }
+  try {
+    const path = `systematic-study/${reviewId}/search-session-source/${encodeURIComponent(formattedName)}`;
+    const response = await Axios.get(path);
+    const sessions: Session[] = response.data?.searchSessions ?? [];
+    return sessions;
+  } catch (err) {
+    console.error("Erro ao buscar sessões para a fonte", formattedName, err);
+    throw err;
   }
-
-  return [...sessionMap.values()];
 }
 
 async function canDeleteSource(
