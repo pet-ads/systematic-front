@@ -66,7 +66,7 @@ export default function CriteriaBarChart({
       data={data}
       color={color}
       section={criteria}
-      height={480}
+      height={500}
     />
   );
 }
