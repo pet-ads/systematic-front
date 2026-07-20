@@ -60,11 +60,12 @@ export default function BubbleChart({ title, series, yCategories, yaxisText }: P
     title: {
       text: title,
       align: "left",
-      style: { 
-        fontWeight: 'bold', 
-        fontSize: "22px",   
-        color: '#2D3748' 
-      },
+      margin: 0,
+      style: {
+          fontSize: '22px',       
+          fontWeight: '900',      
+          color: '#2D3748',       
+        }
     },
     grid: {
       show: true,
