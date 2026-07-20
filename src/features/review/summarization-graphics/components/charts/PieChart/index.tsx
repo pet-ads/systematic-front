@@ -25,6 +25,11 @@ const chartConfig = {
           show: true,
         },
       },
+      grid: {
+        padding: {
+          top: 0, 
+        }
+      },
       labels: labels,
       title: {
         text: title,
