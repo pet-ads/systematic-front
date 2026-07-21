@@ -22,6 +22,8 @@
         "noChangesToast": {
             "title": "Nenhuma mudança foi feita",
             "description": "Atualize pelo menos uma resposta antes antes de reenviar."
-        }
+        },
+        "sectionTitle": "Extração",
+        "riskOfBiasTitle": "Risco de Viés"
     }
 }

@@ -22,6 +22,8 @@
         "noChangesToast": {
             "title": "No changes made",
             "description": "Update at least one answer before submitting."
-        }
+        },
+        "sectionTitle": "Extraction",
+        "riskOfBiasTitle": "Risk of Bias"
     }
 }
