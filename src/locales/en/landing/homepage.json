@@ -49,5 +49,75 @@
     "about": "About",
     "suggestions": "Suggestions",
     "socialMedia": "Social Media"
+  },
+  "login": {
+    "title": "Login",
+    "username": "Username",
+    "password": "Password",
+    "forgotPassword": "Forgot password?",
+    "submit": "Login",
+    "submitting": "Logging in...",
+    "placeholders": {
+      "username": "Enter your username",
+      "password": "Enter your password"
+    },
+    "errors": {
+      "username": "Please, enter your username",
+      "password": "Please, enter your password",
+      "passwordLength": "Password must be at least {{min}} characters and at most {{max}} characters"
+    },
+    "toast": {
+      "failedTitle": "Login failed",
+      "incorrectCredentialsDesc": "Incorrect username or password."
+    }
+  },
+  "forgotPassword": {
+    "title": "Forgot Password",
+    "email": "Email",
+    "invalidEmail": "Invalid email format",
+    "backToLogin": "Back to Login",
+    "submit": "Recover Password"
+  },
+  "signUp": {
+    "title": "Sign Up",
+    "username": "Username",
+    "name": "Name",
+    "email": "Email",
+    "affiliation": "Affiliation",
+    "country": "Country",
+    "selectCountry": "Select Country",
+    "otherCountry": "Other...",
+    "password": "Password",
+    "confirmPassword": "Confirm password",
+    "submit": "Create Account",
+    "submitting": "Submitting...",
+    "alreadyHaveAccount": "Already have an account?",
+    "placeholders": {
+      "username": "Enter your username",
+      "name": "Enter your full name",
+      "email": "Enter your email",
+      "affiliation": "Enter your affiliation",
+      "password": "Enter your password",
+      "confirmPassword": "Confirm your password"
+    },
+    "errors": {
+      "username": "Please, enter your username",
+      "name": "Please, enter your full name",
+      "email": "Please, enter your email",
+      "invalidEmail": "Invalid email address format",
+      "affiliation": "Please, enter your affiliation",
+      "country": "Please, enter your country",
+      "password": "Please, enter your password",
+      "passwordLength": "Password must be at least {{min}} characters and at most {{max}} characters",
+      "confirmPassword": "Please, confirm your password",
+      "passwordMismatch": "Passwords do not match"
+    },
+    "toast": {
+      "errorTitle": "Error",
+      "unexpectedErrorTitle": "Unexpected Error",
+      "unexpectedErrorDesc": "An unknown error format was received.",
+      "successTitle": "Account created",
+      "successDesc": "You can now log in with your account, {{username}}."
+    }
   }
 }

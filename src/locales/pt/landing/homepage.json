@@ -13,7 +13,7 @@
     "heading": "Pesquise mais, de qualquer lugar!",
     "text": "Potencialize suas pesquisas! Experimente nossa ferramenta gratuita para revisões sistemáticas - fácil de usar e ideal para pesquisadores e estudantes.",
     "signUp": "Cadastre-se já",
-    "alt": "Foto de diferentes dispositivos eletronicos conectados a ferramenta StArt - computador deskot, smart phone e tablet."
+    "alt": "Foto de diferentes dispositivos eletronicos conectados a ferramenta StArt - computador desktop, smartphone e tablet."
   },
   "about": {
     "title": "Sobre a ferramenta",
@@ -49,5 +49,76 @@
     "about": "Sobre",
     "suggestions": "Sugestões",
     "socialMedia": "Redes Sociais"
+  },
+  "login": {
+    "title": "Entrar",
+    "username": "Usuário",
+    "password": "Senha",
+    "forgotPassword": "Esqueceu a senha?",
+    "submit": "Entrar",
+    "submitting": "Entrando...",
+    "placeholders": {
+      "username": "Digite seu usuário",
+      "password": "Digite sua senha"
+    },
+    "errors": {
+      "username": "Por favor, informe seu usuário",
+      "password": "Por favor, informe sua senha",
+      "passwordLength": "A senha deve ter entre {{min}} e {{max}} caracteres",
+      "wrongCredentials": "Usuário ou senha incorretos"
+    },
+    "toast": {
+      "failedTitle": "Falha no login",
+      "incorrectCredentialsDesc": "Usuário ou senha incorretos."
+    }
+  },
+  "forgotPassword": {
+    "title": "Recuperar Senha",
+    "email": "E-mail",
+    "invalidEmail": "Formato de e-mail inválido",
+    "backToLogin": "Voltar para o Login",
+    "submit": "Recuperar Senha"
+  },
+  "signUp": {
+    "title": "Cadastrar",
+    "username": "Usuário",
+    "name": "Nome",
+    "email": "E-mail",
+    "affiliation": "Afiliação",
+    "country": "País",
+    "selectCountry": "Selecione o País",
+    "otherCountry": "Outro...",
+    "password": "Senha",
+    "confirmPassword": "Confirmar Senha",
+    "submit": "Criar Conta",
+    "submitting": "Cadastrando...",
+    "alreadyHaveAccount": "Já possui uma conta?",
+    "placeholders": {
+      "username": "Digite seu usuário",
+      "name": "Digite seu nome completo",
+      "email": "Digite seu e-mail",
+      "affiliation": "Digite sua afiliação",
+      "password": "Digite sua senha",
+      "confirmPassword": "Confirme sua senha"
+    },
+    "errors": {
+      "username": "Por favor, informe seu usuário",
+      "name": "Por favor, informe seu nome completo",
+      "email": "Por favor, informe seu e-mail",
+      "invalidEmail": "Formato de e-mail inválido",
+      "affiliation": "Por favor, informe sua afiliação",
+      "country": "Por favor, selecione seu país",
+      "password": "Por favor, informe sua senha",
+      "passwordLength": "A senha deve ter entre {{min}} e {{max}} caracteres",
+      "confirmPassword": "Por favor, confirme sua senha",
+      "passwordMismatch": "As senhas não coincidem"
+    },
+    "toast": {
+      "errorTitle": "Erro",
+      "unexpectedErrorTitle": "Erro Inesperado",
+      "unexpectedErrorDesc": "Um formato de erro desconhecido foi recebido.",
+      "successTitle": "Conta criada",
+      "successDesc": "Você já pode entrar com sua conta, {{username}}."
+    }
   }
 }

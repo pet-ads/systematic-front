@@ -95,5 +95,18 @@
     "searchSessions": {
         "header": "Search Sessions",
         "back": "Back"
+    },
+    "upload": {
+        "duplicateFile": {
+            "title": "Duplicate file",
+            "description": "This file already exists!"
+        },
+        "someFilesNeedRevision": {
+            "title": "Some files need revision",
+            "description": "file(s) could not be processed."
+        },
+        "success": {
+            "title": "Files uploaded successfully"
+        }
     }
 }
