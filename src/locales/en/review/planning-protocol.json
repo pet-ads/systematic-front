@@ -174,6 +174,7 @@
                 "label": "Extraction Questions",
                 "question": "QUESTION",
                 "type": "TYPE",
+                "selectType": "Select type", 
                 "noDataFound": "No data found",
                 "questionType": {
                     "textual": "textual",
@@ -247,6 +248,40 @@
                 "title": "Action Failed",
                 "description": "Could not delete the source. Please try again."
             }
+        }
+    },
+    "optionModals": {
+        "labeledScale": {
+            "header": "Insert options and values",
+            "title": "Labeled Scale",
+            "labelPlaceholder": "Insert your label here",
+            "valuePlaceholder": "Value",
+            "add": "Add",
+            "close": "Close",
+            "duplicateLabel": "This label already exists!"
+        },
+        "pickList": {
+            "header": "Insert the options",
+            "title": "Options",
+            "placeholder": "Enter options here",
+            "add": "Add",
+            "close": "Close",
+            "duplicateOption": "This option already exists!"
+        },
+        "pickMany": {
+            "header": "Insert multiple options",
+            "title": "Multiple Options",
+            "placeholder": "Type an option",
+            "add": "Add",
+            "close": "Close",
+            "duplicateOption": "This option already exists!"
+        },
+        "numberScale": {
+            "header": "Values to number scale",
+            "min": "Minimum",
+            "max": "Maximum",
+            "close": "Close",
+            "save": "Save"
         }
     }
 }
