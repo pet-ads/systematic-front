@@ -95,5 +95,18 @@
     "searchSessions": {
         "header": "Sessões de Pesquisa",
         "back": "Voltar"
+    },
+    "upload": {
+        "duplicateFile": {
+            "title": "Arquivo duplicado",
+            "description": "Este arquivo já existe!"
+        },
+        "someFilesNeedRevision": {
+            "title": "Alguns arquivos precisam de revisão",
+            "description": "arquivo(s) não puderam ser processados."
+        },
+        "success": {
+            "title": "Arquivos enviados com sucesso"
+        }
     }
 }

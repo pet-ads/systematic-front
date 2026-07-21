@@ -1,5 +1,6 @@
 // External library
 import { useState } from "react";
+import { useTranslation } from "react-i18next"; // 1. Importação do useTranslation
 
 // Hooks
 import { useAuthStore } from "../store/useAuthStore";
@@ -17,6 +18,7 @@ import useToaster from "@components/feedback/Toaster";
 import useValidatorSQLInjection from "@features/shared/hooks/useValidatorSQLInjection";
 
 export default function useHandleLogin() {
+  const { t } = useTranslation("landing/homepage");
   const [credentials, setCredentials] = useState<AccessCredentials>({
     username: "",
     password: "",
@@ -29,11 +31,8 @@ export default function useHandleLogin() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { toGo } = useNavigation();
-
   const { login } = useAuthStore();
-
   const Toaster = useToaster();
-
   const validator = useValidatorSQLInjection();
 
   const handleChangeCredentials = (
@@ -54,18 +53,19 @@ export default function useHandleLogin() {
     };
 
     if (!credentials.username) {
-      errors.username = "Please, enter your username";
+      errors.username = t("login.errors.username");
     }
 
     if (!credentials.password) {
-      errors.password = "Please, enter your password";
-    }
-
-    if (
+      errors.password = t("login.errors.password");
+    } else if (
       credentials.password.length < PASSWORD_LENGHT.MIN ||
       credentials.password.length > PASSWORD_LENGHT.MAX
     ) {
-      errors.password = `Password must be at least ${PASSWORD_LENGHT.MIN} characters and at most ${PASSWORD_LENGHT.MAX} characters`;
+      errors.password = t("login.errors.passwordLength", {
+        min: PASSWORD_LENGHT.MIN,
+        max: PASSWORD_LENGHT.MAX,
+      });
     }
 
     setErrors((prev) => ({ ...prev, ...errors }));
@@ -81,7 +81,13 @@ export default function useHandleLogin() {
 
     setIsSubmitting(true);
     try {
-      if(!(validator({value: credentials.password}) && validator({value: credentials.username}))) return;
+      if(
+        !(
+          validator({ value: credentials.password }) &&
+          validator({ value: credentials.username })
+        )
+      ) return;
+
       const loginResult = await login(credentials);
 
       if (isLeft(loginResult)) {
@@ -92,25 +98,24 @@ export default function useHandleLogin() {
         }));
         handleChangeCredentials("password", "");
         Toaster({
-          title: "Login failed",
+          title: t("login.toast.failedTitle"),
           description: errorMessage,
           status: "error",
         });
         return;
       }
+      
       toGo("/home");
 
-      setIsSubmitting(false);
-      
     } catch (error) {
       setErrors((prev) => ({
         ...prev,
-        general: "Wrong username or password",
+        general: t("login.errors.wrongCredentials"),
       }));
       handleChangeCredentials("password", "");
       Toaster({
-        title: "Login failed",
-        description: "Incorrect username or password.",
+        title: t("login.toast.failedTitle"),
+        description: t("login.toast.incorrectCredentialsDesc"),
         status: "error",
       });
     } finally {
