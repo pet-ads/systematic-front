@@ -87,7 +87,11 @@
             "selectPriority": "Selecionar prioridade de leitura",
             "includeDescription": "Adicionar critério de inclusão",
             "excludeDescription": "Adicionar critério de exclusão",
-            "changeToTable": "Mudar para visualização de tabela"
+            "changeToTable": "Mudar para visualização de tabela",
+            "noInclusionCriteria": "Nenhum critério de inclusão configurado no Planejamento",
+            "noExclusionCriteria": "Nenhum critério de exclusão configurado no Planejamento",
+            "removeExclusionFirst": "Remova os critérios de exclusão primeiro",
+            "removeInclusionFirst": "Remova os critérios de inclusão primeiro"
         },
         "comboBox": {
             "include": "Incluir",
@@ -100,5 +104,4 @@
             "veryHigh": "Muito Alta"
         }
     }
-
 }

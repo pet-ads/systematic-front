@@ -11,6 +11,7 @@ import {
 import { useDisclosure } from "@chakra-ui/react";
 import { useEffect } from "react";
 import { Dispatch, SetStateAction } from "react";
+import { useTranslation } from "react-i18next";
 import NumberScaleTable from "../../tables/NumberScaleTable";
 import useNumberScale from "../../../../hooks/useNumberScale";
 
@@ -22,6 +23,7 @@ interface Props {
 }
 
 function NumberScaleModal({ show, scaleHolder, values, onSave }: Props) {
+  const { t } = useTranslation("review/planning-protocol");
   const { handleMinimalValue, handleMaximalValue, minimalValue, maximalValue } =
     useNumberScale();
   const { isOpen, onClose, onOpen } = useDisclosure();
@@ -50,7 +52,7 @@ function NumberScaleModal({ show, scaleHolder, values, onSave }: Props) {
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>
-          Values to number scale
+          {t("optionModals.numberScale.header")}
           <ModalCloseButton onClick={onClose} />
         </ModalHeader>
         <ModalBody>
@@ -63,9 +65,9 @@ function NumberScaleModal({ show, scaleHolder, values, onSave }: Props) {
         </ModalBody>
         <ModalFooter>
           <Button onClick={onClose} m={"1rem"}>
-            Close
+            {t("optionModals.numberScale.close")}
           </Button>
-          <Button onClick={handleSave}>Save</Button>
+          <Button onClick={handleSave}>{t("optionModals.numberScale.save")}</Button>
         </ModalFooter>
       </ModalContent>
     </Modal>

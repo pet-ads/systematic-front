@@ -419,9 +419,9 @@ export default function InteractiveTable({ id, url, label }: Props) {
         }
 
         return (
-          <Select
+         <Select
             onChange={(e) => handleSelect(index, e.target.value)}
-            placeholder={!row.type ? "Select type" : undefined}
+            placeholder={!row.type ? t("selectionAndExtraction.input.extractionQuestions.selectType") : undefined}
             value={row.type || ""}
             border="solid 1px #303D50"
             bg="white"

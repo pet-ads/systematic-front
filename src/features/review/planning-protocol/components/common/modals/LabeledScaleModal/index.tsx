@@ -21,6 +21,7 @@ import {
   Th,
 } from "@chakra-ui/react";
 import { useEffect, useState, Dispatch, SetStateAction } from "react";
+import { useTranslation } from "react-i18next";
 import EventButton from "@components/common/buttons/EventButton";
 import DeleteButton from "@components/common/buttons/DeleteButton";
 import EditButton from "@components/common/buttons/EditButton";
@@ -39,6 +40,7 @@ interface Props {
 }
 
 export default function LabeledScaleModal({ show, questionHolder, questions, onSave }: Props) {
+  const { t } = useTranslation("review/planning-protocol");
   const { isOpen, onClose, onOpen } = useDisclosure();
 
   const [localQuestions, setLocalQuestions] = useState<Record<string, number>>({});
@@ -68,7 +70,7 @@ export default function LabeledScaleModal({ show, questionHolder, questions, onS
     if (!trimmedLabel || newValue === "") return;
 
     if (localQuestions.hasOwnProperty(trimmedLabel)) {
-      alert("This label already exists!");
+      alert(t("optionModals.labeledScale.duplicateLabel"));
       return;
     }
 
@@ -101,7 +103,7 @@ export default function LabeledScaleModal({ show, questionHolder, questions, onS
 
     if (editKey !== trimmedLabel) {
       if (updated.hasOwnProperty(trimmedLabel)) {
-        alert("This label already exists!");
+        alert(t("optionModals.labeledScale.duplicateLabel"));
         return;
       }
       delete updated[editKey];
@@ -119,7 +121,7 @@ export default function LabeledScaleModal({ show, questionHolder, questions, onS
       <ModalOverlay />
       <ModalContent minH="60vh" display="flex" flexDirection="column">
         <ModalHeader>
-          Insert options and values
+          {t("optionModals.labeledScale.header")}
           <ModalCloseButton onClick={close} />
         </ModalHeader>
 
@@ -127,7 +129,7 @@ export default function LabeledScaleModal({ show, questionHolder, questions, onS
           <FormControl sx={label} flex="1" display="flex" flexDirection="column">
             <FormControl sx={formcontrol} flex="1" display="flex" flexDirection="column">
               <FormLabel mt={"30px"} fontWeight={500} fontSize={"large"}>
-                Labeled Scale
+                {t("optionModals.labeledScale.title")}
               </FormLabel>
 
               <TableContainer
@@ -143,7 +145,7 @@ export default function LabeledScaleModal({ show, questionHolder, questions, onS
                       <Th colSpan={3} padding="1rem">
                         <Flex gap="4" align="center">
                           <Input
-                            placeholder="Insert your label here"
+                            placeholder={t("optionModals.labeledScale.labelPlaceholder")}
                             value={newLabel}
                             onChange={(e) => setNewLabel(e.target.value)}
                             onKeyDown={(e) => e.key === "Enter" && handleAdd()}
@@ -152,7 +154,7 @@ export default function LabeledScaleModal({ show, questionHolder, questions, onS
                           />
                           <Input
                             type="number"
-                            placeholder="Value"
+                            placeholder={t("optionModals.labeledScale.valuePlaceholder")}
                             value={newValue}
                             onChange={(e) =>
                               setNewValue(e.target.value === "" ? "" : Number(e.target.value))
@@ -161,7 +163,7 @@ export default function LabeledScaleModal({ show, questionHolder, questions, onS
                             w="100px"
                             size="md"
                           />
-                          <EventButton text="Add" event={handleAdd} w={"40px"} />
+                          <EventButton text={t("optionModals.labeledScale.add")} event={handleAdd} w={"40px"} />
                         </Flex>
                       </Th>
                     </Tr>
@@ -216,7 +218,7 @@ export default function LabeledScaleModal({ show, questionHolder, questions, onS
           </FormControl>
         </ModalBody>
         <ModalFooter>
-          <Button onClick={close}>Close</Button>
+          <Button onClick={close}>{t("optionModals.labeledScale.close")}</Button>
         </ModalFooter>
       </ModalContent>
     </Modal>

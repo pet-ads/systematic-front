@@ -174,6 +174,7 @@
                 "label": "Questões de Extração",
                 "question": "QUESTÃO",
                 "type": "TIPO",
+                "selectType": "Selecione o tipo",
                 "noDataFound": "Dados não encontrados",
                 "questionType": {
                     "textual": "textual",
@@ -247,6 +248,40 @@
                 "title": "Ação Falhou",
                 "description": "Não foi possível excluir a fonte. Tente novamente."
             }
+        }
+    },
+    "optionModals": {
+        "labeledScale": {
+            "header": "Inserir opções e valores",
+            "title": "Escala Rotulada",
+            "labelPlaceholder": "Insira o rótulo aqui",
+            "valuePlaceholder": "Valor",
+            "add": "Adicionar",
+            "close": "Fechar",
+            "duplicateLabel": "Este rótulo já existe!"
+        },
+        "pickList": {
+            "header": "Inserir as opções",
+            "title": "Opções",
+            "placeholder": "Insira as opções aqui",
+            "add": "Adicionar",
+            "close": "Fechar",
+            "duplicateOption": "Esta opção já existe!"
+        },
+        "pickMany": {
+            "header": "Inserir múltiplas opções",
+            "title": "Múltiplas Opções",
+            "placeholder": "Digite uma opção",
+            "add": "Adicionar",
+            "close": "Fechar",
+            "duplicateOption": "Esta opção já existe!"
+        },
+        "numberScale": {
+            "header": "Valores para escala numérica",
+            "min": "Mínimo",
+            "max": "Máximo",
+            "close": "Fechar",
+            "save": "Salvar"
         }
     }
 }
