@@ -167,7 +167,9 @@ export default function DataExtraction({
                 ? "EXTRACTION"
                 : "RISK_OF_BIAS";
             const formatedFormKey =
-              typeFormKey === "EXTRACTION" ? "Extraction" : "Risk of Bias";
+              typeFormKey === "EXTRACTION"
+                ? t("extractionForm.sectionTitle")
+                : t("extractionForm.riskOfBiasTitle");
             const isRiskOfBiasKey = typeFormKey === "RISK_OF_BIAS";
 
             if (
@@ -214,7 +216,7 @@ export default function DataExtraction({
 
             return (
               <Box key={sectionKey}>
-                {index > 0 && <Divider />}
+                {index > 0 && <Divider mb="3.5rem"/>}
                 <Box mb="1.5rem" px={{ base: "1rem", md: "2rem" }}>
                   <Heading
                     size="md"

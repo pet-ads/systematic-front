@@ -51,9 +51,10 @@ export default function MultiSelectionList({
           display="flex"
           flexDirection="column"
           gap="1rem"
-          overflowY="auto"
-          maxH="8rem"
-          padding="0.25rem"
+          p="0.75rem"
+          border="1px solid"
+          borderRadius="1rem"
+          borderColor={isInvalid ? "red.300" : "gray.200"}
         >
           {options.map((value) => (
             <Checkbox
