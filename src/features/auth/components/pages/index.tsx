@@ -3,22 +3,24 @@
   import { isLeft } from "@features/shared/errors/pattern/Either";
   import { useEffect } from "react";
   import { useNavigate, useSearchParams } from "react-router-dom";
+	import { useTranslation } from "react-i18next";
 
   export default function ConfirmAccount() {
     const [searchParams] = useSearchParams();
 
     const Toaster = useToaster();
     const navigate = useNavigate();
+    const { t } = useTranslation("landing/email-pages");
 
     useEffect(() => {
       const tokenParam = searchParams.get("id")?.trim();
 
       if (!tokenParam || tokenParam === "") {
         Toaster({
-          title: "Empty token!",
-          description: "Back to main page in 3 seconds..",
-          status: "error",
-        });
+					title: t("emailConfirmation.toast.emptyTokenTitle"),
+					description: t("emailConfirmation.toast.emptyTokenDesc"),
+					status: "error",
+				});
 
         setTimeout(() => {
           navigate("/");
@@ -32,19 +34,18 @@
 
         if (isLeft(result)) {
           const errorMessage = result.value.message;
-          Toaster({
-            title: "Token invalid!",
-            description: errorMessage,
-            status: "error",
-          });
+					Toaster({
+						title: t("emailConfirmation.toast.invalidTokenTitle"),
+						description: errorMessage,
+						status: "error",
+					});
         } else{
-          Toaster({
-            title: "Success!",
-            description: "Account confirmed! You can login now",
-            status: "success",
-          });
+					Toaster({
+						title: t("emailConfirmation.toast.successTitle"),
+						description: t("emailConfirmation.toast.successDesc"),
+						status: "success",
+					});
         }
-
 
         setTimeout(() => {
           navigate("/");
@@ -52,9 +53,8 @@
       }
 
       handleConfirm(tokenParam)   
-    }, [searchParams, navigate, Toaster]);
+    }, [searchParams, navigate, Toaster, t]);
 
 
-
-  return <p>Confirmando sua conta...</p>;
+  return <p>{t("emailConfirmation.loading")}</p>;
   }

@@ -1,0 +1,12 @@
+{
+  "emailConfirmation": {
+    "loading": "Confirmando sua conta...",
+    "toast": {
+      "emptyTokenTitle": "Token vazio!",
+      "emptyTokenDesc": "Voltando para a página inicial em 3 segundos..",
+      "invalidTokenTitle": "Token inválido!",
+      "successTitle": "Sucesso!",
+      "successDesc": "Conta confirmada! Você já pode fazer login"
+    }
+  }
+}
