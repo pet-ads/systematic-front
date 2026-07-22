@@ -29,11 +29,21 @@
             "selection": "Seleção",
             "extraction": "Extração",
             "score": "Pontuação",
-            "priority": "Prioridade"
+            "priority": "Prioridade",
+            "included": "Incluídos",
+            "excluded": "Excluídos",
+            "total": "Total",
+            "indexingrate": "Taxa de Indexação",
+            "precisionrate": "Taxa de Precisão",
+            "sources": "Fontes",
+            "ic": "IC",
+            "studies": "ID",
+            "totalanswers": "Total",
+            "percentageoftotal": "Porcentagem"
         }
     },
     "statusSelect": {
-        "placeholder": "Selecionar status",
+        "placeholder": "Selecionar Status",
         "options": {
             "included": "Incluído",
             "duplicated": "Duplicado",
@@ -76,7 +86,12 @@
             "resetArticle": "Redefinir artigo",
             "selectPriority": "Selecionar prioridade de leitura",
             "includeDescription": "Adicionar critério de inclusão",
-            "excludeDescription": "Adicionar critério de exclusão"
+            "excludeDescription": "Adicionar critério de exclusão",
+            "changeToTable": "Mudar para visualização de tabela",
+            "noInclusionCriteria": "Nenhum critério de inclusão configurado no Planejamento",
+            "noExclusionCriteria": "Nenhum critério de exclusão configurado no Planejamento",
+            "removeExclusionFirst": "Remova os critérios de exclusão primeiro",
+            "removeInclusionFirst": "Remova os critérios de inclusão primeiro"
         },
         "comboBox": {
             "include": "Incluir",
@@ -89,5 +104,4 @@
             "veryHigh": "Muito Alta"
         }
     }
-
 }

@@ -1,5 +1,6 @@
 // External library
 import useSWR from "swr";
+import { useTranslation } from "react-i18next"; 
 
 // Infra
 import Axios from "../../../../infrastructure/http/axiosClient";
@@ -15,6 +16,8 @@ interface HttpResponse {
 }
 
 export default function useGetReviewCard() {
+  const { t } = useTranslation("user/my-reviews");
+  
   localStorage.removeItem("systematicReviewId");
 
   const { user, isLoading: authLoading } = useAuthStore();
@@ -28,9 +31,27 @@ export default function useGetReviewCard() {
     if (!path) return;
     try {
       const response = await Axios.get<HttpResponse>(path);
-      return response.data.content || [];
+      const rawReviews = response.data.content || [];
+
+      const enrichedReviews = rawReviews.map((review) => {
+        const formattedCollaborators = review.collaborators.map((uuid) => {
+          
+          if (uuid === userId) {
+            return `${t("you")} - ${t("reviewerRole")}`;
+          }
+          
+          return `${t("reviewerRole")} (${uuid})`;
+        });
+
+        return {
+          ...review,
+          collaborators: formattedCollaborators,
+        };
+      });
+
+      return enrichedReviews;
     } catch (error) {
-      console.log("Error", error);
+      console.log("Error fetching reviews:", error);
     }
   };
 

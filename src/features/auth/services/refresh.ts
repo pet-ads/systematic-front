@@ -1,17 +1,22 @@
 // External library
-import { isAxiosError } from "axios";
-
-// Infra
-import Axios from "../../../infrastructure/http/axiosClient";
+import axios, { isAxiosError } from "axios";
 
 // Factory
 import errorFactory from "@features/shared/errors/factory/errorFactory";
 
 // Error
-import { type Either, right } from "@features/shared/errors/pattern/Either";
+import {
+  type Either,
+  right,
+} from "@features/shared/errors/pattern/Either";
+
 import { ApplicationError } from "@features/shared/errors/base/ApplicationError";
 
-// Types
+const RefreshAxios = axios.create({
+  baseURL: import.meta.env.VITE_PUBLIC_API_URL,
+  withCredentials: true,
+});
+
 type RefreshResponse = {
   accessToken: string;
 };
@@ -20,25 +25,24 @@ export default async function refresh(): Promise<
   Either<ApplicationError, RefreshResponse>
 > {
   try {
-    const { data: response } = await Axios.post<RefreshResponse>(
-      "auth/refresh",
-      {}
-    );
+    const { data } =
+      await RefreshAxios.post<RefreshResponse>(
+        "auth/refresh"
+      );
 
-    return right(response);
+    return right(data);
   } catch (error) {
     if (isAxiosError(error)) {
-      const message =
-        error.response?.data?.detail ||
+      return errorFactory(
+        "unauthorized",
         error.response?.data?.message ||
-        error.message;
-      return errorFactory("unauthorized", message);
+          error.message
+      );
     }
 
-    if (error instanceof Error) {
-      return errorFactory("custom", error.message);
-    }
-
-    return errorFactory("custom", "An unexpected error occurred.");
+    return errorFactory(
+      "custom",
+      "Unexpected refresh error."
+    );
   }
 }

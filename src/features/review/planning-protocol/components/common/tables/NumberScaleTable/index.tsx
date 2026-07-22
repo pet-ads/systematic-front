@@ -1,5 +1,6 @@
 import { FormControl, FormLabel, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper } from '@chakra-ui/react'
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
     handleMinimalValue: (valueAsString: string, valueAsNumber: number) => void;
@@ -9,6 +10,7 @@ interface Props {
 }
 
 const NumberScaleTable = ({handleMaximalValue, handleMinimalValue, minimalValue, maximalValue}: Props) => {
+    const { t } = useTranslation("review/planning-protocol");
 
     useEffect(() => {
         console.log(minimalValue, maximalValue);
@@ -16,7 +18,7 @@ const NumberScaleTable = ({handleMaximalValue, handleMinimalValue, minimalValue,
 
     return (
     <FormControl>
-        <FormLabel>Min</FormLabel>
+        <FormLabel>{t("optionModals.numberScale.min")}</FormLabel>
         <NumberInput mb={"2rem"} defaultValue={minimalValue} onChange={handleMinimalValue} min={0} max={maximalValue-1}>
             <NumberInputField />
             <NumberInputStepper>
@@ -25,7 +27,7 @@ const NumberScaleTable = ({handleMaximalValue, handleMinimalValue, minimalValue,
             </NumberInputStepper>
         </NumberInput>
 
-        <FormLabel>Max</FormLabel>
+        <FormLabel>{t("optionModals.numberScale.max")}</FormLabel>
         <NumberInput defaultValue={maximalValue} onChange={handleMaximalValue} min={minimalValue+1} max={10}>
             <NumberInputField />
             <NumberInputStepper>

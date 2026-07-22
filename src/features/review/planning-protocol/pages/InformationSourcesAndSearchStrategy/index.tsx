@@ -1,5 +1,8 @@
 // External Libraries
+import { useContext, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import AppContext from "@features/shared/context/ApplicationContext";
+import useWindowWidth from "@features/shared/hooks/useWindowWidth";
 
 // Components
 import NavButton from "@components/common/buttons/NavigationButton";
@@ -13,6 +16,14 @@ import useCreateProtocol from "../../services/useCreateProtocol";
 import { Box } from "@chakra-ui/react";
 
 export default function InformationSourcesAndSearchStrategy() {
+  const windowWidth = useWindowWidth();
+  const context = useContext(AppContext);
+  if(!context) return null;
+  const { sidebarState, setSidebarState } = context;
+  useEffect(() => {
+    if(windowWidth < 1000 && sidebarState === "open") setSidebarState("collapsed");
+  }, []);
+
   const {
     informationSourcesAndSearchStrategy,
     handleChangeInformationSourcesAndSearchStrategy,
@@ -91,7 +102,7 @@ export default function InformationSourcesAndSearchStrategy() {
             "informationSourcesAndSearchStrategy.input.databasesAndInformationSource.placeholder",
           )}
           typeField="select"
-          stateKey="Databases and Information Source" // <-- String exata do código dev
+          stateKey="Databases and Information Source"
         />
         <TextAreaInput
           value={searchMethod}
@@ -110,6 +121,7 @@ export default function InformationSourcesAndSearchStrategy() {
         />
         <AddTextTable
           text={t("informationSourcesAndSearchStrategy.input.keywords.label")}
+          contextId="Keywords"
           placeholder={t(
             "informationSourcesAndSearchStrategy.input.keywords.placeholder",
           )}

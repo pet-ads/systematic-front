@@ -1,6 +1,9 @@
 // External library
+import { useContext, useEffect } from "react";
 import { Box } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
+import AppContext from "@features/shared/context/ApplicationContext";
+import useWindowWidth from "@features/shared/hooks/useWindowWidth";
 
 // Components
 import NavButton from "@components/common/buttons/NavigationButton";
@@ -11,6 +14,14 @@ import ProtocolFormLayout from "../../components/common/protocolForm";
 import useCreateProtocol from "../../services/useCreateProtocol";
 
 export default function RiskOfBiasAssessment() {
+  const windowWidth = useWindowWidth();
+  const context = useContext(AppContext);
+  if(!context) return null;
+  const { sidebarState, setSidebarState } = context;
+  useEffect(() => {
+    if(windowWidth < 1000 && sidebarState === "open") setSidebarState("collapsed");
+  }, []);
+
   const id = localStorage.getItem("systematicReviewId") || "";
 
   const url = `systematic-study/${id}/protocol`;

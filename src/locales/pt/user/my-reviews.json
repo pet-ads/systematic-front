@@ -1,5 +1,14 @@
 {
     "header": "Início",
+    "ownedReviews": "Suas revisões",
+    "owner": "Dono",
+    "you": "Você",
+    "reviewers": "Revisores",
+    "reviewerRole": "Revisor",
+    "statusLabel": "Status",
+    "emptyOwned": "Você ainda não é dono de nenhuma revisão",
+    "participatingReviews": "Revisões que você participa",
+    "emptyParticipating": "Você ainda não participa de nenhuma revisão",
     "createNewReview": {
         "welcome": "Bem-vindo ao seu espaço de trabalho!",
         "message": "Você ainda não tem nenhuma revisão. Vamos começar criando a sua primeira e iniciar sua jornada de pesquisa!",

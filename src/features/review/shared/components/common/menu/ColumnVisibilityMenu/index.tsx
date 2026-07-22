@@ -17,7 +17,7 @@ type ColumnVisibilityMenuInput = {
 import styles from "./styles.module.css";
 
 const columnLabels: {
-  [K in keyof Omit<ColumnVisibility, "studyReviewId">]: string;
+  [K in keyof Omit<ColumnVisibility, "studyReviewId" | "source" | "answer">]: string;
 } = {
   title: "Title",
   authors: "Author",
@@ -27,6 +27,16 @@ const columnLabels: {
   extractionStatus: "Extraction",
   score: "Score",
   readingPriority: "Priority",
+  included: "Included",
+  excluded: "Excluded",
+  total: "Total",
+  indexingRate: "IndexingRate",
+  precisionRate: "PrecisionRate",
+  sources: "Sources",
+  ic: "IC",
+  studies: "Studies",
+  totalAnswers: "TotalAnswers",
+  percentageOfTotal: "PercentageOfTotal",
 };
 
 // Animations
@@ -95,7 +105,7 @@ export default function ColumnVisibilityMenu({
                       toggleColumnVisibility(key as keyof ColumnVisibility)
                     }
                   />
-                  <span style={{ marginLeft: 8 }}>{t(`columnVisibilityMenu.label.${label.toLowerCase()}`)}</span>
+                  <span>{t(`columnVisibilityMenu.label.${label.toLowerCase()}`)}</span>
                 </label>
               ))}
           </motion.div>

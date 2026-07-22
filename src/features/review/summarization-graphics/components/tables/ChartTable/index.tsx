@@ -3,13 +3,15 @@ import { useMemo, useState } from "react";
 import type ArticleInterface from "@features/review/shared/types/ArticleInterface";
 import type { ViewModel } from "@features/review/shared/hooks/useLayoutPage";
 import ChartExpanded, { AllKeys } from "./ChartExpanded";
+import { ColumnVisibility } from "@features/review/shared/hooks/useVisibilityColumns";
 
 interface Props {
   articles: ArticleInterface[];
   layout?: ViewModel;
+  columnsVisible: ColumnVisibility;
 }
 
-export default function ChartTable({ articles, layout }: Props) {
+export default function ChartTable({ articles, layout, columnsVisible }: Props) {
   const [sortConfig, setSortConfig] = useState<{
     key: AllKeys;
     direction: "asc" | "desc";
@@ -57,6 +59,7 @@ export default function ChartTable({ articles, layout }: Props) {
       handleHeaderClick={handleHeaderClick}
       sortConfig={sortConfig}
       layout={layout}
+      columnsVisible={columnsVisible}
     />
   );
 }

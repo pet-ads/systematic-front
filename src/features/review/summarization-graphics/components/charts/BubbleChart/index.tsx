@@ -2,10 +2,10 @@ import Chart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
 import { BubbleSeries } from "@features/review/summarization-graphics/hooks/useBubbleDataGeneric";
 
-const ROW_HEIGHT = 80;
+const ROW_HEIGHT = 80; 
 const PADDING_V = 80;
-const MIN_HEIGHT = 300;
-const MAX_HEIGHT = 500; 
+const MIN_HEIGHT = 400; 
+const MAX_HEIGHT = 800; 
 
 type Props = {
   title: string;
@@ -20,8 +20,6 @@ export default function BubbleChart({ title, series, yCategories, yaxisText }: P
   const minYear = uniqueYears[0];
   const maxYear = uniqueYears[uniqueYears.length - 1];
 
-
- 
   const dynamicHeight = Math.min(
     Math.max(MIN_HEIGHT, yCategories.length * ROW_HEIGHT + PADDING_V),
     MAX_HEIGHT,
@@ -33,10 +31,20 @@ export default function BubbleChart({ title, series, yCategories, yaxisText }: P
   const minBubbleRadius = Math.max(8, Math.floor(maxBubbleRadius * 0.4));
   const labelFontSize = maxBubbleRadius >= 18 ? "11px" : "9px";
 
+  yCategories = yCategories.map(
+    item => item.match(/name:\s*(.*),\s*value:/)?.[1] ?? item
+  );
+
+  series = series.map((serie) => ({
+    ...serie,
+    name: serie.name.match(/name:\s*(.*),\s*value:/)?.[1] ?? serie.name,
+  }));
+
   const options: ApexOptions = {
     chart: {
       toolbar: {
         show: true,
+        offsetX: -40, 
         tools: {
           download: false,
           selection: true,
@@ -52,13 +60,17 @@ export default function BubbleChart({ title, series, yCategories, yaxisText }: P
     title: {
       text: title,
       align: "left",
-      style: { fontWeight: 500, fontSize: "14px" },
+      margin: 0,
+      style: {
+          fontSize: '22px',       
+          fontWeight: '900',      
+          color: '#2D3748',       
+        }
     },
     grid: {
       show: true,
       borderColor: "#e0e0e0",
       strokeDashArray: 4,
-      // lines nativas: renderizadas antes das séries no SVG → ficam atrás das bolhas
       xaxis: { lines: { show: true } },
       yaxis: { lines: { show: true } },
       padding: { top: 10, bottom: 10, left: 10, right: 10 },
@@ -74,6 +86,11 @@ export default function BubbleChart({ title, series, yCategories, yaxisText }: P
           const n = Math.round(Number(val));
           return n >= minYear && n <= maxYear ? String(n) : "";
         },
+        style: {
+          fontWeight: 'bold', 
+          fontSize: '14px',
+          colors: '#4A5568'
+        }
       },
       axisBorder: { show: true },
       axisTicks: { show: false },
@@ -82,14 +99,22 @@ export default function BubbleChart({ title, series, yCategories, yaxisText }: P
       min: -1,
       max: yCategories.length,
       tickAmount: yCategories.length + 1,
-      title: { text: yaxisText },
+      title: { 
+        text: yaxisText,
+        style: { fontWeight: 'bold', fontSize: '16px', color: '#4A5568' } 
+      },
       labels: {
-        minWidth: 120,
+        maxWidth: 80,
         formatter: (val) => {
           const i = Math.round(val);
           if (Math.abs(val - i) > 0.1) return "";
           return i >= 0 && i < yCategories.length ? yCategories[i] : "";
         },
+        style: {
+          fontWeight: 'bold', 
+          fontSize: '14px',
+          colors: '#4A5568'
+        }
       },
     },
     plotOptions: {
@@ -101,14 +126,13 @@ export default function BubbleChart({ title, series, yCategories, yaxisText }: P
     },
     dataLabels: {
       enabled: true,
-      
       formatter: (_val: number, opts: any) => {
         const z = opts.w.config.series?.[opts.seriesIndex]?.data?.[opts.dataPointIndex]?.z;
         return z != null ? String(Math.round(z)) : "";
       },
       style: {
         fontSize: labelFontSize,
-        fontWeight: "600",
+        fontWeight: "bold",
         colors: ["#ffffff"],
       },
       dropShadow: { enabled: false },
@@ -128,17 +152,27 @@ export default function BubbleChart({ title, series, yCategories, yaxisText }: P
       },
     },
     theme: { palette: "palette1" },
-    legend: { position: "bottom" },
+    legend: { 
+      position: "bottom",
+      fontWeight: 'bold', 
+      fontSize: '14px'
+    },
   };
 
   return (
-    <div style={{ width: "100%", overflowX: "hidden" }}>
+    <div id="bubble-chart-container" style={{ width: "100%" }}>
+      <style>{`
+        #bubble-chart-container .apexcharts-reset-icon {
+          transform: translateX(-7px); 
+        }
+      `}</style>
+
       <Chart
         options={options}
         series={series}
         type="bubble"
-        width="100%"
-        height={dynamicHeight}
+        width="100%" 
+        height={dynamicHeight} 
       />
     </div>
   );

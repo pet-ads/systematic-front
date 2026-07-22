@@ -1,4 +1,29 @@
 {
     "header": "Extraction",
-    "search": "Insert article attribute"
+    "search": "Insert article attribute",
+    "extractionFormDisabled": {
+        "title": "Extraction Disabled",
+        "text1": "This study is currently marked as",
+        "EXCLUDED": "EXCLUDED",
+        "UNCLASSIFIED": "UNCLASSIFIED",
+        "DUPLICATED": "DUPLICATED",
+        "text2": "Extraction is only allowed for included studies."
+    },
+    "extractionForm": {
+        "loading": "Loading questions...",
+        "noQuestions": "No questions found",
+        "createQuestions": "Create Questions",
+        "requiredField": "* This field is required",
+        "submit": "Submit",
+        "dropdownList": "Options",
+        "labeledList": "Labels",
+        "clearSelection": "Clear Selection",
+        "textual": "Your response",
+        "noChangesToast": {
+            "title": "No changes made",
+            "description": "Update at least one answer before submitting."
+        },
+        "sectionTitle": "Extraction",
+        "riskOfBiasTitle": "Risk of Bias"
+    }
 }

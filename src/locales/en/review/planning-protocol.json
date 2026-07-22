@@ -20,7 +20,25 @@
             },
             "researchers": {
                 "label": "Researchers",
-                "placeholder": "Enter the name of the researchers "
+                "placeholder": "Add a researcher",
+                "noResearchersFound": "No researchers found",
+                "status": {
+                    "pending": "Pending",
+                    "expired": "Expired",
+                    "excluding": "Excluding"
+                },
+                "role": {
+                    "role": "Role",
+                    "admin": "admin",
+                    "reviewer": "reviewer",
+                    "owner": "owner"
+                },
+                "confirm": {
+                    "title": "Delete researcher",
+                    "body": "Are you sure you want to delete",
+                    "cancel": "Cancel",
+                    "delete": "Delete"
+                }
             }
         },
         "alert": {
@@ -153,7 +171,34 @@
                 "placeholder": "Enter the data colletion process"
             },
             "extractionQuestions": {
-                "label": "Extraction Questions"
+                "label": "Extraction Questions",
+                "question": "QUESTION",
+                "type": "TYPE",
+                "selectType": "Select type", 
+                "noDataFound": "No data found",
+                "questionType": {
+                    "textual": "textual",
+                    "pickList": "pick list",
+                    "numberedScale": "number scale",
+                    "labeledList": "labeled list",
+                    "pickMany": "pick many"
+                },
+                "toaster": {
+                    "referenceCode": {
+                        "title": "A reference code is required.",
+                        "description": "Please fill in the Code field before saving."
+                    },
+                    "duplicated": {
+                        "title1": "The reference code",
+                        "title2": "is already in use.",
+                        "description": "Please choose another one."
+                    },
+                    "finishEditing": "Finish editing the current row before adding a new one.",
+                    "questionType": {
+                        "title": "Question type is required.",
+                        "description": "Please fill in the question type field before saving."
+                    }
+                }
             }
         }
     },
@@ -181,5 +226,62 @@
                 "placeholder": "Enter your Analysis and Synthesis Method"
             }
         }
-    }    
+    },
+    "toasts": {
+        "duplicateTitle": "Duplicate Entry",
+        "duplicateDescription": "This item already exists!"
+    },
+    "deleteSourceModal": {
+        "heading": "Delete source",
+        "confirmMessage": "Are you sure you want to delete the source",
+        "blockedTitle": "Source cannot be deleted",
+        "blockedMessage": "This source has Included, Excluded or Duplicated articles. Reset all articles to Unclassified before deleting the source.",
+        "checking": "Checking source articles...",
+        "cancel": "Cancel",
+        "confirm": "Confirm deletion",
+        "toasts": {
+            "success": {
+                "title": "Source deleted successfully!",
+                "description": "The source has been removed."
+            },
+            "catch": {
+                "title": "Action Failed",
+                "description": "Could not delete the source. Please try again."
+            }
+        }
+    },
+    "optionModals": {
+        "labeledScale": {
+            "header": "Insert options and values",
+            "title": "Labeled Scale",
+            "labelPlaceholder": "Insert your label here",
+            "valuePlaceholder": "Value",
+            "add": "Add",
+            "close": "Close",
+            "duplicateLabel": "This label already exists!"
+        },
+        "pickList": {
+            "header": "Insert the options",
+            "title": "Options",
+            "placeholder": "Enter options here",
+            "add": "Add",
+            "close": "Close",
+            "duplicateOption": "This option already exists!"
+        },
+        "pickMany": {
+            "header": "Insert multiple options",
+            "title": "Multiple Options",
+            "placeholder": "Type an option",
+            "add": "Add",
+            "close": "Close",
+            "duplicateOption": "This option already exists!"
+        },
+        "numberScale": {
+            "header": "Values to number scale",
+            "min": "Minimum",
+            "max": "Maximum",
+            "close": "Close",
+            "save": "Save"
+        }
+    }
 }

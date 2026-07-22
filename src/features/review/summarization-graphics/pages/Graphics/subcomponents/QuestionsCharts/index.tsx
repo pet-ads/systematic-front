@@ -4,11 +4,20 @@ import BarChart from "../../../../components/charts/BarChart";
 import { QuestionsTable } from "../../../../components/tables/QuestionsTable";
 import useFetchQuestionAnswers from "../../../../services/useFetchQuestionAnwers";
 import ArticleInterface from "@features/review/shared/types/ArticleInterface";
+import { ColumnVisibility } from "@features/review/shared/hooks/useVisibilityColumns";
+import useBubbleDataGeneric, { BubbleItem } from "@features/review/summarization-graphics/hooks/useBubbleDataGeneric";
+import BubbleChart from "@features/review/summarization-graphics/components/charts/BubbleChart";
+import TextualTable from "@features/review/summarization-graphics/components/tables/TextualTable";
+import { PickManyItemTable } from "@features/review/summarization-graphics/components/tables/PickManyItemTable";
+import { Dispatch, SetStateAction } from "react";
+import { PageLayout } from "@features/review/shared/components/structure/LayoutFactory";
 
 type Props = {
   selectedQuestionId?: string;
   filteredStudies: ArticleInterface[];
   type: string;
+  columnsVisible: ColumnVisibility;
+  setTablePage: Dispatch<SetStateAction<PageLayout>>;
 };
 
 type Question = {
@@ -78,10 +87,55 @@ function updateLabel(question: Question) {
   }
 }
 
+function buildPickManyBubbleItems(
+  filteredEntries: [string, number[]][],
+  filteredStudies: ArticleInterface[]
+): BubbleItem[] {
+  const yearAnswerMap = new Map<string, number>();
+
+  filteredEntries.forEach(([label, ids]) => {
+    const clean = label.replace(/[\[\]]/g, "");
+    const options = clean.split(",").map((s) => s.trim()).filter(Boolean);
+
+    ids.forEach((id) => {
+      const study = filteredStudies.find((s) => s.studyReviewId === id);
+      if (!study) return;
+
+      const year = Number(study.year);
+
+      options.forEach((opt) => {
+        const key = `${year}-${opt}`;
+        yearAnswerMap.set(key, (yearAnswerMap.get(key) || 0) + 1);
+      });
+    });
+  });
+
+  return Array.from(yearAnswerMap.entries()).map(([key, count]) => {
+    const dashIndex = key.indexOf("-");
+    const year = Number(key.slice(0, dashIndex));
+    const answer = key.slice(dashIndex + 1);
+    return { x: year, group: answer, y: count };
+  });
+}
+
+function QuestionBubbleChart({ items }: { items: BubbleItem[] }) {
+  const { series, yCategories } = useBubbleDataGeneric(items);
+  return (
+    <BubbleChart
+      title=""
+      series={series}
+      yCategories={yCategories}
+      yaxisText=""
+    />
+  );
+}
+
 export const QuestionsCharts = ({
   selectedQuestionId,
   filteredStudies,
   type,
+  columnsVisible,
+  setTablePage,
 }: Props) => {
   const { extractionAnswers, isLoadingExtractionAnswers } =
     useFetchQuestionAnswers();
@@ -103,20 +157,24 @@ export const QuestionsCharts = ({
       </Text>
     );
 
-  const filteredStudyIds = new Set(filteredStudies.map((s) => s.studyReviewId));
+  // apenas estudos ainda marcados como Incluído contam para os gráficos/tabelas
+  const includedStudies = filteredStudies.filter(
+    (s) => s.extractionStatus === "INCLUDED"
+  );
+
+  const filteredStudyIds = new Set(includedStudies.map((s) => s.studyReviewId));
 
   return (
     <>
       {filteredAnswers.map((q) => {
         const question = q.question;
-        const code = question.code;
         const description = question.description;
 
         const filteredEntries = Object.entries(q.answer ?? {}).map(
           ([label, ids]) => {
             const idsArray = Array.isArray(ids) ? ids : [];
             const filteredIds = idsArray
-              .map((id) => Number(id)) // 🔹 converte tudo para número
+              .map((id) => Number(id))
               .filter((id) => filteredStudyIds.has(id));
             return [label, filteredIds] as [string, number[]];
           }
@@ -131,28 +189,90 @@ export const QuestionsCharts = ({
         let chartContent = null;
 
         if (type === "Pie Chart" || type === "Gráfico de Pizza") {
-          chartContent = (
-            <PieChart title={`Question ${code}`} labels={labels} data={data} />
-          );
+          chartContent = <PieChart title="" labels={labels} data={data} />;
+
         } else if (type === "Bar Chart" || type === "Gráfico de Barras") {
           chartContent = (
-            <BarChart
-              title={`Question ${code}`}
-              labels={labels}
-              data={data}
-              section="questions"
+            <BarChart title="" labels={labels} data={data} section="questions" />
+          );
+
+        } else if (type === "Bubble Chart" || type === "Gráfico de Bolhas") {
+
+          let items: BubbleItem[];
+
+          if (question.questionType === "PICK_MANY") {
+            items = buildPickManyBubbleItems(filteredEntries, includedStudies);
+          } else {
+            const yearAnswerMap = new Map<string, number>();
+
+            filteredEntries.forEach(([answer, ids]) => {
+              ids.forEach((id) => {
+                const study = includedStudies.find(
+                  (s) => s.studyReviewId === id
+                );
+                if (!study) return;
+
+                const year = Number(study.year);
+                const key = `${year}-${answer}`;
+                yearAnswerMap.set(key, (yearAnswerMap.get(key) || 0) + 1);
+              });
+            });
+
+            items = Array.from(yearAnswerMap.entries()).map(([key, count]) => {
+              const [year, answer] = key.split("-");
+              return { x: Number(year), group: answer, y: count };
+            });
+          }
+
+          chartContent = <QuestionBubbleChart items={items} />;
+
+        } else if (
+          (type === "Item Table" || type === "Tabela por Item") &&
+          question.questionType === "PICK_MANY"
+        ) {
+          setTablePage("Graphics-FormQuestions");
+          chartContent = (
+            <PickManyItemTable
+              data={filteredAnswer}
+              options={question.options ?? []}
+              studyIds={includedStudies.map((s) => s.studyReviewId)}
             />
           );
+
         } else {
-          chartContent = <QuestionsTable data={filteredAnswer} />;
+          if (question.questionType === "TEXTUAL") {
+            setTablePage("Graphics-TextualQuestion");
+            chartContent = (
+              <TextualTable
+                columnsVisible={columnsVisible}
+                articles={includedStudies.filter(
+                  (study) =>
+                    (study as any).formAnswers?.[question.questionId] !==
+                      undefined ||
+                    (study as any).robAnswers?.[question.questionId] !==
+                      undefined
+                )}
+                sortConfig={null}
+                questionId={question.questionId}
+              />
+            );
+          } else {
+            setTablePage("Graphics-FormQuestions");
+            chartContent = (
+              <QuestionsTable
+                columnsVisible={columnsVisible}
+                data={filteredAnswer}
+              />
+            );
+          }
         }
 
         return (
-          <Box key={question.questionId}>
-            <Text mb={2} fontWeight="bold">
+          <Box key={question.questionId} w="100%">
+            <Text mb={2} ml="2rem" fontWeight="bold">
               {description}
             </Text>
-            {chartContent}
+            <Box w="100%">{chartContent}</Box>
           </Box>
         );
       })}

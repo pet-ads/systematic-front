@@ -21,7 +21,7 @@ import { useExport } from "@features/review/summarization-graphics/context/Expor
 export type ColumnDef<T> = {
   key: keyof T;
   label: string;
-  width: string | number;
+  width?: string | number; 
   isNumeric?: boolean;
   sortable?: boolean;
   render?: (row: T) => React.ReactNode;
@@ -96,13 +96,12 @@ export function GenericExpandedTable<T>({
     <Box w="100%">
       <TableContainer
         w="100%"
-        maxH={isExporting ? "none" : "calc(100vh - 35rem)"}
-        overflowY={isExporting ? "visible" : "auto"}
+        maxH="auto"
+        overflowY="visible"
         borderRadius="1rem 1rem 0 0"
-        boxShadow="lg"
         bg="white"
       >
-        <Table variant="unstyled" size="md" layout="fixed">
+        <Table variant="unstyled" size="md" layout="fixed" w="100%">
           <Thead
             position={isExporting ? "static" : "sticky"}
             top={0}
@@ -117,6 +116,7 @@ export function GenericExpandedTable<T>({
                 return (
                   <Th
                     key={String(col.key)}
+                    w={col.width} 
                     position="relative"
                     fontSize="medium"
                     color="#263C56"
@@ -157,19 +157,6 @@ export function GenericExpandedTable<T>({
                           </>
                         )}
                       </Box>
-                    )}
-
-                    {!isExporting && (
-                      <Box
-                        position="absolute"
-                        top={0}
-                        right={0}
-                        h="100%"
-                        w="6px"
-                        cursor="col-resize"
-                        zIndex={10}
-                        _hover={{ bg: "blue.200" }}
-                      />
                     )}
                   </Th>
                 );
@@ -224,17 +211,24 @@ export function GenericExpandedTable<T>({
         </Table>
       </TableContainer>
 
-      {!isExporting && (
-        <PaginationControl
-          currentPage={currentPage}
-          itensPerPage={itensPerPage}
-          quantityOfPages={quantityOfPages}
-          handleNextPage={handleNextPage}
-          handlePrevPage={handlePrevPage}
-          handleBackToInitial={handleBackToInitial}
-          handleGoToFinal={handleGoToFinal}
-          changeQuantityOfItens={changeQuantityOfItens}
-        />
+      {!isExporting && data.length >= 20 && (
+        <Box 
+          display="flex" 
+          w="100%" 
+          justifyContent="flex-end" 
+          mt={4} 
+        >
+          <PaginationControl
+            currentPage={currentPage}
+            itensPerPage={itensPerPage}
+            quantityOfPages={quantityOfPages}
+            handleNextPage={handleNextPage}
+            handlePrevPage={handlePrevPage}
+            handleBackToInitial={handleBackToInitial}
+            handleGoToFinal={handleGoToFinal}
+            changeQuantityOfItens={changeQuantityOfItens}
+          />
+        </Box>
       )}
     </Box>
   );

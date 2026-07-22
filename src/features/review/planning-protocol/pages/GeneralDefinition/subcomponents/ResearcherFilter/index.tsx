@@ -1,48 +1,22 @@
-import { FormControl } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
-import { FormControlstyle } from "./styles";
-import TextAreaInput from "../../../../../../../components/common/inputs/InputTextArea";
 import { useTranslation } from "react-i18next";
-
-interface IResearcherData {
-  name: string;
-  email: string;
-}
+import { Text, VStack } from "@chakra-ui/react";
+import AddResearcher from "./AddResearcher";
+import IncludedResearchers from "./IncludedResearchers";
+import {useState} from 'react';
+import { researchersMock } from "../../../../../../../mocks/researchers";
 
 export default function ResearcherFilter() {
-  const [researchers, setResearchers] = useState<IResearcherData[]>([]);
-  const [filteredResearchers, setFilteredResearchers] = useState<
-    IResearcherData[]
-  >([]);
-  const [inputValue, setInputValue] = useState("");
-  const { t } = useTranslation("review/planning-protocol")
-
-  useEffect(() => {
-    fetch("src/data/test.json")
-      .then((response) => response.json())
-      .then((res) => setResearchers(res))
-      .catch((err) => console.error(err));
-  }, []);
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const value = e.target.value;
-    setInputValue(value);
-    setFilteredResearchers(
-      researchers.filter((researcher) =>
-        researcher.name.includes(e.target.value)
-      )
-    );
-    console.log(filteredResearchers);
-  };
+  const [researchers, setResearchers] = useState(researchersMock)
+  const { t } = useTranslation("review/planning-protocol"); 
 
   return (
-    <FormControl sx={FormControlstyle}>
-      <TextAreaInput
-        label={t("generalDefinition.input.researchers.label")}
-        placeholder={t("generalDefinition.input.researchers.placeholder")}
-        onChange={handleInputChange}
-        value={inputValue}
-      ></TextAreaInput>
-    </FormControl>
+    <>
+      <Text mt={"30px"} fontWeight={500} fontSize={"large"}>{t("generalDefinition.input.researchers.label")}</Text>
+
+      <VStack spacing={0} align="stretch" border="2px solid" borderColor="gray.300" borderRadius="md" bgColor="#ffffffff" px={2} py={2}>
+        <AddResearcher researchers={researchers} setResearchers={setResearchers}/>
+        <IncludedResearchers researchers={researchers} setResearchers={setResearchers}/>
+      </VStack>
+    </>
   );
 }

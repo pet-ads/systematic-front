@@ -11,10 +11,12 @@ export default function useSendDuplicatedStudies({
 }: SendDuplicatedStudiesProps) {
   const studyReviewId = localStorage.getItem("systematicReviewId");
 
-  const sendDuplicatedStudies = () => {
+  const sendDuplicatedStudies = async () => {
     if (firstSelected === null) return;
     const path = `systematic-study/${studyReviewId}/study-review/${firstSelected}/duplicated`;
-    Axios.patch(path, { duplicatedStudyIds: duplicatedStudies });
+    await Axios.patch(path, {
+      duplicatedStudyIds: duplicatedStudies,
+    });
   };
 
   return {

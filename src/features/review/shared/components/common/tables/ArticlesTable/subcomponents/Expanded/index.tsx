@@ -55,6 +55,8 @@ interface Props {
   onRowClick?: (article: ArticleInterface) => void;
   pagination: PaginationControls;
   checkbox?: boolean;
+  isSplited?: boolean;
+  isVertical?: boolean;
 }
 
 type HeaderKeys =
@@ -83,13 +85,16 @@ export default function Expanded({
   onRowClick,
   pagination,
   checkbox,
+  isSplited,
+  isVertical,
 }: Props) {
+  console.log(layout)
   const [columnWidths, setColumnWidths] = useState({
-    studyReviewId: "62px",
-    title: "150px",
-    authors: "100px",
-    venue: "100px",
-    year: "65px",
+    studyReviewId: "80px",
+    title: "95px",
+    authors: "95px",
+    venue: "110px",
+    year: "85px",
     selectionStatus: "90px",
     extractionStatus: "90px",
     score: "70px",
@@ -274,20 +279,9 @@ export default function Expanded({
   };
 
   return (
-    <Box w="100%" maxH="82.5vh">
+    <Box w="100%" h="100%" display="flex" flexDirection="column">
       <TableContainer
-        w="100%"
-        maxW="100%"
-        minH={
-          layout == "horizontal" || layout == "horizontal-invert"
-            ? "16rem"
-            : "calc(100vh - 16rem)"
-        }
-        maxH={
-          layout == "horizontal" || layout == "horizontal-invert"
-            ? "16rem"
-            : "calc(100vh - 16rem)"
-        }
+        flex="1"
         borderRadius="1rem 1rem 0 0"
         boxShadow="lg"
         bg="white"
@@ -639,6 +633,8 @@ export default function Expanded({
         handleBackToInitial={handleBackToInitial}
         handleGoToFinal={handleGoToFinal}
         changeQuantityOfItens={changeQuantityOfItens}
+        isSplited={isSplited}
+        isVertical={isVertical}
       />
     </Box>
   );

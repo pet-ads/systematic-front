@@ -6,6 +6,7 @@
         "button": "Ir para o registro de base de dados"
     },
     "dataBaseCard": {
+        "addSession": "Adicionar Sessão",
         "deleteDatabaseModal": {
             "toasts": {
                 "incorrectName": {
@@ -30,11 +31,30 @@
             "cancel": "Cancelar",
             "remove": "Remover"
         },
+        "deleteSessionModal": {
+            "heading": "Excluir sessão",
+            "confirmMessage": "Tem certeza de que deseja excluir esta sessão? Esta ação é permanente e não pode ser desfeita.",
+            "blockedTitle": "Sessão não pode ser excluída",
+            "blockedMessage": "Esta sessão possui artigos Incluídos, Excluídos ou Duplicados. Redefina todos os artigos para Não Classificado antes de excluir a sessão.",
+            "checking": "Verificando artigos da sessão...",
+            "cancel": "Cancelar",
+            "confirm": "Confirmar exclusão",
+            "toasts": {
+                "success": {
+                    "title": "Sessão excluída com sucesso!",
+                    "description": "A sessão foi removida."
+                },
+                "catch": {
+                    "title": "Ação Falhou",
+                    "description": "Não foi possível excluir a sessão. Tente novamente."
+                }
+            }
+        },
         "accordionDashboard": {
             "date": "Data",
             "studies": "Estudos",
             "actions": "Ações",
-            "notFound": "Estudos não encontrados"
+            "notFound": "Nenhuma sessão encontrada para essa base de dados."
         },
         "identificationModal": {
             "heading": {
@@ -65,7 +85,28 @@
             "button": {
                 "create": "Criar",
                 "update": "Atualizar"
+            },
+            "toasts": {
+                "sessionUpdatedSuccess": "Sessão atualizada com sucesso",
+                "sessionUpdatedError": "Erro ao atualizar a sessão"
             }
+        }
+    },
+    "searchSessions": {
+        "header": "Sessões de Pesquisa",
+        "back": "Voltar"
+    },
+    "upload": {
+        "duplicateFile": {
+            "title": "Arquivo duplicado",
+            "description": "Este arquivo já existe!"
+        },
+        "someFilesNeedRevision": {
+            "title": "Alguns arquivos precisam de revisão",
+            "description": "arquivo(s) não puderam ser processados."
+        },
+        "success": {
+            "title": "Arquivos enviados com sucesso"
         }
     }
 }

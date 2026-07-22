@@ -12,6 +12,7 @@ import {
 } from "@chakra-ui/react";
 import { FaPlusCircle } from "react-icons/fa";
 import { BsSend } from "react-icons/bs";
+import { useTranslation } from "react-i18next";
 
 // Component
 import CreateResponseComponent from "@features/review/execution-extraction/factory/CreateResponseComponents/index.tsx";
@@ -47,6 +48,7 @@ export default function DataExtraction({
 }: DataExtractionFormProps) {
   const reviewId = localStorage.getItem("systematicReviewId");
   const { toGo } = useNavigation();
+  const { t } = useTranslation("review/execution-extraction");
 
   const { submitResponses } = useExtractionFormSubmission({
     responses: questions ?? {},
@@ -130,8 +132,8 @@ export default function DataExtraction({
 
    if (!isModified) {
      toast({
-       title: "No changes made",
-       description: "Update at least one answer before submitting.",
+       title: t("extractionForm.noChangesToast.title"),
+       description: t("extractionForm.noChangesToast.description"),
        status: "warning",
        duration: 4000,
        isClosable: true,
@@ -165,7 +167,9 @@ export default function DataExtraction({
                 ? "EXTRACTION"
                 : "RISK_OF_BIAS";
             const formatedFormKey =
-              typeFormKey === "EXTRACTION" ? "Extraction" : "Risk of Bias";
+              typeFormKey === "EXTRACTION"
+                ? t("extractionForm.sectionTitle")
+                : t("extractionForm.riskOfBiasTitle");
             const isRiskOfBiasKey = typeFormKey === "RISK_OF_BIAS";
 
             if (
@@ -189,7 +193,7 @@ export default function DataExtraction({
                     bg="gray.50"
                   >
                     <Text fontSize="md" fontWeight="bold" color="gray.800">
-                      No questions found
+                      {t("extractionForm.noQuestions")}
                     </Text>
 
                     <Button
@@ -203,7 +207,7 @@ export default function DataExtraction({
                         )
                       }
                     >
-                      Create Questions
+                      {t("extractionForm.createQuestions")}
                     </Button>
                   </Flex>
                 </Box>
@@ -212,7 +216,7 @@ export default function DataExtraction({
 
             return (
               <Box key={sectionKey}>
-                {index > 0 && <Divider />}
+                {index > 0 && <Divider mb="3.5rem"/>}
                 <Box mb="1.5rem" px={{ base: "1rem", md: "2rem" }}>
                   <Heading
                     size="md"
@@ -253,7 +257,7 @@ export default function DataExtraction({
                           fontWeight="semibold"
                           mb="0.4rem"
                         >
-                          * This field is required
+                          {t("extractionForm.requiredField")}
                         </Text>
                       )}
                       <CreateResponseComponent
@@ -286,7 +290,7 @@ export default function DataExtraction({
             px="1.5rem"
             width="6.5rem"
           >
-            Submit
+            {t("extractionForm.submit")}
           </Button>
         </Flex>
       )}

@@ -1,6 +1,7 @@
 // // External Library
 import { useState, useMemo } from "react";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa6";
+import { useTranslation } from "react-i18next";
 
 // // Styles
 import styles from "./styles.module.css";
@@ -17,6 +18,7 @@ export default function DefaultTable<T extends object>({
   onExternalSort
 }: GenericTableProps<T>) {
   const [internalSortConfig, setInternalSortConfig] = useState<SortConfig<T>>(null);
+  const { t } = useTranslation("review/planning-protocol");
 
   const sortConfig = externalSortConfig !== undefined ? externalSortConfig : internalSortConfig;
 
@@ -126,7 +128,7 @@ export default function DefaultTable<T extends object>({
               ))
             ) : (
               <tr className={styles.emptyRow}>
-                <td colSpan={columns.length}>No data found.</td>
+                <td colSpan={columns.length}>{t("selectionAndExtraction.input.extractionQuestions.noDataFound")}</td>
               </tr>
             )}
           </tbody>

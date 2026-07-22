@@ -1,5 +1,6 @@
 import { Box, Flex, Text, Icon, VStack } from "@chakra-ui/react";
 import { LockIcon } from "@chakra-ui/icons";
+import { useTranslation } from "react-i18next";
 
 // Components
 import HeaderForm from "../DataExtraction/subcomponents/Header";
@@ -23,6 +24,7 @@ export default function ExtractionForm({ studyData }: ArticlePreviewProps) {
     mutateQuestion,
     isLoading,
   } = useFetchAllQuestionsByArticle();
+  const { t } = useTranslation("review/execution-extraction");
 
   if (isLoading) return <SkeletonLoader height="100%" width="100%" />;
 
@@ -49,7 +51,7 @@ export default function ExtractionForm({ studyData }: ArticlePreviewProps) {
             />
           ) : (
             <Text textAlign="center" color="gray.500" p="2rem">
-              Loading questions...
+              {t("extractionForm.loading")}
             </Text>
           )
         ) : (
@@ -72,12 +74,11 @@ export default function ExtractionForm({ studyData }: ArticlePreviewProps) {
               <Icon as={LockIcon} w={6} h={6} color="gray.400" />
               <VStack spacing={1}>
                 <Text fontSize="md" fontWeight="bold" color="gray.800">
-                  Extraction Disabled
+                  {t("extractionFormDisabled.title")}
                 </Text>
                 <Text fontSize="sm" color="gray.600">
-                  This study is currently marked as{" "}
-                  <strong>{studyData.extractionStatus}</strong>. Extraction is
-                  only allowed for included studies.
+                  {t("extractionFormDisabled.text1")}{" "}
+                  <strong>{t(`extractionFormDisabled.${studyData.extractionStatus}`)}</strong>. {t("extractionFormDisabled.text2")}
                 </Text>
               </VStack>
             </Flex>

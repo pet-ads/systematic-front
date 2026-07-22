@@ -1,8 +1,8 @@
-// Components
-import RevisionCard from "@features/user/my-reviews/components/cards/RevisionCard";
-
 // Type
 import type { CardReview } from "@features/user/my-reviews/types";
+
+// Components
+import RevisionCard from "@features/user/my-reviews/components/cards/RevisionCard";
 
 interface RenderCardsProps {
   data: CardReview[];
@@ -15,8 +15,9 @@ const RenderCards = ({ data }: RenderCardsProps) => {
         <RevisionCard
           key={item.key}
           revisionId={item.id}
-          id={item.id}
           title={item.title}
+          status={item.status}
+          collaborators={item.collaborators}
         />
       ))}
     </>

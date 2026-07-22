@@ -1,29 +1,25 @@
 // External library
-import { Card, Flex } from "@chakra-ui/react";
-
-// Components
-import CardIcon from "../CardIcon";
-import CardInfos from "../CardInfo";
-import EditionInfos from "../../containers/EditionInfo";
+import { Box, Flex, Text } from "@chakra-ui/react";
+import { useTranslation } from "react-i18next";
 
 // Services
 import useNavigateToPendingStage from "@features/user/my-reviews/services/useNavigateToPendingStage";
 
-// Styles
-import { Cardstyles } from "./styles";
-
 // Types
 interface RevisionCardProps {
   revisionId: string;
-  id: string;
   title: string;
+  status?: string;
+  collaborators: string[];
 }
 
 export default function RevisionCard({
   revisionId,
-  id,
   title,
+  status,
+  collaborators,
 }: RevisionCardProps) {
+  const { t } = useTranslation("user/my-reviews");
   const { redirectToPendingStage, stage } = useNavigateToPendingStage({
     reviewId: revisionId,
   });
@@ -33,13 +29,54 @@ export default function RevisionCard({
     redirectToPendingStage();
   }
 
+  const displayStatus = status || stage || "...";
+
   return (
-    <Card sx={Cardstyles} onClick={redirectToReview} cursor="pointer">
-      <Flex>
-        <CardIcon />
-        <CardInfos title={title} id={id} />
+    <Flex 
+      w="100%" 
+      justify="space-between" 
+      p="1rem"
+      borderRadius="0.5rem" 
+      borderBottom="1px solid" 
+      borderColor="gray.200"
+      onClick={redirectToReview} 
+      cursor="pointer"
+      _hover={{ backgroundColor: "gray.50" }}
+      transition="background-color 0.2s"
+    >
+      <Box color="#334155"> 
+        <Text fontWeight="600" fontSize="1rem" mb="0.25rem">
+          {title}
+        </Text>
+        
+        <Text fontSize="0.875rem" color="gray.600" mb="0.25rem">
+          {t("owner")}: {t("you")}
+        </Text>
+        
+        
+        <Box pl="0.5rem" mt="0.25rem">
+          {collaborators && collaborators.length > 1 ? (
+            <>
+              <Text fontSize="0.875rem" color="gray.600">
+                {t("reviewers")}:
+              </Text>
+              {collaborators.map((collab, index) => (
+                <Text key={index} fontSize="0.875rem" color="gray.500">
+                  {collab}
+                </Text>
+              ))}
+            </>
+          ) : (
+            <Text fontSize="0.875rem" color="gray.400">{t("reviewers")}: -</Text>
+          )}
+        </Box>
+      </Box>
+
+      <Flex alignItems="center">
+        <Text fontSize="0.875rem" color="#334155">
+          {t("statusLabel")}: {displayStatus}
+        </Text>
       </Flex>
-      <EditionInfos status={stage} />
-    </Card>
+    </Flex>
   );
 }

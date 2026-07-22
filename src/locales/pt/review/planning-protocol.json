@@ -20,7 +20,25 @@
             },
             "researchers": {
                 "label": "Pesquisadores",
-                "placeholder": "Insira o nome dos pesquisadores "
+                "placeholder": "Adicione um pesquisador",
+                "noResearchersFound": "Nenhum pesquisador encontrado",
+                "status": {
+                    "pending": "Pendente",
+                    "expired": "Expirado",
+                    "excluding": "Excluído"
+                },
+                "role": {
+                    "role": "Função",
+                    "admin": "administrador",
+                    "reviewer": "revisor",
+                    "owner": "dono"
+                },
+                "confirm": {
+                    "title": "Remover pesquisador",
+                    "body": "Tem certeza que quer remover",
+                    "cancel": "Cancelar",
+                    "delete": "Remover"
+                }
             }
         },
         "alert": {
@@ -153,7 +171,34 @@
                 "placeholder": "Insira o processo de coleta de dados"
             },
             "extractionQuestions": {
-                "label": "Questões de Extração"
+                "label": "Questões de Extração",
+                "question": "QUESTÃO",
+                "type": "TIPO",
+                "selectType": "Selecione o tipo",
+                "noDataFound": "Dados não encontrados",
+                "questionType": {
+                    "textual": "textual",
+                    "pickList": "seleção única",
+                    "numberedScale": "escala numérica",
+                    "labeledList": "lista rotulada",
+                    "pickMany": "seleção múltipla"
+                },
+                "toaster": {
+                    "referenceCode": {
+                        "title": "Um código de referência é obrigatório.",
+                        "description": "Por favor, preencha o campo de código de referência antes de salvar."
+                    },
+                    "duplicated": {
+                        "title1": "O código de referência",
+                        "title2": "já está sendo usado.",
+                        "description": "Por favor, escolha outro."
+                    },
+                    "finishEditing": "Termine de editar a linha atual antes de adicionar uma nova.",
+                    "questionType": {
+                        "title": "Tipo de questão é obrigatório.",
+                        "description": "Por favor, preencha o campo de tipo de questão antes de salvar."
+                    }
+                }
             }
         }
     },
@@ -180,6 +225,63 @@
                 "label": "Método de Análise e Síntese",
                 "placeholder": "Insira o seu Método de Análise e Síntese"
             }
+        }
+    },
+    "toasts": {
+        "duplicateTitle": "Palavra-chave Duplicada",
+        "duplicateDescription": "Esta palavra-chave já existe!"
+    },
+    "deleteSourceModal": {
+        "heading": "Excluir fonte",
+        "confirmMessage": "Tem certeza de que deseja excluir a fonte",
+        "blockedTitle": "Fonte não pode ser excluída",
+        "blockedMessage": "Esta fonte possui artigos Incluídos, Excluídos ou Duplicados. Redefina todos os artigos para Não Classificado antes de excluir a fonte.",
+        "checking": "Verificando artigos da fonte...",
+        "cancel": "Cancelar",
+        "confirm": "Confirmar exclusão",
+        "toasts": {
+            "success": {
+                "title": "Fonte excluída com sucesso!",
+                "description": "A fonte foi removida."
+            },
+            "catch": {
+                "title": "Ação Falhou",
+                "description": "Não foi possível excluir a fonte. Tente novamente."
+            }
+        }
+    },
+    "optionModals": {
+        "labeledScale": {
+            "header": "Inserir opções e valores",
+            "title": "Escala Rotulada",
+            "labelPlaceholder": "Insira o rótulo aqui",
+            "valuePlaceholder": "Valor",
+            "add": "Adicionar",
+            "close": "Fechar",
+            "duplicateLabel": "Este rótulo já existe!"
+        },
+        "pickList": {
+            "header": "Inserir as opções",
+            "title": "Opções",
+            "placeholder": "Insira as opções aqui",
+            "add": "Adicionar",
+            "close": "Fechar",
+            "duplicateOption": "Esta opção já existe!"
+        },
+        "pickMany": {
+            "header": "Inserir múltiplas opções",
+            "title": "Múltiplas Opções",
+            "placeholder": "Digite uma opção",
+            "add": "Adicionar",
+            "close": "Fechar",
+            "duplicateOption": "Esta opção já existe!"
+        },
+        "numberScale": {
+            "header": "Valores para escala numérica",
+            "min": "Mínimo",
+            "max": "Máximo",
+            "close": "Fechar",
+            "save": "Salvar"
         }
     }
 }

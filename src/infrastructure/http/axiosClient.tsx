@@ -1,5 +1,8 @@
 // External library
-import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
+import axios, {
+  AxiosError,
+  InternalAxiosRequestConfig,
+} from "axios";
 
 // Store
 import { useAuthStore } from "@features/auth/store/useAuthStore";
@@ -7,89 +10,153 @@ import { useAuthStore } from "@features/auth/store/useAuthStore";
 // Services
 import refresh from "@features/auth/services/refresh";
 
-// Constants
-import { ERROR_CODE } from "@features/shared/errors/constants/error";
+// Guards
 import { isLeft } from "@features/shared/errors/pattern/Either";
 
 const Axios = axios.create({
   baseURL: import.meta.env.VITE_PUBLIC_API_URL,
   withCredentials: true,
-  timeout: 100000,
 });
 
-Axios.interceptors.request.use(
-  (config: InternalAxiosRequestConfig) => {
-    const token = useAuthStore.getState().user?.token;
+let isRefreshing = false;
 
-    if (token && !config.headers.Authorization) {
-      config.headers.Authorization = `Bearer ${token}`;
+let failedQueue: {
+  resolve: (token: string) => void;
+  reject: (error: unknown) => void;
+}[] = [];
+
+function redirectToLogin() {
+  window.location.href =
+    "/?showModal=login";
+}
+
+const processQueue = (
+  error: unknown,
+  token?: string
+) => {
+  failedQueue.forEach((promise) => {
+    if (error) {
+      promise.reject(error);
+    } else if (token) {
+      promise.resolve(token);
     }
+  });
 
-    if (!(config.data instanceof FormData)) {
-      if (!config.headers["Content-Type"]) {
-        config.headers.set("Content-Type", "application/json");
-      }
+  failedQueue = [];
+};
+
+Axios.interceptors.request.use(
+  (
+    config: InternalAxiosRequestConfig
+  ) => {
+    const token =
+      useAuthStore.getState().user?.token;
+
+    if (token) {
+      config.headers.set(
+        "Authorization",
+        `Bearer ${token}`
+      );
     }
 
     return config;
-  },
-  (error: AxiosError) => {
-    return Promise.reject(error);
   }
 );
 
 Axios.interceptors.response.use(
   (response) => response,
+
   async (error: AxiosError) => {
-    const originalRequest = error.config as InternalAxiosRequestConfig & {
-      _retry?: boolean;
-    };
+    const originalRequest =
+      error.config as InternalAxiosRequestConfig & {
+        _retry?: boolean;
+      };
 
-    if (!error.response) {
+    const status =
+      error.response?.status;
+
+    const user =
+      useAuthStore.getState().user;
+
+    if (
+      status !== 401 ||
+      originalRequest._retry ||
+      !user
+    ) {
       return Promise.reject(error);
     }
 
-    const { status } = error.response;
-    const authCodes = [ERROR_CODE.unauthorized, ERROR_CODE.forbidden];
+    if (isRefreshing) {
+      return new Promise(
+        (resolve, reject) => {
+          failedQueue.push({
+            resolve: (
+              token: string
+            ) => {
+              originalRequest.headers.set(
+                "Authorization",
+                `Bearer ${token}`
+              );
 
-    if (error.config?.url?.includes("auth/refresh")) {
-      useAuthStore.getState().logout();
-      if (window.location.pathname !== "/login") {
-        window.location.href = "/login";
-      }
-      return Promise.reject(error);
-    }
+              resolve(
+                Axios(originalRequest)
+              );
+            },
 
-    if (authCodes.every((code) => code !== status) || originalRequest._retry) {
-      return Promise.reject(error);
+            reject,
+          });
+        }
+      );
     }
 
     originalRequest._retry = true;
+
+    isRefreshing = true;
 
     try {
       const result = await refresh();
 
       if (isLeft(result)) {
-        useAuthStore.getState().logout();
-        if (window.location.pathname !== "/login") {
-          window.location.href = "/login";
-        }
-        return Promise.reject(result.value);
+        processQueue(result.value);
+
+        await useAuthStore
+          .getState()
+          .logout();
+
+        redirectToLogin();
+
+        return Promise.reject(
+          result.value
+        );
       }
 
-      const { accessToken } = result.value;
+      const token =
+        result.value.accessToken;
 
-      useAuthStore.getState().updateToken(accessToken);
+      useAuthStore
+        .getState()
+        .updateToken(token);
 
-      originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+      processQueue(null, token);
+
+      originalRequest.headers.set(
+        "Authorization",
+        `Bearer ${token}`
+      );
 
       return Axios(originalRequest);
     } catch (err) {
-      useAuthStore.getState().logout();
-      if (window.location.pathname !== "/login") {
-        window.location.href = "/login";
-      }
+      processQueue(err);
+
+      await useAuthStore
+        .getState()
+        .logout();
+
+      redirectToLogin();
+
       return Promise.reject(err);
+    } finally {
+      isRefreshing = false;
     }
   }
 );

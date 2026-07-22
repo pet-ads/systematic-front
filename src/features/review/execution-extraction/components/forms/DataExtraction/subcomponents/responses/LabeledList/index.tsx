@@ -1,12 +1,13 @@
 // External library
 import { useEffect, useState } from "react";
 import { FormControl, FormLabel } from "@chakra-ui/react";
+import { useTranslation } from "react-i18next";
 
 // Components
 import SelectInput from "@components/common/inputs/SelectInput";
 
 // Utils
-import { capitalize } from "@features/shared/utils/helpers/formatters/CapitalizeText";
+import { renderQuestionLabel } from "../helpers";
 
 // Styles
 import { container, label } from "../styles";
@@ -28,7 +29,8 @@ export default function LabeledList({
   onResponse,
 }: LabeledListProps) {
   const [selected, setSelected] = useState("");
-
+  const { t } = useTranslation("review/execution-extraction");
+  
   const options = Object.entries(scales).map(
     ([key, value]) => `${key}: ${value}`,
   );
@@ -46,21 +48,20 @@ export default function LabeledList({
       setSelected(answer);
       return;
     }
-
     const formattedAnswer = `${answer.name}: ${answer.value}`;
     setSelected(formattedAnswer);
   }, [answer]);
 
   return (
     <FormControl sx={container} isInvalid={isInvalid}>
-      <FormLabel sx={label}>{capitalize(question)}</FormLabel>
+      <FormLabel sx={label}>{renderQuestionLabel(question)}</FormLabel>
       <SelectInput
         names={options}
         values={options}
         onSelect={handleSelectChange}
         selectedValue={selected}
         page="extraction"
-        placeholder="Labels"
+        placeholder={t("extractionForm.labeledList")}
         isInvalid={isInvalid}
       />
     </FormControl>

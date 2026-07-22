@@ -1,5 +1,6 @@
 // External library
 import { useState } from "react";
+import { useTranslation } from "react-i18next"; // 1. Importação do useTranslation
 
 // Components
 import useToaster from "@components/feedback/Toaster";
@@ -13,6 +14,17 @@ import { ApplicationError } from "@features/shared/errors/base/ApplicationError"
 
 // Constants
 import { PASSWORD_LENGHT } from "@features/auth/constants/user";
+
+// Types
+import type { User } from "@features/auth/types";
+
+// Guards
+import { isLeft } from "@features/shared/errors/pattern/Either";
+import errorFactory from "@features/shared/errors/factory/errorFactory";
+
+interface RegisterUser extends User {
+  confirmPassword: string;
+}
 
 const defaultRegister = {
   username: "",
@@ -34,18 +46,9 @@ const defaultErrors = {
   confirmPassword: "",
 };
 
-// Types
-import type { User } from "@features/auth/types";
-
-// Guards
-import { isLeft } from "@features/shared/errors/pattern/Either";
-import errorFactory from "@features/shared/errors/factory/errorFactory";
-
-interface RegisterUser extends User {
-  confirmPassword: string;
-}
-
 const useHandleRegister = (redirectFormLogin: () => void) => {
+  const { t } = useTranslation("landing/homepage");
+
   const [createUser, setCreateUser] = useState<RegisterUser>(defaultRegister);
   const [errors, setErrors] =
     useState<Record<keyof RegisterUser, string>>(defaultErrors);
@@ -82,40 +85,43 @@ const useHandleRegister = (redirectFormLogin: () => void) => {
     };
 
     if (!username) {
-      errors.username = "Please, enter your username";
+      errors.username = t("signUp.errors.username");
     }
 
     if (!name) {
-      errors.name = "Please, enter your full name";
+      errors.name = t("signUp.errors.name");
     }
 
     if (!email) {
-      errors.email = "Please, enter your email";
+      errors.email = t("signUp.errors.email");
     } else if (!validateEmail(email)) {
-      errors.email = "Invalid email address format";
+      errors.email = t("signUp.errors.invalidEmail");
     }
 
     if (!affiliation) {
-      errors.affiliation = "Please, enter your affiliation";
+      errors.affiliation = t("signUp.errors.affiliation");
     }
 
     if (!country) {
-      errors.country = "Please, enter your country";
+      errors.country = t("signUp.errors.country");
     }
 
     if (!password) {
-      errors.password = "Please, enter your password";
+      errors.password = t("signUp.errors.password");
     } else if (
       password.length < PASSWORD_LENGHT.MIN ||
       password.length > PASSWORD_LENGHT.MAX
     ) {
-      errors.password = `Password must be at least ${PASSWORD_LENGHT.MIN} characters and at most ${PASSWORD_LENGHT.MAX} characters`;
+      errors.password = t("signUp.errors.passwordLength", {
+        min: PASSWORD_LENGHT.MIN,
+        max: PASSWORD_LENGHT.MAX,
+      });
     }
 
     if (!confirmPassword) {
-      errors.confirmPassword = "Please, confirm your password";
+      errors.confirmPassword = t("signUp.errors.confirmPassword");
     } else if (password !== confirmPassword) {
-      errors.confirmPassword = "Passwords do not match";
+      errors.confirmPassword = t("signUp.errors.passwordMismatch");
     }
 
     setErrors(errors);
@@ -132,7 +138,17 @@ const useHandleRegister = (redirectFormLogin: () => void) => {
     try {
       const { confirmPassword, ...rest } = createUser;
 
-      if(!(validator({value: createUser.affiliation}) && validator({value: createUser.confirmPassword}) && validator({value: createUser.country}) && validator({value: createUser.email}) && validator({value: createUser.name}) && validator({value: createUser.password}) && validator({value: createUser.username}))) return;
+      if(
+        !(
+          validator({value: createUser.affiliation}) && 
+          validator({value: createUser.confirmPassword}) && 
+          validator({value: createUser.country}) && 
+          validator({value: createUser.email}) && 
+          validator({value: createUser.name}) && 
+          validator({value: createUser.password}) && 
+          validator({value: createUser.username})
+        )
+      ) return;
         
       const result = await registerUser(rest);
 
@@ -146,31 +162,31 @@ const useHandleRegister = (redirectFormLogin: () => void) => {
             setErrors((prev) => ({ ...prev, email: error.message }));
           } else {
             toast({
-              title: "Error",
+              title: t("signUp.toast.errorTitle"),
               status: "error",
               description: error.message,
             });
           }
         } else {
           toast({
-            title: "Unexpected Error",
+            title: t("signUp.toast.unexpectedErrorTitle"),
             status: "error",
-            description: "An unknown error format was received.",
+            description: t("signUp.toast.unexpectedErrorDesc"),
           });
         }
         return;
       }
 
       toast({
-        title: "Account created",
+        title: t("signUp.toast.successTitle"),
         status: "success",
-        description: `You can now log in with your account, ${result.value.username}.`,
+        description: t("signUp.toast.successDesc", { username: result.value.username }),
       });
       redirectFormLogin();
     } catch (error) {
       const appError = errorFactory("custom", (error as Error).message);
       toast({
-        title: "Unexpected error",
+        title: t("signUp.toast.unexpectedErrorTitle"),
         status: "error",
         description: appError.value.message,
       });

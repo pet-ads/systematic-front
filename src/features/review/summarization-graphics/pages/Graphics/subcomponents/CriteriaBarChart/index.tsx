@@ -37,10 +37,10 @@ export default function CriteriaBarChart({
   const filteredStudiesIds = filteredStudies
     .map((study) => {
       if ("studyReviewId" in study) {
-        return study.studyReviewId; //ArticleInterface
+        return study.studyReviewId; 
       }
       if ("studyId" in study) {
-        return study.studyId; //StudyInterface
+        return study.studyId; 
       }
       return null;
     })
@@ -66,6 +66,7 @@ export default function CriteriaBarChart({
       data={data}
       color={color}
       section={criteria}
+      height={500}
     />
   );
 }

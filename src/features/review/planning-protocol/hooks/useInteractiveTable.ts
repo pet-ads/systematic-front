@@ -1,4 +1,5 @@
 import { SetStateAction, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export interface Row {
   isNew: boolean;
@@ -13,8 +14,16 @@ export interface Row {
 }
 
 export function useInteractiveTable() {
+  const { t } = useTranslation("review/planning-protocol");
   const [rows, setRows] = useState<Row[]>([]);
-  const options = ["", "Textual", "Pick list", "Number scale", "Labeled List", "Pick many"];
+  const options = [
+    "",
+    t("selectionAndExtraction.input.extractionQuestions.questionType.textual"),
+    t("selectionAndExtraction.input.extractionQuestions.questionType.pickList"),
+    t("selectionAndExtraction.input.extractionQuestions.questionType.numberedScale"),
+    t("selectionAndExtraction.input.extractionQuestions.questionType.labeledList"),
+    t("selectionAndExtraction.input.extractionQuestions.questionType.pickMany")
+  ];
   const headers = ["Id", "Question", "Type", ""];
 
   const addRow = (setEditIndex: React.Dispatch<SetStateAction<number | null>>, setQuestions: React.Dispatch<SetStateAction<string[]>>) => {

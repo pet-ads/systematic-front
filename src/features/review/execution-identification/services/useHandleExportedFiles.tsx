@@ -5,9 +5,10 @@ import Axios from "../../../../infrastructure/http/axiosClient";
 import useToaster from "@components/feedback/Toaster";
 import { KeyedMutator } from "swr";
 import { InvalidEntry } from "@features/review/shared/types/StudiesContextInterface";
+import { useTranslation } from "react-i18next";
 
 interface Props {
-  mutate: KeyedMutator<
+  mutate: KeyedMutator <
     {
       id: string;
       systematicStudyd: string;
@@ -33,6 +34,7 @@ const useHandleExportedFiles = ({
   const [referenceFiles, setReferenceFiles] = useState<File[]>([]);
   const [source, setSource] = useState("");
   const toast = useToaster();
+  const { t } = useTranslation("review/execution-identification");
 
   const id = localStorage.getItem("systematicReviewId");
 
@@ -58,12 +60,12 @@ const useHandleExportedFiles = ({
 
       if (isDuplicate) {
         toast({
-          title: "Duplicate file",
-          description: "This file already exists!",
+          title: t("upload.duplicateFile.title"),
+          description: t("upload.duplicateFile.description"),
           status: "warning",
         });
       } else {
-        setReferenceFiles((prevFiles) => [...prevFiles, newFile]);
+        setReferenceFiles([newFile]);
       }
     }
   };
@@ -126,15 +128,14 @@ const useHandleExportedFiles = ({
           invalidArticles,
           setInvalidEntries
         );
-
         toast({
-          title: "Some files need revision",
-          description: `${invalidArticles.length} file(s) could not be processed.`,
+          title: t("upload.someFilesNeedRevision.title"),
+          description: `${invalidArticles.length} ${t("upload.someFilesNeedRevision.description")}`,
           status: "warning",
         });
       } else {
         toast({
-          title: "Files uploaded successfully",
+          title: t("upload.success.title"),
           status: "success",
         });
       }

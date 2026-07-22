@@ -1,28 +1,40 @@
 {
     "header": "Gráficos",
+    "graphicsArea": {
+        "title": "Área de Gráficos",
+        "instruction": "Escolha uma seção do menu para filtrar os resultados do dashboard"
+    },
     "filtersArea": {
-        "heading":"Área de Filtros",
+        "heading": "Área de Filtros",
         "sources": "Fontes",
         "criteria": "Critérios",
         "startYear": "Ano de Início",
         "endYear": "Ano de Término"
     },
     "sectionMenu": {
-      "chooseSection": "Escolher Seção",
-      "sections": {
-        "searchSources": "Fontes de Busca",
-        "s1InclusionCriteria": "Critérios de Inclusão",
-        "s1ExclusionCriteria": "Critérios de Exclusão",
-        "s2InclusionCriteria": "Critérios de Inclusão",
-        "s2ExclusionCriteria": "Critérios de Exclusão",
-        "studiesFunnel": "Funil de Estudos",
-        "includedStudies": "Estudos Incluídos",
-        "formQuestions": "Questões do Formulário"
-      },
-      "groups": {
-        "first_selection": "Primeira Seleção",
-        "second_selection": "Segunda Seleção"
-      }
+        "chooseSection": "Escolher Seção",
+        "sections": {
+            "searchSources": "Fontes de Busca",
+            "s1InclusionCriteria": "Critérios de Inclusão",
+            "s1ExclusionCriteria": "Critérios de Exclusão",
+            "s2InclusionCriteria": "Critérios de Inclusão",
+            "s2ExclusionCriteria": "Critérios de Exclusão",
+            "studiesFunnel": "Funil de Estudos",
+            "includedStudies": "Estudos Incluídos",
+            "formQuestions": "Questões do Formulário"
+        },
+        "groups": {
+            "overview": "Visão Geral",
+            "first_selection": "Primeira Seleção",
+            "second_selection": "Segunda Seleção",
+            "extraction_questions": "Questões de Extração",
+            "risk_of_bias_questions": "Questões de Risco de Viés"
+        },
+        "tooltips": {
+            "inclusion": "Critério de Inclusão",
+            "exclusion": "Critério de Exclusão",
+            "rbq": "Questão de Risco de Viés"
+        }
     },
     "selectMenu": {
         "chooseLayout": "Escolher Layout",
@@ -31,7 +43,8 @@
             "barChart": "Gráfico de Barras",
             "bubbleChart": "Gráfico de Bolhas",
             "lineChart": "Gráfico de Linhas",
-            "table": "Tabela"
+            "table": "Tabela",
+            "itemTable": "Tabela por Item"
         }
     },
     "noDataMessage": {
@@ -51,7 +64,7 @@
     },
     "questionsTable": {
         "answer": "Resposta",
-        "studies": "Estudos",
+        "studies": "ID do Estudo",
         "total": "Total",
         "percentage": "Percentual do Total"
     }

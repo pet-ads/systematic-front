@@ -80,48 +80,42 @@ export default function useFetchAllQuestionsByArticle() {
   useEffect(() => {
     if (!question) return;
 
-    setArticlesStructureAnswers((prev) => {
-      if (prev[articleId]) return prev;
+    const mapToStructure = (questions: QuestionAnswer[]): AnswerStrucuture[] =>
+      questions.map((quest) => {
+        let formattedAnswer = quest.answer;
 
-      const mapToStructure = (
-        questions: QuestionAnswer[],
-      ): AnswerStrucuture[] =>
-        questions.map((quest) => {
-          let formattedAnswer = quest.answer;
+        if (quest.type === "LABELED_SCALE" && quest.answer) {
+          formattedAnswer = formatLabel(quest.answer as string);
+        }
 
-          if (quest.type === "LABELED_SCALE" && quest.answer) {
-            formattedAnswer = formatLabel(quest.answer as string);
-          }
+        if (
+          quest.type === "PICK_MANY" &&
+          quest.answer &&
+          typeof quest.answer != "number"
+        ) {
+          formattedAnswer = formatAnswer(quest.answer);
+        }
 
-          if (
-            quest.type === "PICK_MANY" &&
-            quest.answer &&
-            typeof quest.answer != "number"
-          ) {
-            formattedAnswer = formatAnswer(quest.answer);
-          }
+        return {
+          questionId: quest.questionId,
+          description: quest.description,
+          code: quest.code,
+          type: quest.type,
+          answer: {
+            value: formattedAnswer,
+          },
+        };
+      });
 
-          return {
-            questionId: quest.questionId,
-            description: quest.description,
-            code: quest.code,
-            type: quest.type,
-            answer: {
-              value: formattedAnswer,
-            },
-          };
-        });
+    const structuredAnswers: ArticleAnswerStrucuture = {
+      extractionQuestions: mapToStructure(question.extractionQuestions),
+      robQuestions: mapToStructure(question.robQuestions),
+    };
 
-      const structuredAnswers: ArticleAnswerStrucuture = {
-        extractionQuestions: mapToStructure(question.extractionQuestions),
-        robQuestions: mapToStructure(question.robQuestions),
-      };
-
-      return {
-        ...prev,
-        [articleId]: structuredAnswers,
-      };
-    });
+    setArticlesStructureAnswers((prev) => ({
+      ...prev,
+      [articleId]: structuredAnswers,
+    }));
   }, [question, articleId]);
 
   return {

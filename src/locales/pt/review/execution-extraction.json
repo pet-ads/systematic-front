@@ -1,4 +1,29 @@
 {
     "header": "Extração",
-    "search": "Inserir atributo do artigo"
+    "search": "Inserir atributo do artigo",
+    "extractionFormDisabled": {
+        "title": "Extração Desabilitada",
+        "text1": "Esse estudo está marcado como",
+        "EXCLUDED": "EXCLUÍDO",
+        "UNCLASSIFIED": "NÃO CLASSIFICADO",
+        "DUPLICATED": "DUPLICADO",
+        "text2": "Extração só é permitida para estudos incluídos."
+    },
+    "extractionForm": {
+        "loading": "Carregando questões...",
+        "noQuestions": "Nenhuma questão foi encontrada",
+        "createQuestions": "Criar Questões",
+        "requiredField": "* Esse campo é obrigatório",
+        "submit": "Enviar",
+        "dropdownList": "Opções",
+        "labeledList": "Descrições",
+        "clearSelection": "Limpar seleção",
+        "textual": "Sua resposta",
+        "noChangesToast": {
+            "title": "Nenhuma mudança foi feita",
+            "description": "Atualize pelo menos uma resposta antes antes de reenviar."
+        },
+        "sectionTitle": "Extração",
+        "riskOfBiasTitle": "Risco de Viés"
+    }
 }

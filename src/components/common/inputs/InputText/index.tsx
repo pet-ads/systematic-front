@@ -1,6 +1,8 @@
 // External library
 import { FormControl, FormLabel, Input } from "@chakra-ui/react";
 
+import useWindowWidth from "@features/shared/hooks/useWindowWidth";
+
 // Types
 interface ITextFieldProps {
   label?: string;
@@ -35,13 +37,14 @@ export default function InputText({
   isDisabled,
 }: ITextFieldProps) {
   const isSearchField = type === "search";
+  const window = useWindowWidth();
 
   return (
     <FormControl
-      width={width ? `clamp(${minWidth}, ${width}, ${maxWidth})` : "60vw"}
-      height={`clamp(${minHeight}, ${height}, ${maxHeight})`}
+      width={width ? `clamp(${minWidth}, ${width}, ${maxWidth})` : "100%"}
+      height={height ? `clamp(${minHeight}, ${height}, ${maxHeight})` : undefined}
     >
-      <FormControl>
+      <FormControl w="100%">
         {label && (
           <FormLabel fontWeight={500} fontSize="large">
             {label}
@@ -51,12 +54,12 @@ export default function InputText({
           type={type}
           name={nome}
           placeholder={placeholder}
-          w={isSearchField ? "250px" : "100%"}
-          bgColor={"#ffffffff"}
+          w={isSearchField ? window < 1000 ? "225px" : "250px" : "100%"}
+          bgColor={"#ffffff"}
           borderRadius={"3px"}
           border="2px solid"
           borderColor="gray.300"
-          fontSize={"lg"}
+          fontSize={isSearchField ? "medium" : "lg"}
           _placeholder={{ opacity: 1, color: "gray.500" }}
           focusBorderColor="#2E4B6C"
           onChange={onChange}

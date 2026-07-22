@@ -29,11 +29,21 @@
             "selection": "Selection",
             "extraction": "Extraction",
             "score": "Score",
-            "priority": "Priority"
+            "priority": "Priority",
+            "included": "Included",
+            "excluded": "Excluded",
+            "total": "Total",
+            "indexingrate": "Indexing Rate",
+            "precisionrate": "Precision Rate",
+            "sources": "Sources",
+            "ic": "IC",
+            "studies": "ID",
+            "totalanswers": "Total",
+            "percentageoftotal": "Percentage"
         }
     },
     "statusSelect": {
-        "placeholder": "Select status",
+        "placeholder": "Select Status",
         "options": {
             "included": "Included",
             "duplicated": "Duplicated",
@@ -76,7 +86,12 @@
             "resetArticle": "Reset article",
             "selectPriority": "Select reading priority",
             "includeDescription": "Add inclusion criteria",
-            "excludeDescription": "Add exclusion criteria"
+            "excludeDescription": "Add exclusion criteria",
+            "changeToTable": "Change to table view",
+            "noInclusionCriteria": "No inclusion criteria configured in Planning",
+            "noExclusionCriteria": "No exclusion criteria configured in Planning",
+            "removeExclusionFirst": "Remove exclusion criteria first",
+            "removeInclusionFirst": "Remove inclusion criteria first"
         },
         "comboBox": {
             "include": "Include",

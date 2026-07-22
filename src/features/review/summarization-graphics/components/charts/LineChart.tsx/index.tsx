@@ -1,6 +1,7 @@
 // External library
 import { ApexOptions } from "apexcharts";
 import Chart from "react-apexcharts";
+import { Box } from "@chakra-ui/react"; 
 
 // Types
 type Props ={
@@ -9,12 +10,18 @@ type Props ={
   data:number[];
   color?:string;
   height?:number;
-  width?:number;
+  width?:number | string;
 }
 
-export default function LineChart({title,categories,data,color="#3c73b6",height=450,width=700}:Props) {
+export default function LineChart({
+  title,
+  categories,
+  data,
+  color="#3c73b6",
+  height=550,
+  width="100%" 
+}:Props) {
    
-
   const chartConfig ={
     series: [
       {
@@ -24,7 +31,6 @@ export default function LineChart({title,categories,data,color="#3c73b6",height=
     ],
     options: {
       chart: {
-        height: 350,
         toolbar: {
           show: true,
           tools: {
@@ -44,10 +50,16 @@ export default function LineChart({title,categories,data,color="#3c73b6",height=
       },
       stroke: {
         curve: "straight",
+        width: 4, 
       },
       title: {
         text:title ,
         align: "left",
+        style: {
+          fontSize: '22px',       
+          fontWeight: '900',      
+          color: '#2D3748',       
+        }
       },
       grid: {
         row: {
@@ -56,19 +68,36 @@ export default function LineChart({title,categories,data,color="#3c73b6",height=
         },
       },
       xaxis: {
-        categories: categories
+        categories: categories,
+        labels: {
+          style: {
+            fontWeight: 'bold',
+            fontSize: '14px',
+            colors: '#4A5568'
+          }
+        }
       },
-    }as ApexOptions,
+      yaxis: {
+        labels: {
+          style: {
+            fontWeight: 'bold', 
+            fontSize: '14px',
+            colors: '#4A5568'
+          }
+        }
+      }
+    } as ApexOptions,
   };
 
   return (
-    <Chart
-      options={chartConfig.options}
-      series={chartConfig.series}
-      type="line"
-      height={height}
-      width={width}
-
-    />
+    <Box w="100%"> 
+      <Chart
+        options={chartConfig.options}
+        series={chartConfig.series}
+        type="line"
+        height={height}
+        width={width}
+      />
+    </Box>
   );
 }

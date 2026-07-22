@@ -1,6 +1,9 @@
 // External library
-import { Box, Flex } from "@chakra-ui/react";
+import { useContext, useEffect } from "react";
+import { Box, Flex, Text } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
+import AppContext from "@features/shared/context/ApplicationContext";
+import useWindowWidth from "@features/shared/hooks/useWindowWidth";
 
 // Services
 import useGetReviewCard from "../../services/useGetReviewCard";
@@ -10,17 +13,29 @@ import FlexLayout from "@components/structure/Flex/Flex";
 import Header from "@components/structure/Header/Header";
 import Loader from "@components/feedback/Loader";
 import CardDefault from "@components/common/cards";
+import RenderCreateNewReview from "../../factory/cards/RenderCreateNewReview";
 
 // Factory
 import RenderCards from "../../factory/cards/RenderCards";
-import RenderCreateNewReview from "../../factory/cards/RenderCreateNewReview";
-
-// Styles
-import { flexStyles } from "./styles";
+import { CardReview } from "../../types";
 
 export default function MyReviews() {
+  const windowWidth = useWindowWidth();
+  const context = useContext(AppContext);
+  if(!context) return null;
+  const { sidebarState, setSidebarState } = context;
+  useEffect(() => {
+    if(windowWidth < 1000 && sidebarState === "open") setSidebarState("collapsed");
+  }, []);
+
   const { t } = useTranslation("user/my-reviews");
-  const { cardData, isLoaded } = useGetReviewCard();
+
+  const { cardData: ownedReviews, isLoaded: isOwnedLoaded } = useGetReviewCard();
+
+  const participatingReviews: any[] | undefined = []; 
+  const isParticipatingLoaded = true; 
+  
+  const isLoaded = isOwnedLoaded && isParticipatingLoaded;
 
   return (
     <FlexLayout navigationType="Default">
@@ -30,18 +45,35 @@ export default function MyReviews() {
         </Flex>
       </Box>
       <CardDefault backgroundColor="white" borderRadius="1rem">
-        <Box w="100%" px="1rem">
-          <Flex sx={flexStyles} w={"100%"} align="center" justify="center">
-            {!isLoaded && <Loader />}
-
-            {cardData && cardData.length == 0 && isLoaded && (
-              <RenderCreateNewReview />
-            )}
-
-            {cardData && cardData.length > 0 && isLoaded && (
-              <RenderCards data={cardData} />
-            )}
-          </Flex>
+        <Box w="100%" px="2rem" py="2rem"> 
+          
+          {!isLoaded ? (
+            <Flex w="100%" justify="center">
+              <Loader />
+            </Flex>
+          ) : (
+            <Flex direction="column" w="100%" align="flex-start">
+              
+              <Box w="100%" mb="2.5rem">
+                {(!ownedReviews || ownedReviews.length === 0) && (!participatingReviews || participatingReviews.length === 0) ? (
+                  <RenderCreateNewReview />
+                ) : (
+                  <>
+                    <Text 
+                      fontSize="1.125rem" 
+                      fontWeight="600" 
+                      color="#334155" 
+                      mb="1rem"
+                    >
+                      {t("ownedReviews")}
+                    </Text>
+                    <RenderCards data={ownedReviews as CardReview[]} />
+                    <RenderCards data={participatingReviews} />
+                  </>
+                )}
+              </Box>
+            </Flex>
+          )}
         </Box>
       </CardDefault>
     </FlexLayout>

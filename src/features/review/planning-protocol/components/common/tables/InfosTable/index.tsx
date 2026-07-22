@@ -7,6 +7,7 @@ import { Table, Tbody, Tr, Td, TableContainer, Input, Flex, Thead, Th } from "@c
 import useCreateProtocol from "@features/review/planning-protocol/services/useCreateProtocol";
 import EventButton from "@components/common/buttons/EventButton";
 import useToaster from "@components/feedback/Toaster";
+import { useTranslation } from "react-i18next";
 
 interface InfosTableProps {
   AddTexts: string[];
@@ -18,6 +19,7 @@ interface InfosTableProps {
   referencePrefix?: string;
   enableReferenceCode?: boolean;
   maxLength?: number;
+  tableHeight?: string;
 }
 
 export default function InfosTable({
@@ -30,9 +32,11 @@ export default function InfosTable({
   referencePrefix = "",
   enableReferenceCode = true,
   maxLength,
+  tableHeight,
 }: InfosTableProps) {
   const { sendAddText } = useCreateProtocol();
   const toaster = useToaster();
+  const { t } = useTranslation("review/planning-protocol");
 
   const [newText, setNewText] = useState("");
   const [referenceCode, setReferenceCode] = useState("");
@@ -65,8 +69,8 @@ export default function InfosTable({
     const codes = getAllCodes(editIdx);
     if (codeToSave && codes.includes(codeToSave)) {
       toaster({
-        title: `The reference code '${codeToSave}' is already in use.`,
-        description: "Please choose another one.",
+        title: `${t("selectionAndExtraction.input.extractionQuestions.toaster.duplicated.title1")} '${codeToSave}' ${t("selectionAndExtraction.input.extractionQuestions.toaster.duplicated.title2")}`,
+        description: t("selectionAndExtraction.input.extractionQuestions.toaster.duplicated.description"),
         status: "error",
       });
       return false;
@@ -112,8 +116,8 @@ export default function InfosTable({
 
     if (code && existingCodes.includes(code)) {
       toaster({
-        title: `The reference code '${code}' is already in use.`,
-        description: "Please choose another one.",
+        title: `${t("selectionAndExtraction.input.extractionQuestions.toaster.duplicated.title1")} '${code}' ${t("selectionAndExtraction.input.extractionQuestions.toaster.duplicated.title2")}`,
+        description: t("selectionAndExtraction.input.extractionQuestions.toaster.duplicated.description"),
         status: "error",
       });
       return true;
@@ -136,17 +140,26 @@ export default function InfosTable({
   };
 
   return (
-    <TableContainer sx={tbConteiner}>
-      <Table variant="simple" size="md">
+    <TableContainer
+      w="100%"
+      sx={{
+        ...tbConteiner,
+        h: tableHeight || tbConteiner.h,
+        width: "100% !important",
+        maxWidth: "100% !important",
+      }}
+    >
+      <Table variant="simple" size="md" w="100%">
         <Thead>
           <Tr>
             <Th colSpan={3} padding="1rem">
-              <Flex gap="4" align="center">
+              <Flex gap="4" align="center" w="100%">
                 {enableReferenceCode && (
                   <Input
                     placeholder={`${referencePrefix}-01`}
                     value={referenceCode}
                     onChange={(e) => setReferenceCode(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && handleAddText()}
                     maxLength={maxLength}
                     onBlur={() =>
                       setReferenceCode((s) => s.trim().toUpperCase())

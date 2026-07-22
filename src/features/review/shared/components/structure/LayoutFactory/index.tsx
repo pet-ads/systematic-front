@@ -10,6 +10,7 @@ import { FullArticle } from "../../common/layouts/FullArticle";
 
 // Hooks
 import { ColumnVisibility } from "@features/review/shared/hooks/useVisibilityColumns";
+import useWindowWidth from "@features/shared/hooks/useWindowWidth";
 
 // Types
 import type ArticleInterface from "../../../types/ArticleInterface";
@@ -18,7 +19,7 @@ import { PaginationControls } from "@features/shared/types/pagination";
 import { KeyedMutator } from "swr";
 import { SelectionArticles } from "@features/review/execution-selection/services/useFetchSelectionArticles";
 
-export type PageLayout = "Selection" | "Extraction" | "Identification";
+export type PageLayout = "Selection" | "Extraction" | "Identification" | "Graphics-SearchSources" | "Graphics-IncludedStudies" | "Graphics-FormQuestions" | "Graphics-TextualQuestion";
 
 interface LayoutFactoryProps {
   layout: ViewModel;
@@ -28,7 +29,10 @@ interface LayoutFactoryProps {
   isLoading: boolean;
   columnsVisible: ColumnVisibility;
   pagination: PaginationControls;
-  sortConfig: { key: keyof ArticleInterface; direction: "asc" | "desc" } | null;
+  sortConfig: {
+    key: keyof ArticleInterface;
+    direction: "asc" | "desc";
+  } | null;
   handleHeaderClick: (key: keyof ArticleInterface) => void;
   reloadArticles: KeyedMutator<SelectionArticles>;
   onTablePageChange: (page: number) => void;
@@ -49,8 +53,10 @@ export default function LayoutFactory({
   onTablePageChange,
   extraParams = {},
 }: LayoutFactoryProps) {
+  const window = useWindowWidth();
+  
   const handleRowClick = () => {
-    handleChangeLayout("vertical");
+    handleChangeLayout(window > 1000 ? "vertical" : "horizontal");
   };
 
   const layoutMap: Record<ViewModel, React.ReactNode> = {
@@ -64,6 +70,7 @@ export default function LayoutFactory({
         handleHeaderClick={handleHeaderClick}
       />
     ),
+
     vertical: (
       <SplitVertical
         articles={articles}
@@ -76,8 +83,10 @@ export default function LayoutFactory({
         handleHeaderClick={handleHeaderClick}
         onTablePageChange={onTablePageChange}
         extraParams={extraParams}
+        handleChangeLayout={handleChangeLayout}
       />
     ),
+
     "vertical-invert": (
       <SplitVertical
         articles={articles}
@@ -90,8 +99,10 @@ export default function LayoutFactory({
         handleHeaderClick={handleHeaderClick}
         onTablePageChange={onTablePageChange}
         extraParams={extraParams}
+        handleChangeLayout={handleChangeLayout}
       />
     ),
+
     horizontal: (
       <SplitHorizontal
         articles={articles}
@@ -105,8 +116,10 @@ export default function LayoutFactory({
         handleHeaderClick={handleHeaderClick}
         onTablePageChange={onTablePageChange}
         extraParams={extraParams}
+        handleChangeLayout={handleChangeLayout} 
       />
     ),
+
     "horizontal-invert": (
       <SplitHorizontal
         articles={articles}
@@ -120,8 +133,10 @@ export default function LayoutFactory({
         handleHeaderClick={handleHeaderClick}
         onTablePageChange={onTablePageChange}
         extraParams={extraParams}
+        handleChangeLayout={handleChangeLayout} 
       />
     ),
+
     article: (
       <FullArticle
         articles={articles}
@@ -130,6 +145,7 @@ export default function LayoutFactory({
         pagination={pagination}
         onTablePageChange={onTablePageChange}
         extraParams={extraParams}
+        handleChangeLayout={handleChangeLayout}
       />
     ),
   };
@@ -139,6 +155,6 @@ export default function LayoutFactory({
   ) : articles && articles.length > 0 ? (
     layoutMap[layout]
   ) : (
-    <NoDataMessage />
+    <NoDataMessage isReport={false} />
   );
 }

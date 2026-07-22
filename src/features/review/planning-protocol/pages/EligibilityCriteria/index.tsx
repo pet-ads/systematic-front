@@ -1,5 +1,9 @@
 // External Libraries
+import { useContext, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import AppContext from "@features/shared/context/ApplicationContext";
+import useWindowWidth from "@features/shared/hooks/useWindowWidth";
+import { Box } from "@chakra-ui/react";
 
 // Components
 import NavButton from "@components/common/buttons/NavigationButton";
@@ -10,7 +14,6 @@ import ProtocolFormLayout from "../../components/common/protocolForm";
 
 // Service
 import useCreateProtocol from "../../services/useCreateProtocol";
-import { Box } from "@chakra-ui/react";
 
 const Languages = [
   "Arabic",
@@ -46,6 +49,9 @@ const Languages = [
 ].sort();
 
 export default function EligibilityCriteria() {
+  const windowWidth = useWindowWidth();
+  const context = useContext(AppContext);
+  
   const {
     eligibilityCriteria,
     handleChangeEligibilityCriteria,
@@ -53,6 +59,14 @@ export default function EligibilityCriteria() {
   } = useCreateProtocol();
 
   const { t } = useTranslation("review/planning-protocol");
+  useEffect(() => {
+    if (context && windowWidth < 1000 && context.sidebarState === "open") {
+      context.setSidebarState("collapsed");
+    }
+  }, [windowWidth]);
+
+  if (!context) return null;
+
   const { studyTypeDefinition } = eligibilityCriteria;
   const id = localStorage.getItem("systematicReviewId");
 
@@ -80,9 +94,21 @@ export default function EligibilityCriteria() {
         </>
       }
     >
-      <Box>
+      <Box 
+        display="flex" 
+        flexDirection="column" 
+        gap="2rem" 
+        w="100%"
+        sx={{
+          "& > *": {
+            width: "100%",
+            maxWidth: "100%",
+          }
+        }}
+      >
         <AddTextTable
           text={t("eligibilityCriteria.input.inclusionCriteria.label")}
+          contextId="Inclusion criteria"
           placeholder={t(
             "eligibilityCriteria.input.inclusionCriteria.placeholder",
           )}
@@ -91,6 +117,7 @@ export default function EligibilityCriteria() {
         />
         <AddTextTable
           text={t("eligibilityCriteria.input.exclusionCriteria.label")}
+          contextId="Exclusion criteria" 
           placeholder={t(
             "eligibilityCriteria.input.exclusionCriteria.placeholder",
           )}
@@ -115,7 +142,7 @@ export default function EligibilityCriteria() {
           options={Languages}
           placeholder={t("eligibilityCriteria.input.languages.placeholder")}
           typeField="select"
-          stateKey="Languages" // <-- String exata do código dev
+          stateKey="Languages"
         />
       </Box>
     </ProtocolFormLayout>

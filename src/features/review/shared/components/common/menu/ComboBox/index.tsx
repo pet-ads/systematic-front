@@ -1,5 +1,4 @@
 // External libraries
-import { useContext } from "react";
 import {
   Button,
   Checkbox,
@@ -13,12 +12,8 @@ import {
 import { HiOutlineCheckCircle, HiOutlineXCircle } from "react-icons/hi";
 
 // Hooks
-import useComboBoxSelection from "../../../../hooks/useComboBoxSelection";
 import useToaster from "@components/feedback/Toaster";
-
-// Context & Services
-import StudyContext from "@features/review/shared/context/StudiesContext";
-import { UseChangeStudyExtractionStatus } from "../../../../services/useChangeStudyExtractionStatus";
+import useWindowWidth from "@features/shared/hooks/useWindowWidth";
 
 // Types
 import type { PageLayout } from "../../../structure/LayoutFactory";
@@ -26,8 +21,6 @@ import type {
   OptionProps,
   OptionType,
 } from "../../../../services/useFetchAllCriteriasByArticle";
-import { SelectionArticles } from "@features/review/execution-selection/services/useFetchSelectionArticles";
-import { KeyedMutator } from "swr";
 
 interface IComboBoxProps {
   text: string;
@@ -45,7 +38,6 @@ interface IComboBoxProps {
     optionText: string,
     newValue: boolean,
   ) => void;
-  reloadArticles: KeyedMutator<SelectionArticles>;
   selectedCriteria?: string[];
 }
 
@@ -58,15 +50,17 @@ export default function ComboBox({
   status,
   groupKey,
   handlerUpdateCriteriasStructure,
-  reloadArticles,
   selectedCriteria = [],
 }: IComboBoxProps) {
-  const { handleIncludeItemClick, handleExcludeItemClick } =
-    useComboBoxSelection({ page, reloadArticles });
+  const windowWidth = useWindowWidth();
 
+  const isCompactDesktop =
+  windowWidth <= 1300 && windowWidth >= 1000;
+
+  const iconSize = isCompactDesktop ? "1.35rem" : "1.75rem";
+  const buttonPadding = isCompactDesktop ? ".75rem" : "1rem";
+  
   const toast = useToaster();
-
-  const studiesContext = useContext(StudyContext);
 
   const { selectionStatus, extractionStatus } = status;
 
@@ -81,52 +75,17 @@ export default function ComboBox({
       status: "warning",
     });
 
-  const handleCheckboxToggle = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    optionText: string,
-  ) => {
+  const handleToggle = (option: OptionProps, newValue: boolean) => {
     if (hasInvalidStatus) {
       showDuplicatedWarning();
       return;
     }
-
-    const newValue = e.target.checked;
-
-    const updatedList = options.map((item) =>
-      item.text === optionText ? { ...item, isChecked: newValue } : item,
-    );
-
-    const activeItems = updatedList
-      .filter((data) => data.isChecked)
-      .map((item) => item.text);
-
-    if (
-      newValue === false &&
-      activeItems.length === 0 &&
-      extractionStatus !== "UNCLASSIFIED"
-    ) {
-      const articleId = studiesContext?.selectedArticleReview;
-      if (articleId && articleId !== -1) {
-        try {
-          await UseChangeStudyExtractionStatus({
-            studyReviewId: [articleId],
-            status: "UNCLASSIFIED",
-            criterias: [],
-          });
-        } catch (error) {
-          console.error("Error resetting extraction status via Menu", error);
-        }
-      }
-    }
-
-    handlerUpdateCriteriasStructure(groupKey, optionText, newValue);
-
-    if (text === "Include") {
-      handleIncludeItemClick(activeItems);
-    } else if (text === "Exclude") {
-      handleExcludeItemClick(activeItems);
-    }
+    handlerUpdateCriteriasStructure(groupKey, option.text, newValue);
   };
+
+  const isInclusionGroup = groupKey === "INCLUSION";
+  const isExclusionGroup = groupKey === "EXCLUSION";
+  const codePrefix = isInclusionGroup ? "IC" : "EC";
 
   return (
     <Menu closeOnSelect={false}>
@@ -138,11 +97,13 @@ export default function ComboBox({
         bg="white"
         color="black"
         isDisabled={isDisabled}
+        p={buttonPadding}
+        minW="unset"
       >
-        {text === "Include" ? (
-          <HiOutlineCheckCircle size="1.75rem" />
+        {isInclusionGroup ? (
+          <HiOutlineCheckCircle size={iconSize} />
         ) : (
-          <HiOutlineXCircle size="1.75rem" />
+          <HiOutlineXCircle size={iconSize} />
         )}
       </MenuButton>
 
@@ -151,49 +112,32 @@ export default function ComboBox({
           const isHighlighted =
             page === "Extraction" && selectedCriteria.includes(option.text);
 
+            const hasColon = option.text.includes(":");
+            const code = hasColon ? option.text.substring(0, option.text.indexOf(":")).trim() : null;
+            const desc = hasColon ? option.text.substring(option.text.indexOf(":") + 1).trim() : option.text;
+
           return (
             <MenuItem key={index} maxW="25rem" overflow="auto">
-              {text === "Include" ? (
+              {isInclusionGroup || isExclusionGroup ? (
                 <Checkbox
                   isDisabled={isDisabled}
                   isChecked={option.isChecked}
-                  onChange={(e) => handleCheckboxToggle(e, option.text)}
+                  onChange={(e) => handleToggle(option, e.target.checked)}
                 >
                   <Tooltip
-                    label={option.text}
+                    label={desc}
                     aria-label="Full criteria"
                     p="1rem"
                     hasArrow
                   >
                     <Text
                       isTruncated
-                      maxW="20rem"
+                      maxW={isCompactDesktop ? "14rem" : "20rem"}
+                      fontSize={isCompactDesktop ? "sm" : "md"}
                       fontWeight={isHighlighted ? "bold" : "normal"}
                       color={isHighlighted ? "black" : "inherit"}
                     >
-                      {`IC-${(index + 1).toString().padStart(2, "0")}`}
-                    </Text>
-                  </Tooltip>
-                </Checkbox>
-              ) : text === "Exclude" ? (
-                <Checkbox
-                  isDisabled={isDisabled}
-                  isChecked={option.isChecked}
-                  onChange={(e) => handleCheckboxToggle(e, option.text)}
-                >
-                  <Tooltip
-                    label={option.text}
-                    aria-label="Full criteria"
-                    p="1rem"
-                    hasArrow
-                  >
-                    <Text
-                      isTruncated
-                      maxW="20rem"
-                      fontWeight={isHighlighted ? "bold" : "normal"}
-                      color={isHighlighted ? "black" : "inherit"}
-                    >
-                      {`EC-${(index + 1).toString().padStart(2, "0")}`}
+                      {code || `${codePrefix}-${(index + 1).toString().padStart(2, "0")}`}
                     </Text>
                   </Tooltip>
                 </Checkbox>

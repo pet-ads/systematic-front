@@ -11,7 +11,6 @@ import { useTranslation } from "react-i18next";
 
 import { BsTable } from "react-icons/bs";
 import { PiArticleMediumBold } from "react-icons/pi";
-
 import { RiFlipHorizontalLine } from "react-icons/ri";
 
 import { ViewModel } from "../../../hooks/useLayoutPage";
@@ -19,6 +18,7 @@ import { ViewModel } from "../../../hooks/useLayoutPage";
 import React from "react";
 import { capitalize } from "../../../../../shared/utils/helpers/formatters/CapitalizeText";
 import { ChevronDownIcon } from "@chakra-ui/icons";
+import useWindowWidth from "@features/shared/hooks/useWindowWidth";
 
 interface SelectLayoutProps {
   handleChangeLayout: (newLayout: ViewModel) => void;
@@ -29,6 +29,7 @@ export default function SelectLayout({
   handleChangeLayout,
   layout,
 }: SelectLayoutProps) {
+  const window = useWindowWidth();
   const { t } = useTranslation("review/execution-selection");
 
   const buttons: Record<
@@ -37,76 +38,100 @@ export default function SelectLayout({
       layoutType: ViewModel;
       icon: React.ReactNode;
       rotate?: string;
+      isAllowedForNonDesktop: boolean;
     }
   > = {
     table: {
       layoutType: "table",
       icon: <BsTable size=".85rem" color="black" />,
+      isAllowedForNonDesktop: true,
     },
     horizontal: {
       layoutType: "horizontal",
       icon: <RiFlipHorizontalLine size="1rem" color="black" />,
       rotate: "-90deg",
+      isAllowedForNonDesktop: true,
     },
     "horizontal-invert": {
       layoutType: "horizontal-invert",
       icon: <RiFlipHorizontalLine size="1rem" color="black" />,
       rotate: "90deg",
+      isAllowedForNonDesktop: true
     },
     vertical: {
       layoutType: "vertical",
       icon: <RiFlipHorizontalLine size="1rem" color="black" />,
       rotate: "-180deg",
+      isAllowedForNonDesktop: false,
     },
     "vertical-invert": {
       layoutType: "vertical-invert",
       icon: <RiFlipHorizontalLine size="1rem" color="black" />,
       rotate: "-360deg",
+      isAllowedForNonDesktop: false,
     },
     article: {
       layoutType: "article",
       icon: <PiArticleMediumBold size="1.2rem" color="black" />,
+      isAllowedForNonDesktop: true,
     },
   };
 
+  const activeLayoutInfo = buttons[layout];
+
   return (
-    <Menu>
+ <Menu>
       <MenuButton
         as={Button}
-        w="24rem"
+        w={window > 1100 ? "20rem" : "15rem"}
         bg="#EBF0F3"
         color="#2E4B6C"
         fontWeight="light"
         display="flex"
       >
         <Flex w="100%" justifyContent="space-between" alignItems="center">
-          <Box>{t("selectLayout.choose")}</Box>
+          <Flex align="center" gap="0.75rem">
+            {activeLayoutInfo && (
+              <Box
+                transform={
+                  activeLayoutInfo.rotate ? `rotate(${activeLayoutInfo.rotate})` : undefined
+                }
+              >
+                {activeLayoutInfo.icon}
+              </Box>
+            )}            
+            <Box fontWeight="medium">
+              {layout ? capitalize(t(`selectLayout.type.${layout}`)) : t("selectLayout.choose")}
+            </Box>
+          </Flex>
           <ChevronDownIcon fontSize="1.25rem" />
         </Flex>
       </MenuButton>
       <MenuList bg={"#EBF0F3"} color="#2E4B6C" zIndex="2">
-        {Object.values(buttons).map((element, index) => (
-          <MenuItem
-            key={index}
-            onClick={() => {
-              handleChangeLayout(element.layoutType);
-            }}
-            bg={
-              layout === element.layoutType ? "blue.100" : "transparent"
-            }
-            _hover={{ bg: "blue.200" }}
-          >
-            <Flex align="center" gap="1rem" w="inherit">
-              <Box
-                transform={
-                  element.rotate ? `rotate(${element.rotate})` : undefined
-                }
-              >
-                {element.icon}
-              </Box>
-              {capitalize(t(`selectLayout.type.${element.layoutType}`))}
-            </Flex>
-          </MenuItem>
+        {Object.values(buttons)
+          .filter((element) => window > 1000 || element.isAllowedForNonDesktop)
+          .map((element, index) => (
+            <MenuItem
+              key={index}
+              onClick={() => {
+                handleChangeLayout(element.layoutType);
+              }}
+              bg={
+                layout === element.layoutType ? "blue.100" : "transparent"
+              }
+              _hover={{ bg: "blue.200" }}
+            >
+              <Flex align="center" gap="1rem" w="inherit">
+                <Box
+                  transform={
+                    element.rotate ? `rotate(${element.rotate})` : undefined
+                  }
+                >
+                  {element.icon}
+                </Box>
+                {capitalize(t(`selectLayout.type.${element.layoutType}`))}
+              </Flex>
+            </MenuItem>
         ))}
       </MenuList>
     </Menu>

@@ -1,6 +1,7 @@
 // Hooks
 import { UseChangeStudySelectionStatus } from "../services/useChangeStudySelectionStatus";
 import { UseChangeStudyExtractionStatus } from "../services/useChangeStudyExtractionStatus";
+import Axios from "../../../../infrastructure/http/axiosClient"; // Adicionado a importação do Axios
 
 //Types
 import { PageLayout } from "../components/structure/LayoutFactory";
@@ -21,6 +22,12 @@ const useResetStatus = ({ page, reloadArticles }: ResetButtonProps) => {
 
     try {
       if (page === "Selection") {
+        await UseChangeStudyExtractionStatus({
+          studyReviewId: [articleId],
+          status: "UNCLASSIFIED",
+          criterias: [],
+        });
+
         await UseChangeStudySelectionStatus({
           studyReviewId: [articleId],
           status: "UNCLASSIFIED",
@@ -32,6 +39,16 @@ const useResetStatus = ({ page, reloadArticles }: ResetButtonProps) => {
           status: "UNCLASSIFIED",
           criterias: historicalCriteria,
         });
+      }
+      
+      if (historicalCriteria && historicalCriteria.length > 0) {
+        const id = localStorage.getItem("systematicReviewId");
+        if (id) {
+          const path = `systematic-study/${id}/study-review/remove-criteria/${articleId}`;
+          await Axios.patch(path, { criteria: historicalCriteria }).catch(
+            (err) => console.warn("Aviso: Falha ao limpar critérios fisicamente no reset", err)
+          );
+        }
       }
 
       await reloadArticles();

@@ -4,3 +4,10 @@ export interface GeneralDefinition {
   objectives: string;
   collaborators: string[];
 }
+
+export interface Researcher {
+  id: string;
+  name: string;
+  email: string;
+  photo: string;
+}

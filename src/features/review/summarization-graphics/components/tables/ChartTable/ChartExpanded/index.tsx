@@ -35,6 +35,7 @@ import { Resizable } from "@features/review/shared/components/common/tables/Arti
 import useFetchInclusionCriteria from "@features/review/shared/services/useFetchInclusionCriteria";
 import { StudyInterface } from "@features/review/shared/types/IStudy";
 import { useExport } from "@features/review/summarization-graphics/context/ExportContext";
+import { ColumnVisibility } from "@features/review/shared/hooks/useVisibilityColumns";
 
 export type AllKeys =
   | "studyReviewId"
@@ -51,6 +52,7 @@ interface Props {
   handleHeaderClick: (key: AllKeys) => void;
   sortConfig: { key: AllKeys; direction: "asc" | "desc" } | null;
   layout?: ViewModel;
+  columnsVisible: ColumnVisibility;
 }
 
 type Column = {
@@ -64,6 +66,7 @@ export default function ChartExpanded({
   handleHeaderClick,
   sortConfig,
   layout,
+  columnsVisible
 }: Props) {
   const [columnWidths, setColumnWidths] = useState({
     studyReviewId: "56px",
@@ -103,6 +106,15 @@ export default function ChartExpanded({
     },
     { key: "ic", label: "IC", width: columnWidths.ic },
   ];
+
+  const visibleColumns = columns.filter((column) => {
+    const visibilityKey =
+      column.key === "searchSources"
+        ? "sources"
+        : column.key;
+
+    return columnsVisible[visibilityKey as keyof ColumnVisibility] === true;
+  });
 
   const collapsedSpanTextChanged = {
     ...collapsedSpanText,
@@ -209,7 +221,7 @@ export default function ChartExpanded({
             borderBottom=".5rem solid #C9D9E5"
           >
             <Tr>
-              {columns.map((col) => (
+              {visibleColumns.map((col) => (
                 <Th
                   key={col.key}
                   textAlign="center"
@@ -321,7 +333,7 @@ export default function ChartExpanded({
 
                 return (
                   <Tr key={index} bg="transparent" p="0">
-                    {columns.map((col) => {
+                    {visibleColumns.map((col) => {
                       let value: string | number = "";
 
                       switch (col.key) {
@@ -381,7 +393,7 @@ export default function ChartExpanded({
               })
             ) : (
               <Tr>
-                <Td colSpan={columns.length + 1} textAlign="center">
+                <Td colSpan={visibleColumns.length + 1} textAlign="center">
                   No articles found.
                 </Td>
               </Tr>
@@ -389,16 +401,18 @@ export default function ChartExpanded({
           </Tbody>
         </Table>
       </TableContainer>
-      <PaginationControl
-        currentPage={currentPage}
-        itensPerPage={itensPerPageUI}
-        quantityOfPages={quantityOfPages}
-        handleNextPage={handleNextPage}
-        handlePrevPage={handlePrevPage}
-        handleBackToInitial={handleBackToInitial}
-        handleGoToFinal={handleGoToFinal}
-       changeQuantityOfItens={handleChangeItensPerPage}
-      />
+      {articles.length >= 20 && (
+        <PaginationControl
+          currentPage={currentPage}
+          itensPerPage={itensPerPageUI}
+          quantityOfPages={quantityOfPages}
+          handleNextPage={handleNextPage}
+          handlePrevPage={handlePrevPage}
+          handleBackToInitial={handleBackToInitial}
+          handleGoToFinal={handleGoToFinal}
+          changeQuantityOfItens={handleChangeItensPerPage}
+        />
+      )}
     </Box>
   );
 }

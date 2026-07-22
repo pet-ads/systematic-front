@@ -1,12 +1,13 @@
 // External library
 import { useState } from "react";
 import { FormControl, FormLabel } from "@chakra-ui/react";
+import { useTranslation } from "react-i18next";
 
 // Components
 import SelectInput from "@components/common/inputs/SelectInput";
 
 // Utils
-import { capitalize } from "@features/shared/utils/helpers/formatters/CapitalizeText";
+import { renderQuestionLabel } from "../helpers";
 
 // Styles
 import { container, label } from "../styles";
@@ -28,7 +29,8 @@ export default function DropdownList({
   onResponse,
 }: DropdownListProps) {
   const [selected, setSelected] = useState(answer);
-
+  const { t } = useTranslation("review/execution-extraction");
+  
   const handleSelectChange = (value: string) => {
     setSelected(value);
     onResponse(value);
@@ -36,14 +38,14 @@ export default function DropdownList({
 
   return (
     <FormControl sx={container} isInvalid={isInvalid}>
-      <FormLabel sx={label}>{capitalize(question)}</FormLabel>
+      <FormLabel sx={label}>{renderQuestionLabel(question)}</FormLabel>
       <SelectInput
         names={[...options]}
         values={[...options]}
         onSelect={handleSelectChange}
         selectedValue={selected}
         page="extraction"
-        placeholder="Options"
+        placeholder={t("extractionForm.dropdownList")}
         isInvalid={isInvalid}
       />
     </FormControl>

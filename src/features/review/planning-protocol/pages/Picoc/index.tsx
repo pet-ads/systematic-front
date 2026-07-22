@@ -1,5 +1,8 @@
 // External Libraries
+import { useContext, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import AppContext from "@features/shared/context/ApplicationContext";
+import useWindowWidth from "@features/shared/hooks/useWindowWidth";
 
 // Components
 import NavButton from "@components/common/buttons/NavigationButton";
@@ -10,6 +13,14 @@ import ProtocolFormLayout from "../../components/common/protocolForm";
 import useCreateProtocol from "../../services/useCreateProtocol";
 
 export default function Picoc() {
+  const windowWidth = useWindowWidth();
+  const appContext = useContext(AppContext);
+  if(!appContext) return null;
+  const { sidebarState, setSidebarState } = appContext;
+  useEffect(() => {
+    if(windowWidth < 1000 && sidebarState === "open") setSidebarState("collapsed");
+  }, []);
+
   const { picoc, handleChangePicoc, syncAndNavigate } = useCreateProtocol();
   const { t } = useTranslation("review/planning-protocol");
 

@@ -21,7 +21,7 @@ import ResearchQuestions from "@features/review/planning-protocol/pages/Research
 import EligibilityCriteria from "@features/review/planning-protocol/pages/EligibilityCriteria";
 import InformationSourcesAndSearchStrategy from "@features/review/planning-protocol/pages/InformationSourcesAndSearchStrategy";
 import SelectionAndExtraction from "@features/review/planning-protocol/pages/SelectionAndExtraction";
-import RiskOfBiasAssessment from "@features/review/planning-protocol/pages/RiskOfBiasAssessment ";
+import RiskOfBiasAssessment from "@features/review/planning-protocol/pages/RiskOfBiasAssessment";
 import AnalysisAndSynthesisOfResults from "@features/review/planning-protocol/pages/AnalysisAndSynthesisOfResults";
 
 // Execution
