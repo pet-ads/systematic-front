@@ -39,6 +39,7 @@ import Download from "@features/review/summarization-download/pages/download";
 // Error Information
 import Unauthorized from "@features/application/pages/UnauthorizedPage";
 import ServerError from "@features/application/pages/ServerErrorPage";
+import ConfirmAccount from "@features/auth/components/pages";
 
 const routesList: RouteObject[] = [
   {
@@ -64,6 +65,10 @@ const routesList: RouteObject[] = [
   {
     path: "/server-error",
     element: <ServerError />,
+  },
+  {
+    path: "/confirm-account",
+    element: <ConfirmAccount />,
   },
   {
     path: "/review/planning/protocol/general-definition",
