@@ -1,6 +1,9 @@
 // External library
 import { useMemo, useState, useEffect } from "react";
 
+// Hooks
+import useWindowWidth from "@features/shared/hooks/useWindowWidth";
+
 // Types
 import { PageLayout } from "../components/structure/LayoutFactory";
 
@@ -65,6 +68,8 @@ const defaultVisibility: ColumnVisibility = {
 export default function useVisibiltyColumns({
   page,
 }: UseVisibilityColumnsInput): UseVisibilityColumnsOutput {
+  const window = useWindowWidth();
+
   const initialVisibility = useMemo(() => {
     const visibility = { ...defaultVisibility };
     if (page === "Selection") {
@@ -81,6 +86,11 @@ export default function useVisibiltyColumns({
       visibility.studies = null;
       visibility.totalAnswers = null;
       visibility.percentageOfTotal = null;
+      if(window < 1100) {
+        visibility.readingPriority = false;
+        visibility.score = false;
+        visibility.venue = false;
+      }
     }
     if (page === "Extraction") {
       visibility.selectionStatus = null;
@@ -96,6 +106,11 @@ export default function useVisibiltyColumns({
       visibility.studies = null;
       visibility.totalAnswers = null;
       visibility.percentageOfTotal = null;
+      if(window < 1100) {
+        visibility.readingPriority = false;
+        visibility.score = false;
+        visibility.venue = false;
+      }
     }
     if (page === "Identification"){
       visibility.selectionStatus = null;
