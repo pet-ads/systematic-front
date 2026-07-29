@@ -174,7 +174,7 @@
                 "label": "Extraction Questions",
                 "question": "QUESTION",
                 "type": "TYPE",
-                "selectType": "Select type", 
+                "selectType": "Select type",
                 "noDataFound": "No data found",
                 "questionType": {
                     "textual": "textual",
@@ -282,6 +282,25 @@
             "max": "Maximum",
             "close": "Close",
             "save": "Save"
+        }
+    },
+    "deleteCriteriaModal": {
+        "heading": "Delete criterion",
+        "confirmMessage": "Are you sure you want to delete this criterion?",
+        "blockedTitle": "Criterion cannot be deleted",
+        "blockedMessage": "This criterion is applied to Included, Excluded or Duplicated articles. Reset all affected articles to Unclassified before deleting the criterion.",
+        "checking": "Checking criterion usage...",
+        "cancel": "Cancel",
+        "confirm": "Confirm deletion",
+        "toasts": {
+            "success": {
+                "title": "Criterion deleted successfully!",
+                "description": "The criterion has been removed."
+            },
+            "catch": {
+                "title": "Action Failed",
+                "description": "Could not delete the criterion. Please try again."
+            }
         }
     }
 }
