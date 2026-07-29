@@ -283,5 +283,24 @@
             "close": "Fechar",
             "save": "Salvar"
         }
+    },
+    "deleteCriteriaModal": {
+        "heading": "Excluir critério",
+        "confirmMessage": "Tem certeza de que deseja excluir este critério?",
+        "blockedTitle": "Critério não pode ser excluído",
+        "blockedMessage": "Este critério está aplicado a artigos Incluídos, Excluídos ou Duplicados. Redefina todos os artigos afetados para Não Classificado antes de excluir o critério.",
+        "checking": "Verificando uso do critério...",
+        "cancel": "Cancelar",
+        "confirm": "Confirmar exclusão",
+        "toasts": {
+            "success": {
+                "title": "Critério excluído com sucesso!",
+                "description": "O critério foi removido."
+            },
+            "catch": {
+                "title": "Ação Falhou",
+                "description": "Não foi possível excluir o critério. Tente novamente."
+            }
+        }
     }
 }
