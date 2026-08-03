@@ -130,7 +130,7 @@ export default function Extraction() {
           />
         </Flex>
         <Box sx={inputconteiner}>
-          <Flex gap=".5rem" w="1rem" justifyContent="space-between" alignItems="center">
+          <Flex gap=".5rem" w="fit-content" justifyContent="space-between" alignItems="center">
             {!isMutipleSelectionEnable && (
               <>
                 <SearchFieldSelect

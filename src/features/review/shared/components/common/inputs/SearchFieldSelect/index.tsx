@@ -1,6 +1,7 @@
 // External library
-import { Select, FormControl } from "@chakra-ui/react";
+import { Menu, MenuButton, MenuList, MenuItem, IconButton, Tooltip, FormControl } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
+import { BsSliders } from "react-icons/bs";
 
 export type SearchField = "title" | "authors" | "venue";
 
@@ -24,22 +25,35 @@ export default function SearchFieldSelect({
   ];
 
   return (
-    <FormControl w="10rem" flexShrink={0}>
-      <Select
-        bgColor="#EBF0F3"
-        color="#2E4B6C"
-        fontWeight="medium"
-        value={value}
-        onChange={(e) => onChange(e.target.value as SearchField)}
-        borderRadius="md"
-        size="md"
-      >
-        {options.map((opt) => (
-          <option key={opt.value} value={opt.value}>
-            {t(opt.labelKey)}
-          </option>
-        ))}
-      </Select>
+    <FormControl w="auto" flexShrink={0}>
+      <Menu isLazy>
+        <Tooltip label={t("searchFieldTooltip")} aria-label={t("searchFieldTooltip")} hasArrow>
+          <MenuButton
+            as={IconButton}
+            aria-label={t("searchFieldTooltip")}
+            icon={<BsSliders size="1.2rem" />}
+            bgColor="#EBF0F3"
+            color="#2E4B6C"
+            borderRadius="md"
+            size="md"
+            _hover={{ bgColor: "#D3DCE3" }}
+            _active={{ bgColor: "#C4CFD8" }}
+          />
+        </Tooltip>
+        <MenuList zIndex={1400}>
+          {options.map((opt) => (
+            <MenuItem
+              key={opt.value}
+              onClick={() => onChange(opt.value)}
+              fontWeight={value === opt.value ? "bold" : "normal"}
+              bgColor={value === opt.value ? "#EBF0F3" : "transparent"}
+              _hover={{ bgColor: "#D3DCE3" }}
+            >
+              {t(opt.labelKey)}
+            </MenuItem>
+          ))}
+        </MenuList>
+      </Menu>
     </FormControl>
   );
 }

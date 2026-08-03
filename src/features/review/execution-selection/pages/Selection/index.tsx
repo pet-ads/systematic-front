@@ -132,8 +132,9 @@ export default function Selection() {
             handleChangeLayout={handleChangeLayout}
             layout={layout}
           />
+        </Flex>
         <Box sx={inputconteiner}>
-          <Flex gap=".5rem" w="1rem" justifyContent="space-between" alignItems="center">
+          <Flex gap=".5rem" w="fit-content" justifyContent="space-between" alignItems="center">
             {!isMutipleSelectionEnable && (
               <>
                 <SearchFieldSelect
@@ -165,8 +166,9 @@ export default function Selection() {
           <Box
             display="flex"
             gap="1rem"
-            justifyContent="space-between"
+            justifyContent={{ base: "center", md: "flex-start", lg: "space-between" }}
             alignItems="center"
+            ml={{ base: "0%", md: "-35%", lg: "0%" }}
           >
             <ColumnVisibilityMenu
               columnsVisible={columnsVisible}

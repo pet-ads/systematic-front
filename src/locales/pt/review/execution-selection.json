@@ -11,7 +11,8 @@
             "article": "artigo"
         }
     },
-    "search": "Buscar por título, autor ou periódico",
+    "search": "Buscar artigo",
+    "searchFieldTooltip": "Pesquisar por título, autor ou periódico",
     "searchField": {
         "title": "Título",
         "authors": "Autor",

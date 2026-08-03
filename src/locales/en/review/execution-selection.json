@@ -11,7 +11,8 @@
             "article": "article"
         }
     },
-    "search": "Search by title, author or journal",
+    "search": "Search article",
+    "searchFieldTooltip": "Search by title, author or journal",
     "searchField": {
         "title": "Title",
         "authors": "Author",
