@@ -21,6 +21,7 @@ export interface SelectionArticles {
 
 interface FetchParams extends Params {
   search?: string;
+  searchField?: "title" | "authors" | "venue";
   status?: string | null;
   // NOVO: Adicionado o sortConfig na tipagem dos parâmetros
   sortConfig?: {
@@ -42,6 +43,7 @@ const useFetchSelectionArticles = ({
   page = 0,
   size = 20,
   search = "",
+  searchField = "title",
   status = null,
   sortConfig = null,
 }: FetchParams) => {
@@ -54,7 +56,7 @@ const useFetchSelectionArticles = ({
   };
 
   if (search) {
-    queryParams.title = search;
+    queryParams[searchField] = search;
   }
 
   if (status) {

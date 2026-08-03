@@ -24,6 +24,8 @@ import SelectLayout from "../../../shared/components/structure/LayoutButton";
 import ColumnVisibilityMenu from "@features/review/shared/components/common/menu/ColumnVisibilityMenu";
 import StatusSelect from "@features/review/shared/components/common/inputs/StatusSelect";
 import ButtonsForMultipleSelection from "@features/review/shared/components/common/buttons/ButtonsForMultipleSelection";
+import SearchFieldSelect from "@features/review/shared/components/common/inputs/SearchFieldSelect";
+import type { SearchField } from "@features/review/shared/components/common/inputs/SearchFieldSelect";
 
 import ArticleInterface from "@features/review/shared/types/ArticleInterface";
 
@@ -40,6 +42,7 @@ export default function Selection() {
   }, []);
   const [isMutipleSelectionEnable, setIsMultipleSelectionEnable] = useState<boolean>(false);
   const [searchString, setSearchString] = useState<string>("");
+  const [searchField, setSearchField] = useState<SearchField>("title");
   const [showSelected, setShowSelected] = useState<boolean>(false);
   const [fetchedTotalPages, setFetchedTotalPages] = useState<number>(1);
   const selectionContext = useContext(StudySelectionContext);
@@ -89,6 +92,7 @@ export default function Selection() {
       page: currentPage - 1,
       size: itensPerPage,
       search: searchString,
+      searchField,
       status: selectedStatus,
       sortConfig,
     });
@@ -128,17 +132,26 @@ export default function Selection() {
             handleChangeLayout={handleChangeLayout}
             layout={layout}
           />
-        </Flex>
         <Box sx={inputconteiner}>
-          <Box>
+          <Flex gap=".5rem" w="1rem" justifyContent="space-between" alignItems="center">
             {!isMutipleSelectionEnable && (
-              <InputText
-                type="search"
-                placeholder={t("search")}
-                nome="search"
-                onChange={(e) => setSearchString(e.target.value)}
-                value={searchString}
-              />
+              <>
+                <SearchFieldSelect
+                  value={searchField}
+                  onChange={(field) => {
+                    setSearchField(field);
+                    setSearchString("");
+                  }}
+                  namespace="review/execution-selection"
+                />
+                <InputText
+                  type="search"
+                  placeholder={t("search")}
+                  nome="search"
+                  onChange={(e) => setSearchString(e.target.value)}
+                  value={searchString}
+                />
+              </>
             )}
             {layout !== "article" ? (
               <ButtonsForMultipleSelection
@@ -148,7 +161,7 @@ export default function Selection() {
                 setIsMultipleSelectionEnable={setIsMultipleSelectionEnable}
               />
             ) : null}
-          </Box>
+          </Flex>
           <Box
             display="flex"
             gap="1rem"
