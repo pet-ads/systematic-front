@@ -8,5 +8,16 @@
       "successTitle": "Success!",
       "successDesc": "Account confirmed! You can login now"
     }
+  },
+  "joinReview": {
+    "loading": "Processing your invitation...",
+    "toast": {
+      "emptyTokenTitle": "Invalid token!",
+      "emptyTokenDesc": "Back to main page in 3 seconds..",
+      "successTitle": "Invitation accepted!",
+      "successDesc": "You are now part of the review. Redirecting...",
+      "errorTitle": "Failed to accept invitation",
+      "errorDesc": "The invitation may be expired or already used. Please try again."
+    }
   }
 }
