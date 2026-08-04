@@ -29,8 +29,10 @@
                 },
                 "role": {
                     "role": "Role",
-                    "admin": "admin",
+                    "viewer": "viewer",
                     "reviewer": "reviewer",
+                    "editor": "editor",
+                    "admin": "admin",
                     "owner": "owner"
                 },
                 "confirm": {
@@ -38,6 +40,31 @@
                     "body": "Are you sure you want to delete",
                     "cancel": "Cancel",
                     "delete": "Delete"
+                },
+                "toasts": {
+                    "loadError": {
+                        "title": "Failed to load researchers",
+                        "description": "Could not load the collaborators for this review."
+                    },
+                    "inviteSent": {
+                        "title": "Invite sent",
+                        "description": "Invite sent to"
+                    },
+                    "inviteError": {
+                        "title": "Failed to send invite",
+                        "description": "Could not send the invite. Please try again."
+                    },
+                    "roleUpdated": {
+                        "title": "Role updated successfully"
+                    },
+                    "roleUpdateError": {
+                        "title": "Failed to update role",
+                        "description": "Could not update the role. Please try again."
+                    },
+                    "removeError": {
+                        "title": "Failed to remove collaborator",
+                        "description": "Could not remove the collaborator. Please try again."
+                    }
                 }
             }
         },

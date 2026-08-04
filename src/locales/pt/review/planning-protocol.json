@@ -29,8 +29,10 @@
                 },
                 "role": {
                     "role": "Função",
-                    "admin": "administrador",
+                    "viewer": "visualizador",
                     "reviewer": "revisor",
+                    "editor": "editor",
+                    "admin": "administrador",
                     "owner": "dono"
                 },
                 "confirm": {
@@ -38,6 +40,31 @@
                     "body": "Tem certeza que quer remover",
                     "cancel": "Cancelar",
                     "delete": "Remover"
+                },
+                "toasts": {
+                    "loadError": {
+                        "title": "Erro ao carregar pesquisadores",
+                        "description": "Não foi possível carregar os colaboradores da revisão."
+                    },
+                    "inviteSent": {
+                        "title": "Convite enviado",
+                        "description": "Convite enviado para"
+                    },
+                    "inviteError": {
+                        "title": "Erro ao enviar convite",
+                        "description": "Não foi possível enviar o convite. Tente novamente."
+                    },
+                    "roleUpdated": {
+                        "title": "Função atualizada com sucesso"
+                    },
+                    "roleUpdateError": {
+                        "title": "Erro ao atualizar função",
+                        "description": "Não foi possível atualizar a função. Tente novamente."
+                    },
+                    "removeError": {
+                        "title": "Erro ao remover colaborador",
+                        "description": "Não foi possível remover o colaborador. Tente novamente."
+                    }
                 }
             }
         },
