@@ -24,10 +24,13 @@ export const IncludedStudiesLineChart = ({ filteredStudies}:Props) => {
  
 
   return (
-    <LineChart
+    <div style={{ paddingInline: "1%" }}>
+      <LineChart
       title={t("includedStudiesByYear")}
       categories={categories}
       data={data}
     />
+    </div>
+    
   );
 };
