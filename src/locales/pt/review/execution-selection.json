@@ -11,7 +11,13 @@
             "article": "artigo"
         }
     },
-    "search": "Inserir atributo do artigo",
+    "search": "Buscar artigo",
+    "searchFieldTooltip": "Pesquisar por título, autor ou periódico",
+    "searchField": {
+        "title": "Título",
+        "authors": "Autor",
+        "venue": "Periódico"
+    },
     "buttonsForMultipleSelection": {
         "showSelected": "Mostrar selecionados",
         "showAll": "Mostrar todos",

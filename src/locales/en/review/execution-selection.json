@@ -11,7 +11,13 @@
             "article": "article"
         }
     },
-    "search": "Insert article attribute",
+    "search": "Search article",
+    "searchFieldTooltip": "Search by title, author or journal",
+    "searchField": {
+        "title": "Title",
+        "authors": "Author",
+        "venue": "Journal"
+    },
     "buttonsForMultipleSelection": {
         "showSelected": "Show selected",
         "showAll": "Show all",

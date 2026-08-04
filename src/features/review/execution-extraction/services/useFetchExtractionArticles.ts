@@ -21,6 +21,7 @@ interface HttpResponse {
 
 interface FetchParams extends Params {
   search?: string;
+  searchField?: "title" | "authors" | "venue";
   status?: string | null;
   sortConfig?: {
     key: keyof ArticleInterface | string;
@@ -41,6 +42,7 @@ const useFetchExtractionArticles = ({
   page = 0,
   size = 20,
   search = "",
+  searchField = "title",
   status = null,
   sortConfig = null,
 }: FetchParams) => {
@@ -55,7 +57,7 @@ const useFetchExtractionArticles = ({
   };
 
   if (search) {
-    queryParams.title = search;
+    queryParams[searchField] = search;
   }
 
   if (status) {
