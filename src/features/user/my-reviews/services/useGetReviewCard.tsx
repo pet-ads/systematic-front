@@ -32,21 +32,47 @@ export default function useGetReviewCard() {
       const response = await Axios.get<HttpResponse>(path);
       const rawReviews = response.data.content || [];
 
-      const enrichedReviews = rawReviews.map((review) => {
-        const formattedCollaborators = review.collaborators.map((uuid) => {
-          
-          if (uuid === userId) {
-            return `${t("you")} - ${t("reviewerRole")}`;
-          }
-          
-          return `${t("reviewerRole")} (${uuid})`;
-        });
+      const enrichedReviews = await Promise.all(
+        rawReviews.map(async (review) => {
+          const collaboratorsResponse = await Axios.get<{
+            invited: unknown[];
+            collaborators: {
+              id: string;
+              username: string;
+              email: string;
+              role: string;
+            }[];
+          }>(`systematic-study/${review.id}/collaborators`);
+
+        const collaborators = collaboratorsResponse.data.collaborators;
+
+        const owner = collaborators.find((c) => c.role === "OWNER");
+
+        const formattedCollaborators = collaborators.filter((collaboraror) => collaboraror.role !== "OWNER").map((collaborator) => ({
+          id: collaborator.id,
+          username:
+            collaborator.id === userId
+              ? t("you")
+              : collaborator.username.charAt(0).toUpperCase() +
+                collaborator.username.slice(1),
+          role: t(
+            `review/planning-protocol:generalDefinition.input.researchers.role.${collaborator.role.toLowerCase()}`
+          ),
+        }));
+
+        const ownerName = owner
+          ? owner.id === userId
+            ? t("you")
+            : owner.username.charAt(0).toUpperCase() + owner.username.slice(1)
+          : "-";
 
         return {
           ...review,
+          owner: ownerName,
           collaborators: formattedCollaborators,
         };
-      });
+        })
+      );
 
       return enrichedReviews;
     } catch (error) {
