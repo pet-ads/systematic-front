@@ -80,7 +80,6 @@ export function PickManyItemTable({ data, options, studyIds }: Props) {
         overflowY={isExporting ? "visible" : "auto"}
         overflowX="auto"
         borderRadius="1rem 1rem 0 0"
-        boxShadow="lg"
         bg="white"
       >
         <Table variant="unstyled" size="md">
