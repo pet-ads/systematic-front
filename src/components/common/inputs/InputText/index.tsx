@@ -54,7 +54,7 @@ export default function InputText({
           type={type}
           name={nome}
           placeholder={placeholder}
-          w={isSearchField ? window < 1000 ? "225px" : "250px" : "100%"}
+          w={isSearchField ? window < 1000 ? "200px" : "250px" : "100%"}
           bgColor={"#ffffff"}
           borderRadius={"3px"}
           border="2px solid"
