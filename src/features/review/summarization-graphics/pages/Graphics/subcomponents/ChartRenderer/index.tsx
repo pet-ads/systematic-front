@@ -166,7 +166,7 @@ export default function ChartsRenderer({
       w="100%"
       direction="column"
       mt="0px"
-      justify={type === "Table" || type === "Tabela" ? "flex-start" : "center"}
+      justify={type === "Table" || type === "Tabela" || type === "Item Table" || type === "Tabela por Item" ? "flex-start" : "center"}
       sx={{
         ...graphicsconteiner,
       }}
