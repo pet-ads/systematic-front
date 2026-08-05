@@ -25,6 +25,9 @@ import { RiCheckboxMultipleBlankFill } from "react-icons/ri";
 // Context
 import StudyContext from "@features/review/shared/context/StudiesContext";
 
+// Hooks
+import useWindowWidth from "@features/shared/hooks/useWindowWidth";
+
 // Components
 import PaginationControl from "../controlls/PaginationControl";
 import { Resizable } from "./subcomponents/Resizable";
@@ -88,6 +91,7 @@ export default function Expanded({
   isSplited,
   isVertical,
 }: Props) {
+  const window = useWindowWidth();
   console.log(layout)
   const [columnWidths, setColumnWidths] = useState({
     studyReviewId: "80px",
@@ -95,8 +99,8 @@ export default function Expanded({
     authors: "95px",
     venue: "110px",
     year: "85px",
-    selectionStatus: "90px",
-    extractionStatus: "90px",
+    selectionStatus: "100px",
+    extractionStatus: "100px",
     score: "70px",
     readingPriority: "80px",
   });
@@ -319,7 +323,7 @@ export default function Expanded({
                       key={col.key}
                       textAlign="center"
                       color="#263C56"
-                      fontSize="medium"
+                      fontSize={window > 1100 ? "medium" : "smaller"}
                       textTransform="capitalize"
                       cursor="pointer"
                       w={columnWidths[col.key]}

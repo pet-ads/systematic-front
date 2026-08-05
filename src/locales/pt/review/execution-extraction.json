@@ -1,6 +1,12 @@
 {
     "header": "Extração",
-    "search": "Inserir atributo do artigo",
+    "search": "Buscar artigo",
+    "searchFieldTooltip": "Pesquisar por título, autor ou periódico",
+    "searchField": {
+        "title": "Título",
+        "authors": "Autor",
+        "venue": "Periódico"
+    },
     "extractionFormDisabled": {
         "title": "Extração Desabilitada",
         "text1": "Esse estudo está marcado como",
@@ -22,6 +28,8 @@
         "noChangesToast": {
             "title": "Nenhuma mudança foi feita",
             "description": "Atualize pelo menos uma resposta antes antes de reenviar."
-        }
+        },
+        "sectionTitle": "Extração",
+        "riskOfBiasTitle": "Risco de Viés"
     }
 }

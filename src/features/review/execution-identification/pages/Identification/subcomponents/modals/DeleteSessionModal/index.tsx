@@ -22,24 +22,35 @@ interface DeleteSessionModalProps {
   mutate: KeyedMutator<Session[]>;
 }
 
-type SelectionStatus = "INCLUDED" | "EXCLUDED" | "DUPLICATED" | "UNCLASSIFIED";
+const BLOCKED_STATUSES = ["INCLUDED", "EXCLUDED", "DUPLICATED"];
+
+function getSelectionStatus(study: any): string {
+  return (study.selectionStatus ?? study.selection ?? "").toUpperCase();
+}
 
 async function canDeleteSession(
   reviewId: string,
-  sessionId: string,
-  numberOfRelatedStudies: number
+  sessionId: string
 ): Promise<boolean> {
-  if (numberOfRelatedStudies === 0) return true;
+  let page = 0;
+  const size = 50;
 
-  const size = Math.max(numberOfRelatedStudies, 1);
-  const path = `systematic-study/${reviewId}/find-by-search-session/${sessionId}`;
-  const response = await Axios.get(path, { params: { page: 0, size } });
-  const studies = response.data?.studyReviews ?? [];
+  while (true) {
+    const path = `systematic-study/${reviewId}/find-by-search-session/${sessionId}`;
+    const response = await Axios.get(path, { params: { page, size } });
+    const studies: any[] = response.data?.studyReviews ?? [];
+    const totalPages: number = response.data?.totalPages ?? 1;
 
-  const blockedStatuses: SelectionStatus[] = ["INCLUDED", "EXCLUDED", "DUPLICATED"];
-  return !studies.some((s: any) =>
-    blockedStatuses.includes(s.selectionStatus as SelectionStatus)
-  );
+    const hasBlocked = studies.some((s) =>
+      BLOCKED_STATUSES.includes(getSelectionStatus(s))
+    );
+
+    if (hasBlocked) return false;
+    if (page >= totalPages - 1) break;
+    page++;
+  }
+
+  return true;
 }
 
 export default function DeleteSessionModal({
@@ -52,9 +63,7 @@ export default function DeleteSessionModal({
 
   return (
     <DeleteWithValidationModal
-      checkCanDelete={() =>
-        canDeleteSession(reviewId, session.id, session.numberOfRelatedStudies)
-      }
+      checkCanDelete={() => canDeleteSession(reviewId, session.id)}
       onConfirm={async () => {
         await UseDeleteSession({ sessionId: session.id, mutate });
       }}

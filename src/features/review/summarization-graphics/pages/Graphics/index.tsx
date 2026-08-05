@@ -96,12 +96,12 @@ export default function Graphics() {
 
   return (
     <FlexLayout navigationType="Accordion">
-      <Flex justifyContent="space-between" alignItems="flex-start" w="100%" mb="1rem">
+      <Flex justifyContent="space-between" alignItems="flex-start" w="100%" mb="1rem" h={displayedFilters.length > 0 ? "10rem" : undefined} position="relative">
         <Flex flexDirection="column" gap="0.75rem">
           <Header text={t("header")} />
 
-          {displayedFilters.length > 0 && window > 1000 && (
-            <Flex flexDirection="column" gap="0.5rem">
+          {displayedFilters.length > 0 && (
+            <Flex flexDirection="column" gap="0.5rem" position="absolute" bottom="0">
               <Text fontWeight="semibold" fontSize="lg" color="#263C56">
                 {t("filtersArea.heading")}
               </Text>
@@ -145,28 +145,41 @@ export default function Graphics() {
       </Flex>
 
       <CardDefault backgroundColor="#fff" borderRadius="1rem" withShadow={false}>
-        <ExportProvider>
-          {section ? (
-            <ChartsRenderer
-              key={section + type + JSON.stringify(filters) + selectedQuestionId}
-              section={section}
-              type={type}
-              filters={filters}
-              selectedQuestionId={selectedQuestionId}
-              columnsVisible={columnsVisible}
-              setTablePage={setTablePage}
-            />
-          ) : (
-            <Flex direction="column" align="center" justify="center" h="100%" textAlign="center">
-              <Text fontSize="34px" fontWeight="bold" color="#2E4B6C" mb="2">
-                {t("graphicsArea.title")}
-              </Text>
-              <Text fontSize="19px" color="gray.600">
-                {t("graphicsArea.instruction")}
-              </Text>
-            </Flex>
-          )}
-        </ExportProvider>
+        <Flex w="100%" h="100%" direction="column" overflow="hidden">
+          <ExportProvider>
+            {section ? (
+              <Flex 
+                w="100%" 
+                h="100%" 
+                flex="1" 
+                overflow="hidden" 
+                position="relative" 
+                direction="column" 
+                align="stretch" 
+                justify="center"
+              >
+                <ChartsRenderer
+                  key={section + type + JSON.stringify(filters) + selectedQuestionId}
+                  section={section}
+                  type={type}
+                  filters={filters}
+                  selectedQuestionId={selectedQuestionId}
+                  columnsVisible={columnsVisible}
+                  setTablePage={setTablePage}
+                />
+              </Flex>
+            ) : (
+              <Flex direction="column" align="center" justify="center" h="100%" flex="1" textAlign="center">
+                <Text fontSize="34px" fontWeight="bold" color="#2E4B6C" mb="2">
+                  {t("graphicsArea.title")}
+                </Text>
+                <Text fontSize="19px" color="gray.600">
+                  {t("graphicsArea.instruction")}
+                </Text>
+              </Flex>
+            )}
+          </ExportProvider>
+        </Flex>
       </CardDefault>
     </FlexLayout>
   );

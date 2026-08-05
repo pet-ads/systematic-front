@@ -24,6 +24,8 @@ import SelectLayout from "../../../shared/components/structure/LayoutButton";
 import ColumnVisibilityMenu from "@features/review/shared/components/common/menu/ColumnVisibilityMenu";
 import StatusSelect from "@features/review/shared/components/common/inputs/StatusSelect";
 import ButtonsForMultipleSelection from "@features/review/shared/components/common/buttons/ButtonsForMultipleSelection";
+import SearchFieldSelect from "@features/review/shared/components/common/inputs/SearchFieldSelect";
+import type { SearchField } from "@features/review/shared/components/common/inputs/SearchFieldSelect";
 
 import ArticleInterface from "@features/review/shared/types/ArticleInterface";
 
@@ -38,7 +40,9 @@ export default function Selection() {
   useEffect(() => {
     if(window < 1000 && sidebarState === "open") setSidebarState("collapsed");
   }, []);
+  const [isMutipleSelectionEnable, setIsMultipleSelectionEnable] = useState<boolean>(false);
   const [searchString, setSearchString] = useState<string>("");
+  const [searchField, setSearchField] = useState<SearchField>("title");
   const [showSelected, setShowSelected] = useState<boolean>(false);
   const [fetchedTotalPages, setFetchedTotalPages] = useState<number>(1);
   const selectionContext = useContext(StudySelectionContext);
@@ -88,6 +92,7 @@ export default function Selection() {
       page: currentPage - 1,
       size: itensPerPage,
       search: searchString,
+      searchField,
       status: selectedStatus,
       sortConfig,
     });
@@ -129,29 +134,41 @@ export default function Selection() {
           />
         </Flex>
         <Box sx={inputconteiner}>
-          <Flex gap="1rem" w="1rem" justifyContent="space-between">
-            {window > 1000 && (
-              <InputText
-                type="search"
-                placeholder={t("search")}
-                nome="search"
-                onChange={(e) => setSearchString(e.target.value)}
-                value={searchString}
-              />
+          <Flex gap=".5rem" w="fit-content" justifyContent="space-between" alignItems="center">
+            {!isMutipleSelectionEnable && (
+              <>
+                <SearchFieldSelect
+                  value={searchField}
+                  onChange={(field) => {
+                    setSearchField(field);
+                    setSearchString("");
+                  }}
+                  namespace="review/execution-selection"
+                />
+                <InputText
+                  type="search"
+                  placeholder={t("search")}
+                  nome="search"
+                  onChange={(e) => setSearchString(e.target.value)}
+                  value={searchString}
+                />
+              </>
             )}
             {layout !== "article" ? (
               <ButtonsForMultipleSelection
                 onShowSelectedArticles={setShowSelected}
                 isShown={showSelected}
                 reloadArticles={mutate}
+                setIsMultipleSelectionEnable={setIsMultipleSelectionEnable}
               />
             ) : null}
           </Flex>
           <Box
             display="flex"
             gap="1rem"
-            justifyContent="space-between"
+            justifyContent={{ base: "center", md: "flex-start", lg: "space-between" }}
             alignItems="center"
+            ml={{ base: "0%", md: "-35%", lg: "0%" }}
           >
             <ColumnVisibilityMenu
               columnsVisible={columnsVisible}
@@ -167,7 +184,7 @@ export default function Selection() {
         </Box>
       </Box>
       <Box
-        w="calc(100% - 1.5rem)"
+        w="calc(100% - 0.5rem)"
         h="calc(100% - 1rem)"
         padding="0"
       >

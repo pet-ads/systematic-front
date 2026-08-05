@@ -83,7 +83,9 @@ export default function ComboBox({
     handlerUpdateCriteriasStructure(groupKey, option.text, newValue);
   };
 
-  const codePrefix = text === "Include" ? "IC" : "EC";
+  const isInclusionGroup = groupKey === "INCLUSION";
+  const isExclusionGroup = groupKey === "EXCLUSION";
+  const codePrefix = isInclusionGroup ? "IC" : "EC";
 
   return (
     <Menu closeOnSelect={false}>
@@ -98,7 +100,7 @@ export default function ComboBox({
         p={buttonPadding}
         minW="unset"
       >
-        {text === "Include" ? (
+        {isInclusionGroup ? (
           <HiOutlineCheckCircle size={iconSize} />
         ) : (
           <HiOutlineXCircle size={iconSize} />
@@ -116,7 +118,7 @@ export default function ComboBox({
 
           return (
             <MenuItem key={index} maxW="25rem" overflow="auto">
-              {text === "Include" || text === "Exclude" ? (
+              {isInclusionGroup || isExclusionGroup ? (
                 <Checkbox
                   isDisabled={isDisabled}
                   isChecked={option.isChecked}

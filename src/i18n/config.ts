@@ -4,6 +4,8 @@ import LanguageDetector from "i18next-browser-languagedetector";
 
 import enHomepage from "../locales/en/landing/homepage.json";
 import ptHomepage from "../locales/pt/landing/homepage.json";
+import enEmailPages from "../locales/en/landing/email-pages.json";
+import ptEmailPages from "../locales/pt/landing/email-pages.json";
 import enProfile from "../locales/en/user/profile.json";
 import ptProfile from "../locales/pt/user/profile.json";
 import enSidebar from "../locales/en/structure/sidebar.json";
@@ -31,6 +33,7 @@ i18n
     resources: {
       en: {
         "landing/homepage": enHomepage,
+        "landing/email-pages": enEmailPages,
         "user/my-reviews": enMyReviews,
         "user/profile": enProfile,
         "structure/sidebar": enSidebar,
@@ -42,6 +45,7 @@ i18n
       },
       pt: {
         "landing/homepage": ptHomepage,
+        "landing/email-pages": ptEmailPages,
         "user/my-reviews": ptMyReviews,
         "user/profile": ptProfile,
         "structure/sidebar": ptSidebar,

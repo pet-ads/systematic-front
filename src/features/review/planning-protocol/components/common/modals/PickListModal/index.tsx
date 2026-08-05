@@ -21,6 +21,7 @@ import {
   Th,
 } from "@chakra-ui/react";
 import { useEffect, useState, Dispatch, SetStateAction } from "react";
+import { useTranslation } from "react-i18next";
 import EventButton from "@components/common/buttons/EventButton";
 import DeleteButton from "@components/common/buttons/DeleteButton";
 import EditButton from "@components/common/buttons/EditButton";
@@ -39,6 +40,7 @@ interface Props {
 }
 
 export default function PickListModal({ show, questionHolder, questions, onSave }: Props) {
+  const { t } = useTranslation("review/planning-protocol");
   const { isOpen, onClose, onOpen } = useDisclosure();
 
   const [newOption, setNewOption] = useState("");
@@ -61,7 +63,7 @@ export default function PickListModal({ show, questionHolder, questions, onSave 
     if (!trimmed) return;
     
     if (questions.includes(trimmed)) {
-      alert("This option already exists!");
+      alert(t("optionModals.pickList.duplicateOption"));
       return;
     }
     
@@ -83,7 +85,7 @@ export default function PickListModal({ show, questionHolder, questions, onSave 
     if (editIndex === null || !trimmed) return;
 
     if (questions.includes(trimmed) && questions.indexOf(trimmed) !== editIndex) {
-      alert("This option already exists!");
+      alert(t("optionModals.pickList.duplicateOption"));
       return;
     }
 
@@ -100,7 +102,7 @@ export default function PickListModal({ show, questionHolder, questions, onSave 
       <ModalOverlay />
       <ModalContent minH="60vh" display="flex" flexDirection="column">
         <ModalHeader>
-          Insert the options
+          {t("optionModals.pickList.header")}
           <ModalCloseButton onClick={close} />
         </ModalHeader>
 
@@ -108,7 +110,7 @@ export default function PickListModal({ show, questionHolder, questions, onSave 
           <FormControl sx={label} flex="1" display="flex" flexDirection="column">
             <FormControl sx={formcontrol} flex="1" display="flex" flexDirection="column">
               <FormLabel mt={"30px"} fontWeight={500} fontSize={"large"}>
-                Options
+                {t("optionModals.pickList.title")}
               </FormLabel>
 
               <TableContainer
@@ -124,14 +126,14 @@ export default function PickListModal({ show, questionHolder, questions, onSave 
                       <Th colSpan={2} padding="1rem">
                         <Flex gap="4" align="center">
                           <Input
-                            placeholder="Enter options here"
+                            placeholder={t("optionModals.pickList.placeholder")}
                             value={newOption}
                             onChange={(e) => setNewOption(e.target.value)}
                             onKeyDown={(e) => e.key === "Enter" && handleAdd()}
                             flex="1"
                             size="md"
                           />
-                          <EventButton text="Add" event={handleAdd} w={"40px"} />
+                          <EventButton text={t("optionModals.pickList.add")} event={handleAdd} w={"40px"} />
                         </Flex>
                       </Th>
                     </Tr>
@@ -172,7 +174,7 @@ export default function PickListModal({ show, questionHolder, questions, onSave 
         </ModalBody>
 
         <ModalFooter>
-          <Button onClick={close}>Close</Button>
+          <Button onClick={close}>{t("optionModals.pickList.close")}</Button>
         </ModalFooter>
       </ModalContent>
     </Modal>

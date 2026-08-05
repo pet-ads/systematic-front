@@ -9,6 +9,8 @@ interface HttpResponse {
   studyReviews: ArticleInterface[] | StudyInterface[];
 }
 
+const PAGE_SIZE = 100;
+
 const useGetAllReviewArticles = () => {
   const id = localStorage.getItem("systematicReviewId");
   const { data, mutate, error, isLoading } = useSWR(
@@ -25,10 +27,24 @@ const useGetAllReviewArticles = () => {
 
   async function fetchAllArticlesReview() {
     try {
-      const response = await Axios.get<HttpResponse>(
-        `systematic-study/${id}/study-review`
-      );
-      return response.data.studyReviews || [];
+      const allArticles: (ArticleInterface | StudyInterface)[] = [];
+      let page = 0;
+      let hasMore = true;
+
+      while (hasMore) {
+        const response = await Axios.get<HttpResponse>(
+          `systematic-study/${id}/study-review`,
+          { params: { page, size: PAGE_SIZE } }
+        );
+
+        const pageData = response.data.studyReviews || [];
+        allArticles.push(...pageData);
+
+        hasMore = pageData.length === PAGE_SIZE;
+        page += 1;
+      }
+
+      return allArticles;
     } catch (error) {
       console.error("Error fetching articles", error);
       throw error;

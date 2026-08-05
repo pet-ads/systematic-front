@@ -81,5 +81,5 @@ export default function SearchSourcesRenderer({
     content = <div>{t("typeNotSupported")}</div>;
   }
   
-  return <Box id={chartId}>{content}</Box>;
+  return <Box id={chartId} w="100%" h="100%" >{content}</Box>;
 }

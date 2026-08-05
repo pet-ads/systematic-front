@@ -39,6 +39,10 @@ import Download from "@features/review/summarization-download/pages/download";
 // Error Information
 import Unauthorized from "@features/application/pages/UnauthorizedPage";
 import ServerError from "@features/application/pages/ServerErrorPage";
+import ConfirmAccount from "@features/auth/components/pages";
+
+// Collaboration
+import JoinReview from "@features/review/join-review/pages";
 
 const routesList: RouteObject[] = [
   {
@@ -64,6 +68,14 @@ const routesList: RouteObject[] = [
   {
     path: "/server-error",
     element: <ServerError />,
+  },
+  {
+    path: "/confirm-account",
+    element: <ConfirmAccount />,
+  },
+  {
+    path: "/join-review",
+    element: <ProtectedRoute element={<JoinReview />} />,
   },
   {
     path: "/review/planning/protocol/general-definition",
@@ -93,7 +105,7 @@ const routesList: RouteObject[] = [
   },
   {
     path: "/review/planning/protocol/risk-of-bias-assessment/:id",
-    element: <ProtectedRoute element={<RiskOfBiasAssessment/>} />,
+    element: <ProtectedRoute element={<RiskOfBiasAssessment />} />,
   },
   {
     path: "/review/planning/protocol/analysis-and-synthesis-of-results/:id",
@@ -128,9 +140,9 @@ const routesList: RouteObject[] = [
     element: <ProtectedRoute element={<Visualization />} />,
   },
   {
-      path: "/review/summarization/download",
-      element: <ProtectedRoute element={<Download />} />,
-    },
+    path: "/review/summarization/download",
+    element: <ProtectedRoute element={<Download />} />,
+  },
 ];
 
 export default function AppRoutes() {

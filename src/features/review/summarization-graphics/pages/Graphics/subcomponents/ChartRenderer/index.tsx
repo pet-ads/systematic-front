@@ -161,8 +161,12 @@ export default function ChartsRenderer({
   if (!Renderer) return <Box>Seção não encontrada</Box>;
 
   return (
-    <Box
-      pt={"1rem"}
+    <Flex
+      flex="1"
+      w="100%"
+      direction="column"
+      mt="0px"
+      justify={type === "Table" || type === "Tabela" || type === "Item Table" || type === "Tabela por Item" ? "flex-start" : "center"}
       sx={{
         ...graphicsconteiner,
       }}
@@ -205,6 +209,6 @@ export default function ChartsRenderer({
           />
         </Flex>
       )}
-    </Box>
+    </Flex>
   );
 }

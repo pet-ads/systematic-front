@@ -211,7 +211,7 @@ export function GenericExpandedTable<T>({
         </Table>
       </TableContainer>
 
-      {!isExporting && data.length > 10 && (
+      {!isExporting && data.length >= 20 && (
         <Box 
           display="flex" 
           w="100%" 

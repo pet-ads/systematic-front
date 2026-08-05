@@ -10,13 +10,19 @@ interface RevisionCardProps {
   revisionId: string;
   title: string;
   status?: string;
-  collaborators: string[];
+  owner: string;
+  collaborators: {
+    id: string;
+    username: string;
+    role: string;
+  }[];
 }
 
 export default function RevisionCard({
   revisionId,
   title,
   status,
+  owner,
   collaborators,
 }: RevisionCardProps) {
   const { t } = useTranslation("user/my-reviews");
@@ -50,19 +56,19 @@ export default function RevisionCard({
         </Text>
         
         <Text fontSize="0.875rem" color="gray.600" mb="0.25rem">
-          {t("owner")}: {t("you")}
+          {t("owner")}: {owner}
         </Text>
         
         
-        <Box pl="0.5rem" mt="0.25rem">
-          {collaborators && collaborators.length > 1 ? (
+        <Box mt="0.25rem">
+          {collaborators && collaborators.length > 0 ? (
             <>
               <Text fontSize="0.875rem" color="gray.600">
                 {t("reviewers")}:
               </Text>
-              {collaborators.map((collab, index) => (
-                <Text key={index} fontSize="0.875rem" color="gray.500">
-                  {collab}
+              {collaborators.map((collaborator) => (
+                <Text key={collaborator.id} textIndent="1rem" fontSize="0.875rem" color="gray.500">
+                  {collaborator.username}: {collaborator.role}
                 </Text>
               ))}
             </>

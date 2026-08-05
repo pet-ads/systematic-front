@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 
 import Axios from "../../../../../../../infrastructure/http/axiosClient";
 import DeleteWithValidationModal from "@features/review/shared/components/common/modals/DeleteWithValidationModal";
+import { capitalize } from "@features/shared/utils/helpers/formatters/CapitalizeText";
 
 interface DeleteSourceModalProps {
   sourceName: string;
@@ -9,22 +10,76 @@ interface DeleteSourceModalProps {
   onClose: () => void;
 }
 
-type SelectionStatus = "INCLUDED" | "EXCLUDED" | "DUPLICATED" | "UNCLASSIFIED";
+interface Session {
+  id: string;
+  numberOfRelatedStudies: number;
+}
+
+const BLOCKED_STATUSES = ["INCLUDED", "EXCLUDED", "DUPLICATED"];
+
+function getSelectionStatus(study: any): string {
+  return (study.selectionStatus ?? study.selection ?? "").toUpperCase();
+}
+
+function toTitleCase(text: string): string {
+  return text
+    .toLowerCase()
+    .split(" ")
+    .map((word) => capitalize(word))
+    .join(" ");
+}
+
+
+async function fetchSessionsForSource(
+  reviewId: string,
+  sourceName: string
+): Promise<Session[]> {
+  const formattedName = toTitleCase(sourceName);
+
+  try {
+    const path = `systematic-study/${reviewId}/search-session-source/${encodeURIComponent(formattedName)}`;
+    const response = await Axios.get(path);
+    const sessions: Session[] = response.data?.searchSessions ?? [];
+    return sessions;
+  } catch (err) {
+    console.error("Erro ao buscar sessões para a fonte", formattedName, err);
+    throw err;
+  }
+}
 
 async function canDeleteSource(
   reviewId: string,
   sourceName: string
 ): Promise<boolean> {
-  const path = `systematic-study/${reviewId}/search-source/${encodeURIComponent(sourceName)}`;
-  const response = await Axios.get(path);
-  const studies = response.data?.studyReviews ?? [];
+  const sessions = await fetchSessionsForSource(reviewId, sourceName);
 
-  if (studies.length === 0) return true;
+  if (sessions.length === 0) return true;
 
-  const blockedStatuses: SelectionStatus[] = ["INCLUDED", "EXCLUDED", "DUPLICATED"];
-  return !studies.some((s: any) =>
-    blockedStatuses.includes(s.selectionStatus as SelectionStatus)
-  );
+  for (const session of sessions) {
+    if (session.numberOfRelatedStudies === 0) continue;
+
+    let page = 0;
+    const size = 50;
+
+    while (true) {
+      const articlesPath = `systematic-study/${reviewId}/find-by-search-session/${session.id}`;
+      const articlesResponse = await Axios.get(articlesPath, {
+        params: { page, size },
+      });
+      const studies: any[] = articlesResponse.data?.studyReviews ?? [];
+      const totalPages: number = articlesResponse.data?.totalPages ?? 1;
+
+      const hasBlocked = studies.some((s) =>
+        BLOCKED_STATUSES.includes(getSelectionStatus(s))
+      );
+
+      if (hasBlocked) return false;
+      if (page >= totalPages - 1) break;
+      page++;
+    }
+  }
+
+  return true;
 }
 
 export default function DeleteSourceModal({

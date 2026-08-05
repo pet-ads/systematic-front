@@ -17,6 +17,7 @@ const RenderCards = ({ data }: RenderCardsProps) => {
           revisionId={item.id}
           title={item.title}
           status={item.status}
+          owner={item.owner}
           collaborators={item.collaborators}
         />
       ))}

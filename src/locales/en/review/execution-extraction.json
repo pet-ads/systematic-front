@@ -1,6 +1,12 @@
 {
     "header": "Extraction",
-    "search": "Insert article attribute",
+    "search": "Search article",
+    "searchFieldTooltip": "Search by title, author or journal",
+    "searchField": {
+        "title": "Title",
+        "authors": "Author",
+        "venue": "Journal"
+    },
     "extractionFormDisabled": {
         "title": "Extraction Disabled",
         "text1": "This study is currently marked as",
@@ -22,6 +28,8 @@
         "noChangesToast": {
             "title": "No changes made",
             "description": "Update at least one answer before submitting."
-        }
+        },
+        "sectionTitle": "Extraction",
+        "riskOfBiasTitle": "Risk of Bias"
     }
 }

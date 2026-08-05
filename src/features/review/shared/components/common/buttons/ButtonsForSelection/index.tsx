@@ -194,21 +194,21 @@ export default function ButtonsForSelection({
 
   const comboBoxGroups: Record<OptionType, ComboBoxGroup> = {
     INCLUSION: {
-      label: "Include",
+      label: t("buttonsForSelection.comboBox.include"),
       description: criteriaGroupDataMap["INCLUSION"].data.length === 0
-        ? "No inclusion criteria configured in Planning"
+        ? t("buttonsForSelection.tooltips.noInclusionCriteria")
         : isExclusionActive
-          ? "Remove exclusion criteria first"
+          ? t("buttonsForSelection.tooltips.removeExclusionFirst")
           : t("buttonsForSelection.tooltips.includeDescription"),
       isDisabled: criteriaGroupDataMap["INCLUSION"].data.length === 0 || isExclusionActive || isDuplicated,
       options: criteriaGroupDataMap["INCLUSION"].data,
     },
     EXCLUSION: {
-      label: "Exclude",
+      label: t("buttonsForSelection.comboBox.exclude"),
       description: criteriaGroupDataMap["EXCLUSION"].data.length === 0
-        ? "No exclusion criteria configured in Planning"
+        ? t("buttonsForSelection.tooltips.noExclusionCriteria")
         : isInclusionActive
-          ? "Remove inclusion criteria first"
+          ? t("buttonsForSelection.tooltips.removeInclusionFirst")
           : t("buttonsForSelection.tooltips.excludeDescription"),
       isDisabled: criteriaGroupDataMap["EXCLUSION"].data.length === 0 || isInclusionActive || isDuplicated,
       options: criteriaGroupDataMap["EXCLUSION"].data,

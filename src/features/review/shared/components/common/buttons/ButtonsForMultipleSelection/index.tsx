@@ -1,11 +1,10 @@
-import { useContext } from "react";
+import { SetStateAction, useContext } from "react";
 import { Button, Flex } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 
 import StudyContext from "@features/review/shared/context/StudiesContext";
-import { UseChangeStudySelectionStatus } from "../../../../services/useChangeStudySelectionStatus";
 import useSendDuplicatedStudies from "../../../../services/useSendDuplicatedStudies";
-import { FaCheckCircle, FaEye, FaTrashAlt } from "react-icons/fa";
+import { FaCheckCircle, FaEye } from "react-icons/fa";
 import { MdOutlineCleaningServices } from "react-icons/md";
 import useWindowWidth from "@features/shared/hooks/useWindowWidth";
 
@@ -25,12 +24,14 @@ interface ButtonsForMultipleSelectionProps {
   onShowSelectedArticles: (showSelected: boolean) => void;
   isShown: boolean;
   reloadArticles: () => Promise<any>;
+  setIsMultipleSelectionEnable: React.Dispatch<SetStateAction<boolean>>;
 }
 
 export default function ButtonsForMultipleSelection({
   onShowSelectedArticles,
   isShown,
   reloadArticles,
+  setIsMultipleSelectionEnable
 }: ButtonsForMultipleSelectionProps) {
   const window = useWindowWidth();
   const studyContext = useContext(StudyContext);
@@ -47,6 +48,12 @@ export default function ButtonsForMultipleSelection({
 
   const articles = studyContext?.selectedArticles;
 
+  if(articles && Object.keys(articles).length > 1){
+    setIsMultipleSelectionEnable(true);
+  } else {
+    setIsMultipleSelectionEnable(false);
+  }
+
   const handleSendDuplicatedStudies = async () => {
     await sendDuplicatedStudies();
     await reloadArticles();
@@ -55,21 +62,9 @@ export default function ButtonsForMultipleSelection({
     onShowSelectedArticles(false);
   };
 
-  const handleSendExcludedStudies = () => {
-    if (!articles || Object.keys(articles).length <= 1) return;
-    UseChangeStudySelectionStatus({
-      status: "EXCLUDED",
-      studyReviewId: [...Object.values(articles).map((art) => art.id)],
-      criterias: [],
-    });
-    studyContext?.clearSelectedArticles();
-    onShowSelectedArticles(false);
-  };
-
   return articles && Object.keys(articles).length > 1 ? (
-    <Flex gap=".5rem" flexDirection={window > 1000 ? "row" : "column"}>
-      {window > 1000 && (
-        (!isShown ? (
+    <Flex gap={window > 1400 ? ".5rem" : ".2rem"} flexDirection={window > 1400 ? "row" : "column"}>
+      {!isShown ? (
           <Button
             sx={buttonSX}
             bg="#EBF0F3"
@@ -95,9 +90,8 @@ export default function ButtonsForMultipleSelection({
           >
             {t("buttonsForMultipleSelection.showAll")}
           </Button>
-        ))
-      )}
-
+        )
+      }
 
       <Button
         sx={buttonSX}
@@ -109,33 +103,20 @@ export default function ButtonsForMultipleSelection({
       >
         {t("buttonsForMultipleSelection.markAsDuplicated")}
       </Button>
-      {window > 1000 && (
-        <>
-          <Button
-            sx={buttonSX}
-            bg="#EBF0F3"
-            _hover={{ bg: "white", color: "#263C56", boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)"}}
-            transition="0.2s ease-in-out"
-            onClick={handleSendExcludedStudies}
-            leftIcon={<FaTrashAlt color="red"/>}
-          >
-            {t("buttonsForMultipleSelection.markAsExcluded")}
-          </Button>
-          <Button
-            sx={buttonSX}
-            bg="#EBF0F3"
-            _hover={{ bg: "white", color: "#263C56", boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)"}}
-            transition="0.2s ease-in-out"
-            onClick={() => {
-              studyContext.clearSelectedArticles();
-              onShowSelectedArticles(false);
-            }}
-            leftIcon={<MdOutlineCleaningServices color="orange"/>}
-          >
-            {t("buttonsForMultipleSelection.clearSelection")}
-          </Button>
-        </>
-      )}
+
+      <Button
+        sx={buttonSX}
+        bg="#EBF0F3"
+        _hover={{ bg: "white", color: "#263C56", boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)"}}
+        transition="0.2s ease-in-out"
+        onClick={() => {
+          studyContext.clearSelectedArticles();
+          onShowSelectedArticles(false);
+        }}
+        leftIcon={<MdOutlineCleaningServices color="orange"/>}
+      >
+        {t("buttonsForMultipleSelection.clearSelection")}
+      </Button>
     </Flex>
   ) : null;
 }

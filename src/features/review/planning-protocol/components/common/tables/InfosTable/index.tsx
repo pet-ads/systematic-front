@@ -7,6 +7,10 @@ import { Table, Tbody, Tr, Td, TableContainer, Input, Flex, Thead, Th } from "@c
 import useCreateProtocol from "@features/review/planning-protocol/services/useCreateProtocol";
 import EventButton from "@components/common/buttons/EventButton";
 import useToaster from "@components/feedback/Toaster";
+import { useTranslation } from "react-i18next";
+import DeleteCriteriaModal from "@features/review/planning-protocol/components/common/modals/DeleteCriteriaModal";
+
+const CRITERIA_CONTEXTS = ["Inclusion criteria", "Exclusion criteria"];
 
 interface InfosTableProps {
   AddTexts: string[];
@@ -35,7 +39,9 @@ export default function InfosTable({
 }: InfosTableProps) {
   const { sendAddText } = useCreateProtocol();
   const toaster = useToaster();
+  const { t } = useTranslation("review/planning-protocol");
 
+  const [pendingDeleteIndex, setPendingDeleteIndex] = useState<number | null>(null);
   const [newText, setNewText] = useState("");
   const [referenceCode, setReferenceCode] = useState("");
   const [editedCode, setEditedCode] = useState("");
@@ -67,8 +73,8 @@ export default function InfosTable({
     const codes = getAllCodes(editIdx);
     if (codeToSave && codes.includes(codeToSave)) {
       toaster({
-        title: `The reference code '${codeToSave}' is already in use.`,
-        description: "Please choose another one.",
+        title: `${t("selectionAndExtraction.input.extractionQuestions.toaster.duplicated.title1")} '${codeToSave}' ${t("selectionAndExtraction.input.extractionQuestions.toaster.duplicated.title2")}`,
+        description: t("selectionAndExtraction.input.extractionQuestions.toaster.duplicated.description"),
         status: "error",
       });
       return false;
@@ -114,8 +120,8 @@ export default function InfosTable({
 
     if (code && existingCodes.includes(code)) {
       toaster({
-        title: `The reference code '${code}' is already in use.`,
-        description: "Please choose another one.",
+        title: `${t("selectionAndExtraction.input.extractionQuestions.toaster.duplicated.title1")} '${code}' ${t("selectionAndExtraction.input.extractionQuestions.toaster.duplicated.title2")}`,
+        description: t("selectionAndExtraction.input.extractionQuestions.toaster.duplicated.description"),
         status: "error",
       });
       return true;
@@ -138,14 +144,14 @@ export default function InfosTable({
   };
 
   return (
- 
-    <TableContainer 
-      w="100%" 
-      sx={{ 
-        ...tbConteiner, 
+    <>
+    <TableContainer
+      w="100%"
+      sx={{
+        ...tbConteiner,
         h: tableHeight || tbConteiner.h,
         width: "100% !important",
-        maxWidth: "100% !important"
+        maxWidth: "100% !important",
       }}
     >
       <Table variant="simple" size="md" w="100%">
@@ -227,7 +233,13 @@ export default function InfosTable({
                 <Td textAlign={"right"} py={"1"}>
                   <DeleteButton
                     index={index}
-                    handleDelete={() => onDeleteAddedText(index)}
+                    handleDelete={() => {
+                      if (CRITERIA_CONTEXTS.includes(context)) {
+                        setPendingDeleteIndex(index);
+                      } else {
+                        onDeleteAddedText(index);
+                      }
+                    }}
                   />
                   {typeField !== "select" && (
                     <EditButton
@@ -244,5 +256,17 @@ export default function InfosTable({
         </Tbody>
       </Table>
     </TableContainer>
+
+    {pendingDeleteIndex !== null && CRITERIA_CONTEXTS.includes(context) && (
+      <DeleteCriteriaModal
+        criteriaDescription={AddTexts[pendingDeleteIndex] ?? ""}
+        onConfirm={() => {
+          onDeleteAddedText(pendingDeleteIndex);
+          setPendingDeleteIndex(null);
+        }}
+        onClose={() => setPendingDeleteIndex(null)}
+      />
+    )}
+    </>
   );
 }

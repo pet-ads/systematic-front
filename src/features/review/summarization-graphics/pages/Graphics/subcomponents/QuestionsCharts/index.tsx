@@ -269,7 +269,7 @@ export const QuestionsCharts = ({
 
         return (
           <Box key={question.questionId} w="100%">
-            <Text mb={2} ml="2rem" fontWeight="bold">
+            <Text mb={2} ml="3rem" mt="1rem" fontWeight="bold">
               {description}
             </Text>
             <Box w="100%">{chartContent}</Box>

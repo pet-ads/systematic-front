@@ -13,7 +13,7 @@ export const header = {
   w: "100%",
   color: "black",
   fontFamily: "Boboni",
-  lineHeight: "1.4rem",
+  lineHeight: "1.7rem",
   whiteSpace: "normal",
   wordBreak: "break-word",
   overflowWrap: "break-word",

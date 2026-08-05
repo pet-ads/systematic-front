@@ -29,8 +29,10 @@
                 },
                 "role": {
                     "role": "Role",
-                    "admin": "admin",
+                    "viewer": "viewer",
                     "reviewer": "reviewer",
+                    "editor": "editor",
+                    "admin": "admin",
                     "owner": "owner"
                 },
                 "confirm": {
@@ -38,6 +40,31 @@
                     "body": "Are you sure you want to delete",
                     "cancel": "Cancel",
                     "delete": "Delete"
+                },
+                "toasts": {
+                    "loadError": {
+                        "title": "Failed to load researchers",
+                        "description": "Could not load the collaborators for this review."
+                    },
+                    "inviteSent": {
+                        "title": "Invite sent",
+                        "description": "Invite sent to"
+                    },
+                    "inviteError": {
+                        "title": "Failed to send invite",
+                        "description": "Could not send the invite. Please try again."
+                    },
+                    "roleUpdated": {
+                        "title": "Role updated successfully"
+                    },
+                    "roleUpdateError": {
+                        "title": "Failed to update role",
+                        "description": "Could not update the role. Please try again."
+                    },
+                    "removeError": {
+                        "title": "Failed to remove collaborator",
+                        "description": "Could not remove the collaborator. Please try again."
+                    }
                 }
             }
         },
@@ -174,6 +201,7 @@
                 "label": "Extraction Questions",
                 "question": "QUESTION",
                 "type": "TYPE",
+                "selectType": "Select type",
                 "noDataFound": "No data found",
                 "questionType": {
                     "textual": "textual",
@@ -246,6 +274,59 @@
             "catch": {
                 "title": "Action Failed",
                 "description": "Could not delete the source. Please try again."
+            }
+        }
+    },
+    "optionModals": {
+        "labeledScale": {
+            "header": "Insert options and values",
+            "title": "Labeled Scale",
+            "labelPlaceholder": "Insert your label here",
+            "valuePlaceholder": "Value",
+            "add": "Add",
+            "close": "Close",
+            "duplicateLabel": "This label already exists!"
+        },
+        "pickList": {
+            "header": "Insert the options",
+            "title": "Options",
+            "placeholder": "Enter options here",
+            "add": "Add",
+            "close": "Close",
+            "duplicateOption": "This option already exists!"
+        },
+        "pickMany": {
+            "header": "Insert multiple options",
+            "title": "Multiple Options",
+            "placeholder": "Type an option",
+            "add": "Add",
+            "close": "Close",
+            "duplicateOption": "This option already exists!"
+        },
+        "numberScale": {
+            "header": "Values to number scale",
+            "min": "Minimum",
+            "max": "Maximum",
+            "close": "Close",
+            "save": "Save"
+        }
+    },
+    "deleteCriteriaModal": {
+        "heading": "Delete criterion",
+        "confirmMessage": "Are you sure you want to delete this criterion?",
+        "blockedTitle": "Criterion cannot be deleted",
+        "blockedMessage": "This criterion is applied to Included, Excluded or Duplicated articles. Reset all affected articles to Unclassified before deleting the criterion.",
+        "checking": "Checking criterion usage...",
+        "cancel": "Cancel",
+        "confirm": "Confirm deletion",
+        "toasts": {
+            "success": {
+                "title": "Criterion deleted successfully!",
+                "description": "The criterion has been removed."
+            },
+            "catch": {
+                "title": "Action Failed",
+                "description": "Could not delete the criterion. Please try again."
             }
         }
     }

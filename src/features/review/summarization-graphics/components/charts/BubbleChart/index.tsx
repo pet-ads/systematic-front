@@ -1,6 +1,7 @@
 import Chart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
 import { BubbleSeries } from "@features/review/summarization-graphics/hooks/useBubbleDataGeneric";
+import { Box, Flex } from "@chakra-ui/react";
 
 const ROW_HEIGHT = 80; 
 const PADDING_V = 80;
@@ -60,11 +61,12 @@ export default function BubbleChart({ title, series, yCategories, yaxisText }: P
     title: {
       text: title,
       align: "left",
-      style: { 
-        fontWeight: 'bold', 
-        fontSize: "22px",   
-        color: '#2D3748' 
-      },
+      margin: 0,
+      style: {
+          fontSize: '22px',       
+          fontWeight: '900',      
+          color: '#2D3748',       
+        }
     },
     grid: {
       show: true,
@@ -159,20 +161,24 @@ export default function BubbleChart({ title, series, yCategories, yaxisText }: P
   };
 
   return (
-    <div id="bubble-chart-container" style={{ width: "100%" }}>
+    <div id="bubble-chart-container" style={{ width: "100%", height: "100%" }}>
       <style>{`
         #bubble-chart-container .apexcharts-reset-icon {
           transform: translateX(-7px); 
         }
       `}</style>
 
-      <Chart
-        options={options}
-        series={series}
-        type="bubble"
-        width="100%" 
-        height={dynamicHeight} 
-      />
+      <Flex h="100%" w="100%" align="center" justify="center" p="1rem">
+        <Box w="100%">
+          <Chart
+            options={options}
+            series={series}
+            type="bubble"
+            width="100%" 
+            height={dynamicHeight} 
+          />
+        </Box>
+      </Flex>
     </div>
   );
 }

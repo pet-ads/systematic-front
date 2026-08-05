@@ -11,7 +11,7 @@ export const inputconteiner = {
   width: "100%",
   m: "0 0 1rem 0",
   justifyContent: "space-between",
-  alignItems: "center",
+  alignItems: "start",
 };
 
 export const ckconteiner = {

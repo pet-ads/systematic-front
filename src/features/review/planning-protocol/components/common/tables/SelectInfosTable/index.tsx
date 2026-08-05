@@ -7,11 +7,13 @@ import { tbConteiner } from "./styles.ts";
 interface SelectInfosTableProps {
   selectedItems: string[];
   onDeleteItem: (index: number) => void;
+  type: string;
 }
 
 export default function SelectInfosTable({
   selectedItems,
   onDeleteItem,
+  type
 }: SelectInfosTableProps) {
   const [pendingDeleteIndex, setPendingDeleteIndex] = useState<number | null>(null);
 
@@ -32,7 +34,14 @@ export default function SelectInfosTable({
 
   return (
     <>
-      <TableContainer sx={tbConteiner}>
+      <TableContainer
+        w="100%"
+        sx={{
+          ...tbConteiner,
+          width: "100% !important",
+          maxWidth: "100% !important"
+        }}
+      >
         <Table variant="simple" size="md">
           <Tbody className="tableBody">
             {selectedItems.map((item, index) => (
@@ -43,7 +52,7 @@ export default function SelectInfosTable({
                 <Td textAlign={"right"} py={"1"}>
                   <DeleteButton
                     index={index}
-                    handleDelete={() => handleDeleteClick(index)}
+                    handleDelete={() => type === "DATABASES" ? handleDeleteClick(index) : onDeleteItem(index)}
                   />
                 </Td>
               </Tr>

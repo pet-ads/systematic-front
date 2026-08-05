@@ -139,7 +139,6 @@ export default function TextualTable({
         w="100%"
         maxH="calc(100vh - 15rem)"
         borderRadius="1rem 1rem 0 0"
-        boxShadow="lg"
         bg="white"
         overflowY="auto"
       >
@@ -295,16 +294,18 @@ export default function TextualTable({
         </Table>
       </TableContainer>
 
-      <PaginationControl
-        currentPage={currentPage}
-        itensPerPage={itensPerPageUI}
-        quantityOfPages={quantityOfPages}
-        handleNextPage={handleNextPage}
-        handlePrevPage={handlePrevPage}
-        handleBackToInitial={handleBackToInitial}
-        handleGoToFinal={handleGoToFinal}
-        changeQuantityOfItens={handleChangeItensPerPage}
-      />
+      {articles.length >= 20 && (
+        <PaginationControl
+          currentPage={currentPage}
+          itensPerPage={itensPerPageUI}
+          quantityOfPages={quantityOfPages}
+          handleNextPage={handleNextPage}
+          handlePrevPage={handlePrevPage}
+          handleBackToInitial={handleBackToInitial}
+          handleGoToFinal={handleGoToFinal}
+          changeQuantityOfItens={handleChangeItensPerPage}
+        />
+      )}
     </Box>
   );
 }
