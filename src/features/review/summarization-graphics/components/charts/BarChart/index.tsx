@@ -1,6 +1,6 @@
 import { ApexOptions } from "apexcharts";
 import Chart from "react-apexcharts";
-import { Box } from "@chakra-ui/react"; 
+import { Box, Flex } from "@chakra-ui/react"; 
 
 type section = 'inclusion' | 'exclusion' | 'searchSource' | 'questions';
 type Props = {
@@ -108,14 +108,16 @@ export default function BarChart({
   };
 
   return (
-    <Box w="100%">
-      <Chart
-        options={chartConfig.options}
-        series={chartConfig.series}
-        type="bar"
-        height={height}
-        width="100%" 
-      />
-    </Box>
+    <Flex h="100%" w="100%" align="center" justify="center" p="0.5rem">
+      <Box w="100%">
+        <Chart
+          options={chartConfig.options}
+          series={chartConfig.series}
+          type="bar"
+          height={height}
+          width="100%" 
+        />
+      </Box>
+    </Flex>
   );
 }

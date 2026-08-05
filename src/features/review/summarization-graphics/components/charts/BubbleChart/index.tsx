@@ -1,6 +1,7 @@
 import Chart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
 import { BubbleSeries } from "@features/review/summarization-graphics/hooks/useBubbleDataGeneric";
+import { Box, Flex } from "@chakra-ui/react";
 
 const ROW_HEIGHT = 80; 
 const PADDING_V = 80;
@@ -167,13 +168,17 @@ export default function BubbleChart({ title, series, yCategories, yaxisText }: P
         }
       `}</style>
 
-      <Chart
-        options={options}
-        series={series}
-        type="bubble"
-        width="100%" 
-        height={dynamicHeight} 
-      />
+      <Flex h="100%" w="100%" align="center" justify="center" p="1rem">
+        <Box w="100%">
+          <Chart
+            options={options}
+            series={series}
+            type="bubble"
+            width="100%" 
+            height={dynamicHeight} 
+          />
+        </Box>
+      </Flex>
     </div>
   );
 }
