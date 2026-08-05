@@ -161,7 +161,7 @@ export default function BubbleChart({ title, series, yCategories, yaxisText }: P
   };
 
   return (
-    <div id="bubble-chart-container" style={{ width: "100%" }}>
+    <div id="bubble-chart-container" style={{ width: "100%", height: "100%" }}>
       <style>{`
         #bubble-chart-container .apexcharts-reset-icon {
           transform: translateX(-7px); 
