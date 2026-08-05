@@ -13,6 +13,7 @@ interface AddSelectTableProps {
   typeField?: string;
   label: string;
   stateKey: string; 
+  type: string;
 }
 
 export default function AddSelectionTable({
@@ -20,6 +21,7 @@ export default function AddSelectionTable({
   label,
   placeholder,
   stateKey,
+  type,
 }: AddSelectTableProps) {
   const {
     selectedValue,
@@ -82,6 +84,7 @@ export default function AddSelectionTable({
       <SelectInfosTable
         selectedItems={formatSelectedValues}
         onDeleteItem={handleDeleteSelect}
+        type={type}
       />
     </FormControl>
   );

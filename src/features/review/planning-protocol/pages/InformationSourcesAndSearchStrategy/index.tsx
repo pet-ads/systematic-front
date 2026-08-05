@@ -103,6 +103,7 @@ export default function InformationSourcesAndSearchStrategy() {
           )}
           typeField="select"
           stateKey="Databases and Information Source"
+          type="DATABASES"
         />
         <TextAreaInput
           value={searchMethod}

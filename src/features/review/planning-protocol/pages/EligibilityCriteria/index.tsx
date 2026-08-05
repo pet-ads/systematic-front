@@ -143,6 +143,7 @@ export default function EligibilityCriteria() {
           placeholder={t("eligibilityCriteria.input.languages.placeholder")}
           typeField="select"
           stateKey="Languages"
+          type="LANGUAGES"
         />
       </Box>
     </ProtocolFormLayout>
