@@ -65,7 +65,7 @@ export default function ComboBox({
   const { selectionStatus, extractionStatus } = status;
 
   const hasInvalidStatus =
-    selectionStatus == "DUPLICATED" || extractionStatus == "DUPLICATED";
+    (selectionStatus == "DUPLICATED" && page === "Selection") || (extractionStatus == "DUPLICATED" && page === "Extraction");
 
   const showDuplicatedWarning = () =>
     toast({
