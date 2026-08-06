@@ -8,6 +8,7 @@ import useFetchInclusionCriteria from "./useFetchInclusionCriteria";
 import useFetchExclusionCriteria from "./useFetchExclusionCriterias";
 import useRevertCriterionState from "./useRevertCriterionState";
 import useToaster from "@components/feedback/Toaster";
+import { useTranslation } from "react-i18next";
 
 // Services
 import { UseChangeStudySelectionStatus } from "./useChangeStudySelectionStatus";
@@ -61,6 +62,7 @@ export default function useFetchAllCriteriasByArticle({
   page,
   reloadArticles,
 }: AllCriteriasByArticleProps) {
+  const { t } = useTranslation("review/execution-selection");
   const studiesContext = useContext(StudyContext);
   const selectedArticleReview = studiesContext?.selectedArticleReview ?? -1;
   const toast = useToaster();
@@ -179,9 +181,8 @@ export default function useFetchAllCriteriasByArticle({
     } catch (error) {
       console.error("Failed to update criterion:", error);
       toast({
-        title: "Erro ao salvar critério",
-        description:
-          "Não foi possível atualizar este critério. Tente novamente.",
+        title: t("toasterForRemoving.titleError"),
+        description: t("toasterForRemoving.descriptionError"),
         status: "error",
       });
     }

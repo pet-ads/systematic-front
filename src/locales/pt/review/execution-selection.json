@@ -99,6 +99,13 @@
             "high": "Alta",
             "veryHigh": "Muito Alta"
         }
+    },
+    "toasterForResetting": {
+        "titleError": "Erro ao resetar o estudo",
+        "descriptionError": "Um estudo classificado em Extração não pode ser desclassificado em Seleção."
+    },
+    "toasterForRemoving": {
+        "titleError": "Erro ao remover critério",
+        "descriptionError": "Um estudo classificado em Extração não pode ser desclassificado em Seleção."
     }
-
 }

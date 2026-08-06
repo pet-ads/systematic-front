@@ -3,6 +3,7 @@ import { UseChangeStudySelectionStatus } from "../services/useChangeStudySelecti
 import { UseChangeStudyExtractionStatus } from "../services/useChangeStudyExtractionStatus";
 import Axios from "../../../../infrastructure/http/axiosClient"; // Adicionado a importação do Axios
 import useToaster from "@components/feedback/Toaster";
+import { useTranslation } from "react-i18next";
 
 //Types
 import { PageLayout } from "../components/structure/LayoutFactory";
@@ -14,7 +15,10 @@ interface ResetButtonProps {
   reloadArticles: KeyedMutator<SelectionArticles>;
 }
 
+
+
 const useResetStatus = ({ page, reloadArticles }: ResetButtonProps) => {
+  const { t } = useTranslation("review/execution-selection");
   const toaster = useToaster();
 
   const handleResetStatusToUnclassified = async (
@@ -70,9 +74,9 @@ const useResetStatus = ({ page, reloadArticles }: ResetButtonProps) => {
       await reloadArticles();
     } catch (error) {
       toaster({
-        title: "Erro ao resetar",
+        title: t("toasterForResetting.titleError"),
         status: "error",
-        description: "Não é possível desclassificar um estudo já classificado em Extração"
+        description: t("toasterForResetting.descriptionError"),
       });
       console.error("Erro ao resetar o artigo:", error);
     }
