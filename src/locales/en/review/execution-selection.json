@@ -107,5 +107,9 @@
     "toasterForRemoving": {
         "titleError": "Error removing criteria",
         "descriptionError": "A study classified in Extraction can not be declassified in Selection."
+    },
+    "duplicateStudiesError": {
+        "titleError": "Error marking studies as Duplicated",
+        "descriptionError": "A study classified in Extraction can not be marked as DUPLICATED in Selection."
     }
 }

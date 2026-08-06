@@ -1,6 +1,7 @@
 import { SetStateAction, useContext } from "react";
 import { Button, Flex } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
+import useToaster from "@components/feedback/Toaster";
 
 import StudyContext from "@features/review/shared/context/StudiesContext";
 import useSendDuplicatedStudies from "../../../../services/useSendDuplicatedStudies";
@@ -39,6 +40,7 @@ export default function ButtonsForMultipleSelection({
   const window = useWindowWidth();
   const studyContext = useContext(StudyContext);
   const { t } = useTranslation("review/execution-selection");
+  const toast = useToaster();
 
   const duplicatedStudies = studyContext?.deletedArticles.filter(
     (art) => art != studyContext?.firstSelected
@@ -59,11 +61,19 @@ export default function ButtonsForMultipleSelection({
   }
 
   const handleSendDuplicatedStudies = async () => {
-    await sendDuplicatedStudies();
-    await reloadArticles();
+    try {
+      await sendDuplicatedStudies();
+      await reloadArticles();
 
-    studyContext?.clearSelectedArticles();
-    onShowSelectedArticles(false);
+      studyContext?.clearSelectedArticles();
+      onShowSelectedArticles(false);
+    } catch {
+      toast({
+        title: t("duplicateStudiesError.titleError"),
+        description: t("duplicateStudiesError.descriptionError"),
+        status: "error",
+      });
+    }
   };
 
   return articles && Object.keys(articles).length > 1 ? (
