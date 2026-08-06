@@ -2,6 +2,7 @@
 import { UseChangeStudySelectionStatus } from "../services/useChangeStudySelectionStatus";
 import { UseChangeStudyExtractionStatus } from "../services/useChangeStudyExtractionStatus";
 import Axios from "../../../../infrastructure/http/axiosClient"; // Adicionado a importação do Axios
+import useToaster from "@components/feedback/Toaster";
 
 //Types
 import { PageLayout } from "../components/structure/LayoutFactory";
@@ -14,14 +15,29 @@ interface ResetButtonProps {
 }
 
 const useResetStatus = ({ page, reloadArticles }: ResetButtonProps) => {
+  const toaster = useToaster();
+
   const handleResetStatusToUnclassified = async (
     articleId: number,
     historicalCriteria: string[] = [],
+    selectionStatus: string,
   ) => {
     if (!articleId || articleId === -1) return;
-
+    
     try {
-      if (page === "Selection") {
+      if (page === "Selection" && selectionStatus === "INCLUDED") {
+        await UseChangeStudySelectionStatus({
+          studyReviewId: [articleId],
+          status: "UNCLASSIFIED",
+          criterias: [],
+        });
+
+        await UseChangeStudyExtractionStatus({
+          studyReviewId: [articleId],
+          status: "UNCLASSIFIED",
+          criterias: [],
+        });
+      } else if(page === "Selection" && selectionStatus !== "INCLUDED") {
         await UseChangeStudyExtractionStatus({
           studyReviewId: [articleId],
           status: "UNCLASSIFIED",
@@ -53,6 +69,11 @@ const useResetStatus = ({ page, reloadArticles }: ResetButtonProps) => {
 
       await reloadArticles();
     } catch (error) {
+      toaster({
+        title: "Erro ao resetar",
+        status: "error",
+        description: "Não é possível desclassificar um estudo já classificado em Extração"
+      });
       console.error("Erro ao resetar o artigo:", error);
     }
   };

@@ -108,7 +108,7 @@ export default function ButtonsForSelection({
 
     const criteriaToClear = currentActiveCriteria.length > 0 ? currentActiveCriteria : historicalCriteria;
 
-    await handleResetStatusToUnclassified(currentArticleId, criteriaToClear);
+    await handleResetStatusToUnclassified(currentArticleId, criteriaToClear, currentArticle.selectionStatus);
     
     resetLocalCriterias();
     

@@ -196,7 +196,7 @@ export default function useFetchAllCriteriasByArticle({
         inclusionCriteria: [],
         exclusionCriteria: [],
       }),
-      { revalidate: false }
+      { revalidate: true }
     );
   };
 
