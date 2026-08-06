@@ -141,7 +141,7 @@ export default function ButtonsForSelection({
 
   const isInclusionActive = criteriaOptions.INCLUSION.isActive;
   const isExclusionActive = criteriaOptions.EXCLUSION.isActive;
-  const isDuplicated = currentArticle.extractionStatus === "DUPLICATED" || currentArticle.selectionStatus === "DUPLICATED";
+  const isDuplicated = (currentArticle.extractionStatus === "DUPLICATED" && page === "Extraction") || (currentArticle.selectionStatus === "DUPLICATED" && page === "Selection");
   const isUniqueArticle = articles.length === 1;
 
   async function goToNextArticle() {
