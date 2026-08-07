@@ -1,6 +1,7 @@
 // External library
 import useSWR from "swr";
 import { useTranslation } from "react-i18next"; 
+import { useEffect } from "react";
 
 // Infra
 import Axios from "../../../../infrastructure/http/axiosClient";
@@ -17,14 +18,16 @@ interface HttpResponse {
 
 export default function useGetReviewCard() {
   const { t } = useTranslation("user/my-reviews");
-  
-  localStorage.removeItem("systematicReviewId");
 
-  const { user, isLoading: authLoading } = useAuthStore();
+  useEffect(() => {
+    localStorage.removeItem("systematicReviewId");
+  }, []);
+
+  const { user, _hasHydrated } = useAuthStore();
 
   const userId = user?.id ?? null;
 
-  const path = !authLoading && userId ? "systematic-study" : null;
+  const path = _hasHydrated && userId ? "systematic-study" : null;
 
   const fetchAllCardReview = async () => {
     if (!path) return;
@@ -44,33 +47,35 @@ export default function useGetReviewCard() {
             }[];
           }>(`systematic-study/${review.id}/collaborators`);
 
-        const collaborators = collaboratorsResponse.data.collaborators;
+          const collaborators = collaboratorsResponse.data.collaborators;
 
-        const owner = collaborators.find((c) => c.role === "OWNER");
+          const owner = collaborators.find((c) => c.role === "OWNER");
 
-        const formattedCollaborators = collaborators.filter((collaboraror) => collaboraror.role !== "OWNER").map((collaborator) => ({
-          id: collaborator.id,
-          username:
-            collaborator.id === userId
+          const formattedCollaborators = collaborators
+            .filter((c) => c.role !== "OWNER")
+            .map((collaborator) => ({
+              id: collaborator.id,
+              username:
+                collaborator.id === userId
+                  ? t("you")
+                  : collaborator.username.charAt(0).toUpperCase() +
+                    collaborator.username.slice(1),
+              role: t(
+                `review/planning-protocol:generalDefinition.input.researchers.role.${collaborator.role.toLowerCase()}`
+              ),
+            }));
+
+          const ownerName = owner
+            ? owner.id === userId
               ? t("you")
-              : collaborator.username.charAt(0).toUpperCase() +
-                collaborator.username.slice(1),
-          role: t(
-            `review/planning-protocol:generalDefinition.input.researchers.role.${collaborator.role.toLowerCase()}`
-          ),
-        }));
+              : owner.username.charAt(0).toUpperCase() + owner.username.slice(1)
+            : "-";
 
-        const ownerName = owner
-          ? owner.id === userId
-            ? t("you")
-            : owner.username.charAt(0).toUpperCase() + owner.username.slice(1)
-          : "-";
-
-        return {
-          ...review,
-          owner: ownerName,
-          collaborators: formattedCollaborators,
-        };
+          return {
+            ...review,
+            owner: ownerName,
+            collaborators: formattedCollaborators,
+          };
         })
       );
 
@@ -80,15 +85,19 @@ export default function useGetReviewCard() {
     }
   };
 
-  const { data, isLoading, error, mutate } = useSWR(path, fetchAllCardReview, {
-    revalidateOnFocus: false,
-    revalidateOnMount: true,
-  });
+  const { data, isLoading, error, mutate } = useSWR(
+    path,
+    fetchAllCardReview,
+    {
+      revalidateOnFocus: false,
+      revalidateOnMount: true,
+    }
+  );
 
   return {
     cardData: data,
     isLoaded: !isLoading,
-    error: error,
+    error,
     mutate,
   };
 }
