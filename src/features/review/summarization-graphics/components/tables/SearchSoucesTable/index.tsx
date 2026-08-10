@@ -17,23 +17,23 @@ type SearchSourceRow = {
   precisionRate: number;
 };
 
-type Description = {
+/* type Description = {
   included: number;
   excluded: number;
   total: number;
-};
+}; */
 
-export const SearchSorcesTable = ({ columnsVisible }: {columnsVisible: ColumnVisibility}) => {
+export const SearchSorcesTable = ({ sourceCountMap, columnsVisible }: {sourceCountMap: Record<string, number>, columnsVisible: ColumnVisibility}) => {
   const { t } = useTranslation("review/summarization-graphics");
   const { databases } = useFetchDataBases();
   const { articles } = useGetAllReviewArticles();
   const [studiesData, setStudiesData] = useState<HttpResponse[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [dataStatistics, setDataStatistics] = useState<Description>({
+/*   const [dataStatistics, setDataStatistics] = useState<Description>({
     included: 0,
     excluded: 0,
     total: 0,
-  });
+  }); */
 
   useEffect(() => {
     const loadData = async () => {
@@ -49,14 +49,15 @@ export const SearchSorcesTable = ({ columnsVisible }: {columnsVisible: ColumnVis
     loadData();
   }, [databases]);
 
-  const { includedStudiesBySource} = useMemo(() => {
+  const { includedStudiesBySource, totalIncludedFromSources } = useMemo(() => {
     const includedArticles = articles.filter((a) => a.selectionStatus === "INCLUDED");
     const counts: Record<string, number> = {};
 
     includedArticles.forEach((article) => {
-      article.searchSources?.forEach((source) => {
+      counts[article.searchSources[0]] = (counts[article.searchSources[0]] || 0) + 1;
+      /* article.searchSources?.forEach((source) => {
         counts[source] = (counts[source] || 0) + 1;
-      });
+      }); */
     });
 
     const total = Object.values(counts).reduce((sum, val) => sum + val, 0);
@@ -64,7 +65,23 @@ export const SearchSorcesTable = ({ columnsVisible }: {columnsVisible: ColumnVis
     return { includedStudiesBySource: counts, totalIncludedFromSources: total };
   }, [articles]);
 
-  useEffect(() => {
+  const { excludedStudiesBySource } = useMemo(() => {
+    const excludedArticles = articles.filter((a) => a.selectionStatus === "EXCLUDED");
+    const counts: Record<string, number> = {};
+
+    excludedArticles.forEach((article) => {
+      counts[article.searchSources[0]] = (counts[article.searchSources[0]] || 0) + 1;
+      /* article.searchSources?.forEach((source) => {
+        counts[source] = (counts[source] || 0) + 1;
+      }); */
+    });
+
+    const total = Object.values(counts).reduce((sum, val) => sum + val, 0);
+
+    return { excludedStudiesBySource: counts, totalExcludedFromSources: total };
+  }, [articles]);
+
+/*   useEffect(() => {
     const includedTotal = studiesData.reduce((sum, data) => sum + data.included.length, 0);
     const excludedTotal = studiesData.reduce((sum, data) => sum + data.excluded.length, 0);
     const total = studiesData.reduce((sum, data) => sum + data.totalOfStudies, 0);
@@ -74,20 +91,21 @@ export const SearchSorcesTable = ({ columnsVisible }: {columnsVisible: ColumnVis
       excluded: excludedTotal,
       total,
     });
-  }, [studiesData]);
+  }, [studiesData]); */
 
   if (isLoading) return <Text>Loading table...</Text>;
 
   const rows: SearchSourceRow[] = studiesData.map((data) => {
     const includedCount = includedStudiesBySource[data.source] ?? 0;
-    const indexingRate = dataStatistics.included > 0 ? (includedCount / dataStatistics.included) * 100 : 0;
-    const precisionRate = data.totalOfStudies > 0 ? (data.included.length / data.totalOfStudies) * 100 : 0;
+    const excludedCount = excludedStudiesBySource[data.source] ?? 0;
+    const indexingRate = totalIncludedFromSources > 0 ? (includedCount / totalIncludedFromSources) * 100 : 0;
+    const precisionRate = sourceCountMap[data.source] > 0 ? (includedCount / sourceCountMap[data.source]) * 100 : 0;
 
     return {
       source: data.source,
       included: includedCount,
-      excluded: data.excluded.length,
-      total: data.totalOfStudies,
+      excluded: excludedCount,
+      total: sourceCountMap[data.source],
       indexingRate,
       precisionRate,
     };
