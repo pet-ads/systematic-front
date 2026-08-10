@@ -206,7 +206,6 @@ export default function ChartExpanded({
             : "calc(100vh - 15rem)"
         }
         borderRadius="1rem 1rem 0 0"
-        boxShadow="lg"
         bg="white"
         overflowY="auto"
       >
