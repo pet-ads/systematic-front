@@ -153,7 +153,7 @@ export default function ChartsRenderer({
         setTablePage={setTablePage}
       />
     ),
-    "Studies Funnel": () => <StudiesFunnelRenderer chartId={chartId} />,
+    "Studies Funnel": () => <StudiesFunnelRenderer filteredStudies={filteredStudies} chartId={chartId} />,
     Protocol: () => <ProtocolRenderer />,
   };
 
