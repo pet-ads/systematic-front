@@ -178,7 +178,7 @@ export default function ChartsRenderer({
       />
 
       {section !== "Studies Funnel" && section !== "Protocol" && (
-        <Flex w="100%" justifyContent="flex-end" p="1rem" position="fixed" bottom="1rem" right="1rem">
+        <Flex justifyContent="flex-end" p="1rem" position="fixed" bottom="1rem" right="1rem">
           <DownloadChartsButton
             selector={`#${chartId}`}
             fileName={section}
