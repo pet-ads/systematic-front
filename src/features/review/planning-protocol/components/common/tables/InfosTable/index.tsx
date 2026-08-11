@@ -45,6 +45,7 @@ export default function InfosTable({
   const [newText, setNewText] = useState("");
   const [referenceCode, setReferenceCode] = useState("");
   const [editedCode, setEditedCode] = useState("");
+  const requiresReferenceCode = CRITERIA_CONTEXTS.includes(context);
 
   const parseEntry = (entry: string) => {
     if (!enableReferenceCode) return { code: "", text: entry };
@@ -59,7 +60,7 @@ export default function InfosTable({
     enableReferenceCode
       ? AddTexts.map((entry, i) => ({ code: parseEntry(entry).code, i }))
           .filter(({ code, i }) => code && i !== excludeIndex)
-          .map(({ code }) => code)
+          .map(({ code }) => code.toUpperCase())
       : [];
 
   const onSaveEdit = (editedValueParam: string, editIdx: number) => {
@@ -71,6 +72,15 @@ export default function InfosTable({
 
     const codeToSave = editedCode.trim().toUpperCase();
     const codes = getAllCodes(editIdx);
+    if (requiresReferenceCode && !codeToSave) {
+      toaster({
+        title: t("selectionAndExtraction.input.extractionQuestions.toaster.referenceCode.title"),
+        description: t("selectionAndExtraction.input.extractionQuestions.toaster.referenceCode.description"),
+        status: "warning",
+      });
+      return false;
+    }
+
     if (codeToSave && codes.includes(codeToSave)) {
       toaster({
         title: `${t("selectionAndExtraction.input.extractionQuestions.toaster.duplicated.title1")} '${codeToSave}' ${t("selectionAndExtraction.input.extractionQuestions.toaster.duplicated.title2")}`,
@@ -117,6 +127,15 @@ export default function InfosTable({
 
     const code = referenceCode.trim().toUpperCase();
     const existingCodes = getAllCodes();
+
+    if (requiresReferenceCode && !code) {
+      toaster({
+        title: t("selectionAndExtraction.input.extractionQuestions.toaster.referenceCode.title"),
+        description: t("selectionAndExtraction.input.extractionQuestions.toaster.referenceCode.description"),
+        status: "warning",
+      });
+      return true;
+    }
 
     if (code && existingCodes.includes(code)) {
       toaster({
