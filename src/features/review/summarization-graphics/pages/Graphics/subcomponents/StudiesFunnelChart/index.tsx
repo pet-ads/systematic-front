@@ -74,7 +74,8 @@ export default function StudiesFunnelChart({ filteredStudies }: Props) {
   // 4/5: full-text (extraction) - só quem passou pela triagem
   const includedInExtraction = includedInSelection.filter((s) => s.extractionStatus === "INCLUDED");
   const excludedInExtraction = includedInSelection.filter((s) => s.extractionStatus === "EXCLUDED");
-  const totalFullTextAssessed = includedInSelection.length;
+  const duplicatedInExtractin = includedInSelection.filter((s) => s.extractionStatus === "DUPLICATED");
+  const totalFullTextAssessed = includedInSelection.length - duplicatedInExtractin.length;
   const totalExcludedInFullText = excludedInExtraction.length;
 
   const totalIncluded = includedInExtraction.length;
