@@ -70,7 +70,7 @@ export function PickManyItemTable({ data, options, studyIds }: Props) {
     handleBackToInitial,
     handleGoToFinal,
     changeQuantityOfItens,
-  } = useGenericPagination<PickManyItemRow>(rows);
+  } = useGenericPagination<PickManyItemRow>(rows, 20);
 
   return (
     <Box w="100%" h="100%" display="flex" flexDirection="column" minH={0}>
