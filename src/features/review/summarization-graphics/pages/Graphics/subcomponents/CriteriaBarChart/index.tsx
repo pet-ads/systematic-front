@@ -23,7 +23,7 @@ export default function CriteriaBarChart({
   const color = criteria === "inclusion" ? "#3c73b6" : "#C21807";
   const { studiesByStage, isLoadingByStage } = useFetchStudiesByStage(stage);
   const { studiesByCriteria, isLoadingByCriteria } =
-    useFetchStudiesByCriteria(criteria);
+    useFetchStudiesByCriteria(criteria, stage.toUpperCase());
 
   if (isLoadingByCriteria || isLoadingByStage)
     return <Text>Loading chart...</Text>;

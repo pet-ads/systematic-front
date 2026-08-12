@@ -80,7 +80,7 @@ export default function ChartsRenderer({
 
     const { studiesByStage } = useFetchStudiesByStage(stage);
     const { studiesByCriteria: fetchedCriteria } =
-      useFetchStudiesByCriteria(criteriaType);
+      useFetchStudiesByCriteria(criteriaType, "EXTRACTION");
 
     const stageIds =
       criteriaType === "inclusion"
