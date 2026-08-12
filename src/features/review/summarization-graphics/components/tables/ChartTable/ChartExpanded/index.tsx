@@ -313,13 +313,12 @@ export default function ChartExpanded({
           <Tbody>
             {paginatedArticles.length > 0 ? (
               paginatedArticles.map((study, index) => {
-                const sourceText =
-                  "searchSources" in study && Array.isArray(study.searchSources)
-                    ? study.searchSources.join(", ")
+                const sourceText = "searchSources" in study && Array.isArray(study.searchSources)
+                    ? (study.searchSources as string[])[0]
                     : "";
                 const criteriaText =
-                  "criteria" in study && Array.isArray(study.criteria)
-                    ? study.criteria
+                  "extractionCriteria" in study && Array.isArray(study.extractionCriteria)
+                    ? study.extractionCriteria
                         .map((cr) => {
                           const idx = inclusionCriterias.findIndex(
                             (item) => item === cr
