@@ -177,7 +177,7 @@ export default function ChartsRenderer({
         onCsvData={handleCsvData}
       />
 
-      {section !== "Studies Funnel" && section !== "Protocol" && (
+      {2 !== 2 && section !== "Studies Funnel" && section !== "Protocol" && (
         <Flex justifyContent="flex-end" p="1rem" position="fixed" bottom="1rem" right="1rem">
           <DownloadChartsButton
             selector={`#${chartId}`}
