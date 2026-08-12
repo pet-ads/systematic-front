@@ -14,6 +14,28 @@ type Props = {
   filteredStudies: (ArticleInterface | StudyInterface)[];
 };
 
+function matchesStageStatus(
+  study: ArticleInterface | StudyInterface,
+  stage: "selection" | "extraction",
+  criteria: "inclusion" | "exclusion"
+) {
+  const selectionStatus = "selectionStatus" in study ? study.selectionStatus : undefined;
+  const extractionStatus = "extractionStatus" in study ? study.extractionStatus : undefined;
+
+  if (stage === "selection") {
+    return criteria === "inclusion"
+      ? selectionStatus === "INCLUDED"
+      : selectionStatus === "EXCLUDED";
+  }
+
+  // stage === "extraction": só chegou aqui se passou pela seleção
+  if (selectionStatus !== "INCLUDED") return false;
+
+  return criteria === "inclusion"
+    ? extractionStatus === "INCLUDED"
+    : extractionStatus === "EXCLUDED";
+}
+
 export default function CriteriaBarChart({
   criteria,
   stage,
@@ -35,6 +57,7 @@ export default function CriteriaBarChart({
   console.log(stageStudyIds);
 
   const filteredStudiesIds = filteredStudies
+    .filter((study) => matchesStageStatus(study, stage, criteria))
     .map((study) => {
       if ("studyReviewId" in study) {
         return study.studyReviewId; 
