@@ -50,7 +50,7 @@ export const SearchSorcesTable = ({ sourceCountMap, columnsVisible }: {sourceCou
   }, [databases]);
 
   const { includedStudiesBySource, totalIncludedFromSources } = useMemo(() => {
-    const includedArticles = articles.filter((a) => a.selectionStatus === "INCLUDED");
+    const includedArticles = articles.filter((a) => a.extractionStatus === "INCLUDED");
     const counts: Record<string, number> = {};
 
     includedArticles.forEach((article) => {
@@ -66,7 +66,7 @@ export const SearchSorcesTable = ({ sourceCountMap, columnsVisible }: {sourceCou
   }, [articles]);
 
   const { excludedStudiesBySource } = useMemo(() => {
-    const excludedArticles = articles.filter((a) => a.selectionStatus === "EXCLUDED");
+    const excludedArticles = articles.filter((a) => a.extractionStatus === "EXCLUDED");
     const counts: Record<string, number> = {};
 
     excludedArticles.forEach((article) => {
