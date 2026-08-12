@@ -34,13 +34,20 @@ function getCriteriaCode(criteria: string) {
   return match ? match[1] : criteria;
 }
 
-function countByCriteria(studies: Study[]) {
+function countByCriteria(studies: Study[], stage: string = "EXTRACTION") {
   const counts: Record<string, number> = {};
   studies.forEach((study) => {
-    (study.criteria ?? []).forEach((c) => {
-      const code = getCriteriaCode(c);
-      counts[code] = (counts[code] || 0) + 1;
-    });
+    if(stage == "EXTRACTION") {
+      (study.extractionCriteria ?? []).forEach((c) => {
+        const code = getCriteriaCode(c);
+        counts[code] = (counts[code] || 0) + 1;
+      });
+    } else { 
+      (study.selectionCriteria ?? []).forEach((c) => {
+        const code = getCriteriaCode(c);
+        counts[code] = (counts[code] || 0) + 1;
+      });
+    }
   });
   return counts;
 }
@@ -83,7 +90,7 @@ export default function StudiesFunnelChart({ filteredStudies }: Props) {
   const nodeLabels = [
     `(n=${totalIdentified})`,
     `(n=${totalAfterDuplicates})`,
-    buildLabel(countByCriteria(includedInSelection), totalScreened),
+    buildLabel(countByCriteria(includedInSelection, "SELECTION"), totalScreened),
     buildLabel(countByCriteria(excludedInSelection), totalExcludedInScreening),
     buildLabel(countByCriteria(includedInExtraction), totalFullTextAssessed),
     buildLabel(countByCriteria(excludedInExtraction), totalExcludedInFullText),
