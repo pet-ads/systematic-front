@@ -54,6 +54,14 @@
     "searchSourcesEvolution": "Evolução das Fontes de Busca",
     "includedStudiesByYear": "Estudos Incluídos por Ano",
     "typeNotSupported": "Tipo de gráfico não suportado",
+    "studiesFunnelChart": {
+        "identified": "Estudos identificados nas fontes de busca",
+        "afterDuplicates": "Estudos após remoção de duplicatas",
+        "screened": "Estudos triados",
+        "excluded": "Estudos excluídos",
+        "fullTextAssessed": "Estudos avaliados na íntegra para elegibilidade",
+        "fullTextExcluded": "Estudos excluídos na íntegra com motivos"
+    },
     "searchSourcesTable": {
         "source": "Fonte",
         "included": "Incluídos",
