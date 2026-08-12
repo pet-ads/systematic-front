@@ -164,6 +164,7 @@ export default function ChartsRenderer({
     <Flex
       flex="1"
       w="100%"
+      minH={0}
       direction="column"
       mt="0px"
       justify={type === "Table" || type === "Tabela" || type === "Item Table" || type === "Tabela por Item" ? "flex-start" : "center"}
