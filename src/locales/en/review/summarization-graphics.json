@@ -55,7 +55,8 @@
         "screened": "Studies screened",
         "excluded": "Studies excluded",
         "fullTextAssessed": "Full-text studies assessed for eligibility",
-        "fullTextExcluded": "Full-text studies excluded with reasons"
+        "fullTextExcluded": "Full-text studies excluded with reasons",
+        "fullTextIncluded": "Full-text studies included"        
     },
     "searchSourcesTable": {
         "source": "Source",

@@ -19,7 +19,8 @@ function getBaseNodes(t: (key: string) => string): Node[] {
     { id: "2", data: { label: t("studiesFunnelChart.screened") }, position: { x: 200, y: 350 } },
     { id: "3", data: { label: t("studiesFunnelChart.excluded") }, position: { x: 400, y: 350 } },
     { id: "4", data: { label: t("studiesFunnelChart.fullTextAssessed") }, position: { x: 200, y: 450 } },
-    { id: "5", data: { label: t("studiesFunnelChart.fullTextExcluded") }, position: { x: 480, y: 450 } },
+    { id: "5", data: { label: t("studiesFunnelChart.fullTextExcluded") }, position: { x: 400, y: 550 } },
+    { id: "6", data: { label: t("studiesFunnelChart.fullTextIncluded") }, position: { x: 0, y: 550 } },
   ];
 }
 
@@ -29,6 +30,7 @@ const baseEdges: Edge[] = [
   { id: "e2_3", source: "2", target: "3", type: "straight" },
   { id: "e2_4", source: "2", target: "4", type: "straight" },
   { id: "e4_5", source: "4", target: "5", type: "straight" },
+  { id: "e4_6", source: "4", target: "6", type: "straight" },
 ];
 
 // Extrai o código do critério, ex: "EC-02: texto..." -> "EC-02"
@@ -83,27 +85,26 @@ export default function StudiesFunnelChart({ filteredStudies }: Props) {
   const totalScreened = totalAfterDuplicates;
   const totalExcludedInScreening = excludedInSelection.length;
 
-  // 4/5: full-text (extraction) - só quem passou pela triagem
+  // 4/5/6: full-text (extraction) - só quem passou pela triagem
   const includedInExtraction = includedInSelection.filter((s) => s.extractionStatus === "INCLUDED");
   const excludedInExtraction = includedInSelection.filter((s) => s.extractionStatus === "EXCLUDED");
   const duplicatedInExtractin = includedInSelection.filter((s) => s.extractionStatus === "DUPLICATED");
   const totalFullTextAssessed = includedInSelection.length - duplicatedInExtractin.length;
   const totalExcludedInFullText = excludedInExtraction.length;
-
-  const totalIncluded = includedInExtraction.length;
+  const totalIncludedInFullText = includedInExtraction.length;
 
   const nodeLabels = [
     `(n=${totalIdentified})`,
     `(n=${totalAfterDuplicates})`,
-    buildLabel(countByCriteria(includedInSelection, "SELECTION"), totalScreened),
+    `(n=${totalScreened})`,
     buildLabel(countByCriteria(excludedInSelection), totalExcludedInScreening),
-    buildLabel(countByCriteria(includedInExtraction), totalFullTextAssessed),
+    `(n=${totalFullTextAssessed})`,
     buildLabel(countByCriteria(excludedInExtraction), totalExcludedInFullText),
-    `(n=${totalIncluded})`,
-    "",
+    buildLabel(countByCriteria(includedInExtraction), totalIncludedInFullText),
   ];
 
-  const completedNodes: Node[] = getBaseNodes(t).map((node, index) => ({
+  const nodes = getBaseNodes(t);
+  const completedNodes: Node[] = nodes.map((node, index) => ({
     ...node,
     data: { ...node.data, label: `${node.data.label} ${nodeLabels[index]}` },
   }));
@@ -111,7 +112,7 @@ export default function StudiesFunnelChart({ filteredStudies }: Props) {
   // nós dinâmicos das fontes (contagem ANTES da dedup)
   const sources = Object.entries(identifiedBySource);
   const sourceNodeSpacing = 160;
-  const startX = getBaseNodes(t)[0].position.x - ((sources.length - 1) * sourceNodeSpacing) / 2;
+  const startX = nodes[0].position.x - ((sources.length - 1) * sourceNodeSpacing) / 2;
   const basedStartIndex = completedNodes.length;
 
   sources.forEach(([source, value], index) => {

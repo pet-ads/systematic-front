@@ -60,7 +60,8 @@
         "screened": "Estudos triados",
         "excluded": "Estudos excluídos",
         "fullTextAssessed": "Estudos avaliados na íntegra para elegibilidade",
-        "fullTextExcluded": "Estudos excluídos na íntegra com motivos"
+        "fullTextExcluded": "Estudos excluídos na íntegra com motivos",
+        "fullTextIncluded": "Estudos incluídos na íntegra"
     },
     "searchSourcesTable": {
         "source": "Fonte",
