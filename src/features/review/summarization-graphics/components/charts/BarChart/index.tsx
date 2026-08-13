@@ -66,7 +66,14 @@ export default function BarChart({
       },
 
       xaxis: {
-        categories: labels.length === 0 ? [] : (section === 'searchSource' ? labels : labels.map((_, indexOf) => `${labelAbbreviation +(indexOf + 1)}`)),
+        categories:
+          labels.length === 0
+            ? []
+            : section === "inclusion" || section === "exclusion"
+              ? labels.map((_, index) =>
+                  `${labelAbbreviation}${index + 1}`
+                )
+              : labels,
         labels: {
           style: {
             fontSize: '14px',    

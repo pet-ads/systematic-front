@@ -44,8 +44,9 @@ function updateData(
 ) {
   if (questionType === "LABELED_SCALE") {
     return labels.map((label) => {
+      const labelName = String(label).split("-")[1].trim();
       const entry = entries.find(
-        ([entryLabel]) => parseLabel(entryLabel)?.name === label
+        ([entryLabel]) => parseLabel(entryLabel)?.name === labelName
       );
       return entry ? entry[1].length : 0;
     });
@@ -76,7 +77,11 @@ function updateLabel(question: Question) {
     const lower = question.lower ?? 0;
     return Array.from({ length: higher - lower + 1 }, (_, i) => lower + i);
   } else if (questionType === "LABELED_SCALE") {
-    return Object.keys(question.scales ?? {});
+    const labels: string[] = [];
+    Object.entries(question.scales ?? {}).forEach((option) => {
+      labels.push(`${option[1]} - ${option[0]}`);
+    })
+    return labels;
   } else {
     return question.options ?? [];
   }
@@ -208,13 +213,23 @@ export const QuestionsCharts = ({
                 if (!study) return;
 
                 const year = Number(study.year);
-                const key = `${year}-${answer}`;
-                yearAnswerMap.set(key, (yearAnswerMap.get(key) || 0) + 1);
+
+                const parsed = parseLabel(answer);
+                const displayAnswer = parsed
+                  ? `${parsed.value} - ${parsed.name}`
+                  : answer;
+
+                const key = `${year}-${displayAnswer}`;
+
+                yearAnswerMap.set(
+                  key,
+                  (yearAnswerMap.get(key) || 0) + 1
+                );
               });
             });
 
             items = Array.from(yearAnswerMap.entries()).map(([key, count]) => {
-              const [year, answer] = key.split("-");
+              const [year, answer] = key.split(/-(.+)/)
               return { x: Number(year), group: answer, y: count };
             });
           }
