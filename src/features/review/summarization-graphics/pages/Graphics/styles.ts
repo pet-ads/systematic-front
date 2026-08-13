@@ -30,7 +30,7 @@ export const piechartBox = {
   margin: "0 auto",       
 };
 export const fluxogramaBox={
-  width:'100vw', 
+  width:'100%', 
   height: '80vh'
 }
 
