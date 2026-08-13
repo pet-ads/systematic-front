@@ -11,6 +11,7 @@ import TextualTable from "@features/review/summarization-graphics/components/tab
 import { PickManyItemTable } from "@features/review/summarization-graphics/components/tables/PickManyItemTable";
 import { Dispatch, SetStateAction } from "react";
 import { PageLayout } from "@features/review/shared/components/structure/LayoutFactory";
+import { parseLabel, formatAnswerLabel } from "@features/review/summarization-graphics/utils/parseAnswerLabel";
 
 type Props = {
   selectedQuestionId?: string;
@@ -35,12 +36,6 @@ type Question = {
   lower: number | null;
   options: string[] | null;
 };
-
-function parseLabel(labelStr: string) {
-  const match = labelStr.match(/Label\(name:\s*(.+),\s*value:\s*(\d+)\)/);
-  if (match) return { name: match[1], value: Number(match[2]) };
-  return null;
-}
 
 function updateData(
   labels: (string | number)[],
@@ -258,10 +253,25 @@ export const QuestionsCharts = ({
             );
           } else {
             setTablePage("Graphics-FormQuestions");
+            const formattedAnswer = Object.fromEntries(
+              Object.entries(filteredAnswer)
+                .sort(([labelA], [labelB]) => {
+                  const parsedA = parseLabel(labelA);
+                  const parsedB = parseLabel(labelB);
+
+                  if (!parsedA || !parsedB) return 0;
+
+                  return parsedA.value - parsedB.value;
+                })
+                .map(([label, ids]) => [
+                  formatAnswerLabel(label),
+                  ids,
+                ])
+            );
             chartContent = (
               <QuestionsTable
                 columnsVisible={columnsVisible}
-                data={filteredAnswer}
+                data={formattedAnswer}
               />
             );
           }
