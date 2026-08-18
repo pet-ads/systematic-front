@@ -57,10 +57,10 @@
     "studiesFunnelChart": {
         "identified": "Estudos identificados nas fontes de busca",
         "afterDuplicates": "Estudos após remoção de duplicatas",
-        "screened": "Estudos triados",
-        "excluded": "Estudos excluídos",
-        "fullTextAssessed": "Estudos avaliados na íntegra para elegibilidade",
-        "fullTextExcluded": "Estudos excluídos na íntegra com motivos",
+        "screened": "Estudos avaliados pelo abstract",
+        "excluded": "Estudos avaliados pelo abstract excluídos",
+        "fullTextAssessed": "Estudos avaliados na íntegra para extração",
+        "fullTextExcluded": "Estudos excluídos na íntegra",
         "fullTextIncluded": "Estudos incluídos na íntegra"
     },
     "searchSourcesTable": {
