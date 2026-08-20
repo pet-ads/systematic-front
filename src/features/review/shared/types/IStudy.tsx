@@ -17,7 +17,8 @@ export interface StudyInterface {
   keywords: string[];
   searchSources: string[];
   references: string[];
-  criteria: string[];
+  selectionCriteria: string[]
+  extractionCriteria: string[];
   formAnswers: unknown[];
   robAnswers: unknown[];
   comments: string;

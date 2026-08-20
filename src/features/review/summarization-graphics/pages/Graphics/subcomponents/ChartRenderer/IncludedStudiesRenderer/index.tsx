@@ -23,9 +23,11 @@ export default function IncludedStudiesRenderer({ filteredStudies, type, chartId
   const isTable = type === "Table" || type === "Tabela";
   const isBubble = type === "Bubble Chart" || type === "Gráfico de Bolhas";
   
-  const bubbleItems: BubbleItem[] = includedStudies.flatMap(study =>
-    study.searchSources.map(src => ({ x: Number(study.year), group: src, y: 1 }))
-  );
+  const bubbleItems: BubbleItem[] = includedStudies.flatMap((study) => ({ 
+    x: Number(study.year),
+    group: study.searchSources[0],
+    y: 1
+  }));
   const { series, yCategories } = useBubbleDataGeneric(bubbleItems);
 
   let content;
@@ -51,5 +53,5 @@ export default function IncludedStudiesRenderer({ filteredStudies, type, chartId
     content = <div>{t("typeNotSupported")}</div>;
   }
 
-  return <Box id={chartId}>{content}</Box>;
+  return <Box id={chartId} minH={0} w={isTable ? "100%" : undefined} h={isTable ? "100%" : undefined}>{content}</Box>;
 }

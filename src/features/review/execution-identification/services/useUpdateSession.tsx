@@ -20,6 +20,7 @@ interface UpdateSessionProps {
     >;
     searchString: string;
     comment: string;
+    date: string;
     type: string;
 }
 
@@ -28,6 +29,7 @@ export default function useUpdateSession({
   mutate,
   searchString,
   comment,
+  date,
   type
 }: UpdateSessionProps) {
     const toast = useToaster();
@@ -42,7 +44,8 @@ export default function useUpdateSession({
             const response = await Axios.put(url, {
                 "searchString": searchString,
                 "additionalInfo": comment,
-                "source": type
+                "source": type,
+                "timestamp": new Date(date).toISOString()
             });
             
             if(!response) throw new Error();

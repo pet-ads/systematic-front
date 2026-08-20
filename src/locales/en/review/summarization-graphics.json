@@ -49,6 +49,15 @@
     "searchSourcesEvolution": "Search Sources Evolution",
     "includedStudiesByYear": "Included Studies by Year",
     "typeNotSupported": "Chart type not supported.",
+    "studiesFunnelChart": {
+        "identified": "Studies identified in searched sources",
+        "afterDuplicates": "Studies after removing duplicates",
+        "screened": "Studies screened",
+        "excluded": "Studies excluded",
+        "fullTextAssessed": "Full-text studies assessed for eligibility",
+        "fullTextExcluded": "Full-text studies excluded with reasons",
+        "fullTextIncluded": "Full-text studies included"        
+    },
     "searchSourcesTable": {
         "source": "Source",
         "included": "Included",

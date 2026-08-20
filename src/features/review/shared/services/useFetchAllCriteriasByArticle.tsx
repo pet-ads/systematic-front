@@ -8,6 +8,7 @@ import useFetchInclusionCriteria from "./useFetchInclusionCriteria";
 import useFetchExclusionCriteria from "./useFetchExclusionCriterias";
 import useRevertCriterionState from "./useRevertCriterionState";
 import useToaster from "@components/feedback/Toaster";
+import { useTranslation } from "react-i18next";
 
 // Services
 import { UseChangeStudySelectionStatus } from "./useChangeStudySelectionStatus";
@@ -61,12 +62,14 @@ export default function useFetchAllCriteriasByArticle({
   page,
   reloadArticles,
 }: AllCriteriasByArticleProps) {
+  const { t } = useTranslation("review/execution-selection");
   const studiesContext = useContext(StudyContext);
   const selectedArticleReview = studiesContext?.selectedArticleReview ?? -1;
   const toast = useToaster();
 
   const { criteria, isLoading, mutate } = useFetchCriteriaForFocusedArticle({
     articleId: selectedArticleReview,
+    page,
   });
 
   const inclusion = useFetchInclusionCriteria() || [];
@@ -139,20 +142,37 @@ export default function useFetchAllCriteriasByArticle({
       await mutate(
         async () => {
           if (page === "Selection") {
-            const extractionStatus: StatusValue =
-              status === "INCLUDED" ? "UNCLASSIFIED" : status;
+            if(status === "UNCLASSIFIED" && key === "EXCLUSION") {
+              await UseChangeStudyExtractionStatus({
+                studyReviewId: [selectedArticleReview],
+                criterias: [],
+                status,
+              });
 
-            await UseChangeStudyExtractionStatus({
-              studyReviewId: [selectedArticleReview],
-              criterias: status === "EXCLUDED" ? newChecked : [],
-              status: extractionStatus,
-            });
+              await UseChangeStudySelectionStatus({
+                studyReviewId: [selectedArticleReview],
+                criterias: [],
+                status,
+              });
+            } else if (status === "EXCLUDED") {
+              await UseChangeStudySelectionStatus({
+                studyReviewId: [selectedArticleReview],
+                criterias: newChecked,
+                status,
+              });
 
-            await UseChangeStudySelectionStatus({
-              studyReviewId: [selectedArticleReview],
-              criterias: newChecked,
-              status,
-            });
+              await UseChangeStudyExtractionStatus({
+                studyReviewId: [selectedArticleReview],
+                criterias: newChecked,
+                status,
+              });
+            } else {
+              await UseChangeStudySelectionStatus({
+                studyReviewId: [selectedArticleReview],
+                criterias: newChecked,
+                status,
+              });
+            }
           } else {
             await UseChangeStudyExtractionStatus({
               studyReviewId: [selectedArticleReview],
@@ -178,9 +198,8 @@ export default function useFetchAllCriteriasByArticle({
     } catch (error) {
       console.error("Failed to update criterion:", error);
       toast({
-        title: "Erro ao salvar critério",
-        description:
-          "Não foi possível atualizar este critério. Tente novamente.",
+        title: t("toasterForRemoving.titleError"),
+        description: t("toasterForRemoving.descriptionError"),
         status: "error",
       });
     }
@@ -195,7 +214,7 @@ export default function useFetchAllCriteriasByArticle({
         inclusionCriteria: [],
         exclusionCriteria: [],
       }),
-      { revalidate: false }
+      { revalidate: true }
     );
   };
 

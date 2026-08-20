@@ -3,9 +3,9 @@ import { useState, useMemo } from "react";
 const MIN_ITENS_PER_PAGE = 10;
 const MAX_ITENS_PER_PAGE = 30;
 
-export default function useGenericPagination<T>(data: T[] = []) {
+export default function useGenericPagination<T>(data: T[] = [], size: number = 0) {
   const [currentPage, setCurrentPage] = useState(1);
-  const [itensPerPage, setItensPerPage] = useState(MIN_ITENS_PER_PAGE);
+  const [itensPerPage, setItensPerPage] = useState(size > MIN_ITENS_PER_PAGE ? size : MIN_ITENS_PER_PAGE);
 
   const quantityOfPages = Math.max(
     1,

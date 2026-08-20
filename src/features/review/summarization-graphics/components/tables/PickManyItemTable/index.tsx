@@ -70,13 +70,14 @@ export function PickManyItemTable({ data, options, studyIds }: Props) {
     handleBackToInitial,
     handleGoToFinal,
     changeQuantityOfItens,
-  } = useGenericPagination<PickManyItemRow>(rows);
+  } = useGenericPagination<PickManyItemRow>(rows, 20);
 
   return (
-    <Box w="100%">
+    <Box w="100%" h="100%" display="flex" flexDirection="column" minH={0}>
       <TableContainer
         w="100%"
-        maxH={isExporting ? "none" : "calc(100vh - 35rem)"}
+        flex="1"
+        minH={0}
         overflowY={isExporting ? "visible" : "auto"}
         overflowX="auto"
         borderRadius="1rem 1rem 0 0"
@@ -161,16 +162,18 @@ export function PickManyItemTable({ data, options, studyIds }: Props) {
       </TableContainer>
 
       {!isExporting && rows.length >= 20 && (
-        <PaginationControl
-          currentPage={currentPage}
-          itensPerPage={itensPerPage}
-          quantityOfPages={quantityOfPages}
-          handleNextPage={handleNextPage}
-          handlePrevPage={handlePrevPage}
-          handleBackToInitial={handleBackToInitial}
-          handleGoToFinal={handleGoToFinal}
-          changeQuantityOfItens={changeQuantityOfItens}
-        />
+        <Box flexShrink={0}>
+          <PaginationControl
+            currentPage={currentPage}
+            itensPerPage={itensPerPage}
+            quantityOfPages={quantityOfPages}
+            handleNextPage={handleNextPage}
+            handlePrevPage={handlePrevPage}
+            handleBackToInitial={handleBackToInitial}
+            handleGoToFinal={handleGoToFinal}
+            changeQuantityOfItens={changeQuantityOfItens}
+          />
+        </Box>
       )}
     </Box>
   );

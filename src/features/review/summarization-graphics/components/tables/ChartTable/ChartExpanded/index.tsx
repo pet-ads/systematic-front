@@ -197,16 +197,14 @@ export default function ChartExpanded({
     return "studyId" in study;
   }
   return (
-    <Box w="100%" maxH="82.5vh">
+    <Box w="100%" h="100%" display="flex" flexDirection="column" minH={0}>
       <TableContainer
         w="100%"
-        maxH={
-          layout == "horizontal" || layout == "horizontal-invert"
-            ? "15rem"
-            : "calc(100vh - 15rem)"
-        }
+        mt="-0.5rem"
+        h={layout === "horizontal" || layout === "horizontal-invert" ? "15rem" : undefined}
+        flex={layout === "horizontal" || layout === "horizontal-invert" ? "none" : "1"}
+        minH={0}
         borderRadius="1rem 1rem 0 0"
-        boxShadow="lg"
         bg="white"
         overflowY="auto"
       >
@@ -314,13 +312,12 @@ export default function ChartExpanded({
           <Tbody>
             {paginatedArticles.length > 0 ? (
               paginatedArticles.map((study, index) => {
-                const sourceText =
-                  "searchSources" in study && Array.isArray(study.searchSources)
-                    ? study.searchSources.join(", ")
+                const sourceText = "searchSources" in study && Array.isArray(study.searchSources)
+                    ? (study.searchSources as string[])[0]
                     : "";
                 const criteriaText =
-                  "criteria" in study && Array.isArray(study.criteria)
-                    ? study.criteria
+                  "extractionCriteria" in study && Array.isArray(study.extractionCriteria)
+                    ? study.extractionCriteria
                         .map((cr) => {
                           const idx = inclusionCriterias.findIndex(
                             (item) => item === cr
@@ -402,16 +399,18 @@ export default function ChartExpanded({
         </Table>
       </TableContainer>
       {articles.length >= 20 && (
-        <PaginationControl
-          currentPage={currentPage}
-          itensPerPage={itensPerPageUI}
-          quantityOfPages={quantityOfPages}
-          handleNextPage={handleNextPage}
-          handlePrevPage={handlePrevPage}
-          handleBackToInitial={handleBackToInitial}
-          handleGoToFinal={handleGoToFinal}
-          changeQuantityOfItens={handleChangeItensPerPage}
-        />
+        <Box flexShrink={0}>
+          <PaginationControl
+            currentPage={currentPage}
+            itensPerPage={itensPerPageUI}
+            quantityOfPages={quantityOfPages}
+            handleNextPage={handleNextPage}
+            handlePrevPage={handlePrevPage}
+            handleBackToInitial={handleBackToInitial}
+            handleGoToFinal={handleGoToFinal}
+            changeQuantityOfItens={handleChangeItensPerPage}
+          />
+        </Box>
       )}
     </Box>
   );

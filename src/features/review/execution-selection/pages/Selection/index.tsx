@@ -160,6 +160,7 @@ export default function Selection() {
                 isShown={showSelected}
                 reloadArticles={mutate}
                 setIsMultipleSelectionEnable={setIsMultipleSelectionEnable}
+                page="Selection"
               />
             ) : null}
           </Flex>

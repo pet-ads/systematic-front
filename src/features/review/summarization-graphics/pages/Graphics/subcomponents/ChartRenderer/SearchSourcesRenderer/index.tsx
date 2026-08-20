@@ -30,9 +30,10 @@ export default function SearchSourcesRenderer({
 
   const sourceCountMap = filteredStudies.reduce<Record<string, number>>(
     (acc, study) => {
-      study.searchSources.forEach((src) => {
+      acc[study.searchSources[0]] = (acc[study.searchSources[0]] || 0) + 1;
+      /* study.searchSources.forEach((src) => {
         acc[src] = (acc[src] || 0) + 1;
-      });
+      }); */
       return acc;
     },
     {}
@@ -44,12 +45,16 @@ export default function SearchSourcesRenderer({
   const isTable = type === "Table" || type === "Tabela";
   const isBubble = type === t("selectMenu.graphicsTypes.bubbleChart");
   
-  const bubbleItems: BubbleItem[] = filteredStudies.flatMap((study) =>
-    study.searchSources.map((src) => ({
+  const bubbleItems: BubbleItem[] = filteredStudies.flatMap((study) => ({
+    x: Number(study.year),
+    group: study.searchSources[0],
+    y: 1,
+  })
+  /*study.searchSources.map((src) => ({
       x: Number(study.year),
       group: src,
       y: 1,
-    }))
+    })) */
   );
   const { series, yCategories } = useBubbleDataGeneric(bubbleItems);
 
@@ -76,7 +81,7 @@ export default function SearchSourcesRenderer({
       />
     );
   } else if (isTable) {
-    content = <SearchSorcesTable columnsVisible={columnsVisible} />;
+    content = <SearchSorcesTable sourceCountMap={sourceCountMap} columnsVisible={columnsVisible} />;
   } else {
     content = <div>{t("typeNotSupported")}</div>;
   }

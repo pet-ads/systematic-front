@@ -18,7 +18,7 @@ export const ChartFullTable: React.FC<TableProps> = ({
   columnsVisible,
 }) => {
   return (
-    <Box w="100%" h="100%">
+    <Box w="100%" h="100%" minH={0}>
       <ChartTable columnsVisible={columnsVisible} articles={articles}  />
     </Box>
   );

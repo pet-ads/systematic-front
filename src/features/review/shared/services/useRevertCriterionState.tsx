@@ -38,7 +38,7 @@ export default function useRevertCriterionState({
 
     try {
       const path = `systematic-study/${id}/study-review/remove-criteria/${articleId}`;
-      const response = await Axios.patch<HttpResponse>(path, { criteria });
+      const response = await Axios.patch<HttpResponse>(path, { criteria, stage: page.toUpperCase() });
       return response.data.criteria;
     } catch (error) {
       console.error("Failed to revert criterion state:", error);

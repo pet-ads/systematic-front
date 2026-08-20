@@ -49,7 +49,7 @@ export const IncludedStudiesTable = ({filteredStudies}:Props) => {
               "searchSources" in study ? study.searchSources.join(", ") : "";
             const criteriaText =
               "criteria" in study
-                ? study.criteria
+                ? study.extractionCriteria
                     .map((cr) => {
                       const idx = inclusionCriterias.findIndex(
                         (item) => item === cr

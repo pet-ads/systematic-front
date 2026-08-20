@@ -80,7 +80,7 @@ export default function ChartsRenderer({
 
     const { studiesByStage } = useFetchStudiesByStage(stage);
     const { studiesByCriteria: fetchedCriteria } =
-      useFetchStudiesByCriteria(criteriaType);
+      useFetchStudiesByCriteria(criteriaType, "EXTRACTION");
 
     const stageIds =
       criteriaType === "inclusion"
@@ -153,7 +153,7 @@ export default function ChartsRenderer({
         setTablePage={setTablePage}
       />
     ),
-    "Studies Funnel": () => <StudiesFunnelRenderer chartId={chartId} />,
+    "Studies Funnel": () => <StudiesFunnelRenderer filteredStudies={filteredStudies} chartId={chartId} />,
     Protocol: () => <ProtocolRenderer />,
   };
 
@@ -164,6 +164,7 @@ export default function ChartsRenderer({
     <Flex
       flex="1"
       w="100%"
+      minH={0}
       direction="column"
       mt="0px"
       justify={type === "Table" || type === "Tabela" || type === "Item Table" || type === "Tabela por Item" ? "flex-start" : "center"}
@@ -177,8 +178,8 @@ export default function ChartsRenderer({
         onCsvData={handleCsvData}
       />
 
-      {section !== "Studies Funnel" && section !== "Protocol" && (
-        <Flex w="100%" justifyContent="flex-end" p="1rem" position="fixed" bottom="1rem" right="1rem">
+      {2 !== 2 && section !== "Studies Funnel" && section !== "Protocol" && (
+        <Flex justifyContent="flex-end" p="1rem" position="fixed" bottom="1rem" right="1rem">
           <DownloadChartsButton
             selector={`#${chartId}`}
             fileName={section}

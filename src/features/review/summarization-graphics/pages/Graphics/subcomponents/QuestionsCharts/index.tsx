@@ -11,6 +11,7 @@ import TextualTable from "@features/review/summarization-graphics/components/tab
 import { PickManyItemTable } from "@features/review/summarization-graphics/components/tables/PickManyItemTable";
 import { Dispatch, SetStateAction } from "react";
 import { PageLayout } from "@features/review/shared/components/structure/LayoutFactory";
+import { parseLabel, formatAnswerLabel } from "@features/review/summarization-graphics/utils/parseAnswerLabel";
 
 type Props = {
   selectedQuestionId?: string;
@@ -36,12 +37,6 @@ type Question = {
   options: string[] | null;
 };
 
-function parseLabel(labelStr: string) {
-  const match = labelStr.match(/Label\(name:\s*(.+),\s*value:\s*(\d+)\)/);
-  if (match) return { name: match[1], value: Number(match[2]) };
-  return null;
-}
-
 function updateData(
   labels: (string | number)[],
   entries: [string, any[]][],
@@ -49,8 +44,9 @@ function updateData(
 ) {
   if (questionType === "LABELED_SCALE") {
     return labels.map((label) => {
+      const labelName = String(label).split("-")[1].trim();
       const entry = entries.find(
-        ([entryLabel]) => parseLabel(entryLabel)?.name === label
+        ([entryLabel]) => parseLabel(entryLabel)?.name === labelName
       );
       return entry ? entry[1].length : 0;
     });
@@ -81,7 +77,11 @@ function updateLabel(question: Question) {
     const lower = question.lower ?? 0;
     return Array.from({ length: higher - lower + 1 }, (_, i) => lower + i);
   } else if (questionType === "LABELED_SCALE") {
-    return Object.keys(question.scales ?? {});
+    const labels: string[] = [];
+    Object.entries(question.scales ?? {}).forEach((option) => {
+      labels.push(`${option[1]} - ${option[0]}`);
+    })
+    return labels;
   } else {
     return question.options ?? [];
   }
@@ -213,13 +213,23 @@ export const QuestionsCharts = ({
                 if (!study) return;
 
                 const year = Number(study.year);
-                const key = `${year}-${answer}`;
-                yearAnswerMap.set(key, (yearAnswerMap.get(key) || 0) + 1);
+
+                const parsed = parseLabel(answer);
+                const displayAnswer = parsed
+                  ? `${parsed.value} - ${parsed.name}`
+                  : answer;
+
+                const key = `${year}-${displayAnswer}`;
+
+                yearAnswerMap.set(
+                  key,
+                  (yearAnswerMap.get(key) || 0) + 1
+                );
               });
             });
 
             items = Array.from(yearAnswerMap.entries()).map(([key, count]) => {
-              const [year, answer] = key.split("-");
+              const [year, answer] = key.split(/-(.+)/)
               return { x: Number(year), group: answer, y: count };
             });
           }
@@ -258,21 +268,38 @@ export const QuestionsCharts = ({
             );
           } else {
             setTablePage("Graphics-FormQuestions");
+            const formattedAnswer = Object.fromEntries(
+              Object.entries(filteredAnswer)
+                .sort(([labelA], [labelB]) => {
+                  const parsedA = parseLabel(labelA);
+                  const parsedB = parseLabel(labelB);
+
+                  if (!parsedA || !parsedB) return 0;
+
+                  return parsedA.value - parsedB.value;
+                })
+                .map(([label, ids]) => [
+                  formatAnswerLabel(label),
+                  ids,
+                ])
+            );
             chartContent = (
               <QuestionsTable
                 columnsVisible={columnsVisible}
-                data={filteredAnswer}
+                data={formattedAnswer}
               />
             );
           }
         }
 
         return (
-          <Box key={question.questionId} w="100%">
-            <Text mb={2} ml="3rem" mt="1rem" fontWeight="bold">
+          <Box key={question.questionId} w="100%" h="calc(100vh - 12rem)" display="flex" flexDirection="column" minH={0} >
+            <Text mb={2} ml="3rem" mt="1rem" fontWeight="bold" flexShrink={0}>
               {description}
             </Text>
-            <Box w="100%">{chartContent}</Box>
+            <Box w="100%" flex="1" minH={0} overflow="hidden">
+              {chartContent}
+            </Box>
           </Box>
         );
       })}

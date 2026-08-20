@@ -59,6 +59,7 @@ function IdentificationModal({
 }: IdentificationModalProps) {
   const [searchString, setSearchString] = useState<string>("");
   const [comment, setComment] = useState<string>("");
+  const [date, setDate] = useState<string>(getCurrentDate());
   const [isError, setIsError] = useState(false);
   const { isOpen, onClose, onOpen } = useDisclosure();
   const { t } = useTranslation("review/execution-identification");
@@ -86,6 +87,7 @@ function IdentificationModal({
     mutate,
     searchString,
     comment,
+    date,
     type
   });
 
@@ -103,6 +105,7 @@ function IdentificationModal({
           if (selectedSession) {
             setSearchString(selectedSession.searchString);
             setComment(selectedSession.additionalInfo);
+            setDate(formatTimestampToInputDate(selectedSession.timestamp));
           }
         } catch (error) {
           const toast = useToaster();
@@ -146,7 +149,7 @@ function IdentificationModal({
     onClose();
   };
 
-  const getCurrentDate = () => {
+  function getCurrentDate() {
     const today = new Date();
     const year = today.getFullYear();
     const month = String(today.getMonth() + 1).padStart(2, "0");
@@ -156,6 +159,15 @@ function IdentificationModal({
 
   function removeReferenceFile(index: number) {
     setReferenceFiles(referenceFiles.filter((_, i) => i !== index));
+  }
+
+  function formatTimestampToInputDate(timestamp: string) {
+    const d = new Date(timestamp);
+    if (isNaN(d.getTime())) return getCurrentDate();
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
   }
 
   return (
@@ -169,7 +181,7 @@ function IdentificationModal({
         <ModalBody>
           <FormControl mb={4}>
             <FormLabel>{t("dataBaseCard.identificationModal.input.date")}</FormLabel>
-            <Input type="date" defaultValue={getCurrentDate()} />
+            <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
           </FormControl>
           <FormControl mb={4} isRequired isInvalid={isError}>
             <FormLabel>{t("dataBaseCard.identificationModal.input.searchString.label")}</FormLabel>

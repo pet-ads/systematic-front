@@ -134,10 +134,11 @@ export default function TextualTable({
   };
 
   return (
-    <Box w="100%" maxH="82.5vh">
+    <Box w="100%" h="100%" display="flex" flexDirection="column" minH={0}>
       <TableContainer
         w="100%"
-        maxH="calc(100vh - 15rem)"
+        flex="1"
+        minH={0}
         borderRadius="1rem 1rem 0 0"
         bg="white"
         overflowY="auto"
@@ -295,16 +296,18 @@ export default function TextualTable({
       </TableContainer>
 
       {articles.length >= 20 && (
-        <PaginationControl
-          currentPage={currentPage}
-          itensPerPage={itensPerPageUI}
-          quantityOfPages={quantityOfPages}
-          handleNextPage={handleNextPage}
-          handlePrevPage={handlePrevPage}
-          handleBackToInitial={handleBackToInitial}
-          handleGoToFinal={handleGoToFinal}
-          changeQuantityOfItens={handleChangeItensPerPage}
-        />
+        <Box flexShrink={0}>
+          <PaginationControl
+            currentPage={currentPage}
+            itensPerPage={itensPerPageUI}
+            quantityOfPages={quantityOfPages}
+            handleNextPage={handleNextPage}
+            handlePrevPage={handlePrevPage}
+            handleBackToInitial={handleBackToInitial}
+            handleGoToFinal={handleGoToFinal}
+            changeQuantityOfItens={handleChangeItensPerPage}
+          />
+        </Box>
       )}
     </Box>
   );
