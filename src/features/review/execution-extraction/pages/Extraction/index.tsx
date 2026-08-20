@@ -156,6 +156,7 @@ export default function Extraction() {
                 isShown={showSelected}
                 reloadArticles={mutate}
                 setIsMultipleSelectionEnable={setIsMultipleSelectionEnable}
+                page="Extraction"
               />
             ) : null}
           </Flex>
