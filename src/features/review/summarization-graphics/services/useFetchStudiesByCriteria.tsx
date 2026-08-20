@@ -10,7 +10,7 @@ export type StudiesByCriteriaData = {
   };
 };
 
-const useFetchStudiesByCriteria = (criteria: string) => {
+const useFetchStudiesByCriteria = (criteria: string, stage: string) => {
   const id = localStorage.getItem("systematicReviewId");
   const path = `systematic-study/${id}/report/criteria/${criteria}`;
 
@@ -25,7 +25,7 @@ const useFetchStudiesByCriteria = (criteria: string) => {
   async function fetchGetStudiesByCriteria() {
     if (!id) return;
     try {
-      const response = await Axios.get<StudiesByCriteriaData>(path);
+      const response = await Axios.get<StudiesByCriteriaData>(path, { params: { stage } });
       return response.data;
     } catch (error) {
       console.error("Failed to get studies by criteria");

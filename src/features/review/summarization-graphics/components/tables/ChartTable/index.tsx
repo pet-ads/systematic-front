@@ -25,8 +25,8 @@ export default function ChartTable({ articles, layout, columnsVisible }: Props) 
       let bValue: any;
 
       if (sortConfig.key === "ic") {
-        aValue = a.criteria?.join(", ") ?? "";
-        bValue = b.criteria?.join(", ") ?? "";
+        aValue = a.extractionCriteria?.join(", ") ?? "";
+        bValue = b.extractionCriteria?.join(", ") ?? "";
       } else if (sortConfig.key === "searchSources") {
         aValue = a.searchSources?.join(", ") ?? "";
         bValue = b.searchSources?.join(", ") ?? "";

@@ -114,7 +114,7 @@ export default function Graphics() {
           )}
         </Flex>
 
-        <Flex gap="0.5rem" mt="0.75rem" alignItems="flex-end">
+        <Flex gap="0.5rem" mt="0.75rem" mr="1rem" alignItems="flex-end">
           {type === t("selectMenu.graphicsTypes.table") && (
             <ColumnVisibilityMenu
               columnsVisible={columnsVisible}

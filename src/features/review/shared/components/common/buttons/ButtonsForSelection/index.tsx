@@ -90,7 +90,7 @@ export default function ButtonsForSelection({
 
   useEffect(() => {
     if (currentArticle) {
-      setHistoricalCriteria(currentArticle.criteria || []);
+      setHistoricalCriteria(currentArticle.selectionCriteria || []);
     }
   }, [currentArticleId, page]);
 

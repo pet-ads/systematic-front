@@ -52,7 +52,7 @@ case "Included Studies": {
       journal: s.venue ?? "",
       year: s.year ?? "",
       sources: s.searchSources.join("; "),
-      criteria: s.criteria.join("; "),
+      criteria: s.extractionCriteria.join("; "),
     }));
   }
 }
