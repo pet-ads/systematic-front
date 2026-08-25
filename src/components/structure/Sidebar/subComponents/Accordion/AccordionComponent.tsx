@@ -116,6 +116,10 @@ const AccordionComponent = () => {
           path: `/review/planning/protocol/analysis-and-synthesis-of-results/${id}`,
           label: t("planning.analysis"),
         },
+        {
+          path: `/review/planning/protocol/collaboration/${id}`,
+          label: t("planning.collaboration", "Collaboration"), 
+        },
       ],
       Execution: [
         { path: `/review/execution/identification`, label: t("execution.identification") },
