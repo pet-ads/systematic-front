@@ -36,6 +36,7 @@ import useFetchInclusionCriteria from "@features/review/shared/services/useFetch
 import { StudyInterface } from "@features/review/shared/types/IStudy";
 import { useExport } from "@features/review/summarization-graphics/context/ExportContext";
 import { ColumnVisibility } from "@features/review/shared/hooks/useVisibilityColumns";
+import DownloadChartsButton from "@features/review/summarization-graphics/components/buttons/DownloadChatsButton";
 
 export type AllKeys =
   | "studyReviewId"
@@ -80,7 +81,7 @@ export default function ChartExpanded({
 
   const studyContext = useContext(StudyContext);
   const inclusionCriterias = useFetchInclusionCriteria();
-  const { isExporting } = useExport();
+  const { isExporting, downloadConfig } = useExport();
 
   const [itensPerPageUI, setItensPerPageUI] = useState(20);
 
@@ -196,8 +197,17 @@ export default function ChartExpanded({
   ): study is StudyInterface {
     return "studyId" in study;
   }
+
+  const downloadButton = downloadConfig ? (
+    <DownloadChartsButton
+      selector={downloadConfig.selector}
+      fileName={downloadConfig.fileName}
+      onDownloadCsv={downloadConfig.onDownloadCsv}
+    />
+  ) : undefined;
+
   return (
-    <Box w="100%" h="100%" display="flex" flexDirection="column" minH={0}>
+    <Box w="100%" h="100%" display="flex" flexDirection="column" minH={0} flex="1">
       <TableContainer
         w="100%"
         mt="-0.5rem"
@@ -398,8 +408,8 @@ export default function ChartExpanded({
           </Tbody>
         </Table>
       </TableContainer>
-      {articles.length >= 20 && (
-        <Box flexShrink={0}>
+      {!isExporting && (
+        <Box flexShrink={0} borderTop="1px solid #E2E8F0">
           <PaginationControl
             currentPage={currentPage}
             itensPerPage={itensPerPageUI}
@@ -409,6 +419,7 @@ export default function ChartExpanded({
             handleBackToInitial={handleBackToInitial}
             handleGoToFinal={handleGoToFinal}
             changeQuantityOfItens={handleChangeItensPerPage}
+            rightElement={downloadButton}
           />
         </Box>
       )}

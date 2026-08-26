@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { Box, Flex } from "@chakra-ui/react";
 import { graphicsconteiner } from "../../styles";
 
@@ -23,6 +23,7 @@ import useFetchStudiesByCriteria from "@features/review/summarization-graphics/s
 import { ColumnVisibility } from "@features/review/shared/hooks/useVisibilityColumns";
 import { PageLayout } from "@features/review/shared/components/structure/LayoutFactory";
 import { Dispatch, SetStateAction } from "react";
+import { useExport } from "@features/review/summarization-graphics/context/ExportContext";
 
 type Props = {
   section: string;
@@ -45,6 +46,7 @@ export default function ChartsRenderer({
   const { articles, isLoading } = useGetAllReviewArticles();
 
   const { extractionAnswers } = useFetchQuestionAnswers();
+  const { setDownloadConfig } = useExport();
 
   const handleCsvData = useCallback((_data: CsvRow[]) => {}, []);
 
@@ -101,9 +103,55 @@ export default function ChartsRenderer({
     studiesByCriteria = fetchedCriteria?.criteria;
   }
 
-  if (isLoading) return <Box>Loading...</Box>;
-
   const chartId = `chart-${section.replace(/\s+/g, "-").toLowerCase()}`;
+
+  const handleDownloadCsv = useCallback(() => {
+    if (section === "Form Questions") {
+      downloadCSV(
+        "questions",
+        buildQuestionsCsv(
+          extractionAnswers,
+          filteredStudies as ArticleInterface[],
+          selectedQuestionId,
+          type
+        )
+      );
+    } else {
+      downloadCSV(
+        section,
+        getCsvData(
+          section,
+          filteredStudies,
+          type,
+          filteredStageIds,
+          studiesByCriteria
+        )
+      );
+    }
+  }, [
+    section,
+    extractionAnswers,
+    filteredStudies,
+    selectedQuestionId,
+    type,
+    filteredStageIds,
+    studiesByCriteria,
+  ]);
+
+  useEffect(() => {
+    if (section !== "Studies Funnel" && section !== "Protocol") {
+      setDownloadConfig({
+        selector: `#${chartId}`,
+        fileName: section,
+        onDownloadCsv: handleDownloadCsv,
+      });
+    } else {
+      setDownloadConfig(undefined);
+    }
+    return () => setDownloadConfig(undefined);
+  }, [chartId, section, handleDownloadCsv, setDownloadConfig]);
+
+  if (isLoading) return <Box>Loading...</Box>;
 
   const rendererMap: Record<string, any> = {
     "Search Sources": (props: any) => (
@@ -160,53 +208,47 @@ export default function ChartsRenderer({
   const Renderer = rendererMap[section];
   if (!Renderer) return <Box>Seção não encontrada</Box>;
 
+  const isTableView =
+    type === "Table" ||
+    type === "Tabela" ||
+    type === "Item Table" ||
+    type === "Tabela por Item";
+
   return (
     <Flex
       flex="1"
       w="100%"
+      h="100%"
       minH={0}
       direction="column"
       mt="0px"
-      justify={type === "Table" || type === "Tabela" || type === "Item Table" || type === "Tabela por Item" ? "flex-start" : "center"}
+      position="relative"
+      justify={isTableView ? "flex-start" : "center"}
       sx={{
         ...graphicsconteiner,
       }}
     >
-      <Renderer
-        filteredStudies={filteredStudies}
-        type={type}
-        onCsvData={handleCsvData}
-      />
+      <Box flex="1" w="100%" h="100%" minH={0} overflow="hidden" display="flex" flexDirection="column">
+        <Renderer
+          filteredStudies={filteredStudies}
+          type={type}
+          onCsvData={handleCsvData}
+        />
+      </Box>
 
-      {2 !== 2 && section !== "Studies Funnel" && section !== "Protocol" && (
-        <Flex justifyContent="flex-end" p="1rem" position="fixed" bottom="1rem" right="1rem">
+      {!isTableView && section !== "Studies Funnel" && section !== "Protocol" && (
+        <Flex
+          justifyContent="flex-end"
+          alignItems="center"
+          position="absolute"
+          bottom="0.5rem"
+          right="1.5rem"
+          zIndex={10}
+        >
           <DownloadChartsButton
             selector={`#${chartId}`}
             fileName={section}
-            onDownloadCsv={() => {
-              if (section === "Form Questions") {
-                downloadCSV(
-                  "questions",
-                  buildQuestionsCsv(
-                    extractionAnswers,
-                    filteredStudies as ArticleInterface[],
-                    selectedQuestionId,
-                    type
-                  )
-                );
-              } else {
-                downloadCSV(
-                  section,
-                  getCsvData(
-                    section,
-                    filteredStudies,
-                    type,
-                    filteredStageIds,
-                    studiesByCriteria
-                  )
-                );
-              }
-            }}
+            onDownloadCsv={handleDownloadCsv}
           />
         </Flex>
       )}

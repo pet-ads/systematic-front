@@ -23,6 +23,7 @@ interface PaginationControlProps {
   changeQuantityOfItens: (newQuantity: number) => void;
   isSplited?: boolean;
   isVertical?: boolean;
+  rightElement?: React.ReactNode;
 }
 
 type ActionButton = {
@@ -42,6 +43,7 @@ const PaginationControl: React.FC<PaginationControlProps> = ({
   changeQuantityOfItens,
   isSplited,
   isVertical,
+  rightElement,
 }) => {
   const window = useWindowWidth();
   const numberOfCases = String(quantityOfPages).length;
@@ -78,7 +80,8 @@ const PaginationControl: React.FC<PaginationControlProps> = ({
     <Flex
       w="100%"
       bg="white"
-      p="1.5rem"
+      py="0.75rem"
+      px="1.5rem"
       borderRadius="0 0 1rem 1rem"
       flexWrap="wrap"
       alignItems="center"
@@ -113,9 +116,9 @@ const PaginationControl: React.FC<PaginationControlProps> = ({
       </Flex>
       <Flex
         position="absolute"
-        right="2rem"
+        right="1.5rem"
         alignItems="center"
-        gap="0.2rem"
+        gap="0.5rem"
       >
         <Text whiteSpace="nowrap" fontSize={window > 1050 ? "1rem" : "0.8rem"}>
           {(window < 1000 || window > 1150 ? t("pagination.page") : "") +
@@ -134,16 +137,16 @@ const PaginationControl: React.FC<PaginationControlProps> = ({
               placement="top"
               p=".5rem"
               borderRadius=".25rem"
+              key={index}
             >
               <Button
-                key={index}
                 variant="outline"
                 onClick={action}
                 aria-label={label}
-                minW={window > 1000 ? "40px" : "30px"}
-                minH={window > 1000 ? "40px" : "30px"}
-                w={window > 1000 ? "40px" : "30px"}
-                h={window > 1000 ? "40px" : "30px"}
+                minW={window > 1000 ? "36px" : "28px"}
+                minH={window > 1000 ? "36px" : "28px"}
+                w={window > 1000 ? "36px" : "28px"}
+                h={window > 1000 ? "36px" : "28px"}
                 p="0"
                 display="flex"
                 alignItems="center"
@@ -153,6 +156,7 @@ const PaginationControl: React.FC<PaginationControlProps> = ({
               </Button>
             </Tooltip>
           ))}
+        {rightElement}
       </Flex>
     </Flex>
   );

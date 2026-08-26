@@ -15,6 +15,7 @@ import { FaChevronDown, FaChevronUp } from "react-icons/fa6";
 
 import PaginationControl from "@features/review/shared/components/common/tables/ArticlesTable/subcomponents/controlls/PaginationControl";
 import useGenericPagination from "@features/review/summarization-graphics/hooks/useGenericPaginations";
+import DownloadChartsButton from "@features/review/summarization-graphics/components/buttons/DownloadChatsButton";
 
 import { useExport } from "@features/review/summarization-graphics/context/ExportContext";
 
@@ -42,7 +43,7 @@ export function GenericExpandedTable<T>({
   data,
   columns,
 }: GenericExpandedTableProps<T>) {
-  const { isExporting } = useExport();
+  const { isExporting, downloadConfig } = useExport();
 
   const [sortConfig, setSortConfig] = useState<SortConfig<T>>(null);
 
@@ -92,12 +93,21 @@ export function GenericExpandedTable<T>({
     changeQuantityOfItens,
   } = useGenericPagination<T>(sortedData);
 
+  const downloadButton = downloadConfig ? (
+    <DownloadChartsButton
+      selector={downloadConfig.selector}
+      fileName={downloadConfig.fileName}
+      onDownloadCsv={downloadConfig.onDownloadCsv}
+    />
+  ) : undefined;
+
   return (
-    <Box w="100%">
+    <Box w="100%" h="100%" display="flex" flexDirection="column" minH={0} flex="1">
       <TableContainer
         w="100%"
-        maxH="auto"
-        overflowY="visible"
+        flex="1"
+        minH={0}
+        overflowY={isExporting ? "visible" : "auto"}
         borderRadius="1rem 1rem 0 0"
         bg="white"
       >
@@ -211,12 +221,12 @@ export function GenericExpandedTable<T>({
         </Table>
       </TableContainer>
 
-      {!isExporting && data.length >= 20 && (
+      {!isExporting && (
         <Box 
           display="flex" 
           w="100%" 
-          justifyContent="flex-end" 
-          mt={4} 
+          flexShrink={0}
+          borderTop="1px solid #E2E8F0"
         >
           <PaginationControl
             currentPage={currentPage}
@@ -227,6 +237,7 @@ export function GenericExpandedTable<T>({
             handleBackToInitial={handleBackToInitial}
             handleGoToFinal={handleGoToFinal}
             changeQuantityOfItens={changeQuantityOfItens}
+            rightElement={downloadButton}
           />
         </Box>
       )}

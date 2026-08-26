@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import PaginationControl from "@features/review/shared/components/common/tables/ArticlesTable/subcomponents/controlls/PaginationControl";
 import { useExport } from "@features/review/summarization-graphics/context/ExportContext";
 import useGenericPagination from "@features/review/summarization-graphics/hooks/useGenericPaginations";
+import DownloadChartsButton from "@features/review/summarization-graphics/components/buttons/DownloadChatsButton";
 
 interface PickManyItemRow {
   studyId: number;
@@ -45,7 +46,7 @@ function buildSelectionMap(
 }
 
 export function PickManyItemTable({ data, options, studyIds }: Props) {
-  const { isExporting } = useExport();
+  const { isExporting, downloadConfig } = useExport();
 
   const selectionMap = useMemo(() => buildSelectionMap(data), [data]);
 
@@ -72,8 +73,16 @@ export function PickManyItemTable({ data, options, studyIds }: Props) {
     changeQuantityOfItens,
   } = useGenericPagination<PickManyItemRow>(rows, 20);
 
+  const downloadButton = downloadConfig ? (
+    <DownloadChartsButton
+      selector={downloadConfig.selector}
+      fileName={downloadConfig.fileName}
+      onDownloadCsv={downloadConfig.onDownloadCsv}
+    />
+  ) : undefined;
+
   return (
-    <Box w="100%" h="100%" display="flex" flexDirection="column" minH={0}>
+    <Box w="100%" h="100%" display="flex" flexDirection="column" minH={0} flex="1">
       <TableContainer
         w="100%"
         flex="1"
@@ -161,8 +170,8 @@ export function PickManyItemTable({ data, options, studyIds }: Props) {
         </Table>
       </TableContainer>
 
-      {!isExporting && rows.length >= 20 && (
-        <Box flexShrink={0}>
+      {!isExporting && (
+        <Box flexShrink={0} borderTop="1px solid #E2E8F0">
           <PaginationControl
             currentPage={currentPage}
             itensPerPage={itensPerPage}
@@ -172,6 +181,7 @@ export function PickManyItemTable({ data, options, studyIds }: Props) {
             handleBackToInitial={handleBackToInitial}
             handleGoToFinal={handleGoToFinal}
             changeQuantityOfItens={changeQuantityOfItens}
+            rightElement={downloadButton}
           />
         </Box>
       )}

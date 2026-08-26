@@ -155,13 +155,48 @@ export function buildQuestionsCsv(
     ? [extractionAnswers[0]]
     : [];
 
-  if (answers.length === 0) return [];
+  if (answers.length === 0) {
+    if (selectedQuestionId) {
+      const rows: CsvRow[] = [];
+      filteredStudies.forEach((study) => {
+        const textAnswer =
+          (study as any).formAnswers?.[selectedQuestionId] ??
+          (study as any).robAnswers?.[selectedQuestionId] ??
+          "";
+        if (textAnswer) {
+          rows.push({
+            studyId: study.studyReviewId ?? "",
+            title: csvEscape(study.title ?? ""),
+            authors: csvEscape(study.authors ?? ""),
+            answer: csvEscape(textAnswer),
+          });
+        }
+      });
+      return rows;
+    }
+    return [];
+  }
 
   const rows: CsvRow[] = [];
 
   answers.forEach((q) => {
-    if (q.question.questionType === "PICK_MANY" && type === "Item Table") {
+    if (q.question.questionType === "PICK_MANY" && (type === "Item Table" || type === "Tabela por Item")) {
       rows.push(...buildPickManyItemCsv(q, filteredStudyIds));
+    } else if (q.question.questionType === "TEXTUAL") {
+      filteredStudies.forEach((study) => {
+        const textAnswer =
+          (study as any).formAnswers?.[q.question.questionId] ??
+          (study as any).robAnswers?.[q.question.questionId] ??
+          "";
+        if (textAnswer) {
+          rows.push({
+            studyId: study.studyReviewId ?? "",
+            title: csvEscape(study.title ?? ""),
+            authors: csvEscape(study.authors ?? ""),
+            answer: csvEscape(textAnswer),
+          });
+        }
+      });
     } else {
       rows.push(...buildAggregatedCsv(q, filteredStudyIds));
     }

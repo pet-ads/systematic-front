@@ -31,6 +31,7 @@ import {
   collapsedSpanText,
 } from "@features/review/execution-identification/pages/Identification/subcomponents/accordions/styles";
 import type ArticleInterface from "@features/review/shared/types/ArticleInterface";
+import DownloadChartsButton from "@features/review/summarization-graphics/components/buttons/DownloadChatsButton";
 import { ColumnVisibility } from "@features/review/shared/hooks/useVisibilityColumns";
 
 
@@ -62,7 +63,7 @@ export default function TextualTable({
 }: Props) {
   const ANSWER_ID = questionId;
 
-  const { isExporting } = useExport();
+  const { isExporting, downloadConfig } = useExport();
 
   const [itensPerPageUI, setItensPerPageUI] = useState(20);
 
@@ -133,8 +134,16 @@ export default function TextualTable({
     }));
   };
 
+  const downloadButton = downloadConfig ? (
+    <DownloadChartsButton
+      selector={downloadConfig.selector}
+      fileName={downloadConfig.fileName}
+      onDownloadCsv={downloadConfig.onDownloadCsv}
+    />
+  ) : undefined;
+
   return (
-    <Box w="100%" h="100%" display="flex" flexDirection="column" minH={0}>
+    <Box w="100%" h="100%" display="flex" flexDirection="column" minH={0} flex="1">
       <TableContainer
         w="100%"
         flex="1"
@@ -295,8 +304,8 @@ export default function TextualTable({
         </Table>
       </TableContainer>
 
-      {articles.length >= 20 && (
-        <Box flexShrink={0}>
+      {!isExporting && (
+        <Box flexShrink={0} borderTop="1px solid #E2E8F0">
           <PaginationControl
             currentPage={currentPage}
             itensPerPage={itensPerPageUI}
@@ -306,6 +315,7 @@ export default function TextualTable({
             handleBackToInitial={handleBackToInitial}
             handleGoToFinal={handleGoToFinal}
             changeQuantityOfItens={handleChangeItensPerPage}
+            rightElement={downloadButton}
           />
         </Box>
       )}
