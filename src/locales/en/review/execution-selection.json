@@ -121,5 +121,12 @@
     "duplicateStudiesError": {
         "titleError": "Error marking studies as Duplicated",
         "descriptionError": "A study classified in Extraction can not be marked as DUPLICATED in Selection."
+    },
+    "editStudy": {
+        "toast": {
+            "successTitle": "Study updated successfully",
+            "errorTitle": "Failed to update study",
+            "errorDesc": "Could not save the changes. Please try again."
+        }
     }
 }

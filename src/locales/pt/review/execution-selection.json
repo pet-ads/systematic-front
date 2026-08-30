@@ -121,5 +121,12 @@
     "duplicateStudiesError": {
         "titleError": "Erro ao marcar estudos como Duplicados",
         "descriptionError": "Um estudo classificado em Extração não pode ser marcado como DUPLICADO em Seleção."
+    },
+    "editStudy": {
+        "toast": {
+            "successTitle": "Estudo atualizado com sucesso",
+            "errorTitle": "Erro ao atualizar estudo",
+            "errorDesc": "Não foi possível salvar as alterações. Tente novamente."
+        }
     }
 }
