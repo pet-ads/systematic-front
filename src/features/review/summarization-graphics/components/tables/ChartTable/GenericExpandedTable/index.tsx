@@ -15,6 +15,8 @@ import { FaChevronDown, FaChevronUp } from "react-icons/fa6";
 
 import PaginationControl from "@features/review/shared/components/common/tables/ArticlesTable/subcomponents/controlls/PaginationControl";
 import useGenericPagination from "@features/review/summarization-graphics/hooks/useGenericPaginations";
+import DownloadChartsButton from "@features/review/summarization-graphics/components/buttons/DownloadChatsButton";
+import { downloadCSV } from "@features/review/summarization-graphics/components/export/ExportCsv";
 
 import { useExport } from "@features/review/summarization-graphics/context/ExportContext";
 
@@ -36,11 +38,13 @@ export type SortConfig<T> = {
 interface GenericExpandedTableProps<T> {
   data: T[];
   columns: ColumnDef<T>[];
+  downloadFileName?: string;
 }
 
 export function GenericExpandedTable<T>({
   data,
   columns,
+  downloadFileName = "data",
 }: GenericExpandedTableProps<T>) {
   const { isExporting } = useExport();
 
@@ -92,12 +96,17 @@ export function GenericExpandedTable<T>({
     changeQuantityOfItens,
   } = useGenericPagination<T>(sortedData);
 
+  const handleDownloadCsv = () => {
+    downloadCSV(downloadFileName, data as Record<string, any>[]);
+  };
+
   return (
-    <Box w="100%">
+    <Box w="100%" h="100%" display="flex" flexDirection="column" minH={0} flex="1" position="relative" pb="3.5rem">
       <TableContainer
         w="100%"
-        maxH="auto"
-        overflowY="visible"
+        flex="1"
+        minH={0}
+        overflowY={isExporting ? "visible" : "auto"}
         borderRadius="1rem 1rem 0 0"
         bg="white"
       >
@@ -215,8 +224,8 @@ export function GenericExpandedTable<T>({
         <Box 
           display="flex" 
           w="100%" 
-          justifyContent="flex-end" 
-          mt={4} 
+          flexShrink={0}
+          borderTop="1px solid #E2E8F0"
         >
           <PaginationControl
             currentPage={currentPage}
@@ -227,6 +236,16 @@ export function GenericExpandedTable<T>({
             handleBackToInitial={handleBackToInitial}
             handleGoToFinal={handleGoToFinal}
             changeQuantityOfItens={changeQuantityOfItens}
+          />
+        </Box>
+      )}
+
+      {!isExporting && (
+        <Box position="absolute" bottom="0.75rem" right="1.5rem" zIndex={2}>
+          <DownloadChartsButton
+            selector="#chart-search-sources, #chart-form-questions"
+            fileName={downloadFileName}
+            onDownloadCsv={handleDownloadCsv}
           />
         </Box>
       )}

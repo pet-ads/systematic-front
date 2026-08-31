@@ -293,11 +293,11 @@ export const QuestionsCharts = ({
         }
 
         return (
-          <Box key={question.questionId} w="100%" h="calc(100vh - 12rem)" display="flex" flexDirection="column" minH={0} >
-            <Text mb={2} ml="3rem" mt="1rem" fontWeight="bold" flexShrink={0}>
+          <Box key={question.questionId} w="100%" h="100%" flex="1" display="flex" flexDirection="column" minH={0}>
+            <Text mb={2} ml="2rem" mt="0.5rem" fontWeight="bold" flexShrink={0}>
               {description}
             </Text>
-            <Box w="100%" flex="1" minH={0} overflow="hidden">
+            <Box w="100%" flex="1" minH={0} overflow="hidden" display="flex" flexDirection="column">
               {chartContent}
             </Box>
           </Box>

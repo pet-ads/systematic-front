@@ -94,7 +94,7 @@ const PaginationControl: React.FC<PaginationControlProps> = ({
         order={{ base: 2, md: 1 }}
         mb={{ base: "0.5rem", md: 0 }}
       >
-        <Text whiteSpace="nowrap"  fontSize={window > 1000 ? "1rem" : "0.8rem"}>{window < 1000 || window > 1400 || !isVertical ? t("pagination.rowsPerPage") : ""}</Text>
+        <Text whiteSpace="nowrap" fontSize={window > 1000 ? "1rem" : "0.8rem"}>{window < 1000 || window > 1400 || !isVertical ? t("pagination.rowsPerPage") : ""}</Text>
         <Select
           w={window > 1000 && window < 1050 ? "65px" : "70px"}
           fontSize={window < 1000 || window > 1050 ? "1rem" : "0.8rem"}
@@ -134,9 +134,9 @@ const PaginationControl: React.FC<PaginationControlProps> = ({
               placement="top"
               p=".5rem"
               borderRadius=".25rem"
+              key={index}
             >
               <Button
-                key={index}
                 variant="outline"
                 onClick={action}
                 aria-label={label}

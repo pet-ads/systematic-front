@@ -53,5 +53,5 @@ export default function IncludedStudiesRenderer({ filteredStudies, type, chartId
     content = <div>{t("typeNotSupported")}</div>;
   }
 
-  return <Box id={chartId} minH={0} w={isTable ? "100%" : undefined} h={isTable ? "100%" : undefined}>{content}</Box>;
+  return <Box id={chartId} minH={0} w="100%" h="100%" flex="1" display="flex" flexDirection="column">{content}</Box>;
 }
