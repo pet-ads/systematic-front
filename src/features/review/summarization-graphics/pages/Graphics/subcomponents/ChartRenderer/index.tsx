@@ -1,9 +1,8 @@
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { Box, Flex } from "@chakra-ui/react";
 import { graphicsconteiner } from "../../styles";
 
 import { FiltersState } from "@features/review/summarization-graphics/hooks/useGraphicsState";
-
 import useGetAllReviewArticles from "@features/review/shared/services/useGetAllReviewArticles";
 
 import SearchSourcesRenderer from "./SearchSourcesRenderer";
@@ -11,19 +10,10 @@ import IncludedStudiesRenderer from "./IncludedStudiesRenderer";
 import CriteriaRenderer from "./CriteriaRenderer";
 import StudiesFunnelRenderer from "./StudiesFunnelRenderer";
 import ProtocolRenderer from "./ProtocolRenderer";
-import DownloadChartsButton from "@features/review/summarization-graphics/components/buttons/DownloadChatsButton";
 import FormQuestionsRenderer from "./FormQuestionsRenderer";
-import { downloadCSV } from "@features/review/summarization-graphics/components/export/ExportCsv";
-import { getCsvData } from "@features/review/summarization-graphics/components/export/ExportCsv/CsvFactoty/getCsvData";
-import useFetchQuestionAnswers from "@features/review/summarization-graphics/services/useFetchQuestionAnwers";
-import { buildQuestionsCsv } from "@features/review/summarization-graphics/components/export/ExportCsv/CsvQuestions/buildQuestionsCsv";
-import ArticleInterface from "@features/review/shared/types/ArticleInterface";
-import { useFetchStudiesByStage } from "@features/review/summarization-graphics/services/useFetchStudiesByStage";
-import useFetchStudiesByCriteria from "@features/review/summarization-graphics/services/useFetchStudiesByCriteria";
 import { ColumnVisibility } from "@features/review/shared/hooks/useVisibilityColumns";
 import { PageLayout } from "@features/review/shared/components/structure/LayoutFactory";
 import { Dispatch, SetStateAction } from "react";
-import { useExport } from "@features/review/summarization-graphics/context/ExportContext";
 
 type Props = {
   section: string;
@@ -45,9 +35,6 @@ export default function ChartsRenderer({
 }: Props) {
   const { articles, isLoading } = useGetAllReviewArticles();
 
-  const { extractionAnswers } = useFetchQuestionAnswers();
-  const { setDownloadConfig } = useExport();
-
   const handleCsvData = useCallback((_data: CsvRow[]) => {}, []);
 
   const filteredStudies = useMemo(() => {
@@ -65,93 +52,9 @@ export default function ChartsRenderer({
       );
   }, [articles, filters.source, filters.startYear, filters.endYear]);
 
-  const isCriteriaSection = [
-    "S1_Inclusion Criteria",
-    "S1_Exclusion Criteria",
-    "S2_Inclusion Criteria",
-    "S2_Exclusion Criteria",
-  ].includes(section);
-
-  let filteredStageIds: number[] | undefined;
-  let studiesByCriteria: Record<string, number[]> | undefined;
-
-  if (isCriteriaSection) {
-    const [stagePart, criteriaPart] = section.split("_");
-    const criteriaType = criteriaPart.replace(" Criteria", "").toLowerCase();
-    const stage = stagePart === "S1" ? "selection" : "extraction";
-
-    const { studiesByStage } = useFetchStudiesByStage(stage);
-    const { studiesByCriteria: fetchedCriteria } =
-      useFetchStudiesByCriteria(criteriaType, "EXTRACTION");
-
-    const stageIds =
-      criteriaType === "inclusion"
-        ? studiesByStage?.includedStudies?.ids ?? []
-        : studiesByStage?.excludedStudies?.ids ?? [];
-
-    const filteredStudiesIds = filteredStudies
-      .map((s) =>
-        "studyReviewId" in s
-          ? s.studyReviewId
-          : "studyId" in s
-          ? s.studyId
-          : null
-      )
-      .filter((id): id is number => id !== null);
-
-    filteredStageIds = stageIds.filter((id) => filteredStudiesIds.includes(id));
-    studiesByCriteria = fetchedCriteria?.criteria;
-  }
+  if (isLoading) return <Box>Loading...</Box>;
 
   const chartId = `chart-${section.replace(/\s+/g, "-").toLowerCase()}`;
-
-  const handleDownloadCsv = useCallback(() => {
-    if (section === "Form Questions") {
-      downloadCSV(
-        "questions",
-        buildQuestionsCsv(
-          extractionAnswers,
-          filteredStudies as ArticleInterface[],
-          selectedQuestionId,
-          type
-        )
-      );
-    } else {
-      downloadCSV(
-        section,
-        getCsvData(
-          section,
-          filteredStudies,
-          type,
-          filteredStageIds,
-          studiesByCriteria
-        )
-      );
-    }
-  }, [
-    section,
-    extractionAnswers,
-    filteredStudies,
-    selectedQuestionId,
-    type,
-    filteredStageIds,
-    studiesByCriteria,
-  ]);
-
-  useEffect(() => {
-    if (section !== "Studies Funnel" && section !== "Protocol") {
-      setDownloadConfig({
-        selector: `#${chartId}`,
-        fileName: section,
-        onDownloadCsv: handleDownloadCsv,
-      });
-    } else {
-      setDownloadConfig(undefined);
-    }
-    return () => setDownloadConfig(undefined);
-  }, [chartId, section, handleDownloadCsv, setDownloadConfig]);
-
-  if (isLoading) return <Box>Loading...</Box>;
 
   const rendererMap: Record<string, any> = {
     "Search Sources": (props: any) => (
@@ -235,23 +138,6 @@ export default function ChartsRenderer({
           onCsvData={handleCsvData}
         />
       </Box>
-
-      {!isTableView && section !== "Studies Funnel" && section !== "Protocol" && (
-        <Flex
-          justifyContent="flex-end"
-          alignItems="center"
-          position="absolute"
-          bottom="0.5rem"
-          right="1.5rem"
-          zIndex={10}
-        >
-          <DownloadChartsButton
-            selector={`#${chartId}`}
-            fileName={section}
-            onDownloadCsv={handleDownloadCsv}
-          />
-        </Flex>
-      )}
     </Flex>
   );
 }

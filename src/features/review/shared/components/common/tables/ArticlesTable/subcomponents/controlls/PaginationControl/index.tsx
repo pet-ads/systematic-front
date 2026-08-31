@@ -23,7 +23,6 @@ interface PaginationControlProps {
   changeQuantityOfItens: (newQuantity: number) => void;
   isSplited?: boolean;
   isVertical?: boolean;
-  rightElement?: React.ReactNode;
 }
 
 type ActionButton = {
@@ -43,7 +42,6 @@ const PaginationControl: React.FC<PaginationControlProps> = ({
   changeQuantityOfItens,
   isSplited,
   isVertical,
-  rightElement,
 }) => {
   const window = useWindowWidth();
   const numberOfCases = String(quantityOfPages).length;
@@ -80,103 +78,82 @@ const PaginationControl: React.FC<PaginationControlProps> = ({
     <Flex
       w="100%"
       bg="white"
-      pt="0.75rem"
-      pb={rightElement ? "3rem" : "0.75rem"}
-      px="1.5rem"
+      p="1.5rem"
       borderRadius="0 0 1rem 1rem"
+      flexWrap="wrap"
+      alignItems="center"
       position="relative"
-      direction="column"
     >
       <Flex
-        w="100%"
+        flex="1"
+        justifyContent={window > 1200 && (window > 1700 || !isSplited) ? "center" : "flex-start"}
         alignItems="center"
-        position="relative"
-        minH="36px"
+        gap=".5rem"
+        minW={{ base: "100%", md: "200px" }}
+        w={{ base: "100%", md: "auto" }}
+        order={{ base: 2, md: 1 }}
+        mb={{ base: "0.5rem", md: 0 }}
       >
-        <Flex
-          flex="1"
-          justifyContent={window > 1200 && (window > 1700 || !isSplited) ? "center" : "flex-start"}
-          alignItems="center"
-          gap=".5rem"
-          minW={{ base: "100%", md: "200px" }}
-          w={{ base: "100%", md: "auto" }}
+        <Text whiteSpace="nowrap" fontSize={window > 1000 ? "1rem" : "0.8rem"}>{window < 1000 || window > 1400 || !isVertical ? t("pagination.rowsPerPage") : ""}</Text>
+        <Select
+          w={window > 1000 && window < 1050 ? "65px" : "70px"}
+          fontSize={window < 1000 || window > 1050 ? "1rem" : "0.8rem"}
+          h="32px"
+          textAlign="center"
+          onChange={(e) => changeQuantityOfItens(Number(e.target.value))}
+          value={itensPerPage}
+          defaultValue={20}
         >
-          <Text whiteSpace="nowrap" fontSize={window > 1000 ? "1rem" : "0.8rem"}>
-            {window < 1000 || window > 1400 || !isVertical ? t("pagination.rowsPerPage") : ""}
-          </Text>
-          <Select
-            w={window > 1000 && window < 1050 ? "65px" : "70px"}
-            fontSize={window < 1000 || window > 1050 ? "1rem" : "0.8rem"}
-            h="32px"
-            textAlign="center"
-            onChange={(e) => changeQuantityOfItens(Number(e.target.value))}
-            value={itensPerPage}
-            defaultValue={20}
-          >
-            {paginationValues.map((value, index) => (
-              <option key={index} value={value}>
-                {value}
-              </option>
-            ))}
-          </Select>
-        </Flex>
-
-        <Flex
-          position="absolute"
-          right="0"
-          alignItems="center"
-          gap="0.5rem"
-        >
-          <Text whiteSpace="nowrap" fontSize={window > 1050 ? "1rem" : "0.8rem"}>
-            {(window < 1000 || window > 1150 ? t("pagination.page") : "") +
-              " " +
-              String(currentPage).padStart(numberOfCases, "0") +
-              " " +
-              t("pagination.of") +
-              " " +
-              quantityOfPages}
-          </Text>
-          {isPaginationEnabled &&
-            actionButtons.map(({ icon, action, label }, index) => (
-              <Tooltip
-                label={label}
-                hasArrow
-                placement="top"
-                p=".5rem"
-                borderRadius=".25rem"
-                key={index}
-              >
-                <Button
-                  variant="outline"
-                  onClick={action}
-                  aria-label={label}
-                  minW={window > 1000 ? "36px" : "28px"}
-                  minH={window > 1000 ? "36px" : "28px"}
-                  w={window > 1000 ? "36px" : "28px"}
-                  h={window > 1000 ? "36px" : "28px"}
-                  p="0"
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="center"
-                >
-                  {icon}
-                </Button>
-              </Tooltip>
-            ))}
-        </Flex>
+          {paginationValues.map((value, index) => (
+            <option key={index} value={value}>
+              {value}
+            </option>
+          ))}
+        </Select>
       </Flex>
-
-      {rightElement && (
-        <Flex
-          position="absolute"
-          bottom="0.6rem"
-          right="1.5rem"
-          justifyContent="flex-end"
-          alignItems="center"
-        >
-          {rightElement}
-        </Flex>
-      )}
+      <Flex
+        position="absolute"
+        right="2rem"
+        alignItems="center"
+        gap="0.2rem"
+      >
+        <Text whiteSpace="nowrap" fontSize={window > 1050 ? "1rem" : "0.8rem"}>
+          {(window < 1000 || window > 1150 ? t("pagination.page") : "") +
+            " " +
+            String(currentPage).padStart(numberOfCases, "0") +
+            " " +
+            t("pagination.of") +
+            " " +
+            quantityOfPages}
+        </Text>
+        {isPaginationEnabled &&
+          actionButtons.map(({ icon, action, label }, index) => (
+            <Tooltip
+              label={label}
+              hasArrow
+              placement="top"
+              p=".5rem"
+              borderRadius=".25rem"
+              key={index}
+            >
+              <Button
+                variant="outline"
+                onClick={action}
+                aria-label={label}
+                minW={window > 1000 ? "40px" : "30px"}
+                minH={window > 1000 ? "40px" : "30px"}
+                w={window > 1000 ? "40px" : "30px"}
+                h={window > 1000 ? "40px" : "30px"}
+                p="0"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+              >
+                {icon}
+              </Button>
+            </Tooltip>
+          ))}
+      </Flex>
     </Flex>
   );
 };

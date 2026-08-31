@@ -5,6 +5,7 @@ import PaginationControl from "@features/review/shared/components/common/tables/
 import { useExport } from "@features/review/summarization-graphics/context/ExportContext";
 import useGenericPagination from "@features/review/summarization-graphics/hooks/useGenericPaginations";
 import DownloadChartsButton from "@features/review/summarization-graphics/components/buttons/DownloadChatsButton";
+import { downloadCSV } from "@features/review/summarization-graphics/components/export/ExportCsv";
 
 interface PickManyItemRow {
   studyId: number;
@@ -46,7 +47,7 @@ function buildSelectionMap(
 }
 
 export function PickManyItemTable({ data, options, studyIds }: Props) {
-  const { isExporting, downloadConfig } = useExport();
+  const { isExporting } = useExport();
 
   const selectionMap = useMemo(() => buildSelectionMap(data), [data]);
 
@@ -73,16 +74,19 @@ export function PickManyItemTable({ data, options, studyIds }: Props) {
     changeQuantityOfItens,
   } = useGenericPagination<PickManyItemRow>(rows, 20);
 
-  const downloadButton = downloadConfig ? (
-    <DownloadChartsButton
-      selector={downloadConfig.selector}
-      fileName={downloadConfig.fileName}
-      onDownloadCsv={downloadConfig.onDownloadCsv}
-    />
-  ) : undefined;
+  const handleDownloadCsv = () => {
+    const csvRows = rows.map((r) => {
+      const rowObj: Record<string, any> = { studyId: r.studyId };
+      options.forEach((opt) => {
+        rowObj[opt] = r.selections[opt] ? "Yes" : "No";
+      });
+      return rowObj;
+    });
+    downloadCSV("pick-many-items", csvRows);
+  };
 
   return (
-    <Box w="100%" h="100%" display="flex" flexDirection="column" minH={0} flex="1">
+    <Box w="100%" h="100%" display="flex" flexDirection="column" minH={0} flex="1" position="relative" pb="3.5rem">
       <TableContainer
         w="100%"
         flex="1"
@@ -170,7 +174,7 @@ export function PickManyItemTable({ data, options, studyIds }: Props) {
         </Table>
       </TableContainer>
 
-      {!isExporting && (
+      {!isExporting && rows.length >= 20 && (
         <Box flexShrink={0} borderTop="1px solid #E2E8F0">
           <PaginationControl
             currentPage={currentPage}
@@ -181,7 +185,16 @@ export function PickManyItemTable({ data, options, studyIds }: Props) {
             handleBackToInitial={handleBackToInitial}
             handleGoToFinal={handleGoToFinal}
             changeQuantityOfItens={changeQuantityOfItens}
-            rightElement={downloadButton}
+          />
+        </Box>
+      )}
+
+      {!isExporting && (
+        <Box position="absolute" bottom="0.75rem" right="1.5rem" zIndex={2}>
+          <DownloadChartsButton
+            selector="#chart-form-questions"
+            fileName="pick-many-items"
+            onDownloadCsv={handleDownloadCsv}
           />
         </Box>
       )}

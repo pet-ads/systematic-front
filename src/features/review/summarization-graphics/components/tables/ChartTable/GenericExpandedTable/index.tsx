@@ -16,6 +16,7 @@ import { FaChevronDown, FaChevronUp } from "react-icons/fa6";
 import PaginationControl from "@features/review/shared/components/common/tables/ArticlesTable/subcomponents/controlls/PaginationControl";
 import useGenericPagination from "@features/review/summarization-graphics/hooks/useGenericPaginations";
 import DownloadChartsButton from "@features/review/summarization-graphics/components/buttons/DownloadChatsButton";
+import { downloadCSV } from "@features/review/summarization-graphics/components/export/ExportCsv";
 
 import { useExport } from "@features/review/summarization-graphics/context/ExportContext";
 
@@ -37,13 +38,15 @@ export type SortConfig<T> = {
 interface GenericExpandedTableProps<T> {
   data: T[];
   columns: ColumnDef<T>[];
+  downloadFileName?: string;
 }
 
 export function GenericExpandedTable<T>({
   data,
   columns,
+  downloadFileName = "data",
 }: GenericExpandedTableProps<T>) {
-  const { isExporting, downloadConfig } = useExport();
+  const { isExporting } = useExport();
 
   const [sortConfig, setSortConfig] = useState<SortConfig<T>>(null);
 
@@ -93,16 +96,12 @@ export function GenericExpandedTable<T>({
     changeQuantityOfItens,
   } = useGenericPagination<T>(sortedData);
 
-  const downloadButton = downloadConfig ? (
-    <DownloadChartsButton
-      selector={downloadConfig.selector}
-      fileName={downloadConfig.fileName}
-      onDownloadCsv={downloadConfig.onDownloadCsv}
-    />
-  ) : undefined;
+  const handleDownloadCsv = () => {
+    downloadCSV(downloadFileName, data as Record<string, any>[]);
+  };
 
   return (
-    <Box w="100%" h="100%" display="flex" flexDirection="column" minH={0} flex="1">
+    <Box w="100%" h="100%" display="flex" flexDirection="column" minH={0} flex="1" position="relative" pb="3.5rem">
       <TableContainer
         w="100%"
         flex="1"
@@ -221,7 +220,7 @@ export function GenericExpandedTable<T>({
         </Table>
       </TableContainer>
 
-      {!isExporting && (
+      {!isExporting && data.length >= 20 && (
         <Box 
           display="flex" 
           w="100%" 
@@ -237,7 +236,16 @@ export function GenericExpandedTable<T>({
             handleBackToInitial={handleBackToInitial}
             handleGoToFinal={handleGoToFinal}
             changeQuantityOfItens={changeQuantityOfItens}
-            rightElement={downloadButton}
+          />
+        </Box>
+      )}
+
+      {!isExporting && (
+        <Box position="absolute" bottom="0.75rem" right="1.5rem" zIndex={2}>
+          <DownloadChartsButton
+            selector="#chart-search-sources, #chart-form-questions"
+            fileName={downloadFileName}
+            onDownloadCsv={handleDownloadCsv}
           />
         </Box>
       )}
