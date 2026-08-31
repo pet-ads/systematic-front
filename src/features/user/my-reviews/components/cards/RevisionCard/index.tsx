@@ -37,6 +37,16 @@ export default function RevisionCard({
 
   const displayStatus = status || stage || "...";
 
+  const collaboratorsList =
+    collaborators && collaborators.length > 0
+      ? collaborators
+          .map(
+            (collaborator) =>
+              `${collaborator.username.toLowerCase()} (${collaborator.role.toLowerCase()})`
+          )
+          .join(", ")
+      : "-";
+
   return (
     <Flex 
       w="100%" 
@@ -61,20 +71,9 @@ export default function RevisionCard({
         
         
         <Box mt="0.25rem">
-          {collaborators && collaborators.length > 0 ? (
-            <>
-              <Text fontSize="0.875rem" color="gray.600">
-                {t("reviewers")}:
-              </Text>
-              {collaborators.map((collaborator) => (
-                <Text key={collaborator.id} textIndent="1rem" fontSize="0.875rem" color="gray.500">
-                  {collaborator.username}: {collaborator.role}
-                </Text>
-              ))}
-            </>
-          ) : (
-            <Text fontSize="0.875rem" color="gray.400">{t("reviewers")}: -</Text>
-          )}
+          <Text fontSize="0.875rem" color="gray.600">
+            {t("reviewers")}: {collaboratorsList}
+          </Text>
         </Box>
       </Box>
 
