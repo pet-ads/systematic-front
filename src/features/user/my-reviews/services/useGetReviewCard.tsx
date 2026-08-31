@@ -58,8 +58,7 @@ export default function useGetReviewCard() {
               username:
                 collaborator.id === userId
                   ? t("you")
-                  : collaborator.username.charAt(0).toUpperCase() +
-                    collaborator.username.slice(1),
+                  : collaborator.username,
               role: t(
                 `review/planning-protocol:generalDefinition.input.researchers.role.${collaborator.role.toLowerCase()}`
               ),
@@ -68,7 +67,7 @@ export default function useGetReviewCard() {
           const ownerName = owner
             ? owner.id === userId
               ? t("you")
-              : owner.username.charAt(0).toUpperCase() + owner.username.slice(1)
+              : owner.username
             : "-";
 
           return {
