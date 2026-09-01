@@ -54,7 +54,7 @@ export default function CollaborationTables({ mode }: CollaborationTablesProps) 
       label: t("collaboration.table.collaborator", "colaborador"),
       width: "50%",
       render: (row) => (
-        <Text fontSize="sm" color="black" textAlign="center">
+        <Text fontSize="sm" color="black" textAlign="left">
           {row.name}
         </Text>
       ),
@@ -64,7 +64,7 @@ export default function CollaborationTables({ mode }: CollaborationTablesProps) 
       label: t("collaboration.table.percentage", "% de estudos"),
       width: "50%",
       render: (row, index) => (
-        <Flex justifyContent="center">
+        <Flex justifyContent="flex-start">
           <NumberInput
             size="sm"
             w="100px"
@@ -73,7 +73,7 @@ export default function CollaborationTables({ mode }: CollaborationTablesProps) 
             value={row.percentage}
             onChange={(_, valueAsNumber) => handlePercentageChange(index, valueAsNumber)}
           >
-            <NumberInputField textAlign="center" />
+            <NumberInputField textAlign="left" />
             <NumberInputStepper>
               <NumberIncrementStepper />
               <NumberDecrementStepper />
@@ -90,7 +90,7 @@ export default function CollaborationTables({ mode }: CollaborationTablesProps) 
       label: t("collaboration.table.collaborator", "colaborador"),
       width: "50%",
       render: (row) => (
-        <Text fontSize="sm" color="black" textAlign="center">
+        <Text fontSize="sm" color="black" textAlign="left">
           {row.name}
         </Text>
       ),
@@ -100,7 +100,7 @@ export default function CollaborationTables({ mode }: CollaborationTablesProps) 
       label: t("collaboration.table.studiesCount", "número de estudos"),
       width: "50%",
       render: (row, index) => (
-        <Flex justifyContent="center">
+        <Flex justifyContent="flex-start">
           <NumberInput
             size="sm"
             w="100px"
@@ -108,7 +108,7 @@ export default function CollaborationTables({ mode }: CollaborationTablesProps) 
             value={row.studiesCount}
             onChange={(_, valueAsNumber) => handleStudiesCountChange(index, valueAsNumber)}
           >
-            <NumberInputField textAlign="center" />
+            <NumberInputField textAlign="left" />
             <NumberInputStepper>
               <NumberIncrementStepper />
               <NumberDecrementStepper />
@@ -134,34 +134,35 @@ export default function CollaborationTables({ mode }: CollaborationTablesProps) 
   if (mode === "division") {
     return (
       <Box mt={4}>
-        <Flex
-          alignItems="center"
-          mb={4}
-          border="1px solid #E2E8F0"
-          borderRadius="md"
-          w="fit-content"
-          overflow="hidden"
-        >
-          <Box px={4} py={2} bg="gray.50" borderRight="1px solid #E2E8F0">
-            <Text fontSize="sm" fontWeight="medium">
-              {t("collaboration.division.minReviewers", "Mínimo de revisores por estudo")}
-            </Text>
-          </Box>
-          <Select
-            value={minReviewers}
-            onChange={(e) => setMinReviewers(e.target.value)}
-            variant="unstyled"
-            size="sm"
-            w="70px"
-            px={3}
-            cursor="pointer"
+        <Flex w="100%" justifyContent="center" mb={4}>
+          <Flex
+            alignItems="center"
+            border="1px solid #E2E8F0"
+            borderRadius="md"
+            w="fit-content"
+            overflow="hidden"
           >
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-          </Select>
+            <Box px={4} py={2} bg="gray.50" borderRight="1px solid #E2E8F0">
+              <Text fontSize="sm" fontWeight="medium">
+                {t("collaboration.division.minReviewers", "Mínimo de revisores por estudo")}
+              </Text>
+            </Box>
+            <Select
+              value={minReviewers}
+              onChange={(e) => setMinReviewers(e.target.value)}
+              variant="unstyled"
+              size="sm"
+              w="70px"
+              px={3}
+              cursor="pointer"
+            >
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </Select>
+          </Flex>
         </Flex>
 
         <DefaultTable<CollaboratorRow>
