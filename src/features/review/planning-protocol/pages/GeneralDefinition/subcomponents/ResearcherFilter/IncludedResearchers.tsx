@@ -66,6 +66,7 @@ export default function IncludedResearchers({
       await removeCollaborator({
         systematicStudyId,
         researcherId: researcherToDelete.id,
+        status: researcherToDelete.status,
       });
     } catch {
       toast({
