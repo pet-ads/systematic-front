@@ -200,7 +200,33 @@ export default function ChartExpanded({
   }
 
   const handleDownloadCsv = () => {
-    downloadCSV("included-studies", getCsvData("Included Studies", articles, "Table"));
+    const csvRows = articles.map((study) => {
+      const sourceText =
+        "searchSources" in study && Array.isArray(study.searchSources)
+          ? (study.searchSources as string[])[0]
+          : "";
+      const criteriaText =
+        "extractionCriteria" in study && Array.isArray(study.extractionCriteria)
+          ? study.extractionCriteria
+              .map((cr) => {
+                const idx = inclusionCriterias.findIndex((item) => item === cr);
+                return `IC${idx + 1}`;
+              })
+              .join(" , ")
+          : "";
+
+      return {
+        id: study.studyReviewId ?? "",
+        title: study.title ?? "",
+        authors: study.authors ?? "",
+        journal: (study as ArticleInterface).venue ?? "",
+        year: study.year ?? "",
+        sources: sourceText,
+        criteria: criteriaText,
+      };
+    });
+
+    downloadCSV("included-studies", csvRows);
   };
 
   return (
