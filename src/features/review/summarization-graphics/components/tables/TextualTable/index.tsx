@@ -21,6 +21,8 @@ import usePagination from "@features/review/shared/hooks/usePagination";
 // Components
 import PaginationControl from "@features/review/shared/components/common/tables/ArticlesTable/subcomponents/controlls/PaginationControl";
 import { Resizable } from "@features/review/shared/components/common/tables/ArticlesTable/subcomponents/Expanded/subcomponents/Resizable";
+import DownloadChartsButton from "@features/review/summarization-graphics/components/buttons/DownloadChatsButton";
+import { downloadCSV } from "../../export/ExportCsv";
 
 // Context
 import { useExport } from "@features/review/summarization-graphics/context/ExportContext";
@@ -133,8 +135,21 @@ export default function TextualTable({
     }));
   };
 
+  const handleDownloadCsv = () => {
+    const rows = articles.map((study) => ({
+      id: study.studyReviewId ?? "",
+      title: study.title ?? "",
+      authors: study.authors ?? "",
+      answer:
+        (study as any).formAnswers?.[ANSWER_ID] ??
+        (study as any).robAnswers?.[ANSWER_ID] ??
+        "",
+    }));
+    downloadCSV("textual-question", rows);
+  };
+
   return (
-    <Box w="100%" h="100%" display="flex" flexDirection="column" minH={0}>
+    <Box w="100%" h="100%" display="flex" flexDirection="column" minH={0} flex="1" position="relative" pb={articles.length >= 20 ? "3.5rem" : "3.5rem"}>
       <TableContainer
         w="100%"
         flex="1"
@@ -295,8 +310,8 @@ export default function TextualTable({
         </Table>
       </TableContainer>
 
-      {articles.length >= 20 && (
-        <Box flexShrink={0}>
+      {!isExporting && articles.length >= 20 && (
+        <Box flexShrink={0} borderTop="1px solid #E2E8F0">
           <PaginationControl
             currentPage={currentPage}
             itensPerPage={itensPerPageUI}
@@ -306,6 +321,16 @@ export default function TextualTable({
             handleBackToInitial={handleBackToInitial}
             handleGoToFinal={handleGoToFinal}
             changeQuantityOfItens={handleChangeItensPerPage}
+          />
+        </Box>
+      )}
+
+      {!isExporting && (
+        <Box position="absolute" bottom="0.75rem" right="1.5rem" zIndex={2}>
+          <DownloadChartsButton
+            selector="#chart-form-questions"
+            fileName="textual-question"
+            onDownloadCsv={handleDownloadCsv}
           />
         </Box>
       )}

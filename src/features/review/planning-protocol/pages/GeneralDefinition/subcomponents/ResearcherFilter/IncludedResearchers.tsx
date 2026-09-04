@@ -60,23 +60,23 @@ export default function IncludedResearchers({
   async function handleDelete() {
     if (!researcherToDelete) return;
 
-    if (researcherToDelete.status === "included") {
-      setIsDeletingIncluded(true);
-      try {
-        await removeCollaborator({
-          systematicStudyId,
-          researcherId: researcherToDelete.id,
-        });
-      } catch {
-        toast({
-          title: t("generalDefinition.input.researchers.toasts.removeError.title"),
-          description: t("generalDefinition.input.researchers.toasts.removeError.description"),
-          status: "error",
-        });
-        setIsDeletingIncluded(false);
-        setResearcherToDelete(null);
-        return;
-      }
+    setIsDeletingIncluded(true);
+
+    try {
+      await removeCollaborator({
+        systematicStudyId,
+        researcherId: researcherToDelete.id,
+        status: researcherToDelete.status,
+      });
+    } catch {
+      toast({
+        title: t("generalDefinition.input.researchers.toasts.removeError.title"),
+        description: t("generalDefinition.input.researchers.toasts.removeError.description"),
+        status: "error",
+      });
+      setResearcherToDelete(null);
+      return;
+    } finally {
       setIsDeletingIncluded(false);
     }
 

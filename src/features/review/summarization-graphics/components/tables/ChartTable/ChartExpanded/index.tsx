@@ -36,6 +36,9 @@ import useFetchInclusionCriteria from "@features/review/shared/services/useFetch
 import { StudyInterface } from "@features/review/shared/types/IStudy";
 import { useExport } from "@features/review/summarization-graphics/context/ExportContext";
 import { ColumnVisibility } from "@features/review/shared/hooks/useVisibilityColumns";
+import DownloadChartsButton from "@features/review/summarization-graphics/components/buttons/DownloadChatsButton";
+import { downloadCSV } from "@features/review/summarization-graphics/components/export/ExportCsv";
+import { getCsvData } from "@features/review/summarization-graphics/components/export/ExportCsv/CsvFactoty/getCsvData";
 
 export type AllKeys =
   | "studyReviewId"
@@ -85,11 +88,9 @@ export default function ChartExpanded({
   const [itensPerPageUI, setItensPerPageUI] = useState(20);
 
   const handleChangeItensPerPage = (value: number) => {
-  setItensPerPageUI(value);      // UI
-  changeQuantityOfItens(value);  // hook
-};
-
-
+    setItensPerPageUI(value);
+    changeQuantityOfItens(value);
+  };
 
   if (!studyContext) return null;
 
@@ -185,6 +186,7 @@ export default function ChartExpanded({
       return newWidths;
     });
   };
+
   function isArticleInterface(
     study: ArticleInterface | StudyInterface
   ): study is ArticleInterface {
@@ -196,8 +198,13 @@ export default function ChartExpanded({
   ): study is StudyInterface {
     return "studyId" in study;
   }
+
+  const handleDownloadCsv = () => {
+    downloadCSV("included-studies", getCsvData("Included Studies", articles, "Table"));
+  };
+
   return (
-    <Box w="100%" h="100%" display="flex" flexDirection="column" minH={0}>
+    <Box w="100%" h="100%" display="flex" flexDirection="column" minH={0} flex="1" position="relative" pb="3.5rem">
       <TableContainer
         w="100%"
         mt="-0.5rem"
@@ -233,8 +240,6 @@ export default function ChartExpanded({
                   whiteSpace={isExporting ? "normal" : "nowrap"}
                   lineHeight={1.8}
                   overflow={isExporting ? "visible" : "hidden"}
-                 
-        
                 >
                   <Resizable
                     direction="horizontal"
@@ -398,8 +403,8 @@ export default function ChartExpanded({
           </Tbody>
         </Table>
       </TableContainer>
-      {articles.length >= 20 && (
-        <Box flexShrink={0}>
+      {!isExporting && articles.length >= 20 && (
+        <Box flexShrink={0} borderTop="1px solid #E2E8F0">
           <PaginationControl
             currentPage={currentPage}
             itensPerPage={itensPerPageUI}
@@ -409,6 +414,16 @@ export default function ChartExpanded({
             handleBackToInitial={handleBackToInitial}
             handleGoToFinal={handleGoToFinal}
             changeQuantityOfItens={handleChangeItensPerPage}
+          />
+        </Box>
+      )}
+
+      {!isExporting && (
+        <Box position="absolute" bottom="0.75rem" right="1.5rem" zIndex={2}>
+          <DownloadChartsButton
+            selector="#chart-included-studies"
+            fileName="included-studies"
+            onDownloadCsv={handleDownloadCsv}
           />
         </Box>
       )}

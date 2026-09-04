@@ -24,7 +24,7 @@ export default function FormQuestionsRenderer({
   setTablePage,
 }: Props) {
   return (
-    <Box id={chartId}>
+    <Box id={chartId} w="100%" h="100%" minH={0} flex="1" display="flex" flexDirection="column">
       <QuestionsCharts
         filteredStudies={filteredStudies as ArticleInterface[]}
         type={type}

@@ -6,17 +6,38 @@ import { PageLayout } from "@features/review/shared/components/structure/LayoutF
 import ExtractionForm from "@features/review/execution-extraction/components/forms/ExtractionForm";
 import { StudyInterface } from "@features/review/shared/types/IStudy";
 
+export interface EditData {
+  title: string;
+  authors: string;
+  venue: string;
+  year: string;
+  abstract: string;
+  keywords: string;
+}
+
 interface IStudyDataFiel {
   studyData: StudyInterface;
   page: PageLayout;
+  isEditing?: boolean;
+  editData?: EditData;
+  setEditData?: (data: EditData) => void;
 }
 
 export interface ArticlePreviewProps {
   studyData: StudyInterface;
   mode?: "selection" | "extraction";
+  isEditing?: boolean;
+  editData?: EditData;
+  setEditData?: (data: EditData) => void;
 }
 
-export default function StudyDataFiel({ studyData, page }: IStudyDataFiel) {
+export default function StudyDataFiel({
+  studyData,
+  page,
+  isEditing,
+  editData,
+  setEditData,
+}: IStudyDataFiel) {
   const selectionSX = {
     bg: "white",
     w: "100%",
@@ -30,7 +51,13 @@ export default function StudyDataFiel({ studyData, page }: IStudyDataFiel) {
   return (
     <Flex sx={selectionSX}>
       {page == "Selection" || page == "Identification" ? (
-        <ArticlePreview studyData={studyData} mode="selection" />
+        <ArticlePreview
+          studyData={studyData}
+          mode="selection"
+          isEditing={isEditing}
+          editData={editData}
+          setEditData={setEditData}
+        />
       ) : (
         <ExtractionForm studyData={studyData} mode="extraction" />
       )}

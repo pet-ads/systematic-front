@@ -15,7 +15,7 @@ const useFetchStudiesByCriteria = (criteria: string, stage: string) => {
   const path = `systematic-study/${id}/report/criteria/${criteria}`;
 
   const { data, isLoading, mutate } = useSWR(
-    ["studiesByCriteria", criteria],
+    ["studiesByCriteria", criteria, stage],
     () => fetchGetStudiesByCriteria(),
     {
       revalidateOnFocus: false,

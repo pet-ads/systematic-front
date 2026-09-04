@@ -145,13 +145,14 @@ export default function Graphics() {
       </Flex>
 
       <CardDefault backgroundColor="#fff" borderRadius="1rem" withShadow={false}>
-        <Flex w="100%" h="100%" direction="column" overflow="hidden">
+        <Flex w="100%" h="100%" minH={0} direction="column" overflow="hidden">
           <ExportProvider>
             {section ? (
               <Flex 
                 w="100%" 
                 h="100%" 
                 flex="1" 
+                minH={0}
                 overflow="hidden" 
                 position="relative" 
                 direction="column" 

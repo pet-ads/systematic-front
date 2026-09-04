@@ -3,7 +3,6 @@ import { Box, Flex } from "@chakra-ui/react";
 import { graphicsconteiner } from "../../styles";
 
 import { FiltersState } from "@features/review/summarization-graphics/hooks/useGraphicsState";
-
 import useGetAllReviewArticles from "@features/review/shared/services/useGetAllReviewArticles";
 
 import SearchSourcesRenderer from "./SearchSourcesRenderer";
@@ -11,15 +10,7 @@ import IncludedStudiesRenderer from "./IncludedStudiesRenderer";
 import CriteriaRenderer from "./CriteriaRenderer";
 import StudiesFunnelRenderer from "./StudiesFunnelRenderer";
 import ProtocolRenderer from "./ProtocolRenderer";
-import DownloadChartsButton from "@features/review/summarization-graphics/components/buttons/DownloadChatsButton";
 import FormQuestionsRenderer from "./FormQuestionsRenderer";
-import { downloadCSV } from "@features/review/summarization-graphics/components/export/ExportCsv";
-import { getCsvData } from "@features/review/summarization-graphics/components/export/ExportCsv/CsvFactoty/getCsvData";
-import useFetchQuestionAnswers from "@features/review/summarization-graphics/services/useFetchQuestionAnwers";
-import { buildQuestionsCsv } from "@features/review/summarization-graphics/components/export/ExportCsv/CsvQuestions/buildQuestionsCsv";
-import ArticleInterface from "@features/review/shared/types/ArticleInterface";
-import { useFetchStudiesByStage } from "@features/review/summarization-graphics/services/useFetchStudiesByStage";
-import useFetchStudiesByCriteria from "@features/review/summarization-graphics/services/useFetchStudiesByCriteria";
 import { ColumnVisibility } from "@features/review/shared/hooks/useVisibilityColumns";
 import { PageLayout } from "@features/review/shared/components/structure/LayoutFactory";
 import { Dispatch, SetStateAction } from "react";
@@ -44,8 +35,6 @@ export default function ChartsRenderer({
 }: Props) {
   const { articles, isLoading } = useGetAllReviewArticles();
 
-  const { extractionAnswers } = useFetchQuestionAnswers();
-
   const handleCsvData = useCallback((_data: CsvRow[]) => {}, []);
 
   const filteredStudies = useMemo(() => {
@@ -62,44 +51,6 @@ export default function ChartsRenderer({
           : true
       );
   }, [articles, filters.source, filters.startYear, filters.endYear]);
-
-  const isCriteriaSection = [
-    "S1_Inclusion Criteria",
-    "S1_Exclusion Criteria",
-    "S2_Inclusion Criteria",
-    "S2_Exclusion Criteria",
-  ].includes(section);
-
-  let filteredStageIds: number[] | undefined;
-  let studiesByCriteria: Record<string, number[]> | undefined;
-
-  if (isCriteriaSection) {
-    const [stagePart, criteriaPart] = section.split("_");
-    const criteriaType = criteriaPart.replace(" Criteria", "").toLowerCase();
-    const stage = stagePart === "S1" ? "selection" : "extraction";
-
-    const { studiesByStage } = useFetchStudiesByStage(stage);
-    const { studiesByCriteria: fetchedCriteria } =
-      useFetchStudiesByCriteria(criteriaType, "EXTRACTION");
-
-    const stageIds =
-      criteriaType === "inclusion"
-        ? studiesByStage?.includedStudies?.ids ?? []
-        : studiesByStage?.excludedStudies?.ids ?? [];
-
-    const filteredStudiesIds = filteredStudies
-      .map((s) =>
-        "studyReviewId" in s
-          ? s.studyReviewId
-          : "studyId" in s
-          ? s.studyId
-          : null
-      )
-      .filter((id): id is number => id !== null);
-
-    filteredStageIds = stageIds.filter((id) => filteredStudiesIds.includes(id));
-    studiesByCriteria = fetchedCriteria?.criteria;
-  }
 
   if (isLoading) return <Box>Loading...</Box>;
 
@@ -160,56 +111,33 @@ export default function ChartsRenderer({
   const Renderer = rendererMap[section];
   if (!Renderer) return <Box>Seção não encontrada</Box>;
 
+  const isTableView =
+    type === "Table" ||
+    type === "Tabela" ||
+    type === "Item Table" ||
+    type === "Tabela por Item";
+
   return (
     <Flex
       flex="1"
       w="100%"
+      h="100%"
       minH={0}
       direction="column"
       mt="0px"
-      justify={type === "Table" || type === "Tabela" || type === "Item Table" || type === "Tabela por Item" ? "flex-start" : "center"}
+      position="relative"
+      justify={isTableView ? "flex-start" : "center"}
       sx={{
         ...graphicsconteiner,
       }}
     >
-      <Renderer
-        filteredStudies={filteredStudies}
-        type={type}
-        onCsvData={handleCsvData}
-      />
-
-      {2 !== 2 && section !== "Studies Funnel" && section !== "Protocol" && (
-        <Flex justifyContent="flex-end" p="1rem" position="fixed" bottom="1rem" right="1rem">
-          <DownloadChartsButton
-            selector={`#${chartId}`}
-            fileName={section}
-            onDownloadCsv={() => {
-              if (section === "Form Questions") {
-                downloadCSV(
-                  "questions",
-                  buildQuestionsCsv(
-                    extractionAnswers,
-                    filteredStudies as ArticleInterface[],
-                    selectedQuestionId,
-                    type
-                  )
-                );
-              } else {
-                downloadCSV(
-                  section,
-                  getCsvData(
-                    section,
-                    filteredStudies,
-                    type,
-                    filteredStageIds,
-                    studiesByCriteria
-                  )
-                );
-              }
-            }}
-          />
-        </Flex>
-      )}
+      <Box flex="1" w="100%" h="100%" minH={0} overflow="hidden" display="flex" flexDirection="column">
+        <Renderer
+          filteredStudies={filteredStudies}
+          type={type}
+          onCsvData={handleCsvData}
+        />
+      </Box>
     </Flex>
   );
 }
