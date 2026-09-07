@@ -31,9 +31,12 @@ export default function CollaborationTables({ mode }: CollaborationTablesProps) 
 
   const [minReviewers, setMinReviewers] = useState<string>("3");
 
+  //Mock reviewers
   const [collaborators, setCollaborators] = useState<CollaboratorRow[]>([
-    { id: "1", name: "joao", percentage: 100, studiesCount: 100 },
-    { id: "2", name: "gabriel", percentage: 33, studiesCount: 35 },
+    { id: "1", name: "joao", type: "principal", percentage: 100, studiesCount: 100 },
+    { id: "2", name: "gabriel", type: "secundario", percentage: 33, studiesCount: 35 },
+    { id: "3", name: "maria", type: "secundario", percentage: 50, studiesCount: 50 },
+    { id: "4", name: "ana", type: "secundario", percentage: 20, studiesCount: 20 },
   ]);
 
   const handlePercentageChange = (index: number, valueAsNumber: number) => {
