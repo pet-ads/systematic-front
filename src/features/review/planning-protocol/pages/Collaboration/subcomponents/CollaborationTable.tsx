@@ -5,6 +5,7 @@ import {
   Flex,
   Text,
   Select,
+  Checkbox,
   NumberInput,
   NumberInputField,
   NumberInputStepper,
@@ -18,6 +19,7 @@ import { Column } from "@components/common/tables/DefaultTable/types";
 export interface CollaboratorRow {
   id: string;
   name: string;
+  type: "principal" | "secundario";
   percentage: number;
   studiesCount: number;
 }
@@ -29,7 +31,9 @@ interface CollaborationTablesProps {
 export default function CollaborationTables({ mode }: CollaborationTablesProps) {
   const { t } = useTranslation("review/planning-protocol");
 
-  const [minReviewers, setMinReviewers] = useState<string>("3");
+  const [reviewersPerStudy, setReviewersPerStudy] = useState<number>(1);
+  const [dontAssignMultipleSecondary, setDontAssignMultipleSecondary] = useState<boolean>(false);
+
 
   //Mock reviewers
   const [collaborators, setCollaborators] = useState<CollaboratorRow[]>([
@@ -37,7 +41,7 @@ export default function CollaborationTables({ mode }: CollaborationTablesProps) 
     { id: "2", name: "gabriel", type: "secundario", percentage: 33, studiesCount: 35 },
     { id: "3", name: "maria", type: "secundario", percentage: 50, studiesCount: 50 },
     { id: "4", name: "ana", type: "secundario", percentage: 20, studiesCount: 20 },
-  ]);
+  ]); 
 
   const handlePercentageChange = (index: number, valueAsNumber: number) => {
     const updated = [...collaborators];
@@ -51,11 +55,37 @@ export default function CollaborationTables({ mode }: CollaborationTablesProps) 
     setCollaborators(updated);
   };
 
+  const handleTypeChange = (index: number, newType: "principal" | "secundario") => {
+    const updated = collaborators.map((collab, idx) => {
+      if (idx === index) {
+        return {
+          ...collab,
+          type: newType,
+          percentage: newType === "principal" ? 100 : collab.percentage,
+        };
+      }
+      if (newType === "principal") {
+        return {
+          ...collab,
+          type: "secundario" as const,
+        };
+      }
+      return collab;
+    });
+    setCollaborators(updated);
+  };
+
+  const secondarySum = collaborators
+    .filter((collab) => collab.type === "secundario")
+    .reduce((acc, collab) => acc + (Number(collab.percentage) || 0), 0);
+
+  const isCheckboxDisabled = secondarySum > 100;
+
   const replicationColumns: Column<CollaboratorRow>[] = [
     {
       key: "name",
-      label: t("collaboration.table.collaborator", "colaborador"),
-      width: "50%",
+      label: t("collaboration.table.reviewer", "revisor"),
+      width: "35%",
       render: (row) => (
         <Text fontSize="sm" color="black" textAlign="left">
           {row.name}
@@ -63,9 +93,29 @@ export default function CollaborationTables({ mode }: CollaborationTablesProps) 
       ),
     },
     {
+      key: "type",
+      label: t("collaboration.table.type", "tipo"),
+      width: "30%",
+      render: (row, index) => (
+        <Flex justifyContent="flex-start">
+          <Select
+            size="sm"
+            w="130px"
+            value={row.type}
+            onChange={(e) =>
+              handleTypeChange(index, e.target.value as "principal" | "secundario")
+            }
+          >
+            <option value="principal">{t("collaboration.type.principal", "principal")}</option>
+            <option value="secundario">{t("collaboration.type.secundario", "secundário")}</option>
+          </Select>
+        </Flex>
+      ),
+    },
+    {
       key: "percentage",
       label: t("collaboration.table.percentage", "% de estudos"),
-      width: "50%",
+      width: "35%",
       render: (row, index) => (
         <Flex justifyContent="flex-start">
           <NumberInput
@@ -74,6 +124,7 @@ export default function CollaborationTables({ mode }: CollaborationTablesProps) 
             min={0}
             max={100}
             value={row.percentage}
+            isDisabled={row.type === "principal"}
             onChange={(_, valueAsNumber) => handlePercentageChange(index, valueAsNumber)}
           >
             <NumberInputField textAlign="left" />
@@ -87,11 +138,18 @@ export default function CollaborationTables({ mode }: CollaborationTablesProps) 
     },
   ];
 
+  const totalReviewers = collaborators.length;
+  const currentReviewersPerStudy = Math.min(reviewersPerStudy, totalReviewers || 1);
+  const calculatedPercentage =
+    totalReviewers > 0
+      ? ((100 / totalReviewers) * currentReviewersPerStudy).toFixed(1)
+      : "0";
+
   const divisionColumns: Column<CollaboratorRow>[] = [
     {
       key: "name",
-      label: t("collaboration.table.collaborator", "colaborador"),
-      width: "50%",
+      label: t("collaboration.table.reviewer", "revisor"),
+      width: "35%",
       render: (row) => (
         <Text fontSize="sm" color="black" textAlign="left">
           {row.name}
@@ -99,9 +157,19 @@ export default function CollaborationTables({ mode }: CollaborationTablesProps) 
       ),
     },
     {
+      key: "percentage",
+      label: t("collaboration.table.percentage", "% de estudos"),
+      width: "30%",
+      render: () => (
+        <Text fontSize="sm" color="black" fontWeight="medium" textAlign="left">
+          {calculatedPercentage}%
+        </Text>
+      ),
+    },
+    {
       key: "studiesCount",
       label: t("collaboration.table.studiesCount", "número de estudos"),
-      width: "50%",
+      width: "35%",
       render: (row, index) => (
         <Flex justifyContent="flex-start">
           <NumberInput
@@ -121,7 +189,7 @@ export default function CollaborationTables({ mode }: CollaborationTablesProps) 
       ),
     },
   ];
-  
+
   if (mode === "replication") {
     return (
       <Box mt={4}>
@@ -130,6 +198,22 @@ export default function CollaborationTables({ mode }: CollaborationTablesProps) 
           data={collaborators}
           enableSorting={false}
         />
+
+        <Flex mt={4} alignItems="center">
+          <Checkbox
+            isChecked={dontAssignMultipleSecondary && !isCheckboxDisabled}
+            isDisabled={isCheckboxDisabled}
+            onChange={(e) => setDontAssignMultipleSecondary(e.target.checked)}
+            colorScheme="blue"
+          >
+            <Text fontSize="sm">
+              {t(
+                "collaboration.replication.dontAssignMultipleSecondary",
+                "Não atribuir um mesmo estudo a mais de um revisor secundário"
+              )}
+            </Text>
+          </Checkbox>
+        </Flex>
       </Box>
     );
   }
@@ -147,23 +231,23 @@ export default function CollaborationTables({ mode }: CollaborationTablesProps) 
           >
             <Box px={4} py={2} bg="gray.50" borderRight="1px solid #E2E8F0">
               <Text fontSize="sm" fontWeight="medium">
-                {t("collaboration.division.minReviewers", "Mínimo de revisores por estudo")}
+                {t("collaboration.division.reviewersPerStudy", "Revisores por estudo")}
               </Text>
             </Box>
             <Select
-              value={minReviewers}
-              onChange={(e) => setMinReviewers(e.target.value)}
+              value={currentReviewersPerStudy}
+              onChange={(e) => setReviewersPerStudy(Number(e.target.value))}
               variant="unstyled"
               size="sm"
               w="70px"
               px={3}
               cursor="pointer"
             >
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
+              {Array.from({ length: totalReviewers }, (_, i) => i + 1).map((val) => (
+                <option key={val} value={val}>
+                  {val}
+                </option>
+              ))}
             </Select>
           </Flex>
         </Flex>
