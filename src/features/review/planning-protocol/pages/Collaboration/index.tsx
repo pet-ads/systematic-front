@@ -53,10 +53,10 @@ export default function Collaboration() {
           <RadioGroup onChange={setCollaborationMode} value={collaborationMode}>
             <Stack direction="row" spacing={10}>
               <Radio value="replication" colorScheme="blue">
-                {t("collaboration.options.replication", "replicação de estudos")}
+                {t("collaboration.options.replication", "replicar estudos entre revisores")}
               </Radio>
               <Radio value="division" colorScheme="blue">
-                {t("collaboration.options.division", "divisão de trabalho")}
+                {t("collaboration.options.division", "dividir estudos entre revisores")}
               </Radio>
             </Stack>
           </RadioGroup>
