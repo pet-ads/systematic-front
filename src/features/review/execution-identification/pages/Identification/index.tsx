@@ -1,5 +1,5 @@
 // External library
-import { Box, Flex } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 import { useContext, useEffect } from "react";
 
@@ -41,9 +41,6 @@ export default function Identification() {
         borderRadius="1rem"
         withShadow={false}
       >
-        <Box w="100%" px="1rem" py="1rem" h="fit-content">
-          <Flex w="100%" justifyContent="space-between" alignItems="center" mb="2rem"></Flex>
-        </Box>
         <Box
           sx={conteiner}
           justifyItems={"center"}

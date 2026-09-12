@@ -13,6 +13,6 @@ export const dataBaseconteiner = {
   boxSizing: "border-box",
   width: "95%",
   gap: "4rem",
-  margin: "0 auto",
+  margin: "3rem auto",
   padding: "1rem",
 };
