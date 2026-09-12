@@ -1,7 +1,7 @@
 // External library
-import { Box, Flex } from "@chakra-ui/react";
+import { Box, Button, Tooltip } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 
 // Components
 import DataBaseRequired from "../../../shared/components/structure/DataBaseRequired";
@@ -12,9 +12,10 @@ import CardDefault from "@components/common/cards";
 
 // Service
 import useFetchDataBases from "../../../shared/services/useFetchDataBases";
+import assignStudies from "./services/assignStudies";
 
 // Styles
-import { conteiner, dataBaseconteiner } from "./styles";
+import { conteiner, dataBaseconteiner, assingStudiesButton, assingStudiesButtonDisabled } from "./styles";
 
 import useWindowWidth from "@features/shared/hooks/useWindowWidth";
 import AppContext from "@features/shared/context/ApplicationContext";
@@ -29,6 +30,8 @@ export default function Identification() {
   }, []);
   const { databases } = useFetchDataBases();
 
+  const [isAssignmentAvailable, setIsAssignmentAvailable] = useState<boolean>(true);
+
   const { t } = useTranslation("review/execution-identification")
 
   const databaseListIsEmpty = databases.length == 0;
@@ -41,9 +44,6 @@ export default function Identification() {
         borderRadius="1rem"
         withShadow={false}
       >
-        <Box w="100%" px="1rem" py="1rem" h="fit-content">
-          <Flex w="100%" justifyContent="space-between" alignItems="center" mb="2rem"></Flex>
-        </Box>
         <Box
           sx={conteiner}
           justifyItems={"center"}
@@ -61,6 +61,20 @@ export default function Identification() {
           </Box>
         </Box>
       </CardDefault>
+      <Tooltip
+        label={isAssignmentAvailable ? t("buttonForStudiesAssignment.tooltip.available") : t("buttonForStudiesAssignment.tooltip.unavailable")}
+        placement="top-start"
+        hasArrow
+        p=".5rem"
+        borderRadius=".25rem"
+      >
+        <Button
+          sx={isAssignmentAvailable ? assingStudiesButton : assingStudiesButtonDisabled}
+          onClick={() => assignStudies(setIsAssignmentAvailable)}
+        >
+          {t("buttonForStudiesAssignment.text")}
+        </Button>
+      </Tooltip>
     </FlexLayout>
   );
 }
