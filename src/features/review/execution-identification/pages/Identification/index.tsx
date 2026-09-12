@@ -12,6 +12,7 @@ import CardDefault from "@components/common/cards";
 
 // Service
 import useFetchDataBases from "../../../shared/services/useFetchDataBases";
+import assignStudies from "./services/assignStudies";
 
 // Styles
 import { conteiner, dataBaseconteiner, assingStudiesButton, assingStudiesButtonDisabled } from "./styles";
@@ -69,6 +70,7 @@ export default function Identification() {
       >
         <Button
           sx={isAssignmentAvailable ? assingStudiesButton : assingStudiesButtonDisabled}
+          onClick={() => assignStudies(setIsAssignmentAvailable)}
         >
           Assing Studies
         </Button>
