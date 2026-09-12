@@ -62,7 +62,7 @@ export default function Identification() {
         </Box>
       </CardDefault>
       <Tooltip
-        label="There are studies available for assingment"
+        label={isAssignmentAvailable ? t("buttonForStudiesAssignment.tooltip.available") : t("buttonForStudiesAssignment.tooltip.unavailable")}
         placement="top"
         hasArrow
         p=".5rem"
@@ -72,7 +72,7 @@ export default function Identification() {
           sx={isAssignmentAvailable ? assingStudiesButton : assingStudiesButtonDisabled}
           onClick={() => assignStudies(setIsAssignmentAvailable)}
         >
-          Assing Studies
+          {t("buttonForStudiesAssignment.text")}
         </Button>
       </Tooltip>
     </FlexLayout>
