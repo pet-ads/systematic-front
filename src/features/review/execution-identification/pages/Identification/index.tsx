@@ -63,7 +63,7 @@ export default function Identification() {
       </CardDefault>
       <Tooltip
         label={isAssignmentAvailable ? t("buttonForStudiesAssignment.tooltip.available") : t("buttonForStudiesAssignment.tooltip.unavailable")}
-        placement="top"
+        placement="top-start"
         hasArrow
         p=".5rem"
         borderRadius=".25rem"
