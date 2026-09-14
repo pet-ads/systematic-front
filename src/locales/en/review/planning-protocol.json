@@ -254,6 +254,33 @@
             }
         }
     },
+    "collaboration": {
+        "headerText": "Collaboration",
+        "navButton": {
+            "back": "Back",
+            "next": "Next"
+        },
+        "options": {
+            "replication": "Replicate studies between reviewers",
+            "division": "Divide studies between reviewers"
+        },
+        "table": {
+            "reviewer": "Reviewer",
+            "type": "Type",
+            "percentage": "% of studies",
+            "studiesCount": "Number of studies"
+        },
+        "type": {
+            "principal": "Main",
+            "secundario": "Secondary"
+        },
+        "replication": {
+            "dontAssignMultipleSecondary": "Do not assign the same study to more than one secondary reviewer"
+        },
+        "division": {
+            "reviewersPerStudy": "Reviewers per study"
+        }
+    },
     "toasts": {
         "duplicateTitle": "Duplicate Entry",
         "duplicateDescription": "This item already exists!"
