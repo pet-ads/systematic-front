@@ -329,5 +329,32 @@
                 "description": "Não foi possível excluir o critério. Tente novamente."
             }
         }
+    },
+    "collaboration": {
+        "headerText": "Colaboração",
+        "navButton": {
+            "back": "Voltar",
+            "next": "Avançar"
+        },
+        "options": {
+            "replication": "replicar estudos entre revisores",
+            "division": "dividir estudos entre revisores"
+        },
+        "table": {
+            "reviewer": "revisor",
+            "type": "tipo",
+            "percentage": "% de estudos",
+            "studiesCount": "número de estudos"
+        },
+        "type": {
+            "principal": "principal",
+            "secundario": "secundário"
+        },
+        "replication": {
+            "dontAssignMultipleSecondary": "Não atribuir um mesmo estudo a mais de um revisor secundário"
+        },
+        "division": {
+            "reviewersPerStudy": "Revisores por estudo"
+        }
     }
 }
