@@ -38,7 +38,6 @@ import { useExport } from "@features/review/summarization-graphics/context/Expor
 import { ColumnVisibility } from "@features/review/shared/hooks/useVisibilityColumns";
 import DownloadChartsButton from "@features/review/summarization-graphics/components/buttons/DownloadChatsButton";
 import { downloadCSV } from "@features/review/summarization-graphics/components/export/ExportCsv";
-import { getCsvData } from "@features/review/summarization-graphics/components/export/ExportCsv/CsvFactoty/getCsvData";
 
 export type AllKeys =
   | "studyReviewId"
@@ -216,7 +215,7 @@ export default function ChartExpanded({
           : "";
 
       return {
-        id: study.studyReviewId ?? "",
+        id: (study as ArticleInterface).studyReviewId ?? "",
         title: study.title ?? "",
         authors: study.authors ?? "",
         journal: (study as ArticleInterface).venue ?? "",
