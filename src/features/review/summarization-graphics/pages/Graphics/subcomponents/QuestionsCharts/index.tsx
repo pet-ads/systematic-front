@@ -12,6 +12,7 @@ import { PickManyItemTable } from "@features/review/summarization-graphics/compo
 import { Dispatch, SetStateAction } from "react";
 import { PageLayout } from "@features/review/shared/components/structure/LayoutFactory";
 import { parseLabel, formatAnswerLabel } from "@features/review/summarization-graphics/utils/parseAnswerLabel";
+import { CsvRow } from "@features/review/summarization-graphics/pages/Graphics/subcomponents/ChartRenderer";
 
 type Props = {
   selectedQuestionId?: string;
@@ -118,14 +119,26 @@ function buildPickManyBubbleItems(
   });
 }
 
+function itemsToCsvData(items: BubbleItem[]): CsvRow[] {
+  return items
+    .map((item) => ({
+      year: item.x,
+      group: item.group,
+      studies: item.y,
+    }))
+    .sort((a, b) => Number(a.year) - Number(b.year));
+}
+
 function QuestionBubbleChart({ items }: { items: BubbleItem[] }) {
   const { series, yCategories } = useBubbleDataGeneric(items);
+  const csvData = itemsToCsvData(items);
   return (
     <BubbleChart
       title=""
       series={series}
       yCategories={yCategories}
       yaxisText=""
+      csvData={csvData}
     />
   );
 }

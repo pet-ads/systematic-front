@@ -1,7 +1,10 @@
+import { useEffect, useRef } from "react";
 import Chart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
 import { BubbleSeries } from "@features/review/summarization-graphics/hooks/useBubbleDataGeneric";
 import { Box, Flex } from "@chakra-ui/react";
+import { downloadCSV } from "../../export/ExportCsv";
+import { CsvRow } from "@features/review/summarization-graphics/pages/Graphics/subcomponents/ChartRenderer";
 
 const ROW_HEIGHT = 80; 
 const PADDING_V = 80;
@@ -13,9 +16,12 @@ type Props = {
   series: BubbleSeries[];
   yCategories: string[];
   yaxisText?: string;
+  csvData?: CsvRow[];
 };
 
-export default function BubbleChart({ title, series, yCategories, yaxisText }: Props) {
+export default function BubbleChart({ title, series, yCategories, yaxisText, csvData }: Props) {
+  const containerRef = useRef<HTMLDivElement>(null);
+
   const allX = series.flatMap((s) => s.data.map((d) => d.x));
   const uniqueYears = [...new Set(allX)].sort((a, b) => a - b);
   const minYear = uniqueYears[0];
@@ -40,6 +46,40 @@ export default function BubbleChart({ title, series, yCategories, yaxisText }: P
     ...serie,
     name: serie.name.match(/name:\s*(.*),\s*value:/)?.[1] ?? serie.name,
   }));
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const handleMenuOpen = () => {
+      requestAnimationFrame(() => {
+        const csvItem = container.querySelector<HTMLElement>(
+          ".apexcharts-menu-item.exportCSV"
+        );
+        if (csvItem && !csvItem.dataset.overridden) {
+          csvItem.dataset.overridden = "true";
+          csvItem.addEventListener(
+            "click",
+            (e) => {
+              e.stopImmediatePropagation();
+              e.preventDefault();
+              if (csvData && csvData.length > 0) {
+                downloadCSV(title || "bubble-chart", csvData);
+              }
+            },
+            { capture: true }
+          );
+        }
+      });
+    };
+
+    const menuIcon = container.querySelector<HTMLElement>(".apexcharts-menu-icon");
+    menuIcon?.addEventListener("click", handleMenuOpen);
+
+    return () => {
+      menuIcon?.removeEventListener("click", handleMenuOpen);
+    };
+  }, [csvData, title]);
 
   const options: ApexOptions = {
     chart: {
@@ -161,7 +201,7 @@ export default function BubbleChart({ title, series, yCategories, yaxisText }: P
   };
 
   return (
-    <div id="bubble-chart-container" style={{ width: "100%", height: "100%" }}>
+    <div id="bubble-chart-container" ref={containerRef} style={{ width: "100%", height: "100%" }}>
       <style>{`
         #bubble-chart-container .apexcharts-reset-icon {
           transform: translateX(-7px); 
