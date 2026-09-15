@@ -67,7 +67,7 @@ function buildAggregatedCsv(
         option: csvEscape(option),
         studies: csvEscape([...ids].join(", ")),
         count: ids.size,
-        percentage: `${((ids.size / totalResponses) * 100).toFixed(2)}%`,
+        percentage: `${((ids.size / totalResponses) * 100).toFixed(3)}%`,
       }));
   }
 
@@ -95,7 +95,7 @@ function buildAggregatedCsv(
       option: csvEscape(label),
       studies: csvEscape(validIds.join(", ")),
       count: validIds.length,
-      percentage: `${((validIds.length / totalResponses) * 100).toFixed(2)}%`,
+      percentage: `${((validIds.length / totalResponses) * 100).toFixed(3)}%`,
     });
   });
 

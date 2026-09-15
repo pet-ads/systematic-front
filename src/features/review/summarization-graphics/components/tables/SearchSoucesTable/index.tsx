@@ -13,8 +13,8 @@ type SearchSourceRow = {
   included: number;
   excluded: number;
   total: number;
-  indexingRate: number;
-  precisionRate: number;
+  indexingRate: string;
+  precisionRate: string;
 };
 
 /* type Description = {
@@ -106,8 +106,8 @@ export const SearchSorcesTable = ({ sourceCountMap, columnsVisible }: {sourceCou
       included: includedCount,
       excluded: excludedCount,
       total: sourceCountMap[data.source],
-      indexingRate,
-      precisionRate,
+      indexingRate: indexingRate.toFixed(3) + "%",
+      precisionRate: precisionRate.toFixed(3) + "%",
     };
   });
 
@@ -116,8 +116,8 @@ export const SearchSorcesTable = ({ sourceCountMap, columnsVisible }: {sourceCou
     { key: "included", label: t("searchSourcesTable.included"), isNumeric: true, sortable: true, width: "15%" },
     { key: "excluded", label: t("searchSourcesTable.excluded"), isNumeric: true, sortable: true, width: "15%" },
     { key: "total", label: t("searchSourcesTable.total"), isNumeric: true, sortable: true, width: "15%" },
-    { key: "indexingRate", label: t("searchSourcesTable.indexingRate"), isNumeric: true, sortable: true, render: (row) => row.indexingRate.toFixed(2) + "%", width: "15%" },
-    { key: "precisionRate", label: t("searchSourcesTable.precisionRate"), isNumeric: true, sortable: true, render: (row) => row.precisionRate.toFixed(2) + "%", width: "15%" },
+    { key: "indexingRate", label: t("searchSourcesTable.indexingRate"), isNumeric: true, sortable: true, sortValue: (row) => parseFloat(row.indexingRate), width: "15%" },
+    { key: "precisionRate", label: t("searchSourcesTable.precisionRate"), isNumeric: true, sortable: true, sortValue: (row) => parseFloat(row.precisionRate), width: "15%" },
   ];
 
   const visibleColumns = columns.filter((column) => {
