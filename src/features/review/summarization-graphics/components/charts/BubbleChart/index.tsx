@@ -47,7 +47,7 @@ export default function BubbleChart({ title, series, yCategories, yaxisText }: P
         show: true,
         offsetX: -40, 
         tools: {
-          download: false,
+          download: true,
           selection: true,
           zoom: false,
           zoomin: true,
