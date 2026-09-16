@@ -1,0 +1,31 @@
+{
+  "headers": {
+    "selection": "Agreement Selection",
+    "extraction": "Agreement Extraction"
+  },
+  "columns": {
+    "studyId": "ID",
+    "title": "Title",
+    "author": "Author",
+    "year": "Year",
+    "decision": "Decision",
+    "finalStatus": "Final status"
+  },
+  "decisions": {
+    "included": "Included",
+    "excluded": "Excluded"
+  },
+  "statuses": {
+    "pending": "Select",
+    "included": "Included",
+    "excluded": "Excluded",
+    "unclassified": "Unclassified",
+    "filter": "Filter status"
+  },
+  "noResults": "No studies found",
+  "decisionMenu": {
+    "judge": "Judge",
+    "inclusion": "Inclusion criteria",
+    "exclusion": "Exclusion criteria"
+  }
+}

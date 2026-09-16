@@ -124,7 +124,9 @@ const AccordionComponent = () => {
       Execution: [
         { path: `/review/execution/identification`, label: t("execution.identification") },
         { path: `/review/execution/selection`, label: t("execution.selection") },
+        { path: `/review/execution/agreement-selection`, label: t("execution.agreementSelection") },
         { path: `/review/execution/extraction`, label: t("execution.extraction") },
+        { path: `/review/execution/agreement-extraction`, label: t("execution.agreementExtraction") },
       ],
       Summarization: [
         { path: `/review/summarization/graphics`, label: t("summarization.graphics") },

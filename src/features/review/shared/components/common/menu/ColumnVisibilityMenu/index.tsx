@@ -9,8 +9,11 @@ import { ColumnVisibility } from "@features/review/shared/hooks/useVisibilityCol
 
 // Types
 type ColumnVisibilityMenuInput = {
-  columnsVisible: ColumnVisibility;
-  toggleColumnVisibility: (column: keyof ColumnVisibility) => void;
+  columnsVisible?: ColumnVisibility | Record<string, boolean>;
+  toggleColumnVisibility?: (column: keyof ColumnVisibility) => void;
+  customColumns?: { key: string; label: string }[];
+  customColumnsVisible?: Record<string, boolean>;
+  toggleCustomColumnVisibility?: (column: string) => void;
 };
 
 // Styles
@@ -50,6 +53,9 @@ const DROPDOWN_MENU = {
 export default function ColumnVisibilityMenu({
   columnsVisible,
   toggleColumnVisibility,
+  customColumns,
+  customColumnsVisible,
+  toggleCustomColumnVisibility,
 }: ColumnVisibilityMenuInput) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownMenu = useRef<HTMLDivElement>(null);
@@ -89,23 +95,24 @@ export default function ColumnVisibilityMenu({
             {...DROPDOWN_MENU}
             className={styles["dropdown-container"]}
           >
-            {Object.entries(columnLabels)
+            {(customColumns ?? Object.entries(columnLabels).map(([key, label]) => ({ key, label })))
               .filter(
-                ([key]) =>
-                  columnsVisible[key as keyof ColumnVisibility] !== null
+                ({ key }) => customColumns
+                  ? customColumnsVisible?.[key] !== undefined
+                  : columnsVisible?.[key as keyof ColumnVisibility] !== null
               )
-              .map(([key, label]) => (
+              .map(({ key, label }) => (
                 <label key={key} className={styles["dropdown-label"]}>
                   <input
                     type="checkbox"
-                    checked={
-                      columnsVisible[key as keyof ColumnVisibility] as boolean
-                    }
-                    onChange={() =>
-                      toggleColumnVisibility(key as keyof ColumnVisibility)
-                    }
+                    checked={customColumns
+                      ? customColumnsVisible?.[key] ?? false
+                      : columnsVisible?.[key as keyof ColumnVisibility] as boolean}
+                    onChange={() => customColumns
+                      ? toggleCustomColumnVisibility?.(key)
+                      : toggleColumnVisibility?.(key as keyof ColumnVisibility)}
                   />
-                  <span>{t(`columnVisibilityMenu.label.${label.toLowerCase()}`)}</span>
+                  <span>{customColumns ? label : t(`columnVisibilityMenu.label.${label.toLowerCase()}`)}</span>
                 </label>
               ))}
           </motion.div>

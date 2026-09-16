@@ -24,7 +24,9 @@
     "execution": {
         "identification": "Identificação",
         "selection": "Seleção",
-        "extraction": "Extração"
+        "agreementSelection": "Resolução de Seleção",
+        "extraction": "Extração",
+        "agreementExtraction": "Resolução de Extração"
     },
     "summarization": {
         "graphics": "Gráficos",

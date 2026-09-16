@@ -24,7 +24,9 @@
     "execution": {
         "identification": "Identification",
         "selection": "Selection",
-        "extraction": "Extraction"
+        "agreementSelection": "Agreement Selection",
+        "extraction": "Extraction",
+        "agreementExtraction": "Agreement Extraction"
     },
     "summarization": {
         "graphics": "Graphics",
