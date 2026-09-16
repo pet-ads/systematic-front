@@ -30,6 +30,8 @@ import Identification from "@features/review/execution-identification/pages/Iden
 import IdentificationSession from "@features/review/execution-identification/pages/IdentificationSession";
 import Selection from "@features/review/execution-selection/pages/Selection";
 import Extraction from "@features/review/execution-extraction/pages/Extraction";
+import AgreementSelection from "@features/review/execution-agreement/pages/AgreementSelection";
+import AgreementExtraction from "@features/review/execution-agreement/pages/AgreementExtraction";
 
 // Summarization
 import Graphics from "@features/review/summarization-graphics/pages/Graphics";
@@ -129,8 +131,16 @@ const routesList: RouteObject[] = [
     element: <ProtectedRoute element={<Selection />} />,
   },
   {
+    path: "/review/execution/agreement-selection",
+    element: <ProtectedRoute element={<AgreementSelection />} />,
+  },
+  {
     path: "/review/execution/extraction",
     element: <ProtectedRoute element={<Extraction />} />,
+  },
+  {
+    path: "/review/execution/agreement-extraction",
+    element: <ProtectedRoute element={<AgreementExtraction />} />,
   },
   {
     path: "/review/summarization/graphics",
