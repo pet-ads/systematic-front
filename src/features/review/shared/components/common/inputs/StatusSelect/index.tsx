@@ -16,6 +16,7 @@ interface StatusSelectProps {
   page: "Selection" | "Extraction";
   placeholder?: string;
   totalCount?: number; 
+  statusOptions?: StatusKey[];
 }
 
 const colors = {
@@ -49,6 +50,7 @@ export default function StatusSelect({
   onSelect,
   page,
   totalCount,
+  statusOptions,
 }: StatusSelectProps) {
   const windowWidth = useWindowWidth();
   const btnRef = useRef<HTMLButtonElement | null>(null);
@@ -71,12 +73,15 @@ export default function StatusSelect({
     });
   }
 
-  const options = [
+  const allOptions = [
     { value: "INCLUDED", label: t("statusSelect.options.included") },
     { value: "DUPLICATED", label: t("statusSelect.options.duplicated") },
     { value: "EXCLUDED", label: t("statusSelect.options.excluded") },
     { value: "UNCLASSIFIED", label: t("statusSelect.options.unclassified") },
   ];
+  const options = statusOptions
+    ? allOptions.filter((option) => statusOptions.includes(option.value as StatusKey))
+    : allOptions;
 
   const getLabel = (optionLabel: string, optionValue: string) => {
     if (isClientSide) {
@@ -112,10 +117,12 @@ export default function StatusSelect({
           w="100%"
           textAlign="left"
           fontWeight="normal"
+          whiteSpace="nowrap"
+          overflow="hidden"
         >
-          <HStack spacing={2}>
+          <HStack spacing={2} minW={0} whiteSpace="nowrap">
             {selectedValue && getIcon(selectedValue)}
-            <Text fontWeight="medium">{buttonLabel}</Text>
+            <Text fontWeight="medium" whiteSpace="nowrap" overflow="hidden" textOverflow="ellipsis">{buttonLabel}</Text>
           </HStack>
         </MenuButton>
         <Portal>

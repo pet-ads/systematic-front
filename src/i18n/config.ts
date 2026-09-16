@@ -20,6 +20,8 @@ import enExecutionSelection from "../locales/en/review/execution-selection.json"
 import ptExecutionSelection from "../locales/pt/review/execution-selection.json"
 import enExecutionExtraction from "../locales/en/review/execution-extraction.json"
 import ptExecutionExtraction from "../locales/pt/review/execution-extraction.json"
+import enAgreement from "../locales/en/review/agreement.json"
+import ptAgreement from "../locales/pt/review/agreement.json"
 import enSummarizationGraphics from "../locales/en/review/summarization-graphics.json"
 import ptSummarizationGraphics from "../locales/pt/review/summarization-graphics.json"
 
@@ -41,6 +43,7 @@ i18n
         "review/execution-identification": enExecutionIdentification,
         "review/execution-selection": enExecutionSelection,
         "review/execution-extraction": enExecutionExtraction,
+        "review/agreement": enAgreement,
         "review/summarization-graphics": enSummarizationGraphics,
       },
       pt: {
@@ -53,6 +56,7 @@ i18n
         "review/execution-identification": ptExecutionIdentification,
         "review/execution-selection": ptExecutionSelection,
         "review/execution-extraction": ptExecutionExtraction,
+        "review/agreement": ptAgreement,
         "review/summarization-graphics": ptSummarizationGraphics,
       },
     },

@@ -38,7 +38,7 @@ export default function RiskOfBiasAssessment() {
           <NavButton
             event={() =>
               syncAndNavigate(
-                `/review/planning/protocol/selection-and-extraction/${id}`
+                `/review/planning/protocol/collaboration/${id}`
               )
             }
             text={t("riskOfBiasAssessment.navButton.back")}

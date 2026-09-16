@@ -7,6 +7,7 @@ import ExtractionForm from "@features/review/execution-extraction/components/for
 import { StudyInterface } from "@features/review/shared/types/IStudy";
 
 export interface EditData {
+  type: string;
   title: string;
   authors: string;
   venue: string;

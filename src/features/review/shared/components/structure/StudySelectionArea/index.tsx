@@ -148,6 +148,7 @@ export default function StudySelectionArea({
 
   function handleStartEdit() {
     setEditData({
+      type: String((currentStudy as any).studyType ?? "ARTICLE"),
       title: currentStudy?.title ?? "",
       authors: currentStudy?.authors ?? "",
       venue: currentStudy?.venue ?? "",
@@ -168,13 +169,11 @@ export default function StudySelectionArea({
     const searchSessionId = String((currentStudy as any).searchSessionId ?? "");
     const searchSources: string[] = (currentStudy as any).searchSources ?? [];
     const source = searchSources[0] ?? "";
-    const studyType = String((currentStudy as any).studyType ?? "ARTICLE");
-
     setIsSaving(true);
     try {
       await updateStudyReview(systematicStudyId, Number(studyReviewId), {
         searchSessionId,
-        type: studyType,
+        type: editData.type,
         title: editData.title,
         year: Number(editData.year),
         authors: editData.authors,

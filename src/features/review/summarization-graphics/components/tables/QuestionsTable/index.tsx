@@ -6,7 +6,7 @@ type QuestionRow = {
   answer: string;
   studies: string;
   total: number;
-  percentage: number;
+  percentage: string;
 };
 
 interface QuestionsTableProps {
@@ -25,14 +25,14 @@ export const QuestionsTable = ({ data, columnsVisible }: QuestionsTableProps) =>
       answer,
       studies: ids.join(", "),
       total: ids.length,
-      percentage: (ids.length / totalResponses) * 100, 
+      percentage: ((ids.length / totalResponses) * 100).toFixed(3) + "%", 
     }));
 
   const columns: ColumnDef<QuestionRow>[] = [
     { key: "answer", label: t("questionsTable.answer"), width: "65%", sortable: true },
     { key: "studies", label: t("questionsTable.studies"), width: "15%", sortable: true, isNumeric: true, render: (row) => row.studies },
     { key: "total", label: t("questionsTable.total"), width: "10%", isNumeric: true, sortable: true },
-    { key: "percentage", label: t("questionsTable.percentage"), width: "20%", isNumeric: true, sortable: true, render: (row) => row.percentage.toFixed(2) + "%" },
+    { key: "percentage", label: t("questionsTable.percentage"), width: "20%", isNumeric: true, sortable: true, sortValue: (row) => parseFloat(row.percentage) },
   ];
 
   const visibleColumns = columns.filter((column) => {

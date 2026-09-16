@@ -127,6 +127,16 @@
             "successTitle": "Estudo atualizado com sucesso",
             "errorTitle": "Erro ao atualizar estudo",
             "errorDesc": "Não foi possível salvar as alterações. Tente novamente."
+        },
+        "fields": {
+            "type": "Tipo",
+            "title": "Título",
+            "authors": "Autores",
+            "venue": "Periódico / Venue",
+            "year": "Ano",
+            "abstract": "Abstract",
+            "keywords": "Keywords",
+            "keywordsPlaceholder": "palavra1, palavra2, palavra3"
         }
     }
 }

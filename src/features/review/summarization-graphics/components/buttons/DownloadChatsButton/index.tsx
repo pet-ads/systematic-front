@@ -1,44 +1,21 @@
-import { Menu, MenuButton, MenuList, MenuItem, Button } from "@chakra-ui/react";
-import { FiDownload, FiChevronDown } from "react-icons/fi";
-import { downloadPNG } from "../../export/ExportPng";
-import { useExport } from "@features/review/summarization-graphics/context/ExportContext";
+import { Button } from "@chakra-ui/react";
+import { FiDownload } from "react-icons/fi";
 
 type Props = {
-  selector: string;
-  fileName: string;
+  selector?: string;
+  fileName?: string;
   onDownloadCsv: () => void;
 };
 
-export default function DownloadChartsButton({ selector, fileName, onDownloadCsv }: Props) {
-  const { startExport, endExport } = useExport();
-
-
+export default function DownloadChartsButton({ onDownloadCsv }: Props) {
   return (
-    <Menu>
-      <MenuButton
-        as={Button}
-        leftIcon={<FiDownload />}
-        rightIcon={<FiChevronDown />}
-        size="sm"
-        colorScheme="blue"
-      >
-        Download
-      </MenuButton>
-
-      <MenuList>
-      <MenuItem
-  onClick={async () => {
-    startExport();
-    await new Promise((r) => requestAnimationFrame(() => r(undefined)));
-    await downloadPNG(selector, fileName);
-    endExport();
-  }}
->
-  PNG
-</MenuItem>
-
-        <MenuItem onClick={onDownloadCsv}>CSV</MenuItem>
-      </MenuList>
-    </Menu>
+    <Button
+      leftIcon={<FiDownload />}
+      size="sm"
+      colorScheme="blue"
+      onClick={onDownloadCsv}
+    >
+      Download
+    </Button>
   );
 }

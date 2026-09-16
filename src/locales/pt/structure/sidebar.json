@@ -17,13 +17,16 @@
         "criteria": "Critérios",
         "sources": "Fontes",
         "selection": "Seleção",
+        "collaboration": "Colaboração",
         "risk": "Avaliação de Viés",
         "analysis": "Análise"
     },
     "execution": {
         "identification": "Identificação",
         "selection": "Seleção",
-        "extraction": "Extração"
+        "agreementSelection": "Resolução de Seleção",
+        "extraction": "Extração",
+        "agreementExtraction": "Resolução de Extração"
     },
     "summarization": {
         "graphics": "Gráficos",

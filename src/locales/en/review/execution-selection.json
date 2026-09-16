@@ -127,6 +127,16 @@
             "successTitle": "Study updated successfully",
             "errorTitle": "Failed to update study",
             "errorDesc": "Could not save the changes. Please try again."
+        },
+        "fields": {
+            "type": "Type",
+            "title": "Title",
+            "authors": "Authors",
+            "venue": "Journal / Venue",
+            "year": "Year",
+            "abstract": "Abstract",
+            "keywords": "Keywords",
+            "keywordsPlaceholder": "keyword1, keyword2, keyword3"
         }
     }
 }

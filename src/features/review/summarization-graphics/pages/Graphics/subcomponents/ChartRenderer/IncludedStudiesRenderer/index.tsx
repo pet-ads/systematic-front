@@ -7,7 +7,7 @@ import useBubbleDataGeneric, { BubbleItem } from "@features/review/summarization
 import { Box } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 import { ColumnVisibility } from "@features/review/shared/hooks/useVisibilityColumns";
-
+import { getCsvData } from "@features/review/summarization-graphics/components/export/ExportCsv/CsvFactoty/getCsvData";
 
 type Props = {
   filteredStudies: (StudyInterface | ArticleInterface)[];
@@ -30,6 +30,10 @@ export default function IncludedStudiesRenderer({ filteredStudies, type, chartId
   }));
   const { series, yCategories } = useBubbleDataGeneric(bubbleItems);
 
+  const csvData = isBubble
+    ? getCsvData("Included Studies", includedStudies as any, "bubble chart")
+    : undefined;
+
   let content;
   
   if (isTable) {
@@ -47,6 +51,7 @@ export default function IncludedStudiesRenderer({ filteredStudies, type, chartId
         series={series}            
         yCategories={yCategories}  
         yaxisText="Search Sources"
+        csvData={csvData}
       />
     );
   } else {

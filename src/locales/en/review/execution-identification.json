@@ -108,5 +108,12 @@
         "success": {
             "title": "Files uploaded successfully"
         }
+    },
+    "buttonForStudiesAssignment": {
+        "tooltip": {
+            "available": "There are studies available for assingment",
+            "unavailable": "There are no studies available for assingment"
+        },
+        "text": "Assign Studies"
     }
 }

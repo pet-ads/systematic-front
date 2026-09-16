@@ -108,5 +108,12 @@
         "success": {
             "title": "Arquivos enviados com sucesso"
         }
+    },
+    "buttonForStudiesAssignment": {
+        "tooltip": {
+            "available": "Há estudos disponíves para serem atribuídos",
+            "unavailable": "Não há estudos disponíves para serem atribuídos"
+        },
+        "text": "Atribuir Estudos"
     }
 }

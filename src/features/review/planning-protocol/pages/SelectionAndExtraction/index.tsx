@@ -55,7 +55,7 @@ export default function SelectionAndExtraction() {
           <NavButton
             event={() =>
               syncAndNavigate(
-                `/review/planning/protocol/risk-of-bias-assessment/${id}`
+                `/review/planning/protocol/collaboration/${id}`
               )
             }
             text={t("selectionAndExtraction.navButton.next")}

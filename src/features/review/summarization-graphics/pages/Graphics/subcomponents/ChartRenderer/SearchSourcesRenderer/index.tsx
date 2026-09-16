@@ -10,6 +10,7 @@ import { useTranslation } from "react-i18next";
 import useBubbleDataGeneric, {
   BubbleItem,
 } from "@features/review/summarization-graphics/hooks/useBubbleDataGeneric";
+import { getCsvData } from "@features/review/summarization-graphics/components/export/ExportCsv/CsvFactoty/getCsvData"; 
 
 import { ColumnVisibility } from "@features/review/shared/hooks/useVisibilityColumns";
 
@@ -31,9 +32,6 @@ export default function SearchSourcesRenderer({
   const sourceCountMap = filteredStudies.reduce<Record<string, number>>(
     (acc, study) => {
       acc[study.searchSources[0]] = (acc[study.searchSources[0]] || 0) + 1;
-      /* study.searchSources.forEach((src) => {
-        acc[src] = (acc[src] || 0) + 1;
-      }); */
       return acc;
     },
     {}
@@ -49,14 +47,12 @@ export default function SearchSourcesRenderer({
     x: Number(study.year),
     group: study.searchSources[0],
     y: 1,
-  })
-  /*study.searchSources.map((src) => ({
-      x: Number(study.year),
-      group: src,
-      y: 1,
-    })) */
-  );
+  }));
   const { series, yCategories } = useBubbleDataGeneric(bubbleItems);
+
+  const csvData = isBubble
+    ? getCsvData("Search Sources", filteredStudies as any, "bubble chart")
+    : undefined;
 
   let content;
 
@@ -78,6 +74,7 @@ export default function SearchSourcesRenderer({
         series={series}
         yCategories={yCategories}
         yaxisText={t("sectionMenu.sections.searchSources")}
+        csvData={csvData}
       />
     );
   } else if (isTable) {
