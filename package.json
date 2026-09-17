@@ -25,6 +25,7 @@
     "html2canvas": "^1.4.1",
     "i18next": "^26.0.3",
     "i18next-browser-languagedetector": "^8.2.1",
+    "jszip": "^3.10.2",
     "jwt-decode": "^4.0.0",
     "primeicons": "^7.0.0",
     "react": "^19.1.0",
