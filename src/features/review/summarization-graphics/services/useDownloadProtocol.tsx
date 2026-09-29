@@ -20,7 +20,7 @@ export const useDownloadProtocol = () => {
 
     try {
      
-      const path = `systematic-study/${systematicStudyId}/report/exportable-protocol/${format}?downloadable=true`;
+      const path = `systematic-study/${systematicStudyId}/report/exportable-review/${format}?downloadable=true`;
 
       const response = await Axios.get(path, {
         responseType: "blob", 
@@ -39,8 +39,17 @@ export const useDownloadProtocol = () => {
 
       window.URL.revokeObjectURL(url);
     } catch (err: any) {
-      console.error("Erro ao gerar protocolo:", err);
-      setError("Erro ao gerar protocolo");
+  console.error("Erro ao gerar protocolo:", err);
+  console.error("Status:", err.response?.status);
+
+  if (err.response?.data instanceof Blob) {
+    const errorText = await err.response.data.text();
+    console.error("Erro retornado pelo backend:", errorText);
+  } else {
+    console.error("Resposta:", err.response?.data);
+  }
+
+  setError("Erro ao gerar protocolo");
     } finally {
       setIsLoading(false);
     }
