@@ -1,7 +1,7 @@
 {
   "headers": {
-    "selection": "Agreement Selection",
-    "extraction": "Agreement Extraction"
+    "selection": "Resolução de Seleção",
+    "extraction": "Resolução de Extração"
   },
   "columns": {
     "studyId": "ID",
