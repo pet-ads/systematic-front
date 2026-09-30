@@ -8,6 +8,7 @@ import FlexLayout from "../../../../components/structure/Flex/Flex";
 import AppContext from "@features/shared/context/ApplicationContext";
 import InputText from "../../../../components/common/inputs/InputText";
 import SearchFieldSelect from "@features/review/shared/components/common/inputs/SearchFieldSelect";
+import SelectVisualization,  { VisualizationMode } from "@features/review/shared/components/structure/VisualizationButton";
 import type { SearchField } from "@features/review/shared/components/common/inputs/SearchFieldSelect";
 import ColumnVisibilityMenu from "@features/review/shared/components/common/menu/ColumnVisibilityMenu";
 import StatusSelect from "@features/review/shared/components/common/inputs/StatusSelect";
@@ -53,6 +54,7 @@ export default function AgreementExecutionPage({ stage }: { stage: AgreementStag
     key: keyof AgreementStudy;
     direction: "asc" | "desc";
   } | null>(null);
+  const [visualization, setVisualization] = useState<VisualizationMode>("blocked");
 
   const filteredStudies = useMemo(() => {
     const search = searchString.trim().toLowerCase();
@@ -161,6 +163,7 @@ export default function AgreementExecutionPage({ stage }: { stage: AgreementStag
       <Box w="100%" px="1rem" py=".75rem" h="fit-content">
         <Flex w="100%" h="2.5rem" justifyContent="space-between" alignItems="center" mb="2rem">
           <Header text={t(`headers.${stage}`)} />
+          <SelectVisualization visualization={visualization} handleChangeVisualization={setVisualization} />
         </Flex>
         <Box sx={inputconteiner}>
           <Flex gap=".5rem" w="fit-content" justifyContent="space-between" alignItems="center">
