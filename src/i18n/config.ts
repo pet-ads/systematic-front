@@ -24,6 +24,8 @@ import enAgreement from "../locales/en/review/agreement.json"
 import ptAgreement from "../locales/pt/review/agreement.json"
 import enSummarizationGraphics from "../locales/en/review/summarization-graphics.json"
 import ptSummarizationGraphics from "../locales/pt/review/summarization-graphics.json"
+import enSummarizationDownload from "../locales/en/review/summarization-download.json"
+import ptSummarizationDownload from "../locales/pt/review/summarization-download.json"
 
 i18n
   .use(LanguageDetector)
@@ -45,6 +47,7 @@ i18n
         "review/execution-extraction": enExecutionExtraction,
         "review/agreement": enAgreement,
         "review/summarization-graphics": enSummarizationGraphics,
+        "review/summarization-download": enSummarizationDownload,
       },
       pt: {
         "landing/homepage": ptHomepage,
@@ -58,6 +61,7 @@ i18n
         "review/execution-extraction": ptExecutionExtraction,
         "review/agreement": ptAgreement,
         "review/summarization-graphics": ptSummarizationGraphics,
+        "review/summarization-download": ptSummarizationDownload,
       },
     },
 
