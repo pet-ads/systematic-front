@@ -3,6 +3,12 @@
     "selection": "Resolução de Seleção",
     "extraction": "Resolução de Extração"
   },
+  "visualization": {
+    "choose": "Selecione a visualização",
+    "full": "Liberar visualização total",
+    "partial": "Liberar visualização parcial",
+    "blocked": "Bloquear visualização"
+  },
   "columns": {
     "studyId": "ID",
     "title": "Título",

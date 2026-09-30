@@ -3,6 +3,12 @@
     "selection": "Agreement Selection",
     "extraction": "Agreement Extraction"
   },
+  "visualization": {
+    "choose": "Select visualization",
+    "full": "Allow full visualization",
+    "partial": "Allow partial visualization",
+    "blocked": "Block visualization"
+  },
   "columns": {
     "studyId": "ID",
     "title": "Title",
