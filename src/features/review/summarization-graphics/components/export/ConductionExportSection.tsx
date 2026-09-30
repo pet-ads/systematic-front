@@ -1,5 +1,6 @@
 import { Box, Checkbox, Heading, Stack, Text } from "@chakra-ui/react";
 import { ConductionExportConfig } from "../../services/exportReviewTypes";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   config: ConductionExportConfig;
@@ -9,32 +10,33 @@ type Props = {
 export default function ConductionExportSection({ config, onChange }: Props) {
   const toggle = (key: keyof ConductionExportConfig) =>
     onChange({ ...config, [key]: !config[key] });
+  const { t } = useTranslation("review/summarization-download");
 
   return (
     <Box>
-      <Heading size="md" mb={3}>Condução</Heading>
+      <Heading size="md" mb={3}>{t("conduction.title")}</Heading>
       <Stack spacing={2}>
         <Checkbox isChecked={config.includedInFirstSelection} onChange={() => toggle("includedInFirstSelection")}>
-          Estudos incluídos na primeira seleção (por critério)
+          {t("conduction.includedInFirstSelection")}
         </Checkbox>
         <Checkbox isChecked={config.excludedInFirstSelection} onChange={() => toggle("excludedInFirstSelection")}>
-          Estudos excluídos na primeira seleção (por critério)
+          {t("conduction.excludedInFirstSelection")}
         </Checkbox>
         <Checkbox isChecked={config.includedInSecondSelection} onChange={() => toggle("includedInSecondSelection")}>
-          Estudos incluídos na segunda seleção (por critério)
+          {t("conduction.includedInSecondSelection")}
         </Checkbox>
         <Checkbox isChecked={config.excludedInSecondSelection} onChange={() => toggle("excludedInSecondSelection")}>
-          Estudos excluídos na segunda seleção (por critério)
+          {t("conduction.excludedInSecondSelection")}
         </Checkbox>
         <Checkbox isChecked={config.consolidatedExtraction} onChange={() => toggle("consolidatedExtraction")}>
-          Estudos considerados na extração (consolidado)
+          {t("conduction.consolidatedExtraction")}
         </Checkbox>
         <Checkbox isChecked={config.funnel} onChange={() => toggle("funnel")}>
-          Funil de estudos
+          {t("conduction.funnel")}
         </Checkbox>
       </Stack>
       <Text fontSize="sm" color="gray.500" mt={2}>
-        As quatro primeiras opções geram tabelas com os IDs de todos os estudos — úteis para relatório técnico.
+        {t("conduction.conductionDescription")}
       </Text>
     </Box>
   );

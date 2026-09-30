@@ -1,5 +1,6 @@
 import { Box, Button, useToast } from "@chakra-ui/react";
 import { useContext, useEffect, useRef, useState, createRef } from "react";
+import { useTranslation } from "react-i18next";
 
 import Header from "@components/structure/Header/Header";
 import FlexLayout from "@components/structure/Flex/Flex";
@@ -25,6 +26,7 @@ export default function Download() {
   const window = useWindowWidth();
   const context = useContext(AppContext);
   const toast = useToast();
+  const { t } = useTranslation("review/summarization-download");
 
   const { allQuestions } = useGraphicsState();
   const { exportReview, isLoading, error } = useExportReview();
@@ -65,7 +67,7 @@ export default function Download() {
 
   return (
     <FlexLayout navigationType="Accordion">
-      <Header text="Download" />
+      <Header text={t("header")} />
       <CardDefault backgroundColor="#fff" borderRadius="1rem" withShadow={false}>
         <Box w="100%" px="2rem" py="1.5rem" minH="calc(100vh - 130px)" display="flex" flexDirection="column" gap="2rem">
           <ConductionExportSection config={conduction} onChange={setConduction} />
@@ -78,7 +80,7 @@ export default function Download() {
             isDisabled={isLoadingStudies}
             onClick={handleExport}
           >
-            Exportar
+            {t("button")}
           </Button>
           {error && <Box color="red.500">{error}</Box>}
         </Box>
