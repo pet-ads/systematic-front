@@ -1,1 +1,15 @@
-{}
+{
+    "header": "Download",
+    "conduction": {
+        "title": "Condução",
+        "includedInFirstSelection": "Estudos incluídos na primeira seleção (por critério)",
+        "excludedInFirstSelection": "Estudos excluídos na primeira seleção (por critério)",
+        "includedInSecondSelection": "Estudos incluídos na segunda seleção (por critério)",
+        "excludedInSecondSelection": "Estudos excluídos na segunda seleção (por critério)",
+        "consolidatedExtraction": "Estudos considerados na extração (consolidado)",
+        "funnel": "Funil de estudos",
+        "conductionDescription": "As quatro primeiras opções geram tabelas com os IDs de todos os estudos — úteis para relatório técnico."
+    },
+    "exportation": "Exportação",
+    "button": "Exportar"
+}
