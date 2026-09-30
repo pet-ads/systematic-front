@@ -9,7 +9,6 @@ import AppContext from "@features/shared/context/ApplicationContext";
 import InputText from "../../../../components/common/inputs/InputText";
 import SearchFieldSelect from "@features/review/shared/components/common/inputs/SearchFieldSelect";
 import type { SearchField } from "@features/review/shared/components/common/inputs/SearchFieldSelect";
-import SelectLayout from "@features/review/shared/components/structure/LayoutButton";
 import ColumnVisibilityMenu from "@features/review/shared/components/common/menu/ColumnVisibilityMenu";
 import StatusSelect from "@features/review/shared/components/common/inputs/StatusSelect";
 import useInputState from "@features/review/shared/hooks/useInputState";
@@ -38,7 +37,7 @@ export default function AgreementExecutionPage({ stage }: { stage: AgreementStag
   const [searchString, setSearchString] = useState("");
   const [searchField, setSearchField] = useState<SearchField>("title");
   const { value: selectedStatus, handleChange: handleStatusChange } = useInputState<string | null>(null);
-  const { layout, handleChangeLayout } = useLayoutPage();
+  const { layout } = useLayoutPage();
   const [columnsVisible, setColumnsVisible] = useState<Record<string, boolean>>({
     id: true,
     title: true,
@@ -162,7 +161,6 @@ export default function AgreementExecutionPage({ stage }: { stage: AgreementStag
       <Box w="100%" px="1rem" py=".75rem" h="fit-content">
         <Flex w="100%" h="2.5rem" justifyContent="space-between" alignItems="center" mb="2rem">
           <Header text={t(`headers.${stage}`)} />
-          <SelectLayout handleChangeLayout={handleChangeLayout} layout={layout} />
         </Flex>
         <Box sx={inputconteiner}>
           <Flex gap=".5rem" w="fit-content" justifyContent="space-between" alignItems="center">
