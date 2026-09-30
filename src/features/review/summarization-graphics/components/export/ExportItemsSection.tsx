@@ -12,7 +12,10 @@ type Props = {
 };
 
 export default function ExportItemsSection({ questions, items, onChange }: Props) {
-  const { t } = useTranslation("review/summarization-graphics");
+  const { t } = useTranslation([
+    "review/summarization-graphics",
+    "review/summarization-download",
+  ]);
   const findItem = (id: string) => items.find((i) => i.questionId === id);
 
   const toggleQuestion = (questionId: string, questionType: string) => {
@@ -31,7 +34,7 @@ export default function ExportItemsSection({ questions, items, onChange }: Props
 
   return (
     <Box>
-      <Heading size="md" mb={3}>Exportação</Heading>
+      <Heading size="md" mb={3}>{t("review/summarization-download:exportation")}</Heading>
       <Stack spacing={3}>
         {questions.map((q) => {
           const item = findItem(q.questionId);
