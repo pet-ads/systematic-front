@@ -1,0 +1,110 @@
+import { Node, Edge } from "@xyflow/react";
+import { useTranslation } from "react-i18next";
+import ArticleInterface from "@features/review/shared/types/ArticleInterface";
+import { StudyInterface } from "@features/review/shared/types/IStudy";
+
+type Study = StudyInterface | ArticleInterface;
+
+function getBaseNodes(t: (key: string) => string): Node[] {
+  return [
+    { id: "0", data: { label: t("studiesFunnelChart.identified") }, position: { x: 200, y: 150 } },
+    { id: "1", data: { label: t("studiesFunnelChart.afterDuplicates") }, position: { x: 200, y: 250 } },
+    { id: "2", data: { label: t("studiesFunnelChart.screened") }, position: { x: 200, y: 350 } },
+    { id: "3", data: { label: t("studiesFunnelChart.excluded") }, position: { x: 400, y: 350 } },
+    { id: "4", data: { label: t("studiesFunnelChart.fullTextAssessed") }, position: { x: 200, y: 450 } },
+    { id: "5", data: { label: t("studiesFunnelChart.fullTextExcluded") }, position: { x: 400, y: 550 } },
+    { id: "6", data: { label: t("studiesFunnelChart.fullTextIncluded") }, position: { x: 0, y: 550 } },
+  ];
+}
+
+const baseEdges: Edge[] = [
+  { id: "e0_1", source: "0", target: "1", type: "straight" },
+  { id: "e1_2", source: "1", target: "2", type: "straight" },
+  { id: "e2_3", source: "2", target: "3", type: "straight" },
+  { id: "e2_4", source: "2", target: "4", type: "straight" },
+  { id: "e4_5", source: "4", target: "5", type: "straight" },
+  { id: "e4_6", source: "4", target: "6", type: "straight" },
+];
+
+function getCriteriaCode(criteria: string) {
+  const match = criteria.match(/^([A-Za-z]+-\d+)/);
+  return match ? match[1] : criteria;
+}
+
+function countByCriteria(studies: Study[], stage: string = "EXTRACTION") {
+  const counts: Record<string, number> = {};
+  studies.forEach((study) => {
+    const list = stage === "EXTRACTION" ? (study.extractionCriteria ?? []) : (study.selectionCriteria ?? []);
+    list.forEach((c) => {
+      const code = getCriteriaCode(c);
+      counts[code] = (counts[code] || 0) + 1;
+    });
+  });
+  return counts;
+}
+
+function buildLabel(criteriaCounts: Record<string, number>, total: number) {
+  const criteriasLabel = Object.entries(criteriaCounts).map(([code, val]) => ` (${code}=${val})`).join(",");
+  return `${criteriasLabel}, (total=${total})`;
+}
+
+export function useFunnelChartData(filteredStudies: Study[]) {
+  const { t } = useTranslation("review/summarization-graphics");
+
+  if (!filteredStudies || filteredStudies.length === 0) return { nodes: [] as Node[], edges: [] as Edge[] };
+
+  const identifiedBySource: Record<string, number> = {};
+  filteredStudies.forEach((study) => {
+    identifiedBySource[study.searchSources[0]] = (identifiedBySource[study.searchSources[0]] || 0) + 1;
+  });
+  const totalIdentified = Object.values(identifiedBySource).reduce((a, b) => a + b, 0);
+
+  const totalAfterDuplicates = filteredStudies.filter((s) => s.extractionStatus !== "DUPLICATED").length;
+  const includedInSelection = filteredStudies.filter((s) => s.selectionStatus === "INCLUDED");
+  const excludedInSelection = filteredStudies.filter((s) => s.selectionStatus === "EXCLUDED");
+  const totalScreened = totalAfterDuplicates;
+  const totalExcludedInScreening = excludedInSelection.length;
+
+  const includedInExtraction = includedInSelection.filter((s) => s.extractionStatus === "INCLUDED");
+  const excludedInExtraction = includedInSelection.filter((s) => s.extractionStatus === "EXCLUDED");
+  const duplicatedInExtraction = includedInSelection.filter((s) => s.extractionStatus === "DUPLICATED");
+  const totalFullTextAssessed = includedInSelection.length - duplicatedInExtraction.length;
+  const totalExcludedInFullText = excludedInExtraction.length;
+  const totalIncludedInFullText = includedInExtraction.length;
+
+  const nodeLabels = [
+    `(n=${totalIdentified})`,
+    `(n=${totalAfterDuplicates})`,
+    `(n=${totalScreened})`,
+    buildLabel(countByCriteria(excludedInSelection), totalExcludedInScreening),
+    `(n=${totalFullTextAssessed})`,
+    buildLabel(countByCriteria(excludedInExtraction), totalExcludedInFullText),
+    buildLabel(countByCriteria(includedInExtraction), totalIncludedInFullText),
+  ];
+
+  const nodes = getBaseNodes(t);
+  const completedNodes: Node[] = nodes.map((node, index) => ({
+    ...node,
+    data: { ...node.data, label: `${node.data.label} ${nodeLabels[index]}` },
+  }));
+
+  const sources = Object.entries(identifiedBySource);
+  const sourceNodeSpacing = 160;
+  const startX = nodes[0].position.x - ((sources.length - 1) * sourceNodeSpacing) / 2;
+  const basedStartIndex = completedNodes.length;
+
+  sources.forEach(([source, value], index) => {
+    completedNodes.push({
+      id: (basedStartIndex + index).toString(),
+      data: { label: `${source} (n=${value})` },
+      position: { x: startX + index * sourceNodeSpacing, y: 50 },
+    });
+  });
+
+  const dynamicEdges: Edge[] = sources.map((_, i) => {
+    const nodeIndex = basedStartIndex + i;
+    return { id: `e${nodeIndex}_0`, source: nodeIndex.toString(), target: "0", type: "straight" };
+  });
+
+  return { nodes: completedNodes, edges: [...baseEdges, ...dynamicEdges] };
+}

@@ -1,9 +1,10 @@
 // External library
-import { Flex, Text, Input, Textarea, Select, FormLabel } from "@chakra-ui/react";
+import { Flex, Text, Input, Textarea, FormLabel } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 
 // Components
 import ArticleHeader from "../../../table/header/ArticleHeader";
+import ScrollableSelect from "../../../structure/ScrollableSelect";
 
 // Types
 import type { ArticlePreviewProps, EditData } from "../StudyData";
@@ -16,10 +17,18 @@ const STUDY_TYPES = [
   "UNPUBLISHED", "UNKNOWN",
 ];
 
+const STUDY_TYPE_OPTIONS = STUDY_TYPES.map((st) => ({
+  value: st,
+  label: st.charAt(0) + st.slice(1).toLowerCase(),
+}));
+
 const CURRENT_YEAR = new Date().getFullYear();
-const YEARS = Array.from(
+const YEAR_OPTIONS = Array.from(
   { length: CURRENT_YEAR - 1970 + 1 },
-  (_, i) => String(CURRENT_YEAR - i)
+  (_, i) => {
+    const year = String(CURRENT_YEAR - i);
+    return { value: year, label: year };
+  }
 );
 
 export default function ArticlePreview({
@@ -121,13 +130,12 @@ export default function ArticlePreview({
           <Flex flexDirection="column" gap="0.75rem" pb="3.75rem" fontFamily="inherit">
             <Flex flexDirection="column">
               <FormLabel {...labelStyle}>{t("editStudy.fields.type")}</FormLabel>
-              <Select {...fieldStyle} value={editData.type} onChange={(e) => update("type", e.target.value)}>
-                {STUDY_TYPES.map((st) => (
-                  <option key={st} value={st}>
-                    {st.charAt(0) + st.slice(1).toLowerCase()}
-                  </option>
-                ))}
-              </Select>
+              <ScrollableSelect
+                fieldStyle={fieldStyle}
+                value={editData.type}
+                options={STUDY_TYPE_OPTIONS}
+                onChange={(value) => update("type", value)}
+              />
             </Flex>
 
             <Flex flexDirection="column">
@@ -153,11 +161,12 @@ export default function ArticlePreview({
 
             <Flex flexDirection="column">
               <FormLabel {...labelStyle}>{t("editStudy.fields.year")}</FormLabel>
-              <Select {...fieldStyle} value={editData.year} onChange={(e) => update("year", e.target.value)}>
-                {YEARS.map((y) => (
-                  <option key={y} value={y}>{y}</option>
-                ))}
-              </Select>
+              <ScrollableSelect
+                fieldStyle={fieldStyle}
+                value={editData.year}
+                options={YEAR_OPTIONS}
+                onChange={(value) => update("year", value)}
+              />
             </Flex>
 
             <Flex flexDirection="column">
