@@ -33,3 +33,5 @@ echo "Installation completed."
 echo "Node.js version: $(node -v)"
 echo "npm version: $(npm -v)"
 echo "Yarn version: $(yarn -v)"
+echo "Installing project dependencies..."
+yarn install
