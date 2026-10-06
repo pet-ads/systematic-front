@@ -1,0 +1,45 @@
+name: Teste de Inicialização do Front-end
+
+on:
+  push:
+    branches: [ main, dev ]
+  pull_request:
+    branches: [ main, dev ]
+
+jobs:
+  check-runtime:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout do código
+      uses: actions/checkout@v4
+
+    - name: Configurar Node
+      uses: actions/setup-node@v4
+      with:
+        node-version-file: '.nvmrc'
+        cache: 'yarn'
+
+    - name: Mostrar versões
+      run: |
+        node --version
+        yarn --version
+
+    - name: Instalar dependências
+      run: yarn install --frozen-lockfile
+
+    - name: Tornar o script executável
+      run: chmod +x ./scripts/run.sh
+
+    - name: Iniciar a aplicação em background
+      run: ./scripts/run.sh > app.log 2>&1 &
+
+    - name: Aguardar e verificar se a porta está ativa
+      run: |
+        echo "Aguardando o servidor subir..."
+        timeout 90s bash -c 'until echo > /dev/tcp/localhost/5173; do sleep 1; done' || {
+          echo "O servidor não subiu. Log da aplicação:"
+          cat app.log
+          exit 1
+        }
+        echo "O projeto subiu e está rodando com sucesso!"
