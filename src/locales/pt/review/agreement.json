@@ -6,7 +6,7 @@
   "visualization": {
     "choose": "Selecione a visualização",
     "full": "Liberar visualização total",
-    "partial": "Liberar visualização parcial",
+    "partial": "Liberar apenas revisados",
     "blocked": "Bloquear visualização"
   },
   "columns": {

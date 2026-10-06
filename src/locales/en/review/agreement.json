@@ -6,7 +6,7 @@
   "visualization": {
     "choose": "Select visualization",
     "full": "Allow full visualization",
-    "partial": "Allow partial visualization",
+    "partial": "Allow only reviewed",
     "blocked": "Block visualization"
   },
   "columns": {
