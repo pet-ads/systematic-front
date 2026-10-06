@@ -14,7 +14,7 @@ colorize_output() {
 
 echo -e "\033[34m==> Initializing build...\033[0m"
 
-npm run build 2>&1 | colorize_output
+yarn build 2>&1 | colorize_output
 
 if [ "${PIPESTATUS[0]}" -ne 0 ]; then
   echo -e "\033[31mFailure during build. Exiting.\033[0m"
