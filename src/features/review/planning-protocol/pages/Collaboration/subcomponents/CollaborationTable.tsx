@@ -49,12 +49,6 @@ export default function CollaborationTables({ mode }: CollaborationTablesProps) 
     setCollaborators(updated);
   };
 
-  const handleStudiesCountChange = (index: number, valueAsNumber: number) => {
-    const updated = [...collaborators];
-    updated[index].studiesCount = isNaN(valueAsNumber) ? 0 : valueAsNumber;
-    setCollaborators(updated);
-  };
-
   const handleTypeChange = (index: number, newType: "principal" | "secundario") => {
     const updated = collaborators.map((collab, idx) => {
       if (idx === index) {
@@ -149,7 +143,7 @@ export default function CollaborationTables({ mode }: CollaborationTablesProps) 
     {
       key: "name",
       label: t("collaboration.table.reviewer", "revisor"),
-      width: "35%",
+      width: "50%",
       render: (row) => (
         <Text fontSize="sm" color="black" textAlign="left">
           {row.name}
@@ -159,33 +153,11 @@ export default function CollaborationTables({ mode }: CollaborationTablesProps) 
     {
       key: "percentage",
       label: t("collaboration.table.percentage", "% de estudos"),
-      width: "30%",
+      width: "50%",
       render: () => (
         <Text fontSize="sm" color="black" fontWeight="medium" textAlign="left">
           {calculatedPercentage}%
         </Text>
-      ),
-    },
-    {
-      key: "studiesCount",
-      label: t("collaboration.table.studiesCount", "número de estudos"),
-      width: "35%",
-      render: (row, index) => (
-        <Flex justifyContent="flex-start">
-          <NumberInput
-            size="sm"
-            w="100px"
-            min={0}
-            value={row.studiesCount}
-            onChange={(_, valueAsNumber) => handleStudiesCountChange(index, valueAsNumber)}
-          >
-            <NumberInputField textAlign="left" />
-            <NumberInputStepper>
-              <NumberIncrementStepper />
-              <NumberDecrementStepper />
-            </NumberInputStepper>
-          </NumberInput>
-        </Flex>
       ),
     },
   ];
@@ -252,11 +224,13 @@ export default function CollaborationTables({ mode }: CollaborationTablesProps) 
           </Flex>
         </Flex>
 
-        <DefaultTable<CollaboratorRow>
-          columns={divisionColumns}
-          data={collaborators}
-          enableSorting={false}
-        />
+        <Box w="75%" m="auto">
+          <DefaultTable<CollaboratorRow>
+            columns={divisionColumns}
+            data={collaborators}
+            enableSorting={false}
+          />
+        </Box>
       </Box>
     );
   }
