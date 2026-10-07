@@ -1,6 +1,6 @@
 import { useState, useContext, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { Box, Radio, RadioGroup, Stack, Flex, Accordion, AccordionButton, Heading, AccordionIcon, AccordionPanel, AccordionItem } from "@chakra-ui/react";
+import { Box, Radio, RadioGroup, Stack, Flex, Accordion, AccordionButton, Heading, AccordionIcon, AccordionPanel, AccordionItem, Checkbox, Text } from "@chakra-ui/react";
 
 import AppContext from "@features/shared/context/ApplicationContext";
 import useWindowWidth from "@features/shared/hooks/useWindowWidth";
@@ -25,6 +25,8 @@ export default function Collaboration() {
 
   const [selectionCollaborationMode, setSelectionCollaborationMode] = useState<string>("");
   const [extractionCollaborationMode, setExtractionCollaborationMode] = useState<string>("");
+
+  const [isSameConfiguration, setIsSameConfiguration] = useState(false);
 
   if (!appContext) return null;
   const { sidebarState, setSidebarState } = appContext;
@@ -124,6 +126,15 @@ export default function Collaboration() {
             </AccordionPanel>
           </AccordionItem>
         </Accordion>
+
+        <Checkbox
+          isChecked={isSameConfiguration}
+          onChange={(e) => setIsSameConfiguration(e.target.checked)}
+        >
+          <Text>
+            {t("collaboration.checkbox")}
+          </Text>
+        </Checkbox>
       </Flex>
     </ProtocolFormLayout>
   );

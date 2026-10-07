@@ -355,6 +355,7 @@
         },
         "division": {
             "reviewersPerStudy": "Revisores por estudo"
-        }
+        },
+        "checkbox": "Usar a mesma configuração de Seleção em Extração"
     }
 }
