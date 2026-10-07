@@ -1,6 +1,6 @@
 import { useState, useContext, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { Box, Radio, RadioGroup, Stack, Flex, Accordion, AccordionButton, Heading, AccordionIcon, AccordionPanel, AccordionItem } from "@chakra-ui/react";
+import { Box, Radio, RadioGroup, Stack, Flex, Accordion, AccordionButton, Heading, AccordionIcon, AccordionPanel, AccordionItem, Checkbox, Text } from "@chakra-ui/react";
 
 import AppContext from "@features/shared/context/ApplicationContext";
 import useWindowWidth from "@features/shared/hooks/useWindowWidth";
@@ -25,6 +25,9 @@ export default function Collaboration() {
 
   const [selectionCollaborationMode, setSelectionCollaborationMode] = useState<string>("");
   const [extractionCollaborationMode, setExtractionCollaborationMode] = useState<string>("");
+
+  const [isSameConfiguration, setIsSameConfiguration] = useState(false);
+  const [extractionAccordionIndex, setExtractionAccordionIndex] = useState<number>(-1);
 
   if (!appContext) return null;
   const { sidebarState, setSidebarState } = appContext;
@@ -92,10 +95,16 @@ export default function Collaboration() {
 
         <Accordion
           allowToggle
+          index={isSameConfiguration ? -1 : extractionAccordionIndex}
+          onChange={(index) => {
+            if (typeof index === "number") {
+              setExtractionAccordionIndex(index);
+            }
+          }}
           borderColor="#FFFFFF"
         >
-          <AccordionItem>
-            <h2 style={{ color: "#2E4B6C" }}>
+          <AccordionItem isDisabled={isSameConfiguration}>
+            <h2 style={{ color: "#2E4B6C" }} >
               <AccordionButton>
                 <Box flex="1" textAlign="center">
                   <Heading size="lg">
@@ -124,6 +133,15 @@ export default function Collaboration() {
             </AccordionPanel>
           </AccordionItem>
         </Accordion>
+
+        <Checkbox
+          isChecked={isSameConfiguration}
+          onChange={(e) => setIsSameConfiguration(e.target.checked)}
+        >
+          <Text>
+            {t("collaboration.checkbox")}
+          </Text>
+        </Checkbox>
       </Flex>
     </ProtocolFormLayout>
   );

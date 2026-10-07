@@ -279,7 +279,8 @@
         },
         "division": {
             "reviewersPerStudy": "Reviewers per study"
-        }
+        },
+        "checkbox": "Use the same Selection configuration in Extraction"
     },
     "toasts": {
         "duplicateTitle": "Duplicate Entry",
