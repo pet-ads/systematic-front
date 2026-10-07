@@ -261,18 +261,18 @@
             "next": "Next"
         },
         "options": {
-            "replication": "Replicate studies between reviewers",
-            "division": "Divide studies between reviewers"
+            "replication": "replicate studies between reviewers",
+            "division": "divide studies between reviewers"
         },
         "table": {
-            "reviewer": "Reviewer",
-            "type": "Type",
+            "reviewer": "reviewer",
+            "type": "type",
             "percentage": "% of studies",
-            "studiesCount": "Number of studies"
+            "studiesCount": "number of studies"
         },
         "type": {
-            "principal": "Main",
-            "secundario": "Secondary"
+            "principal": "main",
+            "secundario": "secondary"
         },
         "replication": {
             "dontAssignMultipleSecondary": "Do not assign the same study to more than one secondary reviewer"
