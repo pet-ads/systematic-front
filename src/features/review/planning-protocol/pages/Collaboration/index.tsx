@@ -27,6 +27,7 @@ export default function Collaboration() {
   const [extractionCollaborationMode, setExtractionCollaborationMode] = useState<string>("");
 
   const [isSameConfiguration, setIsSameConfiguration] = useState(false);
+  const [extractionAccordionIndex, setExtractionAccordionIndex] = useState<number>(-1);
 
   if (!appContext) return null;
   const { sidebarState, setSidebarState } = appContext;
@@ -94,10 +95,16 @@ export default function Collaboration() {
 
         <Accordion
           allowToggle
+          index={isSameConfiguration ? -1 : extractionAccordionIndex}
+          onChange={(index) => {
+            if (typeof index === "number") {
+              setExtractionAccordionIndex(index);
+            }
+          }}
           borderColor="#FFFFFF"
         >
-          <AccordionItem>
-            <h2 style={{ color: "#2E4B6C" }}>
+          <AccordionItem isDisabled={isSameConfiguration}>
+            <h2 style={{ color: "#2E4B6C" }} >
               <AccordionButton>
                 <Box flex="1" textAlign="center">
                   <Heading size="lg">
