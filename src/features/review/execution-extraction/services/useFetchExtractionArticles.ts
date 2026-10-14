@@ -27,6 +27,7 @@ interface FetchParams extends Params {
     key: keyof ArticleInterface | string;
     direction: "asc" | "desc";
   } | null;
+  userId?: string | null;
 }
 
 const EMPTY_PAGINATION_DATA: HttpResponse = {
@@ -45,6 +46,7 @@ const useFetchExtractionArticles = ({
   searchField = "title",
   status = null,
   sortConfig = null,
+  userId = null,
 }: FetchParams) => {
   const id = localStorage.getItem("systematicReviewId");
 
@@ -62,6 +64,10 @@ const useFetchExtractionArticles = ({
 
   if (status) {
     queryParams.extractionStatus = status;
+  }
+
+  if (userId) {
+    queryParams.userId = userId;
   }
 
   if (sortConfig) {
