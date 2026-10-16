@@ -1,7 +1,7 @@
 {
   "headers": {
-    "selection": "Agreement Selection",
-    "extraction": "Agreement Extraction"
+    "selection": "Selection Agreement",
+    "extraction": "Extraction Agreement"
   },
   "visualization": {
     "choose": "Select visualization",
