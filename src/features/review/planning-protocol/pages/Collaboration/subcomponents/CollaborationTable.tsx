@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Box,
@@ -15,6 +15,7 @@ import {
 
 import DefaultTable from "@components/common/tables/DefaultTable";
 import { Column } from "@components/common/tables/DefaultTable/types";
+import { fetchCollaborators } from "../../GeneralDefinition/subcomponents/ResearcherFilter/services/useFetchCollaborators";
 
 export interface CollaboratorRow {
   id: string;
@@ -33,15 +34,43 @@ export default function CollaborationTables({ mode }: CollaborationTablesProps) 
 
   const [reviewersPerStudy, setReviewersPerStudy] = useState<number>(1);
   const [dontAssignMultipleSecondary, setDontAssignMultipleSecondary] = useState<boolean>(false);
+  const [collaborators, setCollaborators] = useState<CollaboratorRow[]>([]);
 
+  const systematicStudyId = localStorage.getItem("systematicReviewId") || "";
 
-  //Mock reviewers
-  const [collaborators, setCollaborators] = useState<CollaboratorRow[]>([
-    { id: "1", name: "joao", type: "principal", percentage: 100, studiesCount: 100 },
-    { id: "2", name: "gabriel", type: "secundario", percentage: 33, studiesCount: 35 },
-    { id: "3", name: "maria", type: "secundario", percentage: 50, studiesCount: 50 },
-    { id: "4", name: "ana", type: "secundario", percentage: 20, studiesCount: 20 },
-  ]); 
+  useEffect(() => {
+    if (!systematicStudyId) {
+      setCollaborators([
+        { id: "1", name: "fallbackTest1", type: "principal", percentage: 100, studiesCount: 100 },
+        { id: "2", name: "fallbackTest2", type: "secundario", percentage: 33, studiesCount: 35 },
+      ]);
+      return;
+    }
+
+    fetchCollaborators(systematicStudyId)
+      .then((data) => {
+        if (data && data.length > 0) {
+          const mapped: CollaboratorRow[] = data.map((res: any, index: number) => ({
+            id: res.id,
+            name: res.name || res.email || `Revisor ${index + 1}`,
+            type: index === 0 ? "principal" : "secundario",
+            percentage: index === 0 ? 100 : 33,
+            studiesCount: 35,
+          }));
+          setCollaborators(mapped);
+        } else {
+          setCollaborators([
+            { id: "1", name: "fallbackTest1", type: "principal", percentage: 100, studiesCount: 100 },
+          ]);
+        }
+      })
+      .catch(() => {
+        setCollaborators([
+          { id: "1", name: "fallbackTest1", type: "principal", percentage: 100, studiesCount: 100 },
+          { id: "2", name: "fallbackTest2", type: "secundario", percentage: 33, studiesCount: 35 },
+        ]);
+      });
+  }, [systematicStudyId]);
 
   const handlePercentageChange = (index: number, valueAsNumber: number) => {
     const updated = [...collaborators];
@@ -215,7 +244,7 @@ export default function CollaborationTables({ mode }: CollaborationTablesProps) 
               px={3}
               cursor="pointer"
             >
-              {Array.from({ length: totalReviewers }, (_, i) => i + 1).map((val) => (
+              {Array.from({ length: totalReviewers || 1 }, (_, i) => i + 1).map((val) => (
                 <option key={val} value={val}>
                   {val}
                 </option>
