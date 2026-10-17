@@ -88,7 +88,16 @@ function ReviewerCell({ decision, criteria, label }: { decision: ReviewerDecisio
 function DecisionMenu() {
   const { t } = useTranslation("review/agreement");
   const [checked, setChecked] = useState<string[]>([]);
-  const toggle = (value: string) => setChecked((current) => current.includes(value) ? current.filter((item) => item !== value) : [...current, value]);
+
+  const hasInclusion = checked.some((c) => inclusionCriteria.includes(c));
+  const hasExclusion = checked.some((c) => exclusionCriteria.includes(c));
+
+  const toggle = (value: string) =>
+    setChecked((current) =>
+      current.includes(value)
+        ? current.filter((item) => item !== value)
+        : [...current, value]
+    );
 
   return (
     <Menu closeOnSelect={false}>
@@ -97,9 +106,29 @@ function DecisionMenu() {
       </MenuButton>
       <MenuList minW="12rem" zIndex={10} p=".25rem 0">
         <Text px=".75rem" py=".2rem" fontSize="sm">{t("decisionMenu.inclusion")}</Text>
-        {inclusionCriteria.map((criterion) => <MenuItem key={criterion}><Checkbox isChecked={checked.includes(criterion)} onChange={() => toggle(criterion)}>{criterion}</Checkbox></MenuItem>)}
+        {inclusionCriteria.map((criterion) => (
+          <MenuItem key={criterion}>
+            <Checkbox
+              isChecked={checked.includes(criterion)}
+              isDisabled={hasExclusion && !checked.includes(criterion)}
+              onChange={() => toggle(criterion)}
+            >
+              {criterion}
+            </Checkbox>
+          </MenuItem>
+        ))}
         <Text px=".75rem" pt=".6rem" pb=".2rem" mt=".35rem" fontSize="sm" borderTop="1px solid #E2E8F0">{t("decisionMenu.exclusion")}</Text>
-        {exclusionCriteria.map((criterion) => <MenuItem key={criterion}><Checkbox isChecked={checked.includes(criterion)} onChange={() => toggle(criterion)}>{criterion}</Checkbox></MenuItem>)}
+        {exclusionCriteria.map((criterion) => (
+          <MenuItem key={criterion}>
+            <Checkbox
+              isChecked={checked.includes(criterion)}
+              isDisabled={hasInclusion && !checked.includes(criterion)}
+              onChange={() => toggle(criterion)}
+            >
+              {criterion}
+            </Checkbox>
+          </MenuItem>
+        ))}
       </MenuList>
     </Menu>
   );
