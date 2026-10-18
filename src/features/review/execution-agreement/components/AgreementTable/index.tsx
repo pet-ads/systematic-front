@@ -17,7 +17,7 @@ import {
   Text,
   Tooltip,
 } from "@chakra-ui/react";
-import { CheckCircleIcon, ChevronDownIcon, QuestionIcon } from "@chakra-ui/icons";
+import { CheckCircleIcon, ChevronDownIcon, QuestionIcon, WarningIcon } from "@chakra-ui/icons";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa6";
 import { IoIosCloseCircle } from "react-icons/io";
 import { useTranslation } from "react-i18next";
@@ -28,7 +28,7 @@ import { chevronIcon, collapsedSpanText, tdSX, tooltip } from "@features/review/
 import type { PaginationControls } from "@features/shared/types/pagination";
 
 export type ReviewerDecision = "included" | "excluded";
-export type FinalStatus = ReviewerDecision | "unclassified";
+export type FinalStatus = ReviewerDecision | "unclassified" | "duplicated";
 
 export interface AgreementStudy {
   id: number;
@@ -62,6 +62,7 @@ function Status({ status, label }: { status: ReviewerDecision | FinalStatus; lab
         {status === "included" && <CheckCircleIcon color="green.500" boxSize=".85rem" />}
         {status === "excluded" && <IoIosCloseCircle color="red" size="1rem" />}
         {status === "unclassified" && <QuestionIcon color="yellow.500" boxSize=".85rem" />}
+        {status === "duplicated" && <WarningIcon color="blue.500" boxSize=".85rem" />}
         <Text sx={{ ...collapsedSpanText, w: "auto", textAlign: "center" }}>{label}</Text>
       </Flex>
     </Flex>

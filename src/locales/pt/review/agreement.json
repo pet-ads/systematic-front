@@ -25,6 +25,7 @@
     "pending": "Selecionar",
     "included": "Incluído",
     "excluded": "Excluído",
+    "duplicated": "Duplicado",
     "unclassified": "Não classificado",
     "filter": "Filtrar status"
   },
