@@ -17,9 +17,9 @@ import useLayoutPage from "@features/review/shared/hooks/useLayoutPage";
 import useWindowWidth from "@features/shared/hooks/useWindowWidth";
 import type { ViewModel } from "@features/review/shared/hooks/useLayoutPage";
 import AgreementTable, {
-  mockStudies,
   type AgreementStudy,
 } from "../components/AgreementTable";
+import useFetchAgreementData from "../services/useFetchAgreementData";
 import usePaginationState from "@features/shared/hooks/usePaginationState";
 import { inputconteiner } from "@features/review/shared/styles/executionStyles";
 
@@ -34,7 +34,12 @@ export default function AgreementExecutionPage({ stage }: { stage: AgreementStag
   }, [window, sidebarState, setSidebarState]);
   const { t } = useTranslation("review/agreement");
   const { t: selectionT } = useTranslation("review/execution-selection");
-  const [studies] = useState<AgreementStudy[]>(mockStudies);
+  const {
+    studies,
+    reviewers,
+    inclusionCriteria,
+    exclusionCriteria,
+  } = useFetchAgreementData(stage);
   const [searchString, setSearchString] = useState("");
   const [searchField, setSearchField] = useState<SearchField>("title");
   const { value: selectedStatus, handleChange: handleStatusChange } = useInputState<string | null>(null);
@@ -44,12 +49,18 @@ export default function AgreementExecutionPage({ stage }: { stage: AgreementStag
     title: true,
     author: true,
     year: true,
-    João: true,
-    Gabriel: true,
-    Maria: true,
     decision: true,
     finalStatus: true,
   });
+
+  useEffect(() => {
+    if (reviewers.length === 0) return;
+    setColumnsVisible((prev) => {
+      const next = { ...prev };
+      reviewers.forEach((r) => { if (!(r in next)) next[r] = true; });
+      return next;
+    });
+  }, [reviewers]);
   const [sortConfig, setSortConfig] = useState<{
     key: keyof AgreementStudy;
     direction: "asc" | "desc";
@@ -88,6 +99,9 @@ export default function AgreementExecutionPage({ stage }: { stage: AgreementStag
   const renderTable = (tableStudies: AgreementStudy[], showPagination = true) => (
     <AgreementTable
       studies={tableStudies}
+      reviewers={reviewers}
+      inclusionCriteria={inclusionCriteria}
+      exclusionCriteria={exclusionCriteria}
       pagination={paginationWithTotal}
       columnsVisible={columnsVisible}
       sortConfig={sortConfig}
@@ -111,9 +125,7 @@ export default function AgreementExecutionPage({ stage }: { stage: AgreementStag
     { key: "title", label: t("columns.title") },
     { key: "author", label: t("columns.author") },
     { key: "year", label: t("columns.year") },
-    { key: "João", label: "João" },
-    { key: "Gabriel", label: "Gabriel" },
-    { key: "Maria", label: "Maria" },
+    ...reviewers.map((r) => ({ key: r, label: r })),
     { key: "decision", label: t("columns.decision") },
     { key: "finalStatus", label: t("columns.finalStatus") },
   ];
