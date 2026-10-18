@@ -45,8 +45,12 @@ export default function useFetchAgreementData(
       }
 
       try {
+        const path = backendStage === "SELECTION"
+          ? `systematic-study/${id}/study-review/search`
+          : `systematic-study/${id}/study-review/selection-included`;
+
         const studiesRes = await Axios.get(
-          `systematic-study/${id}/study-review/search`,
+          path,
           { params: { size: 1000 } },
         );
         const rawStudies = studiesRes.data?.studyReviews ?? [];
@@ -58,10 +62,11 @@ export default function useFetchAgreementData(
           year: s.year ?? 0,
           reviewerDecisions: {},
           reviewerCriteria: {},
-          finalStatus: (s.selectionStatus ?? "UNCLASSIFIED").toLowerCase() as
+          finalStatus: (backendStage === "SELECTION" ? s.selectionStatus ?? "UNCLASSIFIED" : s.extractionStatus ?? "UNCLASSIFIED").toLowerCase() as
             | "included"
             | "excluded"
-            | "unclassified",
+            | "unclassified"
+            | "duplicated",
         }));
         setStudies(mappedStudies);
       } catch {
