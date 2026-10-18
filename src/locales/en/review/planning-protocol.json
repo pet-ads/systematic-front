@@ -272,7 +272,7 @@
         },
         "type": {
             "principal": "main",
-            "secundario": "secondary"
+            "secundario": "assistant"
         },
         "replication": {
             "dontAssignMultipleSecondary": "Do not assign the same study to more than one secondary reviewer"

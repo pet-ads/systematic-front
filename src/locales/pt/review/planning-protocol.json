@@ -348,7 +348,7 @@
         },
         "type": {
             "principal": "principal",
-            "secundario": "secundário"
+            "secundario": "auxiliar"
         },
         "replication": {
             "dontAssignMultipleSecondary": "Não atribuir um mesmo estudo a mais de um revisor secundário"
