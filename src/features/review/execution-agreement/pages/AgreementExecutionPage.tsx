@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
-import { Box, Flex } from "@chakra-ui/react";
+import { Box, Checkbox, Flex } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 import { useContext } from "react";
+import { BsPeopleFill } from "react-icons/bs";
 
 import Header from "../../../../components/structure/Header/Header";
 import FlexLayout from "../../../../components/structure/Flex/Flex";
@@ -30,6 +31,7 @@ type AgreementStage = "selection" | "extraction";
 export default function AgreementExecutionPage({ stage }: { stage: AgreementStage }) {
   const window = useWindowWidth();
   const userId = useAuthStore((state) => state.user?.id);
+  const systematicStudyId = localStorage.getItem("systematicReviewId") ?? "";
   const [isAdmin, setIsAdmin] = useState(false);
   const context = useContext(AppContext);
   const { sidebarState, setSidebarState } = context ?? {};
@@ -37,9 +39,8 @@ export default function AgreementExecutionPage({ stage }: { stage: AgreementStag
     if (window < 1000 && sidebarState === "open") setSidebarState?.("collapsed");
   }, [window, sidebarState, setSidebarState]);
   useEffect(() => {
-    const systematicStudyId = localStorage.getItem("systematicReviewId");
+    setIsAdmin(false);
     if (!systematicStudyId || !userId) {
-      setIsAdmin(false);
       return;
     }
 
@@ -50,8 +51,8 @@ export default function AgreementExecutionPage({ stage }: { stage: AgreementStag
           setIsAdmin(
             collaborators.some(
               (collaborator) =>
-                collaborator.id === userId &&
-                (collaborator.role === "admin" || collaborator.role === "owner"),
+                String(collaborator.id) === String(userId) &&
+                ["admin", "owner"].includes(collaborator.role.trim().toLowerCase()),
             ),
           );
         }
@@ -64,7 +65,7 @@ export default function AgreementExecutionPage({ stage }: { stage: AgreementStag
     return () => {
       isCurrent = false;
     };
-  }, [userId]);
+  }, [systematicStudyId, userId]);
   const { t } = useTranslation("review/agreement");
   const { t: selectionT } = useTranslation("review/execution-selection");
   const {
@@ -99,6 +100,7 @@ export default function AgreementExecutionPage({ stage }: { stage: AgreementStag
     direction: "asc" | "desc";
   } | null>(null);
   const [visualization, setVisualization] = useState<VisualizationMode>("blocked");
+  const [acceptMajority, setAcceptMajority] = useState(false);
 
   const filteredStudies = useMemo(() => {
     const search = searchString.trim().toLowerCase();
@@ -240,12 +242,48 @@ export default function AgreementExecutionPage({ stage }: { stage: AgreementStag
             alignItems="center"
             ml={{ base: "0%", md: "-35%", lg: "0%" }}
           >
-            <ColumnVisibilityMenu
-              columnsVisible={columnsVisible}
-              customColumns={agreementColumns}
-              customColumnsVisible={columnsVisible}
-              toggleCustomColumnVisibility={toggleColumnVisibility}
-            />
+            <Flex alignItems="center" gap=".5rem">
+              <Flex
+                align="center"
+                gap=".5rem"
+                py=".5rem"
+                px="1rem"
+                borderRadius="6px"
+                bg="#FFFFFF"
+                color="#263C56"
+                fontWeight="bold"
+                transition="background 0.2s ease"
+                _hover={{ opacity: 0.9 }}
+                whiteSpace="nowrap"
+              >
+                <BsPeopleFill size="1rem" />
+                <Checkbox
+                  isChecked={acceptMajority}
+                  onChange={(event) => setAcceptMajority(event.target.checked)}
+                  sx={{
+                    "& .chakra-checkbox__control": {
+                      borderColor: "#263C56",
+                      _checked: {
+                        bg: "#263C56",
+                        borderColor: "#263C56",
+                      },
+                    },
+                    "& .chakra-checkbox__label": {
+                      fontWeight: "bold",
+                      marginInlineStart: ".5rem",
+                    },
+                  }}
+                >
+                  {t("majorityButton")}
+                </Checkbox>
+              </Flex>
+              <ColumnVisibilityMenu
+                columnsVisible={columnsVisible}
+                customColumns={agreementColumns}
+                customColumnsVisible={columnsVisible}
+                toggleCustomColumnVisibility={toggleColumnVisibility}
+              />
+            </Flex>
             <StatusSelect
               selectedValue={selectedStatus}
               onSelect={handleStatusChange}
