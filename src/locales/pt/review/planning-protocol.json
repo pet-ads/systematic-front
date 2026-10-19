@@ -348,13 +348,14 @@
         },
         "type": {
             "principal": "principal",
-            "secundario": "secundário"
+            "secundario": "auxiliar"
         },
         "replication": {
             "dontAssignMultipleSecondary": "Não atribuir um mesmo estudo a mais de um revisor secundário"
         },
         "division": {
             "reviewersPerStudy": "Revisores por estudo"
-        }
+        },
+        "checkbox": "Usar a mesma configuração de Seleção em Extração"
     }
 }

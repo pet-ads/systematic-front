@@ -1,10 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
-import { Box, Flex } from "@chakra-ui/react";
+import { Box, Checkbox, Flex } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 import { useContext } from "react";
+import { BsPeopleFill } from "react-icons/bs";
 
 import Header from "../../../../components/structure/Header/Header";
 import FlexLayout from "../../../../components/structure/Flex/Flex";
+import { useAuthStore } from "@features/auth/store/useAuthStore";
 import AppContext from "@features/shared/context/ApplicationContext";
 import InputText from "../../../../components/common/inputs/InputText";
 import SearchFieldSelect from "@features/review/shared/components/common/inputs/SearchFieldSelect";
@@ -17,24 +19,61 @@ import useLayoutPage from "@features/review/shared/hooks/useLayoutPage";
 import useWindowWidth from "@features/shared/hooks/useWindowWidth";
 import type { ViewModel } from "@features/review/shared/hooks/useLayoutPage";
 import AgreementTable, {
-  mockStudies,
   type AgreementStudy,
 } from "../components/AgreementTable";
+import useFetchAgreementData from "../services/useFetchAgreementData";
 import usePaginationState from "@features/shared/hooks/usePaginationState";
 import { inputconteiner } from "@features/review/shared/styles/executionStyles";
+import { fetchCollaborators } from "../../planning-protocol/pages/GeneralDefinition/subcomponents/ResearcherFilter/services/useFetchCollaborators";
 
 type AgreementStage = "selection" | "extraction";
 
 export default function AgreementExecutionPage({ stage }: { stage: AgreementStage }) {
   const window = useWindowWidth();
+  const userId = useAuthStore((state) => state.user?.id);
+  const systematicStudyId = localStorage.getItem("systematicReviewId") ?? "";
+  const [isAdmin, setIsAdmin] = useState(false);
   const context = useContext(AppContext);
   const { sidebarState, setSidebarState } = context ?? {};
   useEffect(() => {
     if (window < 1000 && sidebarState === "open") setSidebarState?.("collapsed");
   }, [window, sidebarState, setSidebarState]);
+  useEffect(() => {
+    setIsAdmin(false);
+    if (!systematicStudyId || !userId) {
+      return;
+    }
+
+    let isCurrent = true;
+    fetchCollaborators(systematicStudyId)
+      .then((collaborators) => {
+        if (isCurrent) {
+          setIsAdmin(
+            collaborators.some(
+              (collaborator) =>
+                String(collaborator.id) === String(userId) &&
+                ["admin", "owner"].includes(collaborator.role.trim().toLowerCase()),
+            ),
+          );
+        }
+      })
+      .catch((error: unknown) => {
+        console.error("Failed to check agreement visualization permissions", error);
+        if (isCurrent) setIsAdmin(false);
+      });
+
+    return () => {
+      isCurrent = false;
+    };
+  }, [systematicStudyId, userId]);
   const { t } = useTranslation("review/agreement");
   const { t: selectionT } = useTranslation("review/execution-selection");
-  const [studies] = useState<AgreementStudy[]>(mockStudies);
+  const {
+    studies,
+    reviewers,
+    inclusionCriteria,
+    exclusionCriteria,
+  } = useFetchAgreementData(stage);
   const [searchString, setSearchString] = useState("");
   const [searchField, setSearchField] = useState<SearchField>("title");
   const { value: selectedStatus, handleChange: handleStatusChange } = useInputState<string | null>(null);
@@ -44,17 +83,24 @@ export default function AgreementExecutionPage({ stage }: { stage: AgreementStag
     title: true,
     author: true,
     year: true,
-    João: true,
-    Gabriel: true,
-    Maria: true,
     decision: true,
     finalStatus: true,
   });
+
+  useEffect(() => {
+    if (reviewers.length === 0) return;
+    setColumnsVisible((prev) => {
+      const next = { ...prev };
+      reviewers.forEach((r) => { if (!(r in next)) next[r] = true; });
+      return next;
+    });
+  }, [reviewers]);
   const [sortConfig, setSortConfig] = useState<{
     key: keyof AgreementStudy;
     direction: "asc" | "desc";
   } | null>(null);
   const [visualization, setVisualization] = useState<VisualizationMode>("blocked");
+  const [acceptMajority, setAcceptMajority] = useState(false);
 
   const filteredStudies = useMemo(() => {
     const search = searchString.trim().toLowerCase();
@@ -88,6 +134,9 @@ export default function AgreementExecutionPage({ stage }: { stage: AgreementStag
   const renderTable = (tableStudies: AgreementStudy[], showPagination = true) => (
     <AgreementTable
       studies={tableStudies}
+      reviewers={reviewers}
+      inclusionCriteria={inclusionCriteria}
+      exclusionCriteria={exclusionCriteria}
       pagination={paginationWithTotal}
       columnsVisible={columnsVisible}
       sortConfig={sortConfig}
@@ -111,9 +160,7 @@ export default function AgreementExecutionPage({ stage }: { stage: AgreementStag
     { key: "title", label: t("columns.title") },
     { key: "author", label: t("columns.author") },
     { key: "year", label: t("columns.year") },
-    { key: "João", label: "João" },
-    { key: "Gabriel", label: "Gabriel" },
-    { key: "Maria", label: "Maria" },
+    ...reviewers.map((r) => ({ key: r, label: r })),
     { key: "decision", label: t("columns.decision") },
     { key: "finalStatus", label: t("columns.finalStatus") },
   ];
@@ -163,7 +210,12 @@ export default function AgreementExecutionPage({ stage }: { stage: AgreementStag
       <Box w="100%" px="1rem" py=".75rem" h="fit-content">
         <Flex w="100%" h="2.5rem" justifyContent="space-between" alignItems="center" mb="2rem">
           <Header text={t(`headers.${stage}`)} />
-          <SelectVisualization visualization={visualization} handleChangeVisualization={setVisualization} />
+          {isAdmin && (
+            <SelectVisualization
+              visualization={visualization}
+              handleChangeVisualization={setVisualization}
+            />
+          )}
         </Flex>
         <Box sx={inputconteiner}>
           <Flex gap=".5rem" w="fit-content" justifyContent="space-between" alignItems="center">
@@ -190,12 +242,48 @@ export default function AgreementExecutionPage({ stage }: { stage: AgreementStag
             alignItems="center"
             ml={{ base: "0%", md: "-35%", lg: "0%" }}
           >
-            <ColumnVisibilityMenu
-              columnsVisible={columnsVisible}
-              customColumns={agreementColumns}
-              customColumnsVisible={columnsVisible}
-              toggleCustomColumnVisibility={toggleColumnVisibility}
-            />
+            <Flex alignItems="center" gap=".5rem">
+              <Flex
+                align="center"
+                gap=".5rem"
+                py=".5rem"
+                px="1rem"
+                borderRadius="6px"
+                bg="#FFFFFF"
+                color="#263C56"
+                fontWeight="bold"
+                transition="background 0.2s ease"
+                _hover={{ opacity: 0.9 }}
+                whiteSpace="nowrap"
+              >
+                <BsPeopleFill size="1rem" />
+                <Checkbox
+                  isChecked={acceptMajority}
+                  onChange={(event) => setAcceptMajority(event.target.checked)}
+                  sx={{
+                    "& .chakra-checkbox__control": {
+                      borderColor: "#263C56",
+                      _checked: {
+                        bg: "#263C56",
+                        borderColor: "#263C56",
+                      },
+                    },
+                    "& .chakra-checkbox__label": {
+                      fontWeight: "bold",
+                      marginInlineStart: ".5rem",
+                    },
+                  }}
+                >
+                  {t("majorityButton")}
+                </Checkbox>
+              </Flex>
+              <ColumnVisibilityMenu
+                columnsVisible={columnsVisible}
+                customColumns={agreementColumns}
+                customColumnsVisible={columnsVisible}
+                toggleCustomColumnVisibility={toggleColumnVisibility}
+              />
+            </Flex>
             <StatusSelect
               selectedValue={selectedStatus}
               onSelect={handleStatusChange}

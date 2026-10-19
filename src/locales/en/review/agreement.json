@@ -1,7 +1,7 @@
 {
   "headers": {
-    "selection": "Agreement Selection",
-    "extraction": "Agreement Extraction"
+    "selection": "Selection Agreement",
+    "extraction": "Extraction Agreement"
   },
   "visualization": {
     "choose": "Select visualization",
@@ -25,9 +25,11 @@
     "pending": "Select",
     "included": "Included",
     "excluded": "Excluded",
+    "duplicated": "Duplicated",
     "unclassified": "Unclassified",
     "filter": "Filter status"
   },
+  "majorityButton": "Accept Majority",
   "noResults": "No studies found",
   "decisionMenu": {
     "judge": "Judge",

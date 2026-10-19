@@ -17,7 +17,7 @@ import {
   Text,
   Tooltip,
 } from "@chakra-ui/react";
-import { CheckCircleIcon, ChevronDownIcon, QuestionIcon } from "@chakra-ui/icons";
+import { CheckCircleIcon, ChevronDownIcon, QuestionIcon, WarningIcon } from "@chakra-ui/icons";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa6";
 import { IoIosCloseCircle } from "react-icons/io";
 import { useTranslation } from "react-i18next";
@@ -28,7 +28,7 @@ import { chevronIcon, collapsedSpanText, tdSX, tooltip } from "@features/review/
 import type { PaginationControls } from "@features/shared/types/pagination";
 
 export type ReviewerDecision = "included" | "excluded";
-export type FinalStatus = ReviewerDecision | "unclassified";
+export type FinalStatus = ReviewerDecision | "unclassified" | "duplicated";
 
 export interface AgreementStudy {
   id: number;
@@ -43,6 +43,9 @@ export interface AgreementStudy {
 
 interface AgreementTableProps {
   studies: AgreementStudy[];
+  reviewers: string[];
+  inclusionCriteria: string[];
+  exclusionCriteria: string[];
   pagination: PaginationControls;
   columnsVisible: Record<string, boolean>;
   sortConfig: { key: keyof AgreementStudy; direction: "asc" | "desc" } | null;
@@ -52,17 +55,6 @@ interface AgreementTableProps {
 
 type HeaderKey = "id" | "title" | "author" | "year" | "reviewer" | "decision" | "finalStatus";
 
-const reviewers = ["João", "Gabriel", "Maria"];
-const inclusionCriteria = ["IC-01", "IC-02", "IC-03"];
-const exclusionCriteria = ["EC-01", "EC-02", "EC-03"];
-
-export const mockStudies: AgreementStudy[] = [
-  { id: 1, title: "Título do estudo 1", author: "Autor do estudo 1", venue: "Periódico 1", year: 2026, reviewerDecisions: { João: "included", Gabriel: "excluded", Maria: "included" }, reviewerCriteria: { João: ["IC-01", "IC-03"], Gabriel: ["EC-02"], Maria: ["IC-01"] }, finalStatus: "included" },
-  { id: 2, title: "Título do estudo 2", author: "Autor do estudo 2", venue: "Periódico 2", year: 2025, reviewerDecisions: { João: "excluded", Gabriel: "excluded", Maria: "included" }, reviewerCriteria: { João: ["EC-01"], Gabriel: ["EC-02", "EC-03"], Maria: ["IC-02", "IC-03"] }, finalStatus: "excluded" },
-  { id: 3, title: "Título do estudo 3", author: "Autor do estudo 3", venue: "Periódico 3", year: 2024, reviewerDecisions: { João: "included", Gabriel: "included", Maria: "included" }, reviewerCriteria: { João: ["IC-02"], Gabriel: ["IC-01", "IC-02"], Maria: ["IC-01", "IC-03"] }, finalStatus: "unclassified" },
-  { id: 4, title: "Título do estudo 4", author: "Autor do estudo 4", venue: "Periódico 4", year: 2023, reviewerDecisions: { João: "excluded", Gabriel: "included", Maria: "included" }, reviewerCriteria: { João: ["EC-01"], Gabriel: ["IC-01", "IC-02"], Maria: ["IC-01", "IC-03"] }, finalStatus: "unclassified" },
-];
-
 function Status({ status, label }: { status: ReviewerDecision | FinalStatus; label: string }) {
   return (
     <Flex direction="column" alignItems="center" justifyContent="center" gap=".1rem" w="100%">
@@ -70,25 +62,38 @@ function Status({ status, label }: { status: ReviewerDecision | FinalStatus; lab
         {status === "included" && <CheckCircleIcon color="green.500" boxSize=".85rem" />}
         {status === "excluded" && <IoIosCloseCircle color="red" size="1rem" />}
         {status === "unclassified" && <QuestionIcon color="yellow.500" boxSize=".85rem" />}
+        {status === "duplicated" && <WarningIcon color="blue.500" boxSize=".85rem" />}
         <Text sx={{ ...collapsedSpanText, w: "auto", textAlign: "center" }}>{label}</Text>
       </Flex>
     </Flex>
   );
 }
 
-function ReviewerCell({ decision, criteria, label }: { decision: ReviewerDecision; criteria: string[]; label: string }) {
+function ReviewerCell({ decision, criteria, label }: { decision?: ReviewerDecision; criteria?: string[]; label: string }) {
+  if (!decision) return <Text fontSize="sm" color="gray.400" textAlign="center">—</Text>;
   return (
     <Flex direction="column" alignItems="center" justifyContent="center" w="100%">
       <Status status={decision} label={label} />
-      <Text fontSize=".65rem" color="gray.600" whiteSpace="nowrap" textAlign="center">{criteria.join(", ")}</Text>
+      {criteria && criteria.length > 0 && (
+        <Text fontSize=".65rem" color="gray.600" whiteSpace="nowrap" textAlign="center">{criteria.join(", ")}</Text>
+      )}
     </Flex>
   );
 }
 
-function DecisionMenu() {
+function DecisionMenu({ inclusionCriteria, exclusionCriteria }: { inclusionCriteria: string[]; exclusionCriteria: string[] }) {
   const { t } = useTranslation("review/agreement");
   const [checked, setChecked] = useState<string[]>([]);
-  const toggle = (value: string) => setChecked((current) => current.includes(value) ? current.filter((item) => item !== value) : [...current, value]);
+
+  const hasInclusion = checked.some((c) => inclusionCriteria.includes(c));
+  const hasExclusion = checked.some((c) => exclusionCriteria.includes(c));
+
+  const toggle = (value: string) =>
+    setChecked((current) =>
+      current.includes(value)
+        ? current.filter((item) => item !== value)
+        : [...current, value]
+    );
 
   return (
     <Menu closeOnSelect={false}>
@@ -97,15 +102,35 @@ function DecisionMenu() {
       </MenuButton>
       <MenuList minW="12rem" zIndex={10} p=".25rem 0">
         <Text px=".75rem" py=".2rem" fontSize="sm">{t("decisionMenu.inclusion")}</Text>
-        {inclusionCriteria.map((criterion) => <MenuItem key={criterion}><Checkbox isChecked={checked.includes(criterion)} onChange={() => toggle(criterion)}>{criterion}</Checkbox></MenuItem>)}
+        {inclusionCriteria.map((criterion) => (
+          <MenuItem key={criterion}>
+            <Checkbox
+              isChecked={checked.includes(criterion)}
+              isDisabled={hasExclusion && !checked.includes(criterion)}
+              onChange={() => toggle(criterion)}
+            >
+              {criterion}
+            </Checkbox>
+          </MenuItem>
+        ))}
         <Text px=".75rem" pt=".6rem" pb=".2rem" mt=".35rem" fontSize="sm" borderTop="1px solid #E2E8F0">{t("decisionMenu.exclusion")}</Text>
-        {exclusionCriteria.map((criterion) => <MenuItem key={criterion}><Checkbox isChecked={checked.includes(criterion)} onChange={() => toggle(criterion)}>{criterion}</Checkbox></MenuItem>)}
+        {exclusionCriteria.map((criterion) => (
+          <MenuItem key={criterion}>
+            <Checkbox
+              isChecked={checked.includes(criterion)}
+              isDisabled={hasInclusion && !checked.includes(criterion)}
+              onChange={() => toggle(criterion)}
+            >
+              {criterion}
+            </Checkbox>
+          </MenuItem>
+        ))}
       </MenuList>
     </Menu>
   );
 }
 
-export default function AgreementTable({ studies, pagination, columnsVisible, sortConfig, onSort, showPagination = true }: AgreementTableProps) {
+export default function AgreementTable({ studies, reviewers, inclusionCriteria, exclusionCriteria, pagination, columnsVisible, sortConfig, onSort, showPagination = true }: AgreementTableProps) {
   const window = useWindowWidth();
   const { t } = useTranslation("review/agreement");
   const columnWidths: Record<HeaderKey, string> = { id: "80px", title: "95px", author: "95px", year: "85px", reviewer: "100px", decision: "130px", finalStatus: "100px" };
@@ -155,8 +180,16 @@ export default function AgreementTable({ studies, pagination, columnsVisible, so
               {columnsVisible.title !== false && <Td sx={{ ...tdSX, textAlign: "start" }} pl="1rem" w={columnWidths.title}><Tooltip sx={tooltip} label={study.title} aria-label="Full Title" hasArrow><Text sx={{ ...collapsedSpanText, w: "auto", textAlign: "start" }}>{study.title}</Text></Tooltip></Td>}
               {columnsVisible.author !== false && <Td sx={{ ...tdSX, textAlign: "start" }} w={columnWidths.author}><Tooltip sx={tooltip} label={study.author} aria-label="Full Author" hasArrow><Text sx={{ ...collapsedSpanText, w: "auto", textAlign: "start" }}>{study.author}</Text></Tooltip></Td>}
               {columnsVisible.year !== false && <Td sx={tdSX} w={columnWidths.year} pl="2.2rem"><Text sx={{ ...collapsedSpanText, w: "auto", textAlign: "start" }}>{study.year}</Text></Td>}
-              {reviewers.map((reviewer) => columnsVisible[reviewer] !== false && <Td key={reviewer} sx={tdSX} w={columnWidths.reviewer}><ReviewerCell decision={study.reviewerDecisions[reviewer]} criteria={study.reviewerCriteria[reviewer]} label={t(`decisions.${study.reviewerDecisions[reviewer]}`)} /></Td>)}
-              {columnsVisible.decision !== false && <Td sx={tdSX} w={columnWidths.decision}><DecisionMenu /></Td>}
+              {reviewers.map((reviewer) => columnsVisible[reviewer] !== false && (
+              <Td key={reviewer} sx={tdSX} w={columnWidths.reviewer}>
+                <ReviewerCell
+                  decision={study.reviewerDecisions?.[reviewer]}
+                  criteria={study.reviewerCriteria?.[reviewer]}
+                  label={study.reviewerDecisions?.[reviewer] ? t(`decisions.${study.reviewerDecisions[reviewer]}`) : "—"}
+                />
+              </Td>
+            ))}
+              {columnsVisible.decision !== false && <Td sx={tdSX} w={columnWidths.decision}><DecisionMenu inclusionCriteria={inclusionCriteria} exclusionCriteria={exclusionCriteria} /></Td>}
               {columnsVisible.finalStatus !== false && <Td sx={tdSX} w={columnWidths.finalStatus}><Status status={study.finalStatus} label={t(`statuses.${study.finalStatus}`)} /></Td>}
             </Tr>)}
           </Tbody>
