@@ -1,44 +1,88 @@
 import { useEffect, useMemo, useState } from "react";
-import { Box, Flex } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Divider,
+  Flex,
+  FormControl,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  Portal,
+  Text,
+} from "@chakra-ui/react";
+import { ChevronDownIcon } from "@chakra-ui/icons";
 import { useTranslation } from "react-i18next";
 import { useContext } from "react";
 
 import Header from "../../../../components/structure/Header/Header";
 import FlexLayout from "../../../../components/structure/Flex/Flex";
+import { useAuthStore } from "@features/auth/store/useAuthStore";
 import AppContext from "@features/shared/context/ApplicationContext";
 import InputText from "../../../../components/common/inputs/InputText";
 import SearchFieldSelect from "@features/review/shared/components/common/inputs/SearchFieldSelect";
 import type { SearchField } from "@features/review/shared/components/common/inputs/SearchFieldSelect";
-import SelectLayout from "@features/review/shared/components/structure/LayoutButton";
 import ColumnVisibilityMenu from "@features/review/shared/components/common/menu/ColumnVisibilityMenu";
 import StatusSelect from "@features/review/shared/components/common/inputs/StatusSelect";
 import useInputState from "@features/review/shared/hooks/useInputState";
-import useLayoutPage from "@features/review/shared/hooks/useLayoutPage";
 import useWindowWidth from "@features/shared/hooks/useWindowWidth";
-import type { ViewModel } from "@features/review/shared/hooks/useLayoutPage";
 import AgreementTable, {
   mockStudies,
   type AgreementStudy,
 } from "../components/AgreementTable";
 import usePaginationState from "@features/shared/hooks/usePaginationState";
 import { inputconteiner } from "@features/review/shared/styles/executionStyles";
+import { fetchCollaborators } from "../../planning-protocol/pages/GeneralDefinition/subcomponents/ResearcherFilter/services/useFetchCollaborators";
 
 type AgreementStage = "selection" | "extraction";
+type AgreementVisibility = "everyone" | "completed" | "nobody";
 
 export default function AgreementExecutionPage({ stage }: { stage: AgreementStage }) {
   const window = useWindowWidth();
+  const userId = useAuthStore((state) => state.user?.id);
+  const [isAdmin, setIsAdmin] = useState(false);
   const context = useContext(AppContext);
   const { sidebarState, setSidebarState } = context ?? {};
+  const [visibility, setVisibility] = useState<AgreementVisibility | null>(null);
   useEffect(() => {
     if (window < 1000 && sidebarState === "open") setSidebarState?.("collapsed");
   }, [window, sidebarState, setSidebarState]);
+  useEffect(() => {
+    const systematicStudyId = localStorage.getItem("systematicReviewId");
+    if (!systematicStudyId || !userId) {
+      setIsAdmin(false);
+      return;
+    }
+
+    let isCurrent = true;
+    fetchCollaborators(systematicStudyId)
+      .then((collaborators) => {
+        if (isCurrent) {
+          setIsAdmin(
+            collaborators.some(
+              (collaborator) =>
+                collaborator.id === userId && collaborator.role === "admin",
+            ),
+          );
+        }
+      })
+      .catch((error: unknown) => {
+        console.error("Failed to check agreement visibility permissions", error);
+        if (isCurrent) setIsAdmin(false);
+      });
+
+    return () => {
+      isCurrent = false;
+    };
+  }, [userId]);
   const { t } = useTranslation("review/agreement");
   const { t: selectionT } = useTranslation("review/execution-selection");
   const [studies] = useState<AgreementStudy[]>(mockStudies);
   const [searchString, setSearchString] = useState("");
   const [searchField, setSearchField] = useState<SearchField>("title");
+  const visibilityOptions: AgreementVisibility[] = ["everyone", "completed", "nobody"];
   const { value: selectedStatus, handleChange: handleStatusChange } = useInputState<string | null>(null);
-  const { layout, handleChangeLayout } = useLayoutPage();
   const [columnsVisible, setColumnsVisible] = useState<Record<string, boolean>>({
     id: true,
     title: true,
@@ -117,52 +161,63 @@ export default function AgreementExecutionPage({ stage }: { stage: AgreementStag
     { key: "finalStatus", label: t("columns.finalStatus") },
   ];
 
-  const renderLayout = (currentLayout: ViewModel) => {
-    const study = visibleStudies[0];
-    const articlePreview = <Box h="100%" />;
-
-    if (currentLayout === "horizontal" || currentLayout === "horizontal-invert") {
-      const tablePanel = <Box flex="1" minH="0" overflow="hidden">{renderTable(visibleStudies)}</Box>;
-      const articlePanel = <Box flex="1" minH="0" overflow="hidden">{articlePreview}</Box>;
-      return (
-        <Flex direction="column" gap="1rem" h="100%" overflow="hidden">
-          {currentLayout === "horizontal" ? tablePanel : articlePanel}
-          {currentLayout === "horizontal" ? articlePanel : tablePanel}
-        </Flex>
-      );
-    }
-
-    if (currentLayout === "vertical" || currentLayout === "vertical-invert") {
-      const tablePanel = <Box flex="1" minW="0" overflow="hidden">{renderTable(visibleStudies)}</Box>;
-      const articlePanel = <Box flex="1" minW="0" overflow="hidden">{articlePreview}</Box>;
-      return (
-        <Flex gap="1rem" h="100%" overflow="hidden">
-          {currentLayout === "vertical" ? tablePanel : articlePanel}
-          {currentLayout === "vertical" ? articlePanel : tablePanel}
-        </Flex>
-      );
-    }
-
-    if (currentLayout === "article") {
-      return (
-        <Flex direction="column" gap="1rem" h="100%" overflow="hidden">
-          <Box flex="1" minH="0" overflow="hidden">
-            {renderTable(study ? [study] : [])}
-          </Box>
-          {articlePreview}
-        </Flex>
-      );
-    }
-
-    return renderTable(visibleStudies);
-  };
-
   return (
     <FlexLayout navigationType="Accordion">
       <Box w="100%" px="1rem" py=".75rem" h="fit-content">
         <Flex w="100%" h="2.5rem" justifyContent="space-between" alignItems="center" mb="2rem">
           <Header text={t(`headers.${stage}`)} />
-          <SelectLayout handleChangeLayout={handleChangeLayout} layout={layout} />
+          {isAdmin && (
+            <FormControl w={window > 1100 ? "20rem" : "15rem"}>
+              <Menu isLazy>
+                <MenuButton
+                  as={Button}
+                  bgColor="#EBF0F3"
+                  color="#2E4B6C"
+                  rightIcon={<ChevronDownIcon />}
+                  w="100%"
+                  textAlign="left"
+                  fontWeight="normal"
+                  whiteSpace="nowrap"
+                  overflow="hidden"
+                >
+                  <Text fontWeight="medium" whiteSpace="nowrap" overflow="hidden" textOverflow="ellipsis">
+                    {visibility ? t(`visibility.${visibility}`) : t("visibility.placeholder")}
+                  </Text>
+                </MenuButton>
+                <Portal>
+                  <MenuList
+                    minW="unset"
+                    w={window > 1100 ? "20rem" : "15rem"}
+                    maxW={window > 1100 ? "20rem" : "15rem"}
+                    zIndex={1400}
+                    p={0}
+                    boxShadow="none"
+                    overflow="hidden"
+                  >
+                    {visibilityOptions.map((option) => (
+                      <MenuItem
+                        key={option}
+                        onClick={() => setVisibility(option)}
+                        w="100%"
+                        bg={visibility === option ? "rgb(190, 227, 248)" : "transparent"}
+                        _hover={{ bg: "rgb(144, 205, 244)" }}
+                      >
+                        <Text flex="1" textAlign="left" color="#2E4B6C">
+                          {t(`visibility.${option}`)}
+                        </Text>
+                      </MenuItem>
+                    ))}
+                    <Divider borderColor="gray.300" />
+                    <MenuItem onClick={() => setVisibility(null)} w="100%">
+                      <Text flex={1} textAlign="center" fontWeight="semibold" color="rgb(38, 60, 86)">
+                        {t("visibility.clearFilters")}
+                      </Text>
+                    </MenuItem>
+                  </MenuList>
+                </Portal>
+              </Menu>
+            </FormControl>
+          )}
         </Flex>
         <Box sx={inputconteiner}>
           <Flex gap=".5rem" w="fit-content" justifyContent="space-between" alignItems="center">
@@ -206,7 +261,7 @@ export default function AgreementExecutionPage({ stage }: { stage: AgreementStag
         </Box>
       </Box>
       <Box w="calc(100% - 0.5rem)" h="calc(100% - 1rem)" padding="0">
-        {renderLayout(layout)}
+        {renderTable(visibleStudies)}
       </Box>
     </FlexLayout>
   );

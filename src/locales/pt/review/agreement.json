@@ -1,7 +1,7 @@
 {
   "headers": {
-    "selection": "Agreement Selection",
-    "extraction": "Agreement Extraction"
+    "selection": "Resolução de Seleção",
+    "extraction": "Resolução de Extração"
   },
   "columns": {
     "studyId": "ID",
@@ -21,6 +21,13 @@
     "excluded": "Excluído",
     "unclassified": "Não classificado",
     "filter": "Filtrar status"
+  },
+  "visibility": {
+    "placeholder": "Selecionar Visibilidade",
+    "everyone": "Todos",
+    "completed": "Só quem terminou a fase",
+    "nobody": "Ninguém",
+    "clearFilters": "Limpar filtros"
   },
   "noResults": "Nenhum estudo encontrado",
   "decisionMenu": {
