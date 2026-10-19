@@ -5,6 +5,7 @@ import { useContext } from "react";
 
 import Header from "../../../../components/structure/Header/Header";
 import FlexLayout from "../../../../components/structure/Flex/Flex";
+import { useAuthStore } from "@features/auth/store/useAuthStore";
 import AppContext from "@features/shared/context/ApplicationContext";
 import InputText from "../../../../components/common/inputs/InputText";
 import SearchFieldSelect from "@features/review/shared/components/common/inputs/SearchFieldSelect";
@@ -22,16 +23,48 @@ import AgreementTable, {
 import useFetchAgreementData from "../services/useFetchAgreementData";
 import usePaginationState from "@features/shared/hooks/usePaginationState";
 import { inputconteiner } from "@features/review/shared/styles/executionStyles";
+import { fetchCollaborators } from "../../planning-protocol/pages/GeneralDefinition/subcomponents/ResearcherFilter/services/useFetchCollaborators";
 
 type AgreementStage = "selection" | "extraction";
 
 export default function AgreementExecutionPage({ stage }: { stage: AgreementStage }) {
   const window = useWindowWidth();
+  const userId = useAuthStore((state) => state.user?.id);
+  const [isAdmin, setIsAdmin] = useState(false);
   const context = useContext(AppContext);
   const { sidebarState, setSidebarState } = context ?? {};
   useEffect(() => {
     if (window < 1000 && sidebarState === "open") setSidebarState?.("collapsed");
   }, [window, sidebarState, setSidebarState]);
+  useEffect(() => {
+    const systematicStudyId = localStorage.getItem("systematicReviewId");
+    if (!systematicStudyId || !userId) {
+      setIsAdmin(false);
+      return;
+    }
+
+    let isCurrent = true;
+    fetchCollaborators(systematicStudyId)
+      .then((collaborators) => {
+        if (isCurrent) {
+          setIsAdmin(
+            collaborators.some(
+              (collaborator) =>
+                collaborator.id === userId &&
+                (collaborator.role === "admin" || collaborator.role === "owner"),
+            ),
+          );
+        }
+      })
+      .catch((error: unknown) => {
+        console.error("Failed to check agreement visualization permissions", error);
+        if (isCurrent) setIsAdmin(false);
+      });
+
+    return () => {
+      isCurrent = false;
+    };
+  }, [userId]);
   const { t } = useTranslation("review/agreement");
   const { t: selectionT } = useTranslation("review/execution-selection");
   const {
@@ -175,7 +208,12 @@ export default function AgreementExecutionPage({ stage }: { stage: AgreementStag
       <Box w="100%" px="1rem" py=".75rem" h="fit-content">
         <Flex w="100%" h="2.5rem" justifyContent="space-between" alignItems="center" mb="2rem">
           <Header text={t(`headers.${stage}`)} />
-          <SelectVisualization visualization={visualization} handleChangeVisualization={setVisualization} />
+          {isAdmin && (
+            <SelectVisualization
+              visualization={visualization}
+              handleChangeVisualization={setVisualization}
+            />
+          )}
         </Flex>
         <Box sx={inputconteiner}>
           <Flex gap=".5rem" w="fit-content" justifyContent="space-between" alignItems="center">
