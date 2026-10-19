@@ -29,6 +29,7 @@
     "unclassified": "Unclassified",
     "filter": "Filter status"
   },
+  "majorityButton": "Accept Majority",
   "noResults": "No studies found",
   "decisionMenu": {
     "judge": "Judge",
