@@ -86,7 +86,7 @@ export default function Collaboration() {
                     </Stack>
                   </RadioGroup>
                 </Flex>
-                <CollaborationTable mode={selectionCollaborationMode} />
+                <CollaborationTable stage="selection" mode={selectionCollaborationMode} />
               </Box>
             </AccordionPanel>
           </AccordionItem>
@@ -128,7 +128,7 @@ export default function Collaboration() {
                     </Stack>
                   </RadioGroup>
                 </Flex>
-                <CollaborationTable mode={extractionCollaborationMode} />
+                <CollaborationTable stage="extraction" mode={extractionCollaborationMode} />
               </Box>
             </AccordionPanel>
           </AccordionItem>
