@@ -50,7 +50,9 @@ const useFetchExtractionArticles = ({
 }: FetchParams) => {
   const id = localStorage.getItem("systematicReviewId");
 
-  const endpoint = `systematic-study/${id}/study-review/search`;
+  const endpoint = userId
+    ? `systematic-study/${id}/study-review/reviewer/${userId}/search`
+    : `systematic-study/${id}/study-review/search`;
 
   const queryParams: Record<string, any> = {
     page,
@@ -64,10 +66,6 @@ const useFetchExtractionArticles = ({
 
   if (status) {
     queryParams.extractionStatus = status;
-  }
-
-  if (userId) {
-    queryParams.userId = userId;
   }
 
   if (sortConfig) {
