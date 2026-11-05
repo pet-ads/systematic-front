@@ -8,13 +8,16 @@ export default function useAssignStudies() {
   const toast = useToaster();
   const { t } = useTranslation("review/execution-identification");
 
-  const assignStudies = async (onSuccess?: () => void) => {
+  const assignStudies = async (
+    onSuccess?: () => void,
+    stage: "SELECTION" | "EXTRACTION" = "SELECTION"
+  ) => {
     setIsLoading(true);
     try {
       const id = localStorage.getItem("systematicReviewId");
-      const url = `systematic-study/${id}/study-review/assign`;
+      const url = `systematic-study/${id}/review-mode/assign-studies`;
 
-      await Axios.post(url);
+      await Axios.post(url, { stage });
 
       if (onSuccess) {
         onSuccess();
