@@ -1,6 +1,7 @@
 import { useState, useContext, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Box, Radio, RadioGroup, Stack, Flex, Accordion, AccordionButton, Heading, AccordionIcon, AccordionPanel, AccordionItem, Checkbox, Text } from "@chakra-ui/react";
+import { BsPeopleFill } from "react-icons/bs";
 
 import AppContext from "@features/shared/context/ApplicationContext";
 import useWindowWidth from "@features/shared/hooks/useWindowWidth";
@@ -28,6 +29,8 @@ export default function Collaboration() {
 
   const [isSameConfiguration, setIsSameConfiguration] = useState(false);
   const [extractionAccordionIndex, setExtractionAccordionIndex] = useState<number>(-1);
+  
+  const [acceptMajority, setAcceptMajority] = useState(false);
 
   if (!appContext) return null;
   const { sidebarState, setSidebarState } = appContext;
@@ -142,6 +145,40 @@ export default function Collaboration() {
             {t("collaboration.checkbox")}
           </Text>
         </Checkbox>
+
+        <Flex
+          align="center"
+          gap=".5rem"
+          py=".5rem"
+          mt={3}
+          borderRadius="6px"
+          bg="#FFFFFF"
+          color="#263C56"
+          fontWeight="bold"
+          w="fit-content"
+          whiteSpace="nowrap"
+        >
+          <BsPeopleFill size="1rem" />
+          <Checkbox
+            isChecked={acceptMajority}
+            onChange={(event) => setAcceptMajority(event.target.checked)}
+            sx={{
+              "& .chakra-checkbox__control": {
+                borderColor: "#263C56",
+                _checked: {
+                  bg: "#263C56",
+                  borderColor: "#263C56",
+                },
+              },
+              "& .chakra-checkbox__label": {
+                fontWeight: "bold",
+                marginInlineStart: ".5rem",
+              },
+            }}
+          >
+            {t("majorityButton", "Acatar decisão da maioria")}
+          </Checkbox>
+        </Flex>
       </Flex>
     </ProtocolFormLayout>
   );
