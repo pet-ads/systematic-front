@@ -176,7 +176,7 @@ export default function Collaboration() {
               },
             }}
           >
-            {t("majorityButton", "Acatar decisão da maioria")}
+            {t("collaboration.majorityButton", "Acatar decisão da maioria")}
           </Checkbox>
         </Flex>
       </Flex>

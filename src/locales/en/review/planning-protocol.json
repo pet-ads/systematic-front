@@ -280,7 +280,8 @@
         "division": {
             "reviewersPerStudy": "Reviewers per study"
         },
-        "checkbox": "Use the same Selection configuration in Extraction"
+        "checkbox": "Use the same Selection configuration in Extraction",
+        "majorityButton": "Accept majority decision"
     },
     "toasts": {
         "duplicateTitle": "Duplicate Entry",
