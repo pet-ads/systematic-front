@@ -27,8 +27,8 @@ import useWindowWidth from "@features/shared/hooks/useWindowWidth";
 import { chevronIcon, collapsedSpanText, tdSX, tooltip } from "@features/review/execution-identification/pages/Identification/subcomponents/accordions/styles";
 import type { PaginationControls } from "@features/shared/types/pagination";
 
-export type ReviewerDecision = "included" | "excluded";
-export type FinalStatus = ReviewerDecision | "unclassified" | "duplicated";
+export type ReviewerDecision = "included" | "excluded" | "unclassified" | "duplicated";
+export type FinalStatus = ReviewerDecision;
 
 export interface AgreementStudy {
   id: number;
@@ -38,6 +38,7 @@ export interface AgreementStudy {
   year: number;
   reviewerDecisions: Record<string, ReviewerDecision>;
   reviewerCriteria: Record<string, string[]>;
+  currentCriteria: string[];
   finalStatus: FinalStatus;
 }
 
@@ -50,6 +51,8 @@ interface AgreementTableProps {
   columnsVisible: Record<string, boolean>;
   sortConfig: { key: keyof AgreementStudy; direction: "asc" | "desc" } | null;
   onSort: (key: keyof AgreementStudy) => void;
+  onJudge: (study: AgreementStudy, kind: "inclusion" | "exclusion", criteria: string[]) => Promise<void>;
+  canJudge: boolean;
   showPagination?: boolean;
 }
 
@@ -81,9 +84,20 @@ function ReviewerCell({ decision, criteria, label }: { decision?: ReviewerDecisi
   );
 }
 
-function DecisionMenu({ inclusionCriteria, exclusionCriteria }: { inclusionCriteria: string[]; exclusionCriteria: string[] }) {
+function DecisionMenu({
+  study,
+  inclusionCriteria,
+  exclusionCriteria,
+  onJudge,
+}: {
+  study: AgreementStudy;
+  inclusionCriteria: string[];
+  exclusionCriteria: string[];
+  onJudge: AgreementTableProps["onJudge"];
+}) {
   const { t } = useTranslation("review/agreement");
-  const [checked, setChecked] = useState<string[]>([]);
+  const [checked, setChecked] = useState<string[]>(study.currentCriteria);
+  const [isSaving, setIsSaving] = useState(false);
 
   const hasInclusion = checked.some((c) => inclusionCriteria.includes(c));
   const hasExclusion = checked.some((c) => exclusionCriteria.includes(c));
@@ -94,6 +108,21 @@ function DecisionMenu({ inclusionCriteria, exclusionCriteria }: { inclusionCrite
         ? current.filter((item) => item !== value)
         : [...current, value]
     );
+
+  const handleConfirm = async () => {
+    if (!hasInclusion && !hasExclusion) return;
+    const known = [...inclusionCriteria, ...exclusionCriteria];
+    setIsSaving(true);
+    try {
+      await onJudge(
+        study,
+        hasInclusion ? "inclusion" : "exclusion",
+        checked.filter((c) => known.includes(c))
+      );
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   return (
     <Menu closeOnSelect={false}>
@@ -125,12 +154,26 @@ function DecisionMenu({ inclusionCriteria, exclusionCriteria }: { inclusionCrite
             </Checkbox>
           </MenuItem>
         ))}
+        <MenuItem
+          closeOnSelect
+          isDisabled={isSaving || (!hasInclusion && !hasExclusion)}
+          onClick={handleConfirm}
+          justifyContent="center"
+          fontSize="sm"
+          fontWeight="bold"
+          color="#2E4B6C"
+          mt=".35rem"
+          pt=".5rem"
+          borderTop="1px solid #E2E8F0"
+        >
+          {t("decisionMenu.confirm")}
+        </MenuItem>
       </MenuList>
     </Menu>
   );
 }
 
-export default function AgreementTable({ studies, reviewers, inclusionCriteria, exclusionCriteria, pagination, columnsVisible, sortConfig, onSort, showPagination = true }: AgreementTableProps) {
+export default function AgreementTable({ studies, reviewers, inclusionCriteria, exclusionCriteria, pagination, columnsVisible, sortConfig, onSort, onJudge, canJudge, showPagination = true }: AgreementTableProps) {
   const window = useWindowWidth();
   const { t } = useTranslation("review/agreement");
   const columnWidths: Record<HeaderKey, string> = { id: "80px", title: "95px", author: "95px", year: "85px", reviewer: "100px", decision: "130px", finalStatus: "100px" };
@@ -189,7 +232,7 @@ export default function AgreementTable({ studies, reviewers, inclusionCriteria, 
                 />
               </Td>
             ))}
-              {columnsVisible.decision !== false && <Td sx={tdSX} w={columnWidths.decision}><DecisionMenu inclusionCriteria={inclusionCriteria} exclusionCriteria={exclusionCriteria} /></Td>}
+              {columnsVisible.decision !== false && <Td sx={tdSX} w={columnWidths.decision}>{canJudge ? <DecisionMenu key={`${study.id}:${study.currentCriteria.join("|")}`} study={study} inclusionCriteria={inclusionCriteria} exclusionCriteria={exclusionCriteria} onJudge={onJudge} /> : <Text fontSize="sm" color="gray.400" textAlign="center">—</Text>}</Td>}
               {columnsVisible.finalStatus !== false && <Td sx={tdSX} w={columnWidths.finalStatus}><Status status={study.finalStatus} label={t(`statuses.${study.finalStatus}`)} /></Td>}
             </Tr>)}
           </Tbody>

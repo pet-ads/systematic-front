@@ -1,7 +1,7 @@
 {
   "headers": {
-    "selection": "Selection Agreement",
-    "extraction": "Extraction Agreement"
+    "selection": "Agreement Selection",
+    "extraction": "Agreement Extraction"
   },
   "visualization": {
     "choose": "Select visualization",
@@ -19,21 +19,50 @@
   },
   "decisions": {
     "included": "Included",
-    "excluded": "Excluded"
+    "excluded": "Excluded",
+    "unclassified": "Unclassified",
+    "duplicated": "Duplicated"
   },
   "statuses": {
     "pending": "Select",
     "included": "Included",
     "excluded": "Excluded",
-    "duplicated": "Duplicated",
     "unclassified": "Unclassified",
-    "filter": "Filter status"
+    "filter": "Filter status",
+    "duplicated": "Duplicated"
   },
-  "majorityButton": "Accept Majority",
   "noResults": "No studies found",
   "decisionMenu": {
     "judge": "Judge",
     "inclusion": "Inclusion criteria",
-    "exclusion": "Exclusion criteria"
+    "exclusion": "Exclusion criteria",
+    "confirm": "Confirm"
+  },
+  "visibility": {
+    "title": "Agreement screens visibility",
+    "selection": "Selection Agreement",
+    "extraction": "Extraction Agreement",
+    "options": {
+      "all": "All collaborators",
+      "finishedOnly": "Only those who finished classifying",
+      "none": "No collaborators"
+    },
+    "toast": {
+      "successTitle": "Visibility updated successfully",
+      "errorTitle": "Failed to update visibility",
+      "errorDesc": "Could not save the configuration. Please try again."
+    }
+  },
+  "judge": {
+    "toast": {
+      "successTitle": "Judgment applied successfully",
+      "errorTitle": "Failed to apply judgment",
+      "errorDesc": "Could not save the decision. Check whether the study was already classified in extraction and try again."
+    }
+  },
+  "reviews": {
+    "hidden": "The review administrator has hidden the other reviewers' classifications.",
+    "notFinished": "The other reviewers' classifications become visible after you classify all the studies assigned to you.",
+    "loadError": "Could not load the reviewers' classifications. Try reloading the page."
   }
 }
