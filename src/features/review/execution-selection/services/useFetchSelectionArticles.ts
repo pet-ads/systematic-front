@@ -23,11 +23,11 @@ interface FetchParams extends Params {
   search?: string;
   searchField?: "title" | "authors" | "venue";
   status?: string | null;
-  // NOVO: Adicionado o sortConfig na tipagem dos parâmetros
   sortConfig?: {
     key: keyof ArticleInterface | string;
     direction: "asc" | "desc";
   } | null;
+  userId?: string | null;
 }
 
 const EMPTY_PAGINATION_DATA: SelectionArticles = {
@@ -46,9 +46,12 @@ const useFetchSelectionArticles = ({
   searchField = "title",
   status = null,
   sortConfig = null,
+  userId = null,
 }: FetchParams) => {
   const id = localStorage.getItem("systematicReviewId");
-  const endpoint = `systematic-study/${id}/study-review/search`;
+  const endpoint = userId
+    ? `systematic-study/${id}/study-review/reviewer/${userId}/search`
+    : `systematic-study/${id}/study-review/search`;
 
   const queryParams: Record<string, any> = {
     page,

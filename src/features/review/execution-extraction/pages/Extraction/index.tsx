@@ -12,6 +12,7 @@ import useInputState from "@features/review/shared/hooks/useInputState";
 import useLayoutPage from "../../../shared/hooks/useLayoutPage";
 import useVisibiltyColumns from "@features/review/shared/hooks/useVisibilityColumns";
 import useWindowWidth from "@features/shared/hooks/useWindowWidth";
+import { useAuthStore } from "@features/auth/store/useAuthStore";
 
 // Components
 import Header from "../../../../../components/structure/Header/Header";
@@ -34,6 +35,7 @@ import useFetchExtractionArticles from "../../services/useFetchExtractionArticle
 import type ArticleInterface from "@features/review/shared/types/ArticleInterface";
 
 export default function Extraction() {
+  const { user } = useAuthStore();
   const window = useWindowWidth();
   const context = useContext(AppContext);
   if(!context) return null;
@@ -91,6 +93,7 @@ export default function Extraction() {
       searchField,
       status: selectedStatus,
       sortConfig,
+      userId: user?.id ?? null,
     });
 
   if (totalPages && totalPages !== fetchedTotalPages) {
