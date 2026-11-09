@@ -114,6 +114,16 @@
             "available": "There are studies available for assingment",
             "unavailable": "There are no studies available for assingment"
         },
-        "text": "Assign Studies"
+        "text": "Assign Studies",
+        "toasts": {
+            "success": {
+                "title": "Studies assigned successfully!",
+                "description": "Studies have been distributed to reviewers."
+            },
+            "error": {
+                "title": "Error assigning studies",
+                "description": "Could not complete study assignment. Please try again."
+            }
+        }
     }
 }

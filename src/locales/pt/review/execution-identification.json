@@ -114,6 +114,16 @@
             "available": "Há estudos disponíves para serem atribuídos",
             "unavailable": "Não há estudos disponíves para serem atribuídos"
         },
-        "text": "Atribuir Estudos"
+        "text": "Atribuir Estudos",
+        "toasts": {
+            "success": {
+                "title": "Estudos atribuídos com sucesso!",
+                "description": "A distribuição dos estudos aos revisores foi realizada."
+            },
+            "error": {
+                "title": "Erro ao atribuir estudos",
+                "description": "Não foi possível realizar a atribuição. Tente novamente."
+            }
+        }
     }
 }

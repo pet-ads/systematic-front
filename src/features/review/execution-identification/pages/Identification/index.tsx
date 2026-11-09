@@ -12,7 +12,7 @@ import CardDefault from "@components/common/cards";
 
 // Service
 import useFetchDataBases from "../../../shared/services/useFetchDataBases";
-import assignStudies from "./services/assignStudies";
+import useAssignStudies from "../../services/useAssignStudies";
 
 // Styles
 import { conteiner, dataBaseconteiner, assingStudiesButton, assingStudiesButtonDisabled } from "./styles";
@@ -29,6 +29,7 @@ export default function Identification() {
     if(window < 1000 && sidebarState === "open") setSidebarState("collapsed");
   }, []);
   const { databases } = useFetchDataBases();
+  const { assignStudies, isLoading } = useAssignStudies();
 
   const [isAssignmentAvailable, setIsAssignmentAvailable] = useState<boolean>(true);
 
@@ -69,8 +70,10 @@ export default function Identification() {
         borderRadius=".25rem"
       >
         <Button
-          sx={isAssignmentAvailable ? assingStudiesButton : assingStudiesButtonDisabled}
-          onClick={() => assignStudies(setIsAssignmentAvailable)}
+          sx={isAssignmentAvailable && !isLoading ? assingStudiesButton : assingStudiesButtonDisabled}
+          isLoading={isLoading}
+          isDisabled={!isAssignmentAvailable || isLoading}
+          onClick={() => assignStudies(() => setIsAssignmentAvailable(false))}
         >
           {t("buttonForStudiesAssignment.text")}
         </Button>
