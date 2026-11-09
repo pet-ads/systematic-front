@@ -26,26 +26,22 @@ export interface CollaboratorRow {
 }
 
 interface CollaborationTablesProps {
-  mode: string;
+  mode: string; // "replication" | "division"
+  stage: "selection" | "extraction";
+  onDataChange?: (data: any) => void;
 }
 
-export default function CollaborationTables({ mode }: CollaborationTablesProps) {
+export default function CollaborationTables({ mode, stage, onDataChange }: CollaborationTablesProps) {
   const { t } = useTranslation("review/planning-protocol");
 
   const [reviewersPerStudy, setReviewersPerStudy] = useState<number>(1);
-  const [dontAssignMultipleSecondary, setDontAssignMultipleSecondary] = useState<boolean>(false);
+  const [dontAssignMultipleSecondary, setDontAssignMultipleSecondary] = useState<boolean>(true);
   const [collaborators, setCollaborators] = useState<CollaboratorRow[]>([]);
 
   const systematicStudyId = localStorage.getItem("systematicReviewId") || "";
 
   useEffect(() => {
-    if (!systematicStudyId) {
-      setCollaborators([
-        { id: "1", name: "fallbackTest1", type: "principal", percentage: 100, studiesCount: 100 },
-        { id: "2", name: "fallbackTest2", type: "secundario", percentage: 33, studiesCount: 35 },
-      ]);
-      return;
-    }
+    if (!systematicStudyId) return;
 
     fetchCollaborators(systematicStudyId)
       .then((data) => {
@@ -58,19 +54,42 @@ export default function CollaborationTables({ mode }: CollaborationTablesProps) 
             studiesCount: 35,
           }));
           setCollaborators(mapped);
-        } else {
-          setCollaborators([
-            { id: "1", name: "fallbackTest1", type: "principal", percentage: 100, studiesCount: 100 },
-          ]);
         }
       })
-      .catch(() => {
-        setCollaborators([
-          { id: "1", name: "fallbackTest1", type: "principal", percentage: 100, studiesCount: 100 },
-          { id: "2", name: "fallbackTest2", type: "secundario", percentage: 33, studiesCount: 35 },
-        ]);
-      });
+      .catch((err) => console.error("Erro ao buscar colaboradores:", err));
   }, [systematicStudyId]);
+
+  useEffect(() => {
+    if (!onDataChange) return;
+
+    if (mode === "replication") {
+      const main = collaborators.find((c) => c.type === "principal");
+      const secondaries = collaborators.filter((c) => c.type === "secundario");
+      const secondaryMap: Record<string, number> = {};
+      secondaries.forEach((sec) => {
+        secondaryMap[sec.id] = sec.percentage;
+      });
+
+      onDataChange({
+        stage,
+        type: "replication",
+        payload: {
+          mainReviewer: main ? main.id : collaborators[0]?.id,
+          secondaryReviewers: secondaryMap,
+          noStudySharedBySecondaries: dontAssignMultipleSecondary,
+        },
+      });
+    } else if (mode === "division") {
+      onDataChange({
+        stage,
+        type: "division",
+        payload: {
+          reviewers: collaborators.map((c) => c.id),
+          reviewPerStudy: reviewersPerStudy,
+        },
+      });
+    }
+  }, [mode, stage, collaborators, reviewersPerStudy, dontAssignMultipleSecondary]);
 
   const handlePercentageChange = (index: number, valueAsNumber: number) => {
     const updated = [...collaborators];
@@ -109,11 +128,7 @@ export default function CollaborationTables({ mode }: CollaborationTablesProps) 
       key: "name",
       label: t("collaboration.table.reviewer", "revisor"),
       width: "35%",
-      render: (row) => (
-        <Text fontSize="sm" color="black" textAlign="left">
-          {row.name}
-        </Text>
-      ),
+      render: (row) => <Text fontSize="sm" color="black" textAlign="left">{row.name}</Text>,
     },
     {
       key: "type",
@@ -125,9 +140,7 @@ export default function CollaborationTables({ mode }: CollaborationTablesProps) 
             size="sm"
             w="130px"
             value={row.type}
-            onChange={(e) =>
-              handleTypeChange(index, e.target.value as "principal" | "secundario")
-            }
+            onChange={(e) => handleTypeChange(index, e.target.value as "principal" | "secundario")}
           >
             <option value="principal">{t("collaboration.type.principal", "principal")}</option>
             <option value="secundario">{t("collaboration.type.secundario", "secundário")}</option>
@@ -164,42 +177,27 @@ export default function CollaborationTables({ mode }: CollaborationTablesProps) 
   const totalReviewers = collaborators.length;
   const currentReviewersPerStudy = Math.min(reviewersPerStudy, totalReviewers || 1);
   const calculatedPercentage =
-    totalReviewers > 0
-      ? ((100 / totalReviewers) * currentReviewersPerStudy).toFixed(1)
-      : "0";
+    totalReviewers > 0 ? ((100 / totalReviewers) * currentReviewersPerStudy).toFixed(1) : "0";
 
   const divisionColumns: Column<CollaboratorRow>[] = [
     {
       key: "name",
       label: t("collaboration.table.reviewer", "revisor"),
       width: "50%",
-      render: (row) => (
-        <Text fontSize="sm" color="black" textAlign="left">
-          {row.name}
-        </Text>
-      ),
+      render: (row) => <Text fontSize="sm" color="black" textAlign="left">{row.name}</Text>,
     },
     {
       key: "percentage",
       label: t("collaboration.table.percentage", "% de estudos"),
       width: "50%",
-      render: () => (
-        <Text fontSize="sm" color="black" fontWeight="medium" textAlign="left">
-          {calculatedPercentage}%
-        </Text>
-      ),
+      render: () => <Text fontSize="sm" color="black" fontWeight="medium" textAlign="left">{calculatedPercentage}%</Text>,
     },
   ];
 
   if (mode === "replication") {
     return (
       <Box mt={4}>
-        <DefaultTable<CollaboratorRow>
-          columns={replicationColumns}
-          data={collaborators}
-          enableSorting={false}
-        />
-
+        <DefaultTable<CollaboratorRow> columns={replicationColumns} data={collaborators} enableSorting={false} />
         <Flex mt={4} alignItems="center">
           <Checkbox
             isChecked={dontAssignMultipleSecondary && !isCheckboxDisabled}
@@ -208,10 +206,7 @@ export default function CollaborationTables({ mode }: CollaborationTablesProps) 
             colorScheme="blue"
           >
             <Text fontSize="sm">
-              {t(
-                "collaboration.replication.dontAssignMultipleSecondary",
-                "Não atribuir um mesmo estudo a mais de um revisor secundário"
-              )}
+              {t("collaboration.replication.dontAssignMultipleSecondary", "Não atribuir um mesmo estudo a mais de um revisor secundário")}
             </Text>
           </Checkbox>
         </Flex>
@@ -223,13 +218,7 @@ export default function CollaborationTables({ mode }: CollaborationTablesProps) 
     return (
       <Box mt={4}>
         <Flex w="100%" justifyContent="center" mb={4}>
-          <Flex
-            alignItems="center"
-            border="1px solid #E2E8F0"
-            borderRadius="md"
-            w="fit-content"
-            overflow="hidden"
-          >
+          <Flex alignItems="center" border="1px solid #E2E8F0" borderRadius="md" w="fit-content" overflow="hidden">
             <Box px={4} py={2} bg="gray.50" borderRight="1px solid #E2E8F0">
               <Text fontSize="sm" fontWeight="medium">
                 {t("collaboration.division.reviewersPerStudy", "Revisores por estudo")}
@@ -245,20 +234,14 @@ export default function CollaborationTables({ mode }: CollaborationTablesProps) 
               cursor="pointer"
             >
               {Array.from({ length: totalReviewers || 1 }, (_, i) => i + 1).map((val) => (
-                <option key={val} value={val}>
-                  {val}
-                </option>
+                <option key={val} value={val}>{val}</option>
               ))}
             </Select>
           </Flex>
         </Flex>
 
         <Box w="75%" m="auto">
-          <DefaultTable<CollaboratorRow>
-            columns={divisionColumns}
-            data={collaborators}
-            enableSorting={false}
-          />
+          <DefaultTable<CollaboratorRow> columns={divisionColumns} data={collaborators} enableSorting={false} />
         </Box>
       </Box>
     );
