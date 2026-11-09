@@ -76,7 +76,7 @@ export default function CollaborationTables({ mode, stage, onDataChange }: Colla
         payload: {
           mainReviewer: main ? main.id : collaborators[0]?.id,
           secondaryReviewers: secondaryMap,
-          noStudySharedBySecondaries: dontAssignMultipleSecondary,
+          noStudySharedBySecondaries: dontAssignMultipleSecondary && !isCheckboxDisabled,
         },
       });
     } else if (mode === "division") {
