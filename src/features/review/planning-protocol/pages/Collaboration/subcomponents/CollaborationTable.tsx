@@ -26,12 +26,13 @@ export interface CollaboratorRow {
 }
 
 interface CollaborationTablesProps {
-  mode: string; // "replication" | "division"
+  mode: string;
   stage: "selection" | "extraction";
   onDataChange?: (data: any) => void;
+  initialData?: any;
 }
 
-export default function CollaborationTables({ mode, stage, onDataChange }: CollaborationTablesProps) {
+export default function CollaborationTables({ mode, stage, onDataChange, initialData }: CollaborationTablesProps) {
   const { t } = useTranslation("review/planning-protocol");
 
   const [reviewersPerStudy, setReviewersPerStudy] = useState<number>(1);
@@ -46,18 +47,31 @@ export default function CollaborationTables({ mode, stage, onDataChange }: Colla
     fetchCollaborators(systematicStudyId)
       .then((data) => {
         if (data && data.length > 0) {
-          const mapped: CollaboratorRow[] = data.map((res: any, index: number) => ({
-            id: res.id,
-            name: res.name || res.email || `Revisor ${index + 1}`,
-            type: index === 0 ? "principal" : "secundario",
-            percentage: index === 0 ? 100 : 33,
-            studiesCount: 35,
-          }));
+          const rep = initialData?.replication;
+          const mapped: CollaboratorRow[] = data.map((res: any, index: number) => {
+            const isMain = rep ? res.id === rep.mainReviewer : index === 0;
+            return {
+              id: res.id,
+              name: res.name || res.email || `Revisor ${index + 1}`,
+              type: isMain ? "principal" : "secundario",
+              percentage: isMain ? 100 : rep?.secondaryReviewers?.[res.id] ?? 33,
+              studiesCount: 35,
+            };
+          });
           setCollaborators(mapped);
         }
       })
       .catch((err) => console.error("Erro ao buscar colaboradores:", err));
-  }, [systematicStudyId]);
+  }, [systematicStudyId, initialData]);
+
+  useEffect(() => {
+    if (initialData?.replication) {
+      setDontAssignMultipleSecondary(initialData.replication.noStudySharedBySecondaries);
+    }
+    if (initialData?.split) {
+      setReviewersPerStudy(initialData.split.reviewPerStudy);
+    }
+  }, [initialData]);
 
   useEffect(() => {
     if (!onDataChange) return;

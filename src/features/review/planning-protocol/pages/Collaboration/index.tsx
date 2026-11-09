@@ -1,6 +1,6 @@
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect, useCallback } from "react";
 import { useTranslation } from "react-i18next";
-import { Box, Radio, RadioGroup, Stack, Flex, Accordion, AccordionButton, Heading, AccordionIcon, AccordionPanel, AccordionItem, Checkbox, Text } from "@chakra-ui/react";
+import { Box, Radio, RadioGroup, Stack, Flex, Accordion, AccordionButton, Heading, AccordionIcon, AccordionPanel, AccordionItem, Checkbox, Text, useToast } from "@chakra-ui/react";
 import { BsPeopleFill } from "react-icons/bs";
 
 import AppContext from "@features/shared/context/ApplicationContext";
@@ -11,14 +11,54 @@ import CollaborationTable from "./subcomponents/CollaborationTable";
 import NavButton from "@components/common/buttons/NavigationButton";
 
 import useCreateProtocol from "../../services/useCreateProtocol";
+import { getReviewMode, updateReviewMode } from "../../services/reviewModeService";
+
+type Stage = "SELECTION" | "EXTRACTION";
+
+interface StageConfig {
+  stage: Stage;
+  type: "replication" | "division";
+  payload: Record<string, unknown>;
+}
+
+const buildStageBody = (config: StageConfig, acceptMajority: boolean) => {
+  if (config.type === "replication") {
+    return {
+      stage: config.stage.toUpperCase(),
+      replication: {
+        mainReviewer: config.payload.mainReviewer,
+        secondaryReviewers: config.payload.secondaryReviewers,
+        noStudySharedBySecondaries: config.payload.noStudySharedBySecondaries,
+        acceptMajority,
+      },
+    };
+  }
+
+  return {
+    stage: config.stage.toUpperCase(),
+    split: {
+      reviewers: config.payload.reviewers,
+      reviewPerStudy: config.payload.reviewPerStudy,
+      acceptMajority,
+    },
+  };
+};
+
+const readStageMode = (data: any, stage: Stage): string => {
+  const stageData = data?.[stage.toLowerCase()];
+  if (stageData?.replication) return "replication";
+  if (stageData?.split) return "division";
+  return "";
+};
 
 export default function Collaboration() {
   const windowWidth = useWindowWidth();
   const appContext = useContext(AppContext);
+  const toast = useToast();
   const { t } = useTranslation([
     "review/planning-protocol",
     "review/execution-selection",
-    "review/execuion-extraction"
+    "review/execution-extraction",
   ]);
 
   const { syncAndNavigate } = useCreateProtocol();
@@ -29,15 +69,78 @@ export default function Collaboration() {
 
   const [isSameConfiguration, setIsSameConfiguration] = useState(false);
   const [extractionAccordionIndex, setExtractionAccordionIndex] = useState<number>(-1);
-  
   const [acceptMajority, setAcceptMajority] = useState(false);
 
-  if (!appContext) return null;
-  const { sidebarState, setSidebarState } = appContext;
+  const [savedReviewMode, setSavedReviewMode] = useState<any>(null);
+  const [selectionConfig, setSelectionConfig] = useState<StageConfig | null>(null);
+  const [extractionConfig, setExtractionConfig] = useState<StageConfig | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+
+  const handleSelectionChange = useCallback((data: StageConfig) => setSelectionConfig(data), []);
+  const handleExtractionChange = useCallback((data: StageConfig) => setExtractionConfig(data), []);
 
   useEffect(() => {
-    if (windowWidth < 1000 && sidebarState === "open") setSidebarState("collapsed");
-  }, [windowWidth, sidebarState, setSidebarState]);
+    if (!appContext) return;
+    if (windowWidth < 1000 && appContext.sidebarState === "open") {
+      appContext.setSidebarState("collapsed");
+    }
+  }, [windowWidth, appContext?.sidebarState]);
+
+  useEffect(() => {
+    if (!id) return;
+    getReviewMode(id)
+      .then((data) => {
+        if (!data) return;
+        setSavedReviewMode(data);
+        setSelectionCollaborationMode(readStageMode(data, "SELECTION"));
+        setExtractionCollaborationMode(readStageMode(data, "EXTRACTION"));
+        const saved =
+          data.selection?.replication ?? data.selection?.split ??
+          data.extraction?.replication ?? data.extraction?.split;
+        setAcceptMajority(!!saved?.acceptMajority);
+      })
+      .catch((err) => console.error("Erro ao buscar review-mode:", err));
+  }, [id]);
+
+  if (!appContext) return null;
+
+  const saveReviewMode = async (): Promise<boolean> => {
+    if (!id) return true;
+
+    const extraction: StageConfig | null =
+      isSameConfiguration && selectionConfig
+        ? { ...selectionConfig, stage: "EXTRACTION" }
+        : extractionConfig;
+
+    const requests = [selectionConfig, extraction]
+      .filter((c): c is StageConfig => c !== null)
+      .map((c) => updateReviewMode(id, buildStageBody(c, acceptMajority)));
+
+    if (requests.length === 0) return true;
+
+    setIsSaving(true);
+    try {
+      await Promise.all(requests);
+      return true;
+    } catch (err) {
+      console.error("Erro ao salvar review-mode:", err);
+      toast({
+        title: t("collaboration.saveError", "Não foi possível salvar a configuração de colaboração."),
+        status: "error",
+        duration: 4000,
+        isClosable: true,
+      });
+      return false;
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const saveAndNavigate = async (path: string) => {
+    if (isSaving) return;
+    const saved = await saveReviewMode();
+    if (saved) syncAndNavigate(path);
+  };
 
   return (
     <ProtocolFormLayout
@@ -46,13 +149,13 @@ export default function Collaboration() {
         <>
           <NavButton
             event={() =>
-              syncAndNavigate(`/review/planning/protocol/selection-and-extraction/${id}`)
+              saveAndNavigate(`/review/planning/protocol/selection-and-extraction/${id}`)
             }
             text={t("collaboration.navButton.back", "Back")}
           />
           <NavButton
             event={() =>
-              syncAndNavigate(`/review/planning/protocol/risk-of-bias-assessment/${id}`)
+              saveAndNavigate(`/review/planning/protocol/risk-of-bias-assessment/${id}`)
             }
             text={t("collaboration.navButton.next", "Next")}
           />
@@ -89,12 +192,16 @@ export default function Collaboration() {
                     </Stack>
                   </RadioGroup>
                 </Flex>
-                <CollaborationTable stage="selection" mode={selectionCollaborationMode} />
+                <CollaborationTable
+                  stage="selection"
+                  mode={selectionCollaborationMode}
+                  onDataChange={handleSelectionChange}
+                  initialData={savedReviewMode?.selection}
+                />
               </Box>
             </AccordionPanel>
           </AccordionItem>
         </Accordion>
-
 
         <Accordion
           allowToggle
@@ -131,7 +238,12 @@ export default function Collaboration() {
                     </Stack>
                   </RadioGroup>
                 </Flex>
-                <CollaborationTable stage="extraction" mode={extractionCollaborationMode} />
+                <CollaborationTable
+                  stage="extraction"
+                  mode={extractionCollaborationMode}
+                  onDataChange={handleExtractionChange}
+                  initialData={savedReviewMode?.extraction}
+                />
               </Box>
             </AccordionPanel>
           </AccordionItem>
