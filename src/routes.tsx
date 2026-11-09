@@ -3,6 +3,7 @@ import { RouteObject, useRoutes } from "react-router-dom";
 
 // Guard Component
 import ProtectedRoute from "@features/auth/guards/ProtectedRoute";
+import AgreementRoute from "@features/review/execution-agreement/guards/AgreementRoute";
 
 // Pages Components
 
@@ -132,7 +133,11 @@ const routesList: RouteObject[] = [
   },
   {
     path: "/review/execution/agreement-selection",
-    element: <ProtectedRoute element={<AgreementSelection />} />,
+    element: (
+      <ProtectedRoute
+        element={<AgreementRoute stage="selection" element={<AgreementSelection />} />}
+      />
+    ),
   },
   {
     path: "/review/execution/extraction",
@@ -140,7 +145,11 @@ const routesList: RouteObject[] = [
   },
   {
     path: "/review/execution/agreement-extraction",
-    element: <ProtectedRoute element={<AgreementExtraction />} />,
+    element: (
+      <ProtectedRoute
+        element={<AgreementRoute stage="extraction" element={<AgreementExtraction />} />}
+      />
+    ),
   },
   {
     path: "/review/summarization/graphics",
