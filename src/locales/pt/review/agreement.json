@@ -19,21 +19,50 @@
   },
   "decisions": {
     "included": "Incluído",
-    "excluded": "Excluído"
+    "excluded": "Excluído",
+    "unclassified": "Não classificado",
+    "duplicated": "Duplicado"
   },
   "statuses": {
     "pending": "Selecionar",
     "included": "Incluído",
     "excluded": "Excluído",
-    "duplicated": "Duplicado",
     "unclassified": "Não classificado",
-    "filter": "Filtrar status"
+    "filter": "Filtrar status",
+    "duplicated": "Duplicado"
   },
-  "majorityButton": "Acatar Maioria",
   "noResults": "Nenhum estudo encontrado",
   "decisionMenu": {
     "judge": "Julgar",
     "inclusion": "Critérios de inclusão",
-    "exclusion": "Critérios de exclusão"
+    "exclusion": "Critérios de exclusão",
+    "confirm": "Confirmar"
+  },
+  "visibility": {
+    "title": "Visibilidade das telas de resolução",
+    "selection": "Resolução de Seleção",
+    "extraction": "Resolução de Extração",
+    "options": {
+      "all": "Todos os colaboradores",
+      "finishedOnly": "Apenas quem terminou de classificar",
+      "none": "Nenhum colaborador"
+    },
+    "toast": {
+      "successTitle": "Visibilidade atualizada com sucesso",
+      "errorTitle": "Erro ao atualizar visibilidade",
+      "errorDesc": "Não foi possível salvar a configuração. Tente novamente."
+    }
+  },
+  "judge": {
+    "toast": {
+      "successTitle": "Julgamento aplicado com sucesso",
+      "errorTitle": "Erro ao aplicar julgamento",
+      "errorDesc": "Não foi possível salvar a decisão. Verifique se o estudo já foi classificado na extração e tente novamente."
+    }
+  },
+  "reviews": {
+    "hidden": "O administrador da revisão ocultou as classificações dos demais revisores.",
+    "notFinished": "As classificações dos demais revisores ficam visíveis depois que você classificar todos os estudos atribuídos a você.",
+    "loadError": "Não foi possível carregar as classificações dos revisores. Tente recarregar a página."
   }
 }

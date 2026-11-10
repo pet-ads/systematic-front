@@ -14,6 +14,7 @@ import useVisibiltyColumns from "@features/review/shared/hooks/useVisibilityColu
 import useFetchSelectionArticles from "../../services/useFetchSelectionArticles";
 import usePaginationState from "@features/shared/hooks/usePaginationState";
 import useWindowWidth from "@features/shared/hooks/useWindowWidth";
+import { useAuthStore } from "@features/auth/store/useAuthStore";
 
 // Components
 import Header from "../../../../../components/structure/Header/Header";
@@ -33,6 +34,7 @@ import ArticleInterface from "@features/review/shared/types/ArticleInterface";
 import { inputconteiner } from "../../../shared/styles/executionStyles";
 
 export default function Selection() {
+  const { user } = useAuthStore();
   const window = useWindowWidth();
   const context = useContext(AppContext);
   if(!context) return null;
@@ -95,6 +97,7 @@ export default function Selection() {
       searchField,
       status: selectedStatus,
       sortConfig,
+      userId: user?.id ?? null,
     });
 
   if (totalPages && totalPages !== fetchedTotalPages) {

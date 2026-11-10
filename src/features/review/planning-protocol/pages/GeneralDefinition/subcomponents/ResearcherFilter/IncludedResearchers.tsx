@@ -29,7 +29,7 @@ interface Props {
   systematicStudyId: string;
 }
 
-const AVAILABLE_ROLES = ["viewer", "reviewer", "editor", "admin"] as const;
+const AVAILABLE_ROLES = ["viewer", "reviewer", "editor"] as const;
 type Role = (typeof AVAILABLE_ROLES)[number];
 
 export default function IncludedResearchers({
@@ -60,23 +60,23 @@ export default function IncludedResearchers({
   async function handleDelete() {
     if (!researcherToDelete) return;
 
-    setIsDeletingIncluded(true);
-
-    try {
-      await removeCollaborator({
-        systematicStudyId,
-        researcherId: researcherToDelete.id,
-        status: researcherToDelete.status,
-      });
-    } catch {
-      toast({
-        title: t("generalDefinition.input.researchers.toasts.removeError.title"),
-        description: t("generalDefinition.input.researchers.toasts.removeError.description"),
-        status: "error",
-      });
-      setResearcherToDelete(null);
-      return;
-    } finally {
+    if (researcherToDelete.status === "included") {
+      setIsDeletingIncluded(true);
+      try {
+        await removeCollaborator({
+          systematicStudyId,
+          researcherId: researcherToDelete.id,
+        });
+      } catch {
+        toast({
+          title: t("generalDefinition.input.researchers.toasts.removeError.title"),
+          description: t("generalDefinition.input.researchers.toasts.removeError.description"),
+          status: "error",
+        });
+        setIsDeletingIncluded(false);
+        setResearcherToDelete(null);
+        return;
+      }
       setIsDeletingIncluded(false);
     }
 
@@ -206,6 +206,7 @@ export default function IncludedResearchers({
                       )}`}
                     </Text>
                   )}
+                  {researcher.role !== "owner" && (
                   <Flex>
                     <Button
                       variant="ghost"
@@ -215,7 +216,11 @@ export default function IncludedResearchers({
                           handleSaveRole();
                         } else {
                           setEditingResearcherId(researcher.id);
-                          setEditingRole(researcher.role as Role);
+                          setEditingRole(
+                            AVAILABLE_ROLES.includes(researcher.role as Role)
+                              ? (researcher.role as Role)
+                              : "reviewer"
+                          );
                         }
                       }}
                     >
@@ -235,6 +240,7 @@ export default function IncludedResearchers({
                       <Icon as={DeleteIcon} w="15px" h="15px" />
                     </Button>
                   </Flex>
+                  )}
                 </>
               ) : (
                 <Button
