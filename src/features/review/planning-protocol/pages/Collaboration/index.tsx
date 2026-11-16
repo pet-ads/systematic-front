@@ -21,7 +21,7 @@ interface StageConfig {
   payload: Record<string, unknown>;
 }
 
-const buildStageBody = (config: StageConfig, acceptMajority: boolean) => {
+const buildStageBody = (config: StageConfig, acceptMajority: boolean, repeatConfiguration: boolean) => {
   if (config.type === "replication") {
     return {
       stage: config.stage.toUpperCase(),
@@ -31,6 +31,7 @@ const buildStageBody = (config: StageConfig, acceptMajority: boolean) => {
         noStudySharedBySecondaries: config.payload.noStudySharedBySecondaries,
         acceptMajority,
       },
+      repeatConfiguration,
     };
   }
 
@@ -41,6 +42,7 @@ const buildStageBody = (config: StageConfig, acceptMajority: boolean) => {
       reviewPerStudy: config.payload.reviewPerStudy,
       acceptMajority,
     },
+    repeatConfiguration,
   };
 };
 
@@ -95,8 +97,13 @@ export default function Collaboration() {
         setSavedReviewMode(data);
         setSelectionAccordionIndex(0);
         setExtractionAccordionIndex(0);
-        setSelectionCollaborationMode(readStageMode(data, "SELECTION"));
-        setExtractionCollaborationMode(readStageMode(data, "EXTRACTION"));
+        const selectionMode = readStageMode(data, "SELECTION");
+        const extractionMode = readStageMode(data, "EXTRACTION");
+        setSelectionCollaborationMode(selectionMode);
+        setExtractionCollaborationMode(extractionMode);
+        setIsSameConfiguration(
+          !!selectionMode && selectionMode === extractionMode
+        );
         const saved =
           data.selection?.replication ?? data.selection?.split ??
           data.extraction?.replication ?? data.extraction?.split;
@@ -110,16 +117,49 @@ export default function Collaboration() {
   const saveReviewMode = async (): Promise<boolean> => {
     if (!id) return true;
 
+    const selection: StageConfig | null =
+      selectionConfig ??
+      (savedReviewMode?.selection?.replication
+        ? {
+            stage: "SELECTION",
+            type: "replication",
+            payload: savedReviewMode.selection.replication,
+          }
+        : savedReviewMode?.selection?.split
+          ? {
+              stage: "SELECTION",
+              type: "division",
+              payload: savedReviewMode.selection.split,
+            }
+          : null);
+
     const extraction: StageConfig | null =
-      isSameConfiguration && selectionConfig
-        ? { ...selectionConfig, stage: "EXTRACTION" }
-        : extractionConfig;
+      extractionConfig ??
+      (savedReviewMode?.extraction?.replication
+        ? {
+            stage: "EXTRACTION",
+            type: "replication",
+            payload: savedReviewMode.extraction.replication,
+          }
+        : savedReviewMode?.extraction?.split
+          ? {
+              stage: "EXTRACTION",
+              type: "division",
+              payload: savedReviewMode.extraction.split,
+            }
+          : null);
 
-    const requests = [selectionConfig, extraction]
-      .filter((c): c is StageConfig => c !== null)
-      .map((c) => updateReviewMode(id, buildStageBody(c, acceptMajority)));
+    const configs = isSameConfiguration
+      ? selection ? [selection] : []
+      : [selection, extraction].filter(
+          (config): config is StageConfig => config !== null
+        );
 
-    if (requests.length === 0) return true;
+    if (configs.length === 0) return true;
+
+    const requests = configs.map((config) =>
+      updateReviewMode(id, buildStageBody(config, acceptMajority, isSameConfiguration))
+    );
 
     setIsSaving(true);
     try {
