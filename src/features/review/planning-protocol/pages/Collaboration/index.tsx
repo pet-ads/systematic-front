@@ -68,6 +68,7 @@ export default function Collaboration() {
   const [extractionCollaborationMode, setExtractionCollaborationMode] = useState<string>("");
 
   const [isSameConfiguration, setIsSameConfiguration] = useState(false);
+  const [selectionAccordionIndex, setSelectionAccordionIndex] = useState<number>(-1);
   const [extractionAccordionIndex, setExtractionAccordionIndex] = useState<number>(-1);
   const [acceptMajority, setAcceptMajority] = useState(false);
 
@@ -92,6 +93,8 @@ export default function Collaboration() {
       .then((data) => {
         if (!data) return;
         setSavedReviewMode(data);
+        setSelectionAccordionIndex(0);
+        setExtractionAccordionIndex(0);
         setSelectionCollaborationMode(readStageMode(data, "SELECTION"));
         setExtractionCollaborationMode(readStageMode(data, "EXTRACTION"));
         const saved =
@@ -165,6 +168,12 @@ export default function Collaboration() {
       <Flex flexDirection="column" alignItems="space-between">
         <Accordion
           allowToggle
+          index={savedReviewMode === null ? -1 : selectionAccordionIndex}
+          onChange={(index) => {
+            if (typeof index === "number") {
+              setSelectionAccordionIndex(index);
+            }
+          }}
           borderColor="#FFFFFF"
         >
           <AccordionItem>
@@ -205,7 +214,7 @@ export default function Collaboration() {
 
         <Accordion
           allowToggle
-          index={isSameConfiguration ? -1 : extractionAccordionIndex}
+          index={savedReviewMode === null || isSameConfiguration ? -1 : extractionAccordionIndex}
           onChange={(index) => {
             if (typeof index === "number") {
               setExtractionAccordionIndex(index);
