@@ -68,7 +68,7 @@ export default function ButtonsForSelection({
   handleChangeLayout,
 }: ButtonsForSelectionProps) {
   const { handleResetStatusToUnclassified } = useResetStatus({ page, reloadArticles });
-  const { handleChangePriority } = useChangePriority({ reloadArticles });
+  const { handleChangePriority } = useChangePriority({ page, reloadArticles });
   const { t } = useTranslation("review/execution-selection");
 
   const currentArticle = articles[articleIndex];
