@@ -15,6 +15,7 @@ interface MenuOptionsProps {
   isDisabled?: boolean;
   icon?: ReactNode;
   onOptionToggle: (option: string) => void;
+  closeOnSelect?: boolean;
 }
 
 export default function MenuOptions({
@@ -23,6 +24,7 @@ export default function MenuOptions({
   isDisabled = false,
   icon,
   onOptionToggle,
+  closeOnSelect = true,
 }: MenuOptionsProps) {
   const [selected, setSelected] = useState<string>("");
 
@@ -33,7 +35,7 @@ export default function MenuOptions({
   };
 
   return (
-    <Menu closeOnSelect={false}>
+    <Menu closeOnSelect={closeOnSelect}>
       <MenuButton
         as={Button}
         display="flex"
