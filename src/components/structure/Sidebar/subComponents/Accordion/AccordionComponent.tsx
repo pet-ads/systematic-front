@@ -18,6 +18,7 @@ import ProtocolAccordionSubItem from "./AccordionNavItem";
 
 // Hooks
 import useStructureReview from "@features/review/planning-protocol/services/useStructureReview";
+import useCanSeeAgreement from "@features/review/shared/hooks/useCanSeeAgreement";
 
 // Types
 type AccordionSection = "Planning" | "Execution" | "Summarization";
@@ -35,6 +36,7 @@ const AccordionComponent = () => {
   const { t } = useTranslation("structure/sidebar");
   const id = localStorage.getItem("systematicReviewId");
   const { generalDefinition, isLoading } = useStructureReview();
+  const canSeeAgreement = useCanSeeAgreement();
 
   const location = useLocation();
 
@@ -124,9 +126,13 @@ const AccordionComponent = () => {
       Execution: [
         { path: `/review/execution/identification`, label: t("execution.identification") },
         { path: `/review/execution/selection`, label: t("execution.selection") },
-        { path: `/review/execution/agreement-selection`, label: t("execution.agreementSelection") },
+        ...(canSeeAgreement.selection
+          ? [{ path: `/review/execution/agreement-selection`, label: t("execution.agreementSelection") }]
+          : []),
         { path: `/review/execution/extraction`, label: t("execution.extraction") },
-        { path: `/review/execution/agreement-extraction`, label: t("execution.agreementExtraction") },
+        ...(canSeeAgreement.extraction
+          ? [{ path: `/review/execution/agreement-extraction`, label: t("execution.agreementExtraction") }]
+          : []),
       ],
       Summarization: [
         { path: `/review/summarization/graphics`, label: t("summarization.graphics") },
@@ -145,7 +151,7 @@ const AccordionComponent = () => {
           : []),
       ],
     }),
-    [id],
+    [id, canSeeAgreement.selection, canSeeAgreement.extraction],
   );
 
   return (

@@ -272,7 +272,7 @@
         },
         "type": {
             "principal": "main",
-            "secundario": "secondary"
+            "secundario": "assistant"
         },
         "replication": {
             "dontAssignMultipleSecondary": "Do not assign the same study to more than one secondary reviewer"
@@ -280,7 +280,8 @@
         "division": {
             "reviewersPerStudy": "Reviewers per study"
         },
-        "checkbox": "Use the same Selection configuration in Extraction"
+        "checkbox": "Use the same Selection configuration in Extraction",
+        "majorityButton": "Accept majority decision"
     },
     "toasts": {
         "duplicateTitle": "Duplicate Entry",

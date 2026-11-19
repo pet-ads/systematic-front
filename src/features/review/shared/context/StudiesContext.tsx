@@ -10,6 +10,7 @@ import useFetchSelectionArticles from "@features/review/execution-selection/serv
 import useFetchExtractionArticles from "@features/review/execution-extraction/services/useFetchExtractionArticles";
 import AppContextType, { InvalidEntry } from "../types/StudiesContextInterface";
 import { PageLayout } from "../components/structure/LayoutFactory";
+import { useAuthStore } from "@features/auth/store/useAuthStore";
 
 const StudyContext = createContext<AppContextType | undefined>(
   undefined
@@ -29,13 +30,16 @@ export const StudyProvider: React.FC<AppProviderProps> = ({
   const [selectedArticleReview, setSelectedArticleReview] = useState(-1);
   const [page, setPage] = useState<number>(1)
   const [size, setSize] = useState(20)
+  const { user } = useAuthStore();
 
   const selectionFetch = useFetchSelectionArticles({
+    userId: user?.id ?? null,
     page: page - 1,
     size: size,
   });
 
   const extractionFetch = useFetchExtractionArticles({
+    userId: user?.id ?? null,
     page: page - 1,
     size: size,
   });
