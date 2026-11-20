@@ -251,20 +251,24 @@ export default function AgreementExecutionPage({ stage }: { stage: AgreementStag
         <Flex w="100%" h="2.5rem" justifyContent="space-between" alignItems="center" mb="2rem">
           <Header text={t(`headers.${stage}`)} />
         </Flex>
-        {stage === "selection" && <AgreementVisibilityControl />}
+        {stage === "selection" && (
+          <Box w="100%" mb="1rem">
+            <AgreementVisibilityControl />
+          </Box>
+        )}
         {hasError && (
-          <Alert status="warning" borderRadius="md" mb="1rem">
+          <Alert status="warning" borderRadius="md" mb="1rem" w="100%">
             <AlertIcon />
             {t("reviews.loadError")}
           </Alert>
         )}
         {canSeeReviews === false && (
-          <Alert status="info" borderRadius="md" mb="1rem">
+          <Alert status="info" borderRadius="md" mb="1rem" w="100%">
             <AlertIcon />
             {t(reason === "NOT_FINISHED" ? "reviews.notFinished" : "reviews.hidden")}
           </Alert>
         )}
-        <Box sx={inputconteiner}>
+        <Box sx={{ ...inputconteiner, justifyContent: "space-between", alignItems: "center" }}>
           <Flex gap=".5rem" w="fit-content" justifyContent="space-between" alignItems="center">
             <SearchFieldSelect
               value={searchField}
@@ -285,9 +289,8 @@ export default function AgreementExecutionPage({ stage }: { stage: AgreementStag
           <Box
             display="flex"
             gap="1rem"
-            justifyContent={{ base: "center", md: "flex-start", lg: "space-between" }}
             alignItems="center"
-            ml={{ base: "0%", md: "-35%", lg: "0%" }}
+            w="100%"
           >
             <ColumnVisibilityMenu
               columnsVisible={columnsVisible}
