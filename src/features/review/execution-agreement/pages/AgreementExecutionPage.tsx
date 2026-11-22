@@ -252,7 +252,7 @@ export default function AgreementExecutionPage({ stage }: { stage: AgreementStag
           <Header text={t(`headers.${stage}`)} />
         </Flex>
         {stage === "selection" && (
-          <Box w="100%" mb="1rem">
+          <Box ml="-2rem" mr="-0.5rem" mb="1rem">
             <AgreementVisibilityControl />
           </Box>
         )}
