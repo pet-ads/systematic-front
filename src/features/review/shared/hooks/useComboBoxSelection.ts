@@ -1,8 +1,7 @@
 import { useCallback, useContext, useRef } from "react";
 
 import StudyContext from "@features/review/shared/context/StudiesContext";
-import { UseChangeStudySelectionStatus } from "../services/useChangeStudySelectionStatus";
-import { UseChangeStudyExtractionStatus } from "../services/useChangeStudyExtractionStatus";
+import { changeStudyStatusByStage } from "../services/changeStudyStatusByStage";
 
 import type { PageLayout } from "../components/structure/LayoutFactory";
 import { SelectionArticles } from "@features/review/execution-selection/services/useFetchSelectionArticles";
@@ -30,28 +29,11 @@ const useComboBoxSelection = ({
 
       timeoutRef.current = setTimeout(async () => {
         try {
-          if (page === "Selection") {
-            await UseChangeStudySelectionStatus({
-              studyReviewId: [selectedArticleReview],
-              criterias,
-              status,
-            });
-
-            const extractionStatus =
-              status === "INCLUDED" ? "UNCLASSIFIED" : status;
-
-            await UseChangeStudyExtractionStatus({
-              studyReviewId: [selectedArticleReview],
-              criterias: status === "EXCLUDED" ? criterias : [],
-              status: extractionStatus,
-            });
-          } else {
-            await UseChangeStudyExtractionStatus({
-              studyReviewId: [selectedArticleReview],
-              criterias,
-              status,
-            });
-          }
+          await changeStudyStatusByStage(page, {
+            studyReviewId: [selectedArticleReview],
+            criterias,
+            status,
+          });
 
           await reloadArticles();
         } catch (error) {
