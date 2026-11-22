@@ -4,8 +4,6 @@ import type { KeyedMutator } from "swr";
 
 // Hooks
 import useFetchCriteriaForFocusedArticle from "./useCriteriaForFocusedArticle";
-import useFetchInclusionCriteria from "./useFetchInclusionCriteria";
-import useFetchExclusionCriteria from "./useFetchExclusionCriterias";
 import useRevertCriterionState from "./useRevertCriterionState";
 import useToaster from "@components/feedback/Toaster";
 import { useTranslation } from "react-i18next";
@@ -67,13 +65,17 @@ export default function useFetchAllCriteriasByArticle({
   const selectedArticleReview = studiesContext?.selectedArticleReview ?? -1;
   const toast = useToaster();
 
-  const { criteria, isLoading, mutate } = useFetchCriteriaForFocusedArticle({
+  const {
+    criteria,
+    reviewerCriteria,
+    inclusion,
+    exclusion,
+    isLoading,
+    mutate,
+  } = useFetchCriteriaForFocusedArticle({
     articleId: selectedArticleReview,
     page,
   });
-
-  const inclusion = useFetchInclusionCriteria() || [];
-  const exclusion = useFetchExclusionCriteria() || [];
   const { revertCriterionState } = useRevertCriterionState({ page });
 
   const criterias = useMemo<CriteiriaProps>(() => {
@@ -125,10 +127,14 @@ export default function useFetchAllCriteriasByArticle({
       : currentChecked.filter((c) => c !== optionText);
 
     const optimisticData = {
-      inclusionCriteria:
-        key === "INCLUSION" ? newChecked : criteria?.inclusionCriteria || [],
-      exclusionCriteria:
-        key === "EXCLUSION" ? newChecked : criteria?.exclusionCriteria || [],
+      selectionCriteria:
+        page === "Selection"
+          ? newChecked
+          : reviewerCriteria?.selectionCriteria ?? [],
+      extractionCriteria:
+        page === "Extraction"
+          ? newChecked
+          : reviewerCriteria?.extractionCriteria ?? [],
     };
 
     const status: StatusValue =
@@ -209,11 +215,16 @@ export default function useFetchAllCriteriasByArticle({
     if (selectedArticleReview === -1) return;
     
     await mutate(
-      (currentData: any) => ({
-        ...currentData,
-        inclusionCriteria: [],
-        exclusionCriteria: [],
-      }),
+      (currentData) => {
+        if (!currentData) return currentData;
+        return {
+          ...currentData,
+          selectionCriteria:
+            page === "Selection" ? [] : currentData.selectionCriteria,
+          extractionCriteria:
+            page === "Extraction" ? [] : currentData.extractionCriteria,
+        };
+      },
       { revalidate: true }
     );
   };

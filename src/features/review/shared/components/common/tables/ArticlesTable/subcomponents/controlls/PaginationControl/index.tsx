@@ -1,5 +1,6 @@
 // External library
 import { Button, Flex, Text, Select, Tooltip } from "@chakra-ui/react";
+import type { ReactNode } from "react";
 import {
   MdKeyboardArrowLeft,
   MdKeyboardArrowRight,
@@ -23,6 +24,7 @@ interface PaginationControlProps {
   changeQuantityOfItens: (newQuantity: number) => void;
   isSplited?: boolean;
   isVertical?: boolean;
+  rightAction?: ReactNode;
 }
 
 type ActionButton = {
@@ -42,6 +44,7 @@ const PaginationControl: React.FC<PaginationControlProps> = ({
   changeQuantityOfItens,
   isSplited,
   isVertical,
+  rightAction,
 }) => {
   const window = useWindowWidth();
   const numberOfCases = String(quantityOfPages).length;
@@ -91,7 +94,7 @@ const PaginationControl: React.FC<PaginationControlProps> = ({
         gap=".5rem"
         minW={{ base: "100%", md: "200px" }}
         w={{ base: "100%", md: "auto" }}
-        order={{ base: 2, md: 1 }}
+        order={{ base: rightAction ? 2 : undefined, md: undefined }}
         mb={{ base: "0.5rem", md: 0 }}
       >
         <Text whiteSpace="nowrap" fontSize={window > 1000 ? "1rem" : "0.8rem"}>{window < 1000 || window > 1400 || !isVertical ? t("pagination.rowsPerPage") : ""}</Text>
@@ -112,10 +115,14 @@ const PaginationControl: React.FC<PaginationControlProps> = ({
         </Select>
       </Flex>
       <Flex
-        position="absolute"
-        right="2rem"
+        position={rightAction ? "relative" : "absolute"}
+        right={rightAction ? undefined : "2rem"}
+        flex={rightAction ? "1" : undefined}
+        minW={rightAction ? { base: "100%", md: "fit-content" } : undefined}
+        justifyContent={rightAction ? "flex-end" : undefined}
+        order={rightAction ? { base: 1, md: undefined } : undefined}
         alignItems="center"
-        gap="0.2rem"
+        gap={rightAction ? ".5rem" : "0.2rem"}
       >
         <Text whiteSpace="nowrap" fontSize={window > 1050 ? "1rem" : "0.8rem"}>
           {(window < 1000 || window > 1150 ? t("pagination.page") : "") +
@@ -126,6 +133,7 @@ const PaginationControl: React.FC<PaginationControlProps> = ({
             " " +
             quantityOfPages}
         </Text>
+        {rightAction}
         {isPaginationEnabled &&
           actionButtons.map(({ icon, action, label }, index) => (
             <Tooltip

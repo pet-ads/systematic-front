@@ -3,36 +3,48 @@ import useSWR from "swr";
 
 // Hooks
 import useToaster from "@components/feedback/Toaster";
+import { useAuthStore } from "@features/auth/store/useAuthStore";
+import useFetchExclusionCriteria from "./useFetchExclusionCriterias";
+import useFetchInclusionCriteria from "./useFetchInclusionCriteria";
 
 // Service
 import Axios from "../../../../infrastructure/http/axiosClient";
-import { PageLayout } from "../components/structure/LayoutFactory";
+import type { PageLayout } from "../components/structure/LayoutFactory";
 
-interface HttpResponse {
+interface ReviewerCriteriaResponse {
+  selectionCriteria?: string[] | null;
+  extractionCriteria?: string[] | null;
+}
+
+interface ArticleCriteria {
   inclusionCriteria: string[];
   exclusionCriteria: string[];
 }
 
 interface CriteriaForFocusedArticleProps {
   articleId: number;
-  page: PageLayout
+  page: PageLayout;
 }
 
 export default function useFetchCriteriaForFocusedArticle({
   articleId,
   page,
 }: CriteriaForFocusedArticleProps) {
-  const id = localStorage.getItem("systematicReviewId");
+  const systematicStudy = localStorage.getItem("systematicReviewId");
+  const { user } = useAuthStore();
+  const reviewerId = user?.id;
+  const inclusion = useFetchInclusionCriteria() || [];
+  const exclusion = useFetchExclusionCriteria() || [];
   const toast = useToaster();
 
   const path =
-    id && articleId && articleId !== -1
-      ? `systematic-study/${id}/report/study-review/${articleId}/criteria`
+    systematicStudy && reviewerId && articleId !== -1
+      ? `systematic-study/${systematicStudy}/study-review/reviewer/${reviewerId}/${articleId}`
       : null;
 
-  const { data, isLoading, error, mutate } = useSWR(
-    path ? [path, articleId] : null,
-    fetchAllCriteria,
+  const { data, isLoading, error, mutate } = useSWR<ReviewerCriteriaResponse>(
+    path,
+    fetchReviewerCriteria,
     {
       revalidateOnFocus: false,
       keepPreviousData: false,
@@ -47,26 +59,38 @@ export default function useFetchCriteriaForFocusedArticle({
     }
   );
 
-  async function fetchAllCriteria() {
+  async function fetchReviewerCriteria(requestPath: string) {
     try {
-      if (!path) return;
-      const response = await Axios.get<HttpResponse>(
-        path,
-        {
-          params: {
-            stage: page.toUpperCase()
-          }
-        }
-      );
+      const response = await Axios.get<ReviewerCriteriaResponse>(requestPath);
       return response.data;
     } catch (error) {
-      console.error("Error fetching criteria", error);
+      console.error("Error fetching reviewer criteria", error);
       throw error;
     }
   }
 
+  const reviewerCriteria = {
+    selectionCriteria: data?.selectionCriteria ?? [],
+    extractionCriteria: data?.extractionCriteria ?? [],
+  };
+  const selectedCriteria =
+    page === "Selection"
+      ? reviewerCriteria.selectionCriteria
+      : reviewerCriteria.extractionCriteria;
+  const criteria: ArticleCriteria = {
+    inclusionCriteria: inclusion.filter((criterion) =>
+      selectedCriteria.includes(criterion),
+    ),
+    exclusionCriteria: exclusion.filter((criterion) =>
+      selectedCriteria.includes(criterion),
+    ),
+  };
+
   return {
-    criteria: data,
+    criteria,
+    reviewerCriteria: data ? reviewerCriteria : undefined,
+    inclusion,
+    exclusion,
     mutate,
     isLoading,
     error,
