@@ -1,7 +1,6 @@
 import { useState, useContext, useEffect, useCallback } from "react";
 import { useTranslation } from "react-i18next";
-import { Box, Radio, RadioGroup, Stack, Flex, Accordion, AccordionButton, Heading, AccordionIcon, AccordionPanel, AccordionItem, Checkbox, Text, useToast } from "@chakra-ui/react";
-import { BsPeopleFill } from "react-icons/bs";
+import { Box, Radio, RadioGroup, Stack, Flex, Accordion, AccordionButton, Heading, AccordionIcon, AccordionPanel, AccordionItem, Checkbox, useToast } from "@chakra-ui/react";
 
 import AppContext from "@features/shared/context/ApplicationContext";
 import useWindowWidth from "@features/shared/hooks/useWindowWidth";
@@ -206,6 +205,73 @@ export default function Collaboration() {
       )}
     >
       <Flex flexDirection="column" alignItems="space-between">
+        {/* Checkboxes side by side positioned above Seleção */}
+        <Flex direction="row" gap={8} mb={4} wrap="wrap">
+          <Flex
+            align="center"
+            gap=".5rem"
+            py=".5rem"
+            borderRadius="6px"
+            bg="#FFFFFF"
+            color="#263C56"
+            fontWeight="bold"
+            w="fit-content"
+            whiteSpace="nowrap"
+          >
+            <Checkbox
+              isChecked={isSameConfiguration}
+              onChange={(e) => setIsSameConfiguration(e.target.checked)}
+              sx={{
+                "& .chakra-checkbox__control": {
+                  borderColor: "#263C56",
+                  _checked: {
+                    bg: "#263C56",
+                    borderColor: "#263C56",
+                  },
+                },
+                "& .chakra-checkbox__label": {
+                  fontWeight: "bold",
+                  marginInlineStart: ".5rem",
+                },
+              }}
+            >
+              {t("collaboration.checkbox")}
+            </Checkbox>
+          </Flex>
+
+          <Flex
+            align="center"
+            gap=".5rem"
+            py=".5rem"
+            borderRadius="6px"
+            bg="#FFFFFF"
+            color="#263C56"
+            fontWeight="bold"
+            w="fit-content"
+            whiteSpace="nowrap"
+          >
+            <Checkbox
+              isChecked={acceptMajority}
+              onChange={(event) => setAcceptMajority(event.target.checked)}
+              sx={{
+                "& .chakra-checkbox__control": {
+                  borderColor: "#263C56",
+                  _checked: {
+                    bg: "#263C56",
+                    borderColor: "#263C56",
+                  },
+                },
+                "& .chakra-checkbox__label": {
+                  fontWeight: "bold",
+                  marginInlineStart: ".5rem",
+                },
+              }}
+            >
+              {t("collaboration.majorityButton")}
+            </Checkbox>
+          </Flex>
+        </Flex>
+
         <Accordion
           allowToggle
           index={savedReviewMode === null ? -1 : selectionAccordionIndex}
@@ -297,49 +363,6 @@ export default function Collaboration() {
             </AccordionPanel>
           </AccordionItem>
         </Accordion>
-
-        <Checkbox
-          isChecked={isSameConfiguration}
-          onChange={(e) => setIsSameConfiguration(e.target.checked)}
-        >
-          <Text>
-            {t("collaboration.checkbox")}
-          </Text>
-        </Checkbox>
-
-        <Flex
-          align="center"
-          gap=".5rem"
-          py=".5rem"
-          mt={3}
-          borderRadius="6px"
-          bg="#FFFFFF"
-          color="#263C56"
-          fontWeight="bold"
-          w="fit-content"
-          whiteSpace="nowrap"
-        >
-          <BsPeopleFill size="1rem" />
-          <Checkbox
-            isChecked={acceptMajority}
-            onChange={(event) => setAcceptMajority(event.target.checked)}
-            sx={{
-              "& .chakra-checkbox__control": {
-                borderColor: "#263C56",
-                _checked: {
-                  bg: "#263C56",
-                  borderColor: "#263C56",
-                },
-              },
-              "& .chakra-checkbox__label": {
-                fontWeight: "bold",
-                marginInlineStart: ".5rem",
-              },
-            }}
-          >
-            {t("collaboration.majorityButton")}
-          </Checkbox>
-        </Flex>
       </Flex>
     </ProtocolFormLayout>
   );
