@@ -4,10 +4,12 @@ import AddResearcher from "./AddResearcher";
 import IncludedResearchers from "./IncludedResearchers";
 import { useState, useEffect } from "react";
 import useToaster from "@components/feedback/Toaster";
+import Axios from "../../../../../../../infrastructure/http/axiosClient";
 import { fetchCollaborators, type Researcher } from "./services/useFetchCollaborators";
 
 export default function ResearcherFilter() {
   const [researchers, setResearchers] = useState<Researcher[]>([]);
+  const [canManage, setCanManage] = useState(false);
   const { t } = useTranslation("review/planning-protocol");
   const toast = useToaster();
   const systematicStudyId = localStorage.getItem("systematicReviewId") ?? "";
@@ -25,13 +27,31 @@ export default function ResearcherFilter() {
         });
       });
   }, [systematicStudyId]);
+  
+  useEffect(() => {
+    if (!systematicStudyId) return;
+
+    Axios.get(`systematic-study/${systematicStudyId}/collaborator/me/role`)
+      .then((res) => {
+        const role = (res.data?.role as string)?.toUpperCase() ?? "";
+        setCanManage(role === "OWNER" || role === "ADMIN");
+      })
+      .catch(() => setCanManage(false));
+  }, [systematicStudyId]);
 
   return (
     <>
       <Text mt={"30px"} fontWeight={500} fontSize={"large"}>{t("generalDefinition.input.researchers.label")}</Text>
       <VStack spacing={0} align="stretch" border="2px solid" borderColor="gray.300" borderRadius="md" bgColor="#ffffffff" px={2} py={2}>
-        <AddResearcher researchers={researchers} setResearchers={setResearchers} systematicStudyId={systematicStudyId}/>
-        <IncludedResearchers researchers={researchers} setResearchers={setResearchers} systematicStudyId={systematicStudyId}/>
+        {canManage && (
+          <AddResearcher researchers={researchers} setResearchers={setResearchers} systematicStudyId={systematicStudyId}/>
+        )}
+        <IncludedResearchers
+          researchers={researchers}
+          setResearchers={setResearchers}
+          systematicStudyId={systematicStudyId}
+          canManage={canManage}
+        />
       </VStack>
     </>
   );
