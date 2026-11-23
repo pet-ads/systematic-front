@@ -27,6 +27,7 @@ interface Props {
   researchers: Researcher[];
   setResearchers: (r: Researcher[]) => void;
   systematicStudyId: string;
+  canManage: boolean;
 }
 
 const AVAILABLE_ROLES = ["viewer", "reviewer", "editor"] as const;
@@ -36,6 +37,7 @@ export default function IncludedResearchers({
   researchers,
   setResearchers,
   systematicStudyId,
+  canManage,
 }: Props) {
   const { t } = useTranslation("review/planning-protocol");
   const toast = useToaster();
@@ -157,98 +159,103 @@ export default function IncludedResearchers({
                   {t(`generalDefinition.input.researchers.status.${researcher.status}`)}
                 </Text>
               )}
-              {researcher.status === "included" ? (
-                <>
-                  {editingResearcherId === researcher.id ? (
-                    <Menu>
-                      <MenuButton
-                        as={Button}
-                        variant="ghost"
-                        size="sm"
-                        rightIcon={<ChevronDownIcon w={18} h={18} />}
-                        fontWeight="normal"
-                        fontSize={16}
-                        h="100%"
-                        w={{ base: "auto", xl: "200px" }}
-                        p="0"
-                        textAlign="start"
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="center"
-                        lineHeight="40px"
-                        borderInline="3px solid transparent"
-                        outline="1px solid black"
-                      >
-                        {`${t("generalDefinition.input.researchers.role.role")}: ${t(
-                          `generalDefinition.input.researchers.role.${editingRole}`
-                        )}`}
-                      </MenuButton>
-                      <MenuList>
-                        {AVAILABLE_ROLES.map((role) => (
-                          <MenuItem key={role} onClick={() => setEditingRole(role)}>
-                            {t(`generalDefinition.input.researchers.role.${role}`)}
-                          </MenuItem>
-                        ))}
-                      </MenuList>
-                    </Menu>
-                  ) : (
-                    <Text
-                      w={{ base: "auto", xl: "200px" }}
+              {researcher.status === "included" &&
+                (editingResearcherId === researcher.id ? (
+                  <Menu>
+                    <MenuButton
+                      as={Button}
+                      variant="ghost"
+                      size="sm"
+                      rightIcon={<ChevronDownIcon w={18} h={18} />}
+                      fontWeight="normal"
+                      fontSize={16}
                       h="100%"
-                      borderInline="3px solid transparent"
-                      p={0}
+                      w={{ base: "auto", xl: "200px" }}
+                      p="0"
+                      textAlign="start"
                       display="flex"
                       alignItems="center"
-                      lineHeight="20px"
+                      justifyContent="center"
+                      lineHeight="40px"
+                      borderInline="3px solid transparent"
+                      outline="1px solid black"
                     >
                       {`${t("generalDefinition.input.researchers.role.role")}: ${t(
-                        `generalDefinition.input.researchers.role.${researcher.role}`
+                        `generalDefinition.input.researchers.role.${editingRole}`
                       )}`}
-                    </Text>
-                  )}
-                  {researcher.role !== "owner" && (
-                  <Flex>
-                    <Button
-                      variant="ghost"
-                      isLoading={isSavingRole && editingResearcherId === researcher.id}
-                      onClick={() => {
-                        if (editingResearcherId === researcher.id) {
-                          handleSaveRole();
-                        } else {
-                          setEditingResearcherId(researcher.id);
-                          setEditingRole(
-                            AVAILABLE_ROLES.includes(researcher.role as Role)
-                              ? (researcher.role as Role)
-                              : "reviewer"
-                          );
-                        }
-                      }}
-                    >
-                      {editingResearcherId === researcher.id ? (
-                        <i
-                          className="pi pi-save"
-                          style={{ color: "black", width: "15px", height: "15px" }}
-                        />
-                      ) : (
-                        <Icon as={EditIcon} w="15px" h="15px" />
-                      )}
-                    </Button>
+                    </MenuButton>
+                    <MenuList>
+                      {AVAILABLE_ROLES.map((role) => (
+                        <MenuItem key={role} onClick={() => setEditingRole(role)}>
+                          {t(`generalDefinition.input.researchers.role.${role}`)}
+                        </MenuItem>
+                      ))}
+                    </MenuList>
+                  </Menu>
+                ) : (
+                  <Text
+                    w={{ base: "auto", xl: "200px" }}
+                    h="100%"
+                    borderInline="3px solid transparent"
+                    p={0}
+                    display="flex"
+                    alignItems="center"
+                    justifyContent={canManage ? "flex-start" : "flex-end"}
+                    lineHeight="20px"
+                  >
+                    {`${t("generalDefinition.input.researchers.role.role")}: ${t(
+                      `generalDefinition.input.researchers.role.${researcher.role}`
+                    )}`}
+                  </Text>
+                ))}
+
+              {canManage && (
+                <Flex w="80px" justify="flex-end" flexShrink={0}>
+                  {researcher.status === "included" ? (
+                    researcher.role !== "owner" && (
+                      <>
+                        <Button
+                          variant="ghost"
+                          isLoading={isSavingRole && editingResearcherId === researcher.id}
+                          onClick={() => {
+                            if (editingResearcherId === researcher.id) {
+                              handleSaveRole();
+                            } else {
+                              setEditingResearcherId(researcher.id);
+                              setEditingRole(
+                                AVAILABLE_ROLES.includes(researcher.role as Role)
+                                  ? (researcher.role as Role)
+                                  : "reviewer"
+                              );
+                            }
+                          }}
+                        >
+                          {editingResearcherId === researcher.id ? (
+                            <i
+                              className="pi pi-save"
+                              style={{ color: "black", width: "15px", height: "15px" }}
+                            />
+                          ) : (
+                            <Icon as={EditIcon} w="15px" h="15px" />
+                          )}
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          onClick={() => setResearcherToDelete(researcher)}
+                        >
+                          <Icon as={DeleteIcon} w="15px" h="15px" />
+                        </Button>
+                      </>
+                    )
+                  ) : (
                     <Button
                       variant="ghost"
                       onClick={() => setResearcherToDelete(researcher)}
                     >
                       <Icon as={DeleteIcon} w="15px" h="15px" />
                     </Button>
-                  </Flex>
                   )}
-                </>
-              ) : (
-                <Button
-                  variant="ghost"
-                  onClick={() => setResearcherToDelete(researcher)}
-                >
-                  <Icon as={DeleteIcon} w="15px" h="15px" />
-                </Button>
+                </Flex>
               )}
             </Flex>
           </Flex>

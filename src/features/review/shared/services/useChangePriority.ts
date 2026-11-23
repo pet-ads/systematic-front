@@ -4,10 +4,11 @@ import { useContext } from "react";
 // Service
 import Axios from "../../../../infrastructure/http/axiosClient";
 
-// Contenxt
+// Context
 import StudyContext from "@features/review/shared/context/StudiesContext";
 import { SelectionArticles } from "@features/review/execution-selection/services/useFetchSelectionArticles";
 import { KeyedMutator } from "swr";
+import { PageLayout } from "../components/structure/LayoutFactory";
 
 // Type
 type PriorityValue = "VERY_LOW" | "LOW" | "HIGH" | "VERY_HIGH";
@@ -18,6 +19,7 @@ interface ChangePriorityInArticle {
 }
 
 interface useChangePriorityPayload {
+  page?: PageLayout;
   reloadArticles: KeyedMutator<SelectionArticles>;
 }
 
@@ -33,6 +35,7 @@ const priorityMap: Record<string, PriorityValue> = {
 };
 
 export default function useChangePriority({
+  page,
   reloadArticles,
 }: useChangePriorityPayload) {
   const studiesContext = useContext(StudyContext);
@@ -54,11 +57,13 @@ export default function useChangePriority({
         throw new Error(`Invalid status: ${status}`);
       }
 
+      const stage = page === "Extraction" ? "EXTRACTION" : "SELECTION";
       const path = `systematic-study/${id}/study-review/reading-priority`;
       await Axios.patch(path, {
         studyReviewId: [selectedArticleReview],
         status: priorityValue,
         criteria,
+        stage,
       });
       reloadArticles();
     } catch (error) {

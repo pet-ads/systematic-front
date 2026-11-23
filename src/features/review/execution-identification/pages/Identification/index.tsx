@@ -1,7 +1,7 @@
 // External library
 import { Box, Button, Tooltip } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 
 // Components
 import DataBaseRequired from "../../../shared/components/structure/DataBaseRequired";
@@ -29,11 +29,9 @@ export default function Identification() {
     if(window < 1000 && sidebarState === "open") setSidebarState("collapsed");
   }, []);
   const { databases } = useFetchDataBases();
-  const { assignStudies, isLoading } = useAssignStudies();
+  const { assignStudies, isLoading, isAssignmentAvailable } = useAssignStudies();
 
-  const [isAssignmentAvailable, setIsAssignmentAvailable] = useState<boolean>(true);
-
-  const { t } = useTranslation("review/execution-identification")
+  const { t } = useTranslation("review/execution-identification");
 
   const databaseListIsEmpty = databases.length == 0;
 
@@ -73,7 +71,7 @@ export default function Identification() {
           sx={isAssignmentAvailable && !isLoading ? assingStudiesButton : assingStudiesButtonDisabled}
           isLoading={isLoading}
           isDisabled={!isAssignmentAvailable || isLoading}
-          onClick={() => assignStudies(() => setIsAssignmentAvailable(false))}
+          onClick={() => assignStudies()}
         >
           {t("buttonForStudiesAssignment.text")}
         </Button>

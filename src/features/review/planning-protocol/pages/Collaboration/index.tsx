@@ -1,7 +1,6 @@
 import { useState, useContext, useEffect, useCallback } from "react";
 import { useTranslation } from "react-i18next";
-import { Box, Radio, RadioGroup, Stack, Flex, Accordion, AccordionButton, Heading, AccordionIcon, AccordionPanel, AccordionItem, Checkbox, Text, useToast } from "@chakra-ui/react";
-import { BsPeopleFill } from "react-icons/bs";
+import { Box, Radio, RadioGroup, Stack, Flex, Accordion, AccordionButton, Heading, AccordionIcon, AccordionPanel, AccordionItem, Checkbox, useToast } from "@chakra-ui/react";
 
 import AppContext from "@features/shared/context/ApplicationContext";
 import useWindowWidth from "@features/shared/hooks/useWindowWidth";
@@ -21,7 +20,7 @@ interface StageConfig {
   payload: Record<string, unknown>;
 }
 
-const buildStageBody = (config: StageConfig, acceptMajority: boolean) => {
+const buildStageBody = (config: StageConfig, acceptMajority: boolean, repeatConfiguration: boolean) => {
   if (config.type === "replication") {
     return {
       stage: config.stage.toUpperCase(),
@@ -31,6 +30,7 @@ const buildStageBody = (config: StageConfig, acceptMajority: boolean) => {
         noStudySharedBySecondaries: config.payload.noStudySharedBySecondaries,
         acceptMajority,
       },
+      repeatConfiguration,
     };
   }
 
@@ -41,6 +41,7 @@ const buildStageBody = (config: StageConfig, acceptMajority: boolean) => {
       reviewPerStudy: config.payload.reviewPerStudy,
       acceptMajority,
     },
+    repeatConfiguration,
   };
 };
 
@@ -68,6 +69,7 @@ export default function Collaboration() {
   const [extractionCollaborationMode, setExtractionCollaborationMode] = useState<string>("");
 
   const [isSameConfiguration, setIsSameConfiguration] = useState(false);
+  const [selectionAccordionIndex, setSelectionAccordionIndex] = useState<number>(-1);
   const [extractionAccordionIndex, setExtractionAccordionIndex] = useState<number>(-1);
   const [acceptMajority, setAcceptMajority] = useState(false);
 
@@ -92,8 +94,15 @@ export default function Collaboration() {
       .then((data) => {
         if (!data) return;
         setSavedReviewMode(data);
-        setSelectionCollaborationMode(readStageMode(data, "SELECTION"));
-        setExtractionCollaborationMode(readStageMode(data, "EXTRACTION"));
+        setSelectionAccordionIndex(0);
+        setExtractionAccordionIndex(0);
+        const selectionMode = readStageMode(data, "SELECTION");
+        const extractionMode = readStageMode(data, "EXTRACTION");
+        setSelectionCollaborationMode(selectionMode);
+        setExtractionCollaborationMode(extractionMode);
+        setIsSameConfiguration(
+          !!selectionMode && selectionMode === extractionMode
+        );
         const saved =
           data.selection?.replication ?? data.selection?.split ??
           data.extraction?.replication ?? data.extraction?.split;
@@ -107,16 +116,49 @@ export default function Collaboration() {
   const saveReviewMode = async (): Promise<boolean> => {
     if (!id) return true;
 
+    const selection: StageConfig | null =
+      selectionConfig ??
+      (savedReviewMode?.selection?.replication
+        ? {
+            stage: "SELECTION",
+            type: "replication",
+            payload: savedReviewMode.selection.replication,
+          }
+        : savedReviewMode?.selection?.split
+          ? {
+              stage: "SELECTION",
+              type: "division",
+              payload: savedReviewMode.selection.split,
+            }
+          : null);
+
     const extraction: StageConfig | null =
-      isSameConfiguration && selectionConfig
-        ? { ...selectionConfig, stage: "EXTRACTION" }
-        : extractionConfig;
+      extractionConfig ??
+      (savedReviewMode?.extraction?.replication
+        ? {
+            stage: "EXTRACTION",
+            type: "replication",
+            payload: savedReviewMode.extraction.replication,
+          }
+        : savedReviewMode?.extraction?.split
+          ? {
+              stage: "EXTRACTION",
+              type: "division",
+              payload: savedReviewMode.extraction.split,
+            }
+          : null);
 
-    const requests = [selectionConfig, extraction]
-      .filter((c): c is StageConfig => c !== null)
-      .map((c) => updateReviewMode(id, buildStageBody(c, acceptMajority)));
+    const configs = isSameConfiguration
+      ? selection ? [selection] : []
+      : [selection, extraction].filter(
+          (config): config is StageConfig => config !== null
+        );
 
-    if (requests.length === 0) return true;
+    if (configs.length === 0) return true;
+
+    const requests = configs.map((config) =>
+      updateReviewMode(id, buildStageBody(config, acceptMajority, isSameConfiguration))
+    );
 
     setIsSaving(true);
     try {
@@ -163,8 +205,81 @@ export default function Collaboration() {
       )}
     >
       <Flex flexDirection="column" alignItems="space-between">
+        {/* Checkboxes side by side positioned above Seleção */}
+        <Flex direction="row" gap={8} mb={4} wrap="wrap">
+          <Flex
+            align="center"
+            gap=".5rem"
+            py=".5rem"
+            borderRadius="6px"
+            bg="#FFFFFF"
+            color="#263C56"
+            fontWeight="bold"
+            w="fit-content"
+            whiteSpace="nowrap"
+          >
+            <Checkbox
+              isChecked={isSameConfiguration}
+              onChange={(e) => setIsSameConfiguration(e.target.checked)}
+              sx={{
+                "& .chakra-checkbox__control": {
+                  borderColor: "#263C56",
+                  _checked: {
+                    bg: "#263C56",
+                    borderColor: "#263C56",
+                  },
+                },
+                "& .chakra-checkbox__label": {
+                  fontWeight: "bold",
+                  marginInlineStart: ".5rem",
+                },
+              }}
+            >
+              {t("collaboration.checkbox")}
+            </Checkbox>
+          </Flex>
+
+          <Flex
+            align="center"
+            gap=".5rem"
+            py=".5rem"
+            borderRadius="6px"
+            bg="#FFFFFF"
+            color="#263C56"
+            fontWeight="bold"
+            w="fit-content"
+            whiteSpace="nowrap"
+          >
+            <Checkbox
+              isChecked={acceptMajority}
+              onChange={(event) => setAcceptMajority(event.target.checked)}
+              sx={{
+                "& .chakra-checkbox__control": {
+                  borderColor: "#263C56",
+                  _checked: {
+                    bg: "#263C56",
+                    borderColor: "#263C56",
+                  },
+                },
+                "& .chakra-checkbox__label": {
+                  fontWeight: "bold",
+                  marginInlineStart: ".5rem",
+                },
+              }}
+            >
+              {t("collaboration.majorityButton")}
+            </Checkbox>
+          </Flex>
+        </Flex>
+
         <Accordion
           allowToggle
+          index={savedReviewMode === null ? -1 : selectionAccordionIndex}
+          onChange={(index) => {
+            if (typeof index === "number") {
+              setSelectionAccordionIndex(index);
+            }
+          }}
           borderColor="#FFFFFF"
         >
           <AccordionItem>
@@ -205,7 +320,7 @@ export default function Collaboration() {
 
         <Accordion
           allowToggle
-          index={isSameConfiguration ? -1 : extractionAccordionIndex}
+          index={savedReviewMode === null || isSameConfiguration ? -1 : extractionAccordionIndex}
           onChange={(index) => {
             if (typeof index === "number") {
               setExtractionAccordionIndex(index);
@@ -248,49 +363,6 @@ export default function Collaboration() {
             </AccordionPanel>
           </AccordionItem>
         </Accordion>
-
-        <Checkbox
-          isChecked={isSameConfiguration}
-          onChange={(e) => setIsSameConfiguration(e.target.checked)}
-        >
-          <Text>
-            {t("collaboration.checkbox")}
-          </Text>
-        </Checkbox>
-
-        <Flex
-          align="center"
-          gap=".5rem"
-          py=".5rem"
-          mt={3}
-          borderRadius="6px"
-          bg="#FFFFFF"
-          color="#263C56"
-          fontWeight="bold"
-          w="fit-content"
-          whiteSpace="nowrap"
-        >
-          <BsPeopleFill size="1rem" />
-          <Checkbox
-            isChecked={acceptMajority}
-            onChange={(event) => setAcceptMajority(event.target.checked)}
-            sx={{
-              "& .chakra-checkbox__control": {
-                borderColor: "#263C56",
-                _checked: {
-                  bg: "#263C56",
-                  borderColor: "#263C56",
-                },
-              },
-              "& .chakra-checkbox__label": {
-                fontWeight: "bold",
-                marginInlineStart: ".5rem",
-              },
-            }}
-          >
-            {t("collaboration.majorityButton")}
-          </Checkbox>
-        </Flex>
       </Flex>
     </ProtocolFormLayout>
   );

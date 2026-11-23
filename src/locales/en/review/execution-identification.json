@@ -122,7 +122,7 @@
             },
             "error": {
                 "title": "Error assigning studies",
-                "description": "Could not complete study assignment. Please try again."
+                "description": "All studies have already been assigned or there are no studies to be assigned."
             }
         }
     }

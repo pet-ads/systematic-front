@@ -122,7 +122,7 @@
             },
             "error": {
                 "title": "Erro ao atribuir estudos",
-                "description": "Não foi possível realizar a atribuição. Tente novamente."
+                "description": "Todos os estudos já foram atribuídos ou não há estudos para serem atribuídos."
             }
         }
     }
