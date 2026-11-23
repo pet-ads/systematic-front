@@ -1,4 +1,5 @@
 // External library
+import { useMemo } from "react";
 import useSWR from "swr";
 
 // Hooks
@@ -33,13 +34,13 @@ export default function useFetchCriteriaForFocusedArticle({
   const systematicStudy = localStorage.getItem("systematicReviewId");
   const { user } = useAuthStore();
   const reviewerId = user?.id;
-  const inclusion = useFetchInclusionCriteria() || [];
-  const exclusion = useFetchExclusionCriteria() || [];
+  const inclusion = useFetchInclusionCriteria();
+  const exclusion = useFetchExclusionCriteria();
   const toast = useToaster();
 
   const path =
     systematicStudy && reviewerId && articleId !== -1
-      ? `systematic-study/${systematicStudy}/study-review/reviewer/${reviewerId}/${articleId}`
+      ? `systematic-study/${systematicStudy}/study-review/reviewer/${reviewerId}/${articleId}?stage=${page.toUpperCase()}`
       : null;
 
   const { data, isLoading, error, mutate } = useSWR<ReviewerCriteriaResponse>(
@@ -69,26 +70,32 @@ export default function useFetchCriteriaForFocusedArticle({
     }
   }
 
-  const reviewerCriteria = {
-    selectionCriteria: data?.selectionCriteria ?? [],
-    extractionCriteria: data?.extractionCriteria ?? [],
-  };
-  const selectedCriteria =
-    page === "Selection"
-      ? reviewerCriteria.selectionCriteria
-      : reviewerCriteria.extractionCriteria;
-  const criteria: ArticleCriteria = {
-    inclusionCriteria: inclusion.filter((criterion) =>
-      selectedCriteria.includes(criterion),
-    ),
-    exclusionCriteria: exclusion.filter((criterion) =>
-      selectedCriteria.includes(criterion),
-    ),
-  };
+  const reviewerCriteria = useMemo(
+    () =>
+      data
+        ? {
+            selectionCriteria: data.selectionCriteria ?? [],
+            extractionCriteria: data.extractionCriteria ?? [],
+          }
+        : undefined,
+    [data],
+  );
+
+  const criteria = useMemo<ArticleCriteria | undefined>(() => {
+    if (!reviewerCriteria) return undefined;
+    const selected =
+      page === "Selection"
+        ? reviewerCriteria.selectionCriteria
+        : reviewerCriteria.extractionCriteria;
+    return {
+      inclusionCriteria: inclusion.filter((c) => selected.includes(c)),
+      exclusionCriteria: exclusion.filter((c) => selected.includes(c)),
+    };
+  }, [reviewerCriteria, inclusion, exclusion, page]);
 
   return {
     criteria,
-    reviewerCriteria: data ? reviewerCriteria : undefined,
+    reviewerCriteria,
     inclusion,
     exclusion,
     mutate,
