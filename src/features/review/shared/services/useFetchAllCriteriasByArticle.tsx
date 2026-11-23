@@ -9,8 +9,7 @@ import useToaster from "@components/feedback/Toaster";
 import { useTranslation } from "react-i18next";
 
 // Services
-import { UseChangeStudySelectionStatus } from "./useChangeStudySelectionStatus";
-import { UseChangeStudyExtractionStatus } from "./useChangeStudyExtractionStatus";
+import { changeStudyStatusByStage } from "./changeStudyStatusByStage";
 
 // Types
 import { PageLayout } from "../components/structure/LayoutFactory";
@@ -147,45 +146,11 @@ export default function useFetchAllCriteriasByArticle({
     try {
       await mutate(
         async () => {
-          if (page === "Selection") {
-            if(status === "UNCLASSIFIED" && key === "EXCLUSION") {
-              await UseChangeStudyExtractionStatus({
-                studyReviewId: [selectedArticleReview],
-                criterias: [],
-                status,
-              });
-
-              await UseChangeStudySelectionStatus({
-                studyReviewId: [selectedArticleReview],
-                criterias: [],
-                status,
-              });
-            } else if (status === "EXCLUDED") {
-              await UseChangeStudySelectionStatus({
-                studyReviewId: [selectedArticleReview],
-                criterias: newChecked,
-                status,
-              });
-
-              await UseChangeStudyExtractionStatus({
-                studyReviewId: [selectedArticleReview],
-                criterias: newChecked,
-                status,
-              });
-            } else {
-              await UseChangeStudySelectionStatus({
-                studyReviewId: [selectedArticleReview],
-                criterias: newChecked,
-                status,
-              });
-            }
-          } else {
-            await UseChangeStudyExtractionStatus({
-              studyReviewId: [selectedArticleReview],
-              criterias: newChecked,
-              status,
-            });
-          }
+          await changeStudyStatusByStage(page, {
+            studyReviewId: [selectedArticleReview],
+            criterias: newChecked,
+            status,
+          });
 
           if (!newValue) {
             await revertCriterionState([optionText]);

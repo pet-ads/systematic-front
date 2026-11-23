@@ -251,20 +251,24 @@ export default function AgreementExecutionPage({ stage }: { stage: AgreementStag
         <Flex w="100%" h="2.5rem" justifyContent="space-between" alignItems="center" mb="2rem">
           <Header text={t(`headers.${stage}`)} />
         </Flex>
-        {stage === "selection" && <AgreementVisibilityControl />}
+        {stage === "selection" && (
+          <Box ml="-2rem" mr="-0.5rem" mb="1rem">
+            <AgreementVisibilityControl />
+          </Box>
+        )}
         {hasError && (
-          <Alert status="warning" borderRadius="md" mb="1rem">
+          <Alert status="warning" borderRadius="md" mb="1rem" w="100%">
             <AlertIcon />
             {t("reviews.loadError")}
           </Alert>
         )}
         {canSeeReviews === false && (
-          <Alert status="info" borderRadius="md" mb="1rem">
+          <Alert status="info" borderRadius="md" mb="1rem" w="100%">
             <AlertIcon />
             {t(reason === "NOT_FINISHED" ? "reviews.notFinished" : "reviews.hidden")}
           </Alert>
         )}
-        <Box sx={inputconteiner}>
+        <Box sx={{ ...inputconteiner, justifyContent: "space-between", alignItems: "center" }}>
           <Flex gap=".5rem" w="fit-content" justifyContent="space-between" alignItems="center">
             <SearchFieldSelect
               value={searchField}

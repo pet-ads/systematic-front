@@ -68,7 +68,7 @@ export default function ButtonsForSelection({
   handleChangeLayout,
 }: ButtonsForSelectionProps) {
   const { handleResetStatusToUnclassified } = useResetStatus({ page, reloadArticles });
-  const { handleChangePriority } = useChangePriority({ page, reloadArticles });
+  const { handleChangePriority } = useChangePriority({ reloadArticles });
   const { t } = useTranslation("review/execution-selection");
 
   const currentArticle = articles[articleIndex];
@@ -108,7 +108,7 @@ export default function ButtonsForSelection({
 
     const criteriaToClear = currentActiveCriteria.length > 0 ? currentActiveCriteria : historicalCriteria;
 
-    await handleResetStatusToUnclassified(currentArticleId, criteriaToClear, currentArticle.selectionStatus);
+    await handleResetStatusToUnclassified(currentArticleId, criteriaToClear);
     
     resetLocalCriterias();
     

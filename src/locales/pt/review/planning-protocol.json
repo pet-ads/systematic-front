@@ -337,8 +337,8 @@
             "next": "Avançar"
         },
         "options": {
-            "replication": "replicar estudos entre revisores",
-            "division": "dividir estudos entre revisores"
+            "replication": "Replicar estudos entre revisores",
+            "division": "Dividir estudos entre revisores"
         },
         "table": {
             "reviewer": "revisor",

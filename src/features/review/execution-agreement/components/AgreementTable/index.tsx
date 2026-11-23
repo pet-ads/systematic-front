@@ -72,25 +72,25 @@ function splitCriterion(criterion: string) {
 
 function Status({ status, label }: { status: ReviewerDecision | FinalStatus; label: string }) {
   return (
-    <Flex direction="column" alignItems="center" justifyContent="center" gap=".1rem" w="100%">
-      <Flex alignItems="center" justifyContent="center" gap=".45rem" whiteSpace="nowrap" w="100%">
+    <Flex direction="column" alignItems="flex-start" justifyContent="center" gap=".1rem" w="100%">
+      <Flex alignItems="center" justifyContent="flex-start" gap=".45rem" whiteSpace="nowrap" w="100%">
         {status === "included" && <CheckCircleIcon color="green.500" boxSize=".85rem" />}
         {status === "excluded" && <IoIosCloseCircle color="red" size="1rem" />}
         {status === "unclassified" && <QuestionIcon color="yellow.500" boxSize=".85rem" />}
         {status === "duplicated" && <WarningIcon color="blue.500" boxSize=".85rem" />}
-        <Text sx={{ ...collapsedSpanText, w: "auto", textAlign: "center" }}>{label}</Text>
+        <Text sx={{ ...collapsedSpanText, w: "auto", textAlign: "left" }}>{label}</Text>
       </Flex>
     </Flex>
   );
 }
 
 function ReviewerCell({ decision, criteria, label }: { decision?: ReviewerDecision; criteria?: string[]; label: string }) {
-  if (!decision) return <Text fontSize="sm" color="gray.400" textAlign="center">—</Text>;
+  if (!decision) return <Text fontSize="sm" color="gray.400" textAlign="left">—</Text>;
   return (
-    <Flex direction="column" alignItems="center" justifyContent="center" w="100%">
+    <Flex direction="column" alignItems="flex-start" justifyContent="center" w="100%">
       <Status status={decision} label={label} />
       {criteria && criteria.length > 0 && (
-        <Text fontSize=".65rem" color="gray.600" whiteSpace="nowrap" textAlign="center">
+        <Text fontSize=".65rem" color="gray.600" whiteSpace="nowrap" textAlign="left">
           {criteria.map((criterion, index) => {
             const { code, description } = splitCriterion(criterion);
             return (
